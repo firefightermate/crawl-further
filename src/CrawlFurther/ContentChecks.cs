@@ -240,8 +240,12 @@ namespace CrawlFurther.Content
                 var sh = SpriteSheets.Get(g.portraitArt);
                 if (sh == null || !sh.Has("Idle")) Bad("ghost form " + g.name + " portrait missing");
             }
-            foreach (var b in new[] { GhostPack.Mote, GhostPack.Spitter, GhostPack.Gel, GhostPack.Brute, GhostPack.Titan })
+            foreach (var b in new[] { GhostPack.Mote, GhostPack.Spitter, GhostPack.Gel, GhostPack.Brute, GhostPack.Titan, GhostPack.King })
                 if (b == null) Bad("a ghost-form blob monster failed to build");
+            foreach (var fx in new[] { GhostPack.KingSlam, GhostPack.KingQuake, GhostPack.KingDrop, GhostPack.KingDropPool })
+                if (fx == null) Bad("a King Blob effect failed to build");
+            CrawlFurther.Ghosts.GhostBlobs.SelfCheck(Bad);
+            BlobChallenges.SelfCheck(Bad);
             Note("bosses built: " + BossFactory.Built.Count + (BossPack.Enabled ? "" : " (switched off: Bosses.Enabled = false)"));
             foreach (var b in BossFactory.Built) Note("  " + b.GetDisplayName());
             if (BossPack.Enabled && BossFactory.Built.Count < 2) Bad("only " + BossFactory.Built.Count + " of 2 mod bosses built");

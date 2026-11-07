@@ -131,6 +131,7 @@ namespace CrawlFurther.Content.Library
             M("BlobGel", "Gel Blob", "A Binder's blob. Two fuse into a Brute, three into a Titan");
             M("BlobBrute", "Brute Blob", "Two Gels fused into one. It hops in and lands with a slam");
             M("BlobTitan", "Titan Blob", "Three Gels fused into one. It slams, engulfs, and leaves a Gel when it dies");
+            M("BlobKing", "King Blob", "The silver and gold ghosts' prize. It slams out a ring of goo and rains globs");
         }
 
         static void M(string id, string name, string line) { Vault.AddMonsterLine(id, name, line); }
