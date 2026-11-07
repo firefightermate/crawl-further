@@ -7,8 +7,8 @@ namespace CrawlFurther.UI
     using CrawlFurther.Art;
     using CrawlFurther.Compat;
 
-    /// <summary>Silhouettes of sheet frames (the pictures of secrets not found yet).</summary>
-    internal static class Silhouette
+    /// <summary>Silhouettes of sheet frames (the pictures of secrets not found yet, locked picks).</summary>
+    public static class Silhouette
     {
         /// <summary>A one-frame clip of a sheet frame drawn as a silhouette: the same pixels in a dusky near-black with a
         /// faint violet rim, trimmed to the shape (like a vanilla atlas element) so the vault centres it.</summary>

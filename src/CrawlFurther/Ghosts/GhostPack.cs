@@ -111,8 +111,9 @@ namespace CrawlFurther.Content.Ghosts
         // ------------------------------------------------------------------ templates
         public static GameObject GooGlob, GooPuddle, MergeBurst, WispPickup, WispCollect, WispFade, HexBolt, HexPuffWall, HexPuffHit,
                                  GleanerAura, BlobSpawnSplash,
-                                 MoteBite, GelSlam, BruteSlam, BruteQuake, TitanSlam, TitanEngulf;
-        public static Player Mote, Spitter, Gel, Brute, Titan;
+                                 MoteBite, GelSlam, BruteSlam, BruteQuake, TitanSlam, TitanEngulf,
+                                 KingSlam, KingQuake, KingDrop, KingDropPool;
+        public static Player Mote, Spitter, Gel, Brute, Titan, King;
         static readonly Dictionary<string, GameObject> s_formPrefabs = new Dictionary<string, GameObject>();
         static readonly Dictionary<int, Player> s_byGels = new Dictionary<int, Player>();
         public static Powerup GleanerPenalty;
@@ -187,20 +188,23 @@ namespace CrawlFurther.Content.Ghosts
             Strike.HitBox(BruteSlam, 22f * GrowBrute * Px("BlobBrute"), 16f * GrowBrute * Px("BlobBrute"));   // template scales were dropped by the pool after the first slam
             // the troll's shockwave pair (front + "BigShockwaveBack" child, damage events on the front clip) wearing
             // FxBlobQuake: a ring of goo, drawn at its final size (no template scale)
-            BruteQuake = FxKit.Swipe("ModBruteQuake", "TrollGroundPoundBigShockwave", 0.8f, 1.2f);
-            if (BruteQuake != null)
-            {
-                FxFactory.StripChildren(BruteQuake, "BigShockwaveBack");
-                RingPair(BruteQuake, 26, 16, "FxBlobQuake");
-                BruteQuake.transform.localScale = Vector3.one;
-                FxFactory.SetDamage(BruteQuake, 0.8f, knockback: 1.2f, status: null);
-                FxFactory.SetContacts(BruteQuake, clearSpawnOnHit: true);   // no vanilla archer spark on the hero
-                Strike.Collider(BruteQuake, 42f, 18f);   // the ring's footprint
-            }
+            BruteQuake = Quake("ModBruteQuake", 0.8f, 1.2f);
             TitanSlam = FxKit.BodyHit("ModTitanSlam", 1.6f, 0f, 1.3f, 0.25f);
             Strike.HitBox(TitanSlam, 30f * GrowTitan * Px("BlobTitan"), 20f * GrowTitan * Px("BlobTitan"));
             TitanEngulf = AimedMelee.Rotating(FxKit.BodyHit("ModTitanEngulf", 1f, 0.3f, 0.2f, 0.6f, goo, 1f));   // the gulp turns with the aim
             Strike.HitBox(TitanEngulf, 26f * GrowTitan * Px("BlobTitan"), 22f * GrowTitan * Px("BlobTitan"));
+            // the King: a heavy slam that sends a goo ring out ahead, and Rain, globs that fall where their shadows grow
+            KingSlam = FxKit.BodyHit("ModKingSlam", 1.2f, 0f, 1.1f, 0.25f);
+            Strike.HitBox(KingSlam, 40f * GrowKing * Px("BlobKing"), 28f * GrowKing * Px("BlobKing"));
+            KingQuake = Quake("ModKingQuake", 0.5f, 1f);
+            KingDrop = FxKit.TimedHit("ModKingDrop", "TrollGroundPoundBigShockwave", "FxGooDrop", "Fall", 4, 5, KingRain.DropDamage, 0.4f, canFlip: false);
+            Strike.Ground(KingDrop, "FxGooDrop", 13, 41, 16f, 8f);   // the splat is 16 px across; the shadow grows there for 0.8 s
+            KingDropPool = FxKit.TimedHit("ModKingDropPool", "TrollGroundPoundBigShockwave", "FxGooDrop", "Fall", 4, 5, KingRain.DropDamage, 0.4f, canFlip: false);
+            if (KingDropPool != null)
+            {
+                Strike.Ground(KingDropPool, "FxGooDrop", 13, 41, 16f, 8f);
+                FxFactory.SetEffect(KingDropPool, destroyOnAnimEnd: true, spawnOnDestroy: GooPuddle, canFlip: false, freeRotate: false);   // the middle drop leaves a slowing puddle
+            }
             // the splash crown a blob forms in (each slime base plays FX_SlimeSpawnShockwave from its Spawn clip)
             BlobSpawnSplash = FxFactory.Clone("FX_SlimeSpawnShockwave", "ModBlobSpawnSplash");
             if (BlobSpawnSplash != null)
@@ -208,6 +212,21 @@ namespace CrawlFurther.Content.Ghosts
                 FxFactory.StripChildren(BlobSpawnSplash, "ShockwaveBack");
                 RingPair(BlobSpawnSplash, 17, 14, "FxBlobSpawn");
             }
+        }
+
+        /// <summary>The troll's shockwave pair (front + "BigShockwaveBack" child, damage events on the front clip) wearing
+        /// FxBlobQuake: a ring of goo, drawn at its final size (no template scale).</summary>
+        static GameObject Quake(string name, float damage, float knock)
+        {
+            var q = FxKit.Swipe(name, "TrollGroundPoundBigShockwave", damage, knock);
+            if (q == null) return null;
+            FxFactory.StripChildren(q, "BigShockwaveBack");
+            RingPair(q, 26, 16, "FxBlobQuake");
+            q.transform.localScale = Vector3.one;
+            FxFactory.SetDamage(q, damage, knockback: knock, status: null);
+            FxFactory.SetContacts(q, clearSpawnOnHit: true);   // no vanilla archer spark on the hero
+            Strike.Collider(q, 42f, 18f);   // the ring's footprint
+            return q;
         }
 
         internal static GameObject Aura(string name, string art)
@@ -288,7 +307,7 @@ namespace CrawlFurther.Content.Ghosts
         // ------------------------------------------------------------------ blob kits
         // Kit numbers below are in each sheet's design space (MonsterFactory multiplies them by ArtScale). The fusion
         // art draws Brute and Titan bigger than that (ghost_rigs.py GROW), so their design numbers grow with them.
-        const float GrowBrute = 1.3f, GrowTitan = 1.2f;
+        const float GrowBrute = 1.3f, GrowTitan = 1.2f, GrowKing = 1.3f;
         /// <summary>A sheet's ArtScale (design units -> pixels), for sizes MonsterFactory does not scale (hitboxes).</summary>
         static float Px(string sheet) { float k; return ArtScale.BySheet.TryGetValue(sheet, out k) ? k : 1f; }
         static void MoteKit(Player p, SpriteSheet sh)
@@ -360,6 +379,25 @@ namespace CrawlFurther.Content.Ghosts
             Strike.Feet(p, n0, 10f * g);
         }
 
+        static void KingKit(Player p, SpriteSheet sh)
+        {
+            var atk = Kit.Attacks(p); var a0 = atk[0]; var v = Kit.Voice(p);
+            int n0 = Strike.Mark(p);
+            const float g = GrowKing;
+            int slam = Kit.AddEffect(p, KingSlam, attach: true, destroyOnAnimEnd: true, offsetX: 21f * g, offsetY: 9f * g);   // the slam lands (25, 1): x 1..27
+            int quake = Kit.AddEffect(p, KingQuake, offsetX: 34f * g);   // the ring rolls out ahead of the landing, 22 px out
+            atk.Clear();
+            // Slam 8: rears up 0-3 (0.48 s), lands on 4 with the ring
+            var slamClip = Kit.Melee(sh, "Slam", "ModKingSlam", v, 4, slam, 40f).Ev(4, "AnimAttack", quake).Build();
+            atk.Add(Kit.Attack(a0, slamClip, 1.8f, rangeInner: 12f * g, rangeOuter: 30f * g));   // the slam reaches 27 px, its ring 43
+            // Rain 9: rears up 0-3, spews on 4 (0.54 s); each glob lands 0.8 s later where its shadow grew
+            var rain = new ClipBuilder(sh, "Rain", "ModKingRain").Once()
+                .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(3, "AnimInputMultiplyStop").Ev(3, "AnimInputOff")
+                .Ev(4, KingRain.Event).EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
+            Kit.EnableSpecial(p, Kit.Attack(a0, rain, 0f, rangeInner: 20f, rangeOuter: KingRain.Reach), 7f);
+            Strike.Feet(p, n0, 12f * g);
+        }
+
         static readonly MonsterDef[] Blobs =
         {
             new MonsterDef { id = "BlobMote", basePrefab = "EnemySlime1BlueMedium", health = 0.6f, speedMult = 1.45f, kit = MoteKit, keepEvolutions = true },
@@ -368,7 +406,14 @@ namespace CrawlFurther.Content.Ghosts
             // fused blobs: more health than the Gels that made them (2 Gels 2.8 -> 3.5, 3 Gels 4.2 -> 6)
             new MonsterDef { id = "BlobBrute", basePrefab = "EnemySlime1BlueLarge", health = 3.5f, speedMult = 0.9f, kit = BruteKit, keepEvolutions = true, customize = Fused },
             new MonsterDef { id = "BlobTitan", basePrefab = "EnemySlime1BlueLarge", health = 6f, speedMult = 0.8f, kit = TitanKit, keepEvolutions = true, customize = Fused },
+            // the silver and gold ghosts' prize: a little more health than a Titan, three bodies of ectoplasm, no Gel left
+            // behind; its Rain reaches from afar but every glob shows where it lands
+            new MonsterDef { id = "BlobKing", basePrefab = "EnemySlime1BlueLarge", health = 6.5f, speedMult = 0.8f, kit = KingKit, keepEvolutions = true,
+                             customize = Fused, traits = new MonsterTraits().Add<KingRain>() },
         };
+
+        /// <summary>The King's price in bodies of ectoplasm (a Titan takes three Gels).</summary>
+        public const int KingBodies = 3;
 
         static void Fused(GameObject go, Player p) { if (go.GetComponent<FusedBlob>() == null) go.AddComponent<FusedBlob>(); }
 
@@ -391,6 +436,7 @@ namespace CrawlFurther.Content.Ghosts
             built.TryGetValue("BlobGel", out Gel);
             built.TryGetValue("BlobBrute", out Brute);
             built.TryGetValue("BlobTitan", out Titan);
+            built.TryGetValue("BlobKing", out King);
             // the number of Gels fused is the blob made: 2 a Brute, 3 a Titan
             if (Gel != null) MonsterTraits.Register(Gel.gameObject.name, new BlobTraits { gel = true });
             if (Brute != null) s_byGels[2] = Brute;
@@ -399,6 +445,7 @@ namespace CrawlFurther.Content.Ghosts
             var gelSpawner = Gel != null ? FxKit.MinionSpawner("ModGelSpawner", Gel.gameObject, "FxMergeBurst", "Play") : null;
             if (Titan != null && gelSpawner != null) { Kit.AddDeathSpawn(Titan, gelSpawner); Strike.DeathAtFeet(Titan); }
             Strike.KeepAllScales();
+            RegisterBlobs();
 
             Plugin.Log.LogInfo("Ghost forms ready: " + built.Count + " blob monsters");
             try { GhostV11.Register(); } catch (Exception e) { Plugin.Log.LogError("Ghost forms (Banshee to Miser) failed: " + e); }
@@ -417,12 +464,9 @@ namespace CrawlFurther.Content.Ghosts
             var go = pd.GameObject;
             var p = go != null ? go.GetComponent<Player>() : null;
             if (p == null) return false;
-            switch (FormOf(pd))
-            {
-                case GhostForm.Binder: return ModUtil.IsGhost(p);
-                case GhostForm.Gold: return !ModUtil.IsGhost(p) && !pd.IsHero;
-            }
-            return false;
+            // a ghost that spawns Gels fuses them with it; a gold monster jumps out with it
+            if (ModUtil.IsGhost(p)) return FusesGels(pd);
+            return FormOf(pd) == GhostForm.Gold && !pd.IsHero;
         }
 
         public static GameObject FormPrefab(GhostForm form, GameObject ghost)
@@ -565,15 +609,78 @@ namespace CrawlFurther.Content.Ghosts
             atk.Add(a);
         }
 
+        /// <summary>What a player's Back spawns: their picked blob, else their form's own (<paramref name="vanilla"/>: the
+        /// game's plain blob).</summary>
         public static GameObject FodderFor(PlayerData pd, GameObject vanilla)
         {
-            switch (FormOf(pd))
+            return GhostBlobs.PrefabOf(pd, OwnFodder(FormOf(pd)) ?? vanilla);
+        }
+
+        /// <summary>A form's own Back monster, or null for the game's plain blob.</summary>
+        static GameObject OwnFodder(GhostForm f)
+        {
+            switch (f)
             {
-                case GhostForm.Gleaner: return Mote != null ? Mote.gameObject : vanilla;
-                case GhostForm.Binder: return Gel != null ? Gel.gameObject : vanilla;
-                case GhostForm.Poltergeist: return Spitter != null ? Spitter.gameObject : vanilla;
-                default: return GhostV11.FodderFor(FormOf(pd)) ?? vanilla;
+                case GhostForm.Gleaner: return Mote != null ? Mote.gameObject : null;
+                case GhostForm.Binder: return Gel != null ? Gel.gameObject : null;
+                case GhostForm.Poltergeist: return Spitter != null ? Spitter.gameObject : null;
+                default: return GhostV11.FodderFor(f);
             }
+        }
+
+        /// <summary>The game's plain blob for a player (the large one when their god uses it), read straight from their
+        /// setup so a pick never feeds back into itself.</summary>
+        public static GameObject PlainBlob(PlayerData pd)
+        {
+            var setup = pd != null ? pd.Setup : null;
+            if (setup == null) return null;
+            Deity d = null;
+            try { d = pd.GetDeity(); } catch { }
+            return d != null && d.GetUseLargeFodder() && setup.m_fodderLarge != null ? setup.m_fodderLarge : setup.m_fodder;
+        }
+
+        // ------------------------------------------------------------------ the blob choice
+        /// <summary>
+        /// The blobs any ghost can pick in place of its form's own (GhostBlobs): the plain blob always, Mote, Spitter and Gel
+        /// once their challenge is done (BlobChallenges), and the King for the silver and gold ghosts only.
+        /// </summary>
+        static void RegisterBlobs()
+        {
+            GhostBlobs.OwnOf = (def, pd) =>
+            {
+                var e = def as GhostFormEntry;
+                return OwnFodder(e != null ? e.form : GhostForm.Wisp) ?? PlainBlob(pd);
+            };
+            GhostBlobs.Register(new GhostBlobDef { id = "Plain", name = "Plain Blob", summary = "The game's own blob, nothing added",
+                                                    prefab = PlainBlob });
+            Blob("Mote", "Mote Blob", "Quick and fragile. They come in pairs", Mote, BlobChallenges.Mote);
+            Blob("Spitter", "Spitter Blob", "Spits goo along the floor that slows", Spitter, BlobChallenges.Spitter);
+            Blob("Gel", "Gel Blob", "Fuses into bigger blobs with the ghost button", Gel, BlobChallenges.Gel);
+            if (King != null)
+                GhostBlobs.Register(new GhostBlobDef
+                {
+                    id = "King", name = "King Blob", summary = "Slams, rains globs, and costs more ectoplasm",
+                    prefab = pd => King.gameObject, art = "BlobKing", bodies = KingBodies,
+                    fits = f => f != null && f.tier != SlotTier.Normal,   // the silver and gold ghosts' own prize
+                });
+        }
+
+        static void Blob(string id, string name, string summary, Player p, string unlock)
+        {
+            if (p == null) return;
+            GhostBlobs.Register(new GhostBlobDef { id = id, name = name, summary = summary, prefab = pd => p.gameObject, art = "Blob" + id, unlock = unlock });
+        }
+
+        /// <summary>The player's ghost spawns Gels (its own or picked): the ghost button fuses them.</summary>
+        public static bool FusesGels(PlayerData pd)
+        {
+            return pd != null && Gel != null && FodderFor(pd, null) == Gel.gameObject;
+        }
+
+        /// <summary>The player's ghost spawns Motes (its own or picked): they come in pairs.</summary>
+        public static bool SpawnsMotes(PlayerData pd)
+        {
+            return pd != null && Mote != null && FodderFor(pd, null) == Mote.gameObject;
         }
 
         /// <summary>How close (px) to the Binder ghost its blobs must be to fuse.</summary>
@@ -582,8 +689,9 @@ namespace CrawlFurther.Content.Ghosts
         public const int MaxGels = 3;
 
         /// <summary>
-        /// Binder: fuse its own Gels near the ghost into one blob: 2 Gels make a Brute, 3 a Titan. The nearest Gels go in
-        /// first. Brutes and Titans never go into a fusion, so a fused blob stays what it is until it dies.
+        /// Any ghost that spawns Gels (the Binder, or a form that picked them): fuse its own Gels near the ghost into one
+        /// blob: 2 Gels make a Brute, 3 a Titan. The nearest Gels go in first. Brutes and Titans never go into a fusion, so
+        /// a fused blob stays what it is until it dies.
         /// </summary>
         public static bool TryMerge(Player ghost)
         {
@@ -612,6 +720,7 @@ namespace CrawlFurther.Content.Ghosts
             if (MergeBurst != null) SystemPool.Spawn(MergeBurst, mid);
             var go = made.gameObject.Spawn(mid, Quaternion.identity);
             if (go != null) go.GetComponent<Player>().InitAsAI(ghost.gameObject);
+            if (made == Titan) BlobChallenges.TitanFused(pd);
             return true;
         }
 
@@ -635,11 +744,14 @@ namespace CrawlFurther.Content.Ghosts
         }
     }
 
-    /// <summary>Per-ghost behaviour for the chosen form (Gleaner aura, magnet and wisps; Binder fuse button). The form's
-    /// body itself is its own ghost prefab (GhostPack.FormPrefab), swapped in by Patch_SpawnGhost.</summary>
+    /// <summary>Per-ghost behaviour for the chosen form (Gleaner aura, magnet and wisps) and blob (the fuse button of a
+    /// ghost that spawns Gels). The form's body itself is its own ghost prefab (GhostPack.FormPrefab), swapped in by
+    /// Patch_SpawnGhost.</summary>
     public class GhostFormFx : MonoBehaviour
     {
         public GhostForm form;
+        /// <summary>This ghost spawns Gels and fuses them with the ghost button (the Binder, or a form that picked Gels).</summary>
+        public bool fuses;
         Player m_player;
         GameObject m_aura;
         float m_wispTimer;
@@ -649,6 +761,7 @@ namespace CrawlFurther.Content.Ghosts
         public void Setup(GhostForm f)
         {
             form = f;
+            fuses = GhostPack.FusesGels(m_player != null ? m_player.GetPlayerData() : null);
             if (m_aura != null) { SystemPool.Despawn(m_aura); m_aura = null; }
             var tmpl = f == GhostForm.Gleaner ? GhostPack.GleanerAura : GhostV11.AuraFor(f);
             if (tmpl != null)
@@ -669,7 +782,7 @@ namespace CrawlFurther.Content.Ghosts
         Pickup[] m_pickups;
 
         /// <summary>
-        /// Binder's own fuse button, separate from Back (which the game also uses to spawn fodder):
+        /// The fuse button, separate from Back (which the game also uses to spawn fodder):
         /// X on a controller (Y is the game's Start fallback on some pads), C for the keyboard player, MIDDLE CLICK for the
         /// mouse player (the game reads the middle button as Start = pause for the Mouse controller only, so
         /// Patch_MiddleClickPause swallows that pause while the mouse player is a Binder ghost).
@@ -678,7 +791,7 @@ namespace CrawlFurther.Content.Ghosts
 
         void Update()
         {
-            if (form == GhostForm.Binder)
+            if (fuses)
             {
                 m_fuseCooldown -= Time.deltaTime;
                 if (m_fuseCooldown <= 0f && FusePressed() && ModUtil.IsGhost(m_player))
@@ -689,9 +802,8 @@ namespace CrawlFurther.Content.Ghosts
                         // nothing to fuse: the stored bodies blink, as when Back cannot spawn one
                         if (!GhostPack.TryMerge(m_player)) GhostV11.Flash(m_player);
                     }
-                    catch (System.Exception e) { Plugin.Log.LogError("Binder fuse failed: " + e); }
+                    catch (System.Exception e) { Plugin.Log.LogError("Gel fuse failed: " + e); }
                 }
-                return;
             }
             if (form != GhostForm.Gleaner) return;
             Vector2 me = transform.position;
@@ -792,9 +904,34 @@ namespace CrawlFurther.Content.Ghosts
                     __result = form == GhostForm.Sexton ? GhostV11.DigGrave(p) : GhostV11.SpendHoard(p);
                     return false;
                 }
+                // a blob that costs more than one body (the King): not enough stored, the bodies blink as usual
+                var pd = p.GetPlayerData();
+                int bodies = GhostBlobs.BodiesOf(pd);
+                if (bodies > 1 && pd.GetFodderAvailable() < bodies)
+                {
+                    GhostV11.Flash(p);
+                    __result = false;
+                    return false;
+                }
             }
             catch (Exception e) { Plugin.Log.LogError("Ghost Back action failed: " + e); }
             return true;
+        }
+
+        /// <summary>The game charged one body for the blob: charge the rest the same way.</summary>
+        static void Postfix(Ghost __instance, bool __result)
+        {
+            if (!__result) return;
+            try
+            {
+                var p = __instance.GetComponent<Player>();
+                var pd = p != null ? p.GetPlayerData() : null;
+                var form = GhostPack.FormOf(pd);
+                if (pd == null || form == GhostForm.Sexton || form == GhostForm.Miser) return;
+                int bodies = GhostBlobs.BodiesOf(pd);
+                if (bodies > 1) pd.SpendEctoplasm((bodies - 1) * SystemBalance.EctoplasmFodderCost);
+            }
+            catch (Exception e) { Plugin.Log.LogError("Ghost Back cost failed: " + e); }
         }
     }
 
@@ -806,17 +943,19 @@ namespace CrawlFurther.Content.Ghosts
             if (!__result || fromPlayer == null || GhostPack.Mote == null) return;
             try
             {
-                if (GhostPack.FormOf(fromPlayer.GetPlayerData()) != GhostForm.Gleaner) return;
+                var pd = fromPlayer.GetPlayerData();
+                if (!GhostPack.SpawnsMotes(pd)) return;
+                BlobChallenges.MoteSpawned(pd);
                 foreach (var off in new[] { new Vector2(9f, -3f), new Vector2(-9f, -3f), new Vector2(0f, 8f), new Vector2(0f, -8f) })
                 {
                     var at = position + off;
                     if (!SystemLevel.GetInCurrentRoom(at)) continue;
                     var go = GhostPack.Mote.gameObject.Spawn(at, Quaternion.identity);
-                    if (go != null) go.GetComponent<Player>().InitAsAI(fromPlayer.gameObject);
+                    if (go != null) { go.GetComponent<Player>().InitAsAI(fromPlayer.gameObject); BlobChallenges.MoteSpawned(pd); }
                     break;
                 }
             }
-            catch (Exception e) { Plugin.Log.LogError("Gleaner pair spawn failed: " + e); }
+            catch (Exception e) { Plugin.Log.LogError("Mote pair spawn failed: " + e); }
         }
     }
 

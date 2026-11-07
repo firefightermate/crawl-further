@@ -43,7 +43,7 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 SKIP_JSON = ("_preview", "board", "contact_idle", "fx_all", "designs_board")
 TIER_LIMIT = {1: (20, 16), 2: (28, 26), 3: (42, 40)}     # (max width, max height) of the visible Idle frame
 # monsters outside a god's tree (no evolveCost): which tier's size limit applies
-MINION_TIER = {"BlobMote": 1, "BlobSpitter": 1, "BlobGel": 1, "BlobBrute": 2, "BlobTitan": 2}
+MINION_TIER = {"BlobMote": 1, "BlobSpitter": 1, "BlobGel": 1, "BlobBrute": 2, "BlobTitan": 2, "BlobKing": 3}
 BASE_ANIMS = ["Idle", "Run", "Death", "Dead", "Statue", "Knockback", "Portrait"]
 ONE_FRAME = ["Dead", "Statue", "Knockback", "Portrait"]
 VIOLET = (154, 92, 191)

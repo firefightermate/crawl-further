@@ -3,6 +3,14 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## Unreleased
+
+### Library (CrawlFurther.Core)
+- `GhostBlobs` and `GhostBlobDef`: blobs a ghost can spawn with Back in place of its form's own, picked per player.
+  A blob can be locked behind a challenge, limited to some forms and cost more than one body of ectoplasm. See
+  [docs/monsters.md](docs/monsters.md#ghost-blobs).
+- `Silhouette` is public, for drawing a locked pick as a dark outline.
+
 ## 1.0.2
 
 ### Library (CrawlFurther.Core)

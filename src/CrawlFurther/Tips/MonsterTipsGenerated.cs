@@ -21,7 +21,7 @@ namespace CrawlFurther.Content.Tips
             Vault[key] = new KeyValuePair<string, string>(name, line);
         }
 
-        /// <summary>Mod monster, minion, ghost and boss-part tips (241 entries from 14 files). Loaded after the hand-written rows.</summary>
+        /// <summary>Mod monster, minion, ghost and boss-part tips (242 entries from 14 files). Loaded after the hand-written rows.</summary>
         static void AddGenerated()
         {
             // tips_belmora.json
@@ -56,6 +56,7 @@ namespace CrawlFurther.Content.Tips
             // tips_ghosts.json
             T("ModBlobBrute", "Brute Blob", "Heavy lunging body slam", "Bounce: hop forward, land in a knockback ring", "Fused from two Gels. It never fuses again\nLeft alone, it still uses its special"); Group["ModBlobBrute"] = "ghosts";
             T("ModBlobGel", "Gel Blob", "Lunging body slam", "none", "A Binder ghost's follower. Fused by the\nghost button: two make a Brute, three a Titan"); Group["ModBlobGel"] = "ghosts";
+            T("ModBlobKing", "King Blob", "Heavy slam that sends a ring of goo out ahead", "Rain: globs land where their shadows grow", "Silver and gold ghosts only. Costs more ectoplasm\nLeft alone, it still uses its special"); Group["ModBlobKing"] = "ghosts";
             T("ModBlobMote", "Mote Blob", "Quick lunging nip, very short range", "none", "A Gleaner ghost's follower: fast but fragile.\nThey spawn in pairs"); Group["ModBlobMote"] = "ghosts";
             T("ModBlobSpitter", "Spitter Blob", "Spit goo along the floor; leaves a slowing puddle", "none", "A Poltergeist ghost's follower"); Group["ModBlobSpitter"] = "ghosts";
             T("ModBlobTitan", "Titan Blob", "Crushing body slam", "Engulf: lunge and swallow the hero; slows", "Fused from three Gels. Leaves a Gel when it dies\nLeft alone, it still uses its special"); Group["ModBlobTitan"] = "ghosts";
@@ -478,6 +479,7 @@ namespace CrawlFurther.Content.Tips
                 "<color=#d4be9c>Hexer:</color> hexed heroes take more damage. <color=#d4be9c>Miser:</color> spends stored bodies on one big Mimic.",
                 "<color=#d4be9c>Silver:</color> your monsters drop orbs. Eight send your next body up a tier.",
                 "<color=#d4be9c>Gold:</color> jump out of a body and it fights on for you in gold.",
+                "Under the forms, pick the <color=#d4be9c>blob</color> Back spawns. Each form starts on its own. The <color=#d4be9c>King Blob</color> is for silver and gold only.",
             }),
             new PauseTopic("slots", "", "SLOTS", "silver and gold", new[]
             {
@@ -496,6 +498,7 @@ namespace CrawlFurther.Content.Tips
                 "- <color=#d4be9c>Gold idol</color>: evolve <color=#d4be9c>20</color> different final forms.",
                 "- <color=#d4be9c>Silver ghost</color>: gather <color=#d4be9c>1000</color> ectoplasm as a ghost.",
                 "- <color=#d4be9c>Gold ghost</color>: slay the hero <color=#d4be9c>40</color> times as a monster.",
+                "- <color=#d4be9c>Blobs</color>: spawn <color=#d4be9c>100</color> Motes as the Gleaner, hit the hero with Spitter goo <color=#d4be9c>60</color> times, fuse <color=#d4be9c>3</color> Titans as the Binder.",
                 "A banner on the next menu tells you when a slot opens.",
             }),
             new PauseTopic("icons", "", "ICONS", "what the little markers mean", new[]

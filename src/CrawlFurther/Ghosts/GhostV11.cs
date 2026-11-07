@@ -415,33 +415,36 @@ namespace CrawlFurther.Content.Ghosts
             catch { }
         }
 
-        /// <summary>Sexton: Back plants a grave (one body's ectoplasm) where the ghost is; a Revenant claws out of it when
-        /// the hero comes close, or after 10 s. Up to 3 graves at once.</summary>
+        /// <summary>Sexton: Back plants a grave (one body's ectoplasm, or what the picked blob costs) where the ghost is;
+        /// a Revenant (or the picked blob) claws out of it when the hero comes close, or after 10 s. Up to 3 graves at once.</summary>
         public static bool DigGrave(Player ghost)
         {
             var pd = ghost.GetPlayerData();
             if (pd == null || Grave == null) return false;
             Vector2 pos = ghost.transform.position;
-            if (!pd.CanSpawnFodder() || SextonGrave.CountFor(pd) >= MaxGraves || !CanPlace(pos)) { Flash(ghost); return false; }
+            int bodies = GhostBlobs.BodiesOf(pd);
+            if (!pd.CanSpawnFodder() || pd.GetFodderAvailable() < bodies || SextonGrave.CountFor(pd) >= MaxGraves || !CanPlace(pos)) { Flash(ghost); return false; }
             pd.OnFodderSpawned();
+            if (bodies > 1) pd.SpendEctoplasm((bodies - 1) * SystemBalance.EctoplasmFodderCost);
             var go = SystemPool.Spawn(Grave, pos);
             if (go == null) return false;
             var g = go.GetComponent<SextonGrave>() ?? go.AddComponent<SextonGrave>();
-            g.Begin(pd, pos);
+            g.Begin(pd, pos, bodies);
             var room = SystemLevel.GetCurrentRoom();
             if (room != null) room.CloseDoors();
             return true;
         }
 
-        /// <summary>Miser: Back spends EVERY stored body on one Mimic, with that many times the health.</summary>
+        /// <summary>Miser: Back spends EVERY stored body on one Mimic (or one of the picked blob), with that many times
+        /// the health.</summary>
         public static bool SpendHoard(Player ghost)
         {
             var pd = ghost.GetPlayerData();
             if (pd == null || Mimic == null) return false;
             int n = pd.GetFodderAvailable();
-            if (n < 1) { Flash(ghost); return false; }
+            if (n < 1 || n < GhostBlobs.BodiesOf(pd)) { Flash(ghost); return false; }
             Vector2 pos = ghost.transform.position;
-            var go = SpawnOwnFodder(ghost, pos, Mimic.gameObject);
+            var go = SpawnOwnFodder(ghost, pos, GhostBlobs.PrefabOf(pd, Mimic.gameObject));
             if (go == null) { Flash(ghost); return false; }
             pd.SpendEctoplasm(n * SystemBalance.EctoplasmFodderCost);
             var h = go.GetComponent<MimicHoard>() ?? go.AddComponent<MimicHoard>();
@@ -707,7 +710,7 @@ namespace CrawlFurther.Content.Ghosts
     }
 
     /// <summary>A Sexton's grave: rises out of the floor, waits (glowing while its Sexton hovers near), and lets a Revenant
-    /// claw out when the hero comes close or after GraveTimeout.</summary>
+    /// (or the Sexton's picked blob) claw out when the hero comes close or after GraveTimeout.</summary>
     public class SextonGrave : MonoBehaviour
     {
         static readonly List<SextonGrave> s_live = new List<SextonGrave>();
@@ -716,6 +719,7 @@ namespace CrawlFurther.Content.Ghosts
         Vector2 m_pos;
         float m_t;
         int m_state;      // 0 rising, 1 waiting, 2 sinking
+        int m_bodies = 1; // what it cost: given back if it never rises
         bool m_glow;
         exSpriteAnimation m_anim;
 
@@ -726,9 +730,9 @@ namespace CrawlFurther.Content.Ghosts
             return n;
         }
 
-        public void Begin(PlayerData owner, Vector2 pos)
+        public void Begin(PlayerData owner, Vector2 pos, int bodies = 1)
         {
-            m_owner = owner; m_pos = pos; m_t = 0f; m_state = 0; m_glow = false;
+            m_owner = owner; m_pos = pos; m_t = 0f; m_state = 0; m_glow = false; m_bodies = Mathf.Max(1, bodies);
             m_anim = GetComponent<exSpriteAnimation>();
             if (s_idle == null)
             {
@@ -760,7 +764,7 @@ namespace CrawlFurther.Content.Ghosts
             if (!SystemLevel.GetInCurrentRoom(m_pos))
             {
                 // the room was left before it rose: the ectoplasm comes back
-                GhostV11.Refund(m_owner, SystemBalance.EctoplasmFodderCost);
+                GhostV11.Refund(m_owner, m_bodies * SystemBalance.EctoplasmFodderCost);
                 Sink();
                 return;
             }
@@ -773,8 +777,9 @@ namespace CrawlFurther.Content.Ghosts
                            (hero != null && m_state == 1 && ((Vector2)hero.transform.position - m_pos).magnitude < GhostV11.GraveTrigger);
             if (!trigger) return;
             var from = bp;   // the Revenant is the Sexton player's (whatever body they wear now)
-            if (from == null || GhostV11.SpawnOwnFodder(from, m_pos, GhostV11.Revenant != null ? GhostV11.Revenant.gameObject : null) == null)
-                GhostV11.Refund(m_owner, SystemBalance.EctoplasmFodderCost);
+            var rises = GhostBlobs.PrefabOf(m_owner, GhostV11.Revenant != null ? GhostV11.Revenant.gameObject : null);
+            if (from == null || GhostV11.SpawnOwnFodder(from, m_pos, rises) == null)
+                GhostV11.Refund(m_owner, m_bodies * SystemBalance.EctoplasmFodderCost);
             Sink();
         }
 

@@ -60,6 +60,7 @@ namespace CrawlFurther.Content
             AddTips();
             FurtherVault.Register();
             SlotChallenges.Register();
+            BlobChallenges.Register();
 
             // monsters and heroes in play
             MonsterEvents.PlayerAwake += HeroItemHooks.PlayerAwake;

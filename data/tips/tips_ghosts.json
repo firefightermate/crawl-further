@@ -43,6 +43,15 @@
    "Left alone, it still uses its special"
   ]
  },
+ "ModBlobKing": {
+  "name": "King Blob",
+  "attack": "Heavy slam that sends a ring of goo out ahead",
+  "special": "Rain: globs land where their shadows grow",
+  "passive": [
+   "Silver and gold ghosts only. Costs more ectoplasm",
+   "Left alone, it still uses its special"
+  ]
+ },
  "ModGhostGleaner": {
   "name": "Gleaner",
   "attack": "Take over the body you float over",

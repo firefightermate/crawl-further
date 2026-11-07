@@ -26,7 +26,7 @@ namespace CrawlFurther.Content.Library
         {
             label = "FURTHER",
             stamp = "VaultStampFurther",
-            summary = (found, total) => found + " / " + total + " entries found\n\nThe gods, hero origins and ghost forms of " + Name + ", each with its own page",
+            summary = (found, total) => found + " / " + total + " entries found\n\nThe gods, hero origins, ghost forms and blobs of " + Name + ", each with its own page",
             pages = Pages,
             selfCheck = SelfCheck,
         };
@@ -89,6 +89,14 @@ namespace CrawlFurther.Content.Library
                     unlock = Unlocks.IdFor("Ghost", g.tier),
                 };
             }
+            // the blobs a ghost can pick (the plain one is the game's own): locked until their challenge is done
+            foreach (var b in GhostBlobs.All)
+            {
+                if (b == null || string.IsNullOrEmpty(b.art)) continue;
+                var page = new VaultPage { kind = "Blob", id = b.id, name = b.name, text = BlobText(b), art = b.art, unlock = b.unlock };
+                if (b.unlock == null && b.fits != null) page.locked = () => !AnyFormOpen(b);
+                yield return page;
+            }
             foreach (var e in VaultRegistry.Entries)
             {
                 if (e == null || string.IsNullOrEmpty(e.id)) continue;
@@ -115,6 +123,24 @@ namespace CrawlFurther.Content.Library
         {
             return "Your own god: take any god's perk, then pick " + CustomGod.Slots(t) +
                    " starting monsters from every god's starters. Each one evolves along its own tree.";
+        }
+
+        static string BlobText(GhostBlobDef b)
+        {
+            bool every = true;
+            foreach (var f in GhostForms.All) if (!GhostBlobs.Fits(b, f)) every = false;
+            return b.summary + "\n" + (every ? "Any ghost can pick it" : "Only silver and gold ghosts pick it");
+        }
+
+        /// <summary>A blob with no challenge of its own (the King) opens with the first form that can pick it.</summary>
+        static bool AnyFormOpen(GhostBlobDef b)
+        {
+            foreach (var f in GhostForms.All)
+            {
+                if (!GhostBlobs.Fits(b, f)) continue;
+                if (f.tier == SlotTier.Normal || Unlocks.IsUnlocked(Unlocks.IdFor("Ghost", f.tier))) return true;
+            }
+            return false;
         }
 
         static string IdolArt(SlotTier t) { return t == SlotTier.Gold ? "DeityGoldIdol" : "DeitySilverIdol"; }
@@ -176,6 +202,11 @@ namespace CrawlFurther.Content.Library
                 {
                     var g = GhostForms.All.Find(x => x != null && (x.portraitArt ?? x.name) == p.id);
                     if (g != null) { want = g.summary; name = g.name; art = g.portraitArt; }
+                }
+                else if (p.kind == "Blob")
+                {
+                    var b = GhostBlobs.Find(p.id);
+                    if (b != null) { want = b.summary; name = b.name; art = b.art; }
                 }
                 else
                 {

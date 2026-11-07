@@ -3,7 +3,7 @@ using UnityEngine;
 namespace CrawlFurther.Content.Ghosts
 {
     /// <summary>
-    /// On the Brute and Titan: a fused blob left to its own AI still uses its special (Bounce, Engulf)
+    /// On the Brute, Titan and King: a big blob left to its own AI still uses its special (Bounce, Engulf, Rain)
     /// when the hero is in reach. A player inside it uses the special as usual.
     /// </summary>
     public class FusedBlob : MonoBehaviour
