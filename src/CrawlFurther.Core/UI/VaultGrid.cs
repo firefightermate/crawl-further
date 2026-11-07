@@ -109,25 +109,45 @@ namespace CrawlFurther.UI
             });
         }
 
-        static MenuItemLibrary CategoryItem(MenuLibrary lib, string label)
+        /// <summary>The category menu's row for a mod category: by its label, else by its place among the mod rows (a
+        /// translation mod may have changed the label).</summary>
+        static MenuItemLibrary CategoryItem(MenuLibrary lib, VaultCategory c)
         {
             var cats = R.Get<MenuTextMenu>(lib, "m_menuCategories");
             if (cats == null) return null;
-            foreach (var it in cats.GetComponentsInChildren<MenuItemLibrary>()) if (it.GetText() == label) return it;
-            return null;
+            int want = s_listed.IndexOf(c), n = 0;
+            MenuItemLibrary byPlace = null;
+            foreach (var it in cats.GetComponentsInChildren<MenuItemLibrary>())
+            {
+                if (it.GetText() == c.label) return it;
+                if (R.Get<string>(it, "m_message") != ModMessage) continue;
+                if (n++ == want) byPlace = it;
+            }
+            return byPlace;
         }
 
-        internal static string SelectedLabel(MenuLibrary lib)
+        /// <summary>The mod category highlighted in the category menu, or null (a vanilla row): by its label, else by its
+        /// place among the mod rows.</summary>
+        internal static VaultCategory SelectedCategory(MenuLibrary lib)
         {
             var cats = R.Get<MenuTextMenu>(lib, "m_menuCategories");
-            return cats != null ? cats.GetSelectedString() : null;
+            if (cats == null) return null;
+            var c = CategoryOf(cats.GetSelectedString());
+            if (c != null) return c;
+            var items = R.Get<List<MenuTextMenuItem>>(cats, "m_items");
+            int sel = cats.GetSelectedId();
+            if (items == null || sel < 0 || sel >= items.Count || items[sel] == null) return null;
+            if (R.Get<string>(items[sel], "m_message") != ModMessage) return null;
+            int n = 0;
+            for (int i = 0; i < sel; i++) if (items[i] != null && R.Get<string>(items[i], "m_message") == ModMessage) n++;
+            return n < s_listed.Count ? s_listed[n] : null;
         }
 
         internal static void OnEnterCategoryState(MenuLibrary lib)
         {
             foreach (var c in s_listed)
             {
-                var it = CategoryItem(lib, c.label);
+                var it = CategoryItem(lib, c);
                 if (it != null) it.SetNew(LibraryEntries.HasNew(c));
             }
             var drv = lib.GetComponent<VaultGridDriver>();

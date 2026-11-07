@@ -46,7 +46,7 @@ namespace CrawlFurther.UI
         // SendMessage target of every mod category item: open the one that is selected
         void MsgCategoryMod()
         {
-            var c = VaultGrid.CategoryOf(VaultGrid.SelectedLabel(m_lib));
+            var c = VaultGrid.SelectedCategory(m_lib);
             if (c == null) return;
             try { VaultGrid.Build(m_lib, VaultGrid.NumberOf(c)); }
             catch (Exception e) { FurtherCore.Log.LogError("Vault " + c.label + ": " + e); }
@@ -55,7 +55,7 @@ namespace CrawlFurther.UI
         /// <summary>UpdateCategory postfix: a mod category's summary and stamp while it is the highlighted category.</summary>
         internal void OnUpdateCategory(bool showStamp)
         {
-            var c = VaultGrid.CategoryOf(VaultGrid.SelectedLabel(m_lib));
+            var c = VaultGrid.SelectedCategory(m_lib);
             var summary = R.Get<GUIText>(m_lib, "m_textCategorySummary");
             if (c != null && summary != null && c.summary != null)
             {
