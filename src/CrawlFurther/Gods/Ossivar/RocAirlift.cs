@@ -18,7 +18,7 @@ namespace CrawlFurther.Content.Gods.Ossivar
         GameObject m_ally;
         BonePileFx m_pile;
         GameObject m_shadow;
-        float m_t;
+        float m_t, m_grabAt;
         bool m_carrying;
 
         protected override void OnEnable() { base.OnEnable(); m_carrying = false; }
@@ -28,7 +28,8 @@ namespace CrawlFurther.Content.Gods.Ossivar
         public void OssGrab()
         {
             if (!Alive) return;
-            m_ally = null; m_pile = null;
+            Let(false);   // a grab whose carry never came (the clip was cut short): let that one go first
+            m_grabAt = Time.time;
             float best = Grab * Grab;
             foreach (var m in Object.FindObjectsOfType<OssivarMonster>())
             {
@@ -63,7 +64,12 @@ namespace CrawlFurther.Content.Gods.Ossivar
 
         void Update()
         {
-            if (!m_carrying) return;
+            if (!m_carrying)
+            {
+                // seized but never carried (the Grab clip was interrupted): never leave a friend invincible
+                if ((m_ally != null || m_pile != null) && Time.time - m_grabAt > Carry + 0.5f) Let(false);
+                return;
+            }
             if (!Alive) { Let(false); return; }
             m_t += Time.deltaTime;
             Vector2 d = HeroPos - Me;
@@ -77,18 +83,19 @@ namespace CrawlFurther.Content.Gods.Ossivar
         void Let(bool drop)
         {
             if (!m_carrying && m_ally == null && m_pile == null) return;
+            bool carried = m_carrying;
             m_carrying = false;
             if (m_shadow != null) { if (Hero != null) ModAttach.Drop(m_shadow, Hero); if (m_shadow.activeInHierarchy) SystemPool.Despawn(m_shadow); m_shadow = null; }
             Vector2 at = drop && Hero != null ? ModUtil.SafePoint(Me, HeroPos + new Vector2(Side * -4f, 0f), 4f) : Me;
             if (m_ally != null)
             {
-                if (m_ally.activeInHierarchy) ModUtil.Teleport(m_ally, at);
+                if (carried && m_ally.activeInHierarchy) ModUtil.Teleport(m_ally, at);
                 var h = m_ally.GetComponent<Health>();
                 if (h != null) h.StopInvincibility("ossroc");
                 var mm = m_ally.GetComponent<ModMonster>();
                 if (drop && mm != null) mm.ModGainPlates(1);
             }
-            if (m_pile != null) { m_pile.Locked = false; if (m_pile.isActiveAndEnabled) m_pile.transform.position = new Vector3(at.x, at.y, m_pile.transform.position.z); }
+            if (m_pile != null) { m_pile.Locked = false; if (carried && m_pile.isActiveAndEnabled) m_pile.transform.position = new Vector3(at.x, at.y, m_pile.transform.position.z); }
             if (drop && (m_ally != null || m_pile != null))
             {
                 if (OssivarFx.RocDrop != null) FxFactory.SpawnOwned(OssivarFx.RocDrop, at, Own);
