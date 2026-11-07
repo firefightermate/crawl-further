@@ -152,26 +152,33 @@ namespace CrawlFurther.Gods
         {
             if (!IsOpen) return;
             IsOpen = false;
-            Clear();
-            if (m_previewBox != null) { m_previewBox.Destroy(); m_previewBox = null; }
-            if (m_root != null) Destroy(m_root);
-            m_root = null;
-            foreach (var g in m_hidden) if (g != null) g.SetActive(true);
-            m_hidden.Clear();
-            if (Panel != null)
+            try
             {
-                var portrait = R.Get<exSpriteAnimation>(Panel, "m_portrait");
-                if (portrait != null) portrait.gameObject.SetActive(m_portraitWasActive);
-                var name = R.Get<TextMesh>(Panel, "m_name");
-                if (name != null && m_oldName != null) name.text = m_oldName;
-                SlotArt.ResetName(name);
+                Clear();
+                if (m_previewBox != null) { m_previewBox.Destroy(); m_previewBox = null; }
+                if (m_root != null) Destroy(m_root);
+                m_root = null;
+                foreach (var g in m_hidden) if (g != null) g.SetActive(true);
+                m_hidden.Clear();
+                if (Panel != null)
+                {
+                    var portrait = R.Get<exSpriteAnimation>(Panel, "m_portrait");
+                    if (portrait != null) portrait.gameObject.SetActive(m_portraitWasActive);
+                    var name = R.Get<TextMesh>(Panel, "m_name");
+                    if (name != null && m_oldName != null) name.text = m_oldName;
+                    SlotArt.ResetName(name);
+                }
+                for (int i = 0; i < 2; i++) if (m_lists[i] != null) m_lists[i].gameObject.SetActive(m_listActive[i]);
+                // the confirm / back press is still down this frame: lists that were live come back two frames later
+                // (at once if the panel itself is going away, when no coroutine can run)
+                if (isActiveAndEnabled) StartCoroutine(EnableListsLater());
+                else RestoreListsEnabled();
             }
-            for (int i = 0; i < 2; i++) if (m_lists[i] != null) m_lists[i].gameObject.SetActive(m_listActive[i]);
-            // the confirm / back press is still down this frame: lists that were live come back two frames later
-            // (at once if the panel itself is going away, when no coroutine can run)
-            if (isActiveAndEnabled) StartCoroutine(EnableListsLater());
-            else RestoreListsEnabled();
-            PanelInput.Free(PlayerId);
+            finally
+            {
+                // whatever failed above, the player's menus must not stay locked
+                PanelInput.Free(PlayerId);
+            }
             // the god page redraws everything on its next Update
             R.Set(Panel, "m_deity", null);
             var tf = AccessTools.Field(typeof(MenuDeitySelectPlayer), "m_selectedItemType");

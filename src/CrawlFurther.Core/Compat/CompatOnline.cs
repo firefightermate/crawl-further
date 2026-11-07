@@ -33,6 +33,8 @@ namespace CrawlFurther.Compat
     /// set on their own PC).</item>
     /// <item>Unlocks: while hosting with CrawlOnline's UnlockEverything on, slot unlocks are open too
     /// (<see cref="SessionUnlockAll"/>).</item>
+    /// <item>Rejoining (host, CrawlOnline 0.4.1 and older): a client that comes back before the host timed its old
+    /// session out starts a clean session instead of resuming the stale one (<see cref="OnHello"/>).</item>
     /// </list>
     /// </summary>
     public static class CompatOnline
@@ -62,6 +64,9 @@ namespace CrawlFurther.Compat
         static MethodInfo m_forPlayer, m_menuWorldPos;
         // unlocks
         static FieldInfo f_cfgUnlockAll;
+        // rejoin: HostSession.HandleHello / Drop, Client.LastInputSeq / LastClientTimeAt / Name
+        static MethodInfo m_hsHello, m_hsDrop;
+        static FieldInfo f_clInputSeq, f_clInputAt, f_clName;
         static string s_version;
 
         /// <summary>CrawlOnline is loaded.</summary>
@@ -149,6 +154,11 @@ namespace CrawlFurther.Compat
                         f_clDefs = Fld(cl, "Defs", I);
                         f_clTexReq = Fld(cl, "TexRequests", I);
                         f_clTexVer = Fld(cl, "TexSentVersion", I);
+                        f_clInputSeq = Fld(cl, "LastInputSeq", I);
+                        f_clInputAt = Fld(cl, "LastClientTimeAt", I);
+                        f_clName = cl.GetField("Name", I);
+                        m_hsHello = Mth(hs, "HandleHello", I, typeof(ulong), cl);
+                        m_hsDrop = Mth(hs, "Drop", I, cl, typeof(string), typeof(bool));
                     }
                     else s_missing.Add("HostSession.Client");
                 }
@@ -255,6 +265,62 @@ namespace CrawlFurther.Compat
             if (dev == null || !s_chord.TryGetValue(dev, out f)) return false;
             s_chord.Remove(dev);
             return Time.frameCount - f <= 1;
+        }
+
+        // ---------------------------------------------------------------- rejoin
+        /// <summary>Seconds without input from a client after which a Hello from the same peer starts a new session.
+        /// A client sends Hello only while connecting and input every frame once connected, and a client that lost
+        /// the host needs longer than this to time out, reload the menu and join again.</summary>
+        const float RehelloQuiet = 3f;
+
+        /// <summary>
+        /// The rejoin fix applies: its Crawl Online members were found and the installed version is not newer than the
+        /// one it was written for (a newer Crawl Online may handle a returning peer itself).
+        /// </summary>
+        public static bool RejoinFixApplies
+        {
+            get
+            {
+                Resolve();
+                return m_hsHello != null && m_hsDrop != null && f_clInputSeq != null && f_clInputAt != null &&
+                       VersionAtMost(s_version, TestedVersion);
+            }
+        }
+
+        /// <summary>Crawl Online's HostSession.HandleHello(ulong, Client), or null.</summary>
+        internal static MethodInfo HelloMethod { get { Resolve(); return m_hsHello; } }
+
+        static bool VersionAtMost(string v, string max)
+        {
+            try { return !string.IsNullOrEmpty(v) && new Version(v) <= new Version(max); }
+            catch { return false; }
+        }
+
+        /// <summary>
+        /// Host: HandleHello prefix. Crawl Online 0.4.1 answers a Hello from a peer it still lists (a client that lost
+        /// the connection and joined again before the host's 12 s timeout dropped it, the same Steam id) with a second
+        /// Welcome on the old record. That record says the client already holds every mesh, material and texture and
+        /// has acknowledged every object, so the new client's empty mirror only ever gets changes: an empty or broken
+        /// screen. When the listed client has played (sent input) and gone quiet, drop it the way a timeout would and
+        /// skip this Hello; the client sends Hello every second while connecting, and the next one joins as new.
+        /// Returns false to skip the original.
+        /// </summary>
+        internal static bool OnHello(object host, object[] args)
+        {
+            try
+            {
+                var c = args != null && args.Length > 1 ? args[1] : null;
+                if (c == null || host == null) return true;                     // a new peer: Crawl Online's own path
+                if (Convert.ToUInt64(f_clInputSeq.GetValue(c)) == 0) return true; // still connecting: a repeated Hello
+                float quiet = Time.realtimeSinceStartup - Convert.ToSingle(f_clInputAt.GetValue(c));
+                if (quiet < RehelloQuiet) return true;
+                string name = f_clName != null ? f_clName.GetValue(c) as string : null;
+                m_hsDrop.Invoke(host, new object[] { c, "reconnecting", false });
+                FurtherCore.Log.LogInfo("Crawl Online compat: " + (name ?? "a client") + " joined again " +
+                                        quiet.ToString("F1") + " s after its last input; the old session was dropped so the new one starts clean");
+                return false;
+            }
+            catch (Exception e) { Warn("rejoin", e); return true; }
         }
 
         // ---------------------------------------------------------------- client input
@@ -482,6 +548,13 @@ namespace CrawlFurther.Compat
                     bad("the NetGamepad.Update hook is not in: remote ghost button off");
                 if (!PatchedBy(AccessTools.Method(typeof(SystemInput), "UpdateInternal"), FurtherCore.IsOurHarmonyId))
                     bad("the SystemInput.UpdateInternal hook is not in: this PC cannot send its ghost button as a client");
+                if (RejoinFixApplies)
+                {
+                    if (!PatchedBy(m_hsHello, FurtherCore.IsOurHarmonyId))
+                        bad("the HostSession.HandleHello hook is not in: a player who joins again within 12 s of losing the connection may get an empty screen");
+                    else note("  rejoin fix on: a returning peer's old session is dropped before it joins again");
+                }
+                else note("  rejoin fix off" + (m_hsHello != null && m_hsDrop != null ? " (Crawl Online " + (s_version ?? "?") + " is newer than " + TestedVersion + ")" : " (members not found)"));
             }
             catch (Exception e) { bad("patch overlap scan failed: " + e.Message); }
 
@@ -520,6 +593,15 @@ namespace CrawlFurther.Compat
         static bool Prepare() { return CompatOnline.NetPadType != null; }
         static MethodBase TargetMethod() { return AccessTools.Method(CompatOnline.NetPadType, "Update", new[] { typeof(ulong), typeof(float) }); }
         static void Prefix(object __instance) { CompatOnline.OnNetPadUpdate(__instance); }
+    }
+
+    /// <summary>Host: a returning peer's stale session is dropped before it joins again (see CompatOnline.OnHello).</summary>
+    [HarmonyPatch]
+    static class Patch_OnlineRehello
+    {
+        static bool Prepare() { return CompatOnline.RejoinFixApplies; }
+        static MethodBase TargetMethod() { return CompatOnline.HelloMethod; }
+        static bool Prefix(object __instance, object[] __args) { return CompatOnline.OnHello(__instance, __args); }
     }
 
     /// <summary>Client: after Crawl Online captured this frame's input, add the local ghost button.</summary>
