@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- When a minion, a gold thrall or another monster with no player inside killed the hero, nobody took the crown and
+  the dead hero's player never became a ghost, so the run could not go on. The player who made that monster now
+  becomes the hero, as with the game's own monsters.
+
 ## 1.0.1
 
 - Online Crawl: a player who lost the connection and joins again right away gets a working screen. Back in the

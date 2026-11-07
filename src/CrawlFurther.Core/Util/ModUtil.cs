@@ -25,6 +25,56 @@ namespace CrawlFurther.Util
             return h != null && h.GameObject != null ? new DamageSource(h.GameObject, h.GameObject, h) : null;
         }
 
+        /// <summary>
+        /// A damage source owned by <paramref name="body"/>, for hits it makes outside its Attacks (effects it spawns,
+        /// statuses, direct damage). The player credited is the one the game credits for that body's own attacks
+        /// (Player.GetAttackSpawnerPlayer): the player in it, or for an AI body (fodder, a minion, a thrall) the player
+        /// who made it. A hit that kills the hero must credit a player: the game hands the crown to that player and gives
+        /// up when there is none (no new hero, and the old one never becomes a ghost). The body stays the hitting body
+        /// (m_sourceOwnerPlayer), so rules that ask which monster hit still see it.
+        /// </summary>
+        public static DamageSource BodySource(GameObject body)
+        {
+            if (body == null) return null;
+            var p = body.GetComponent<Player>();
+            var src = new DamageSource(body, body, p != null ? p.GetAttackSpawnerPlayer() : null);
+            src.m_sourceOwnerPlayer = body;
+            return src;
+        }
+
+        /// <summary>
+        /// <paramref name="from"/> handed on to a new effect <paramref name="effect"/>: the same owner, credited player and
+        /// damage modifier (<paramref name="keepAttack"/> also keeps the attack ids). The hitting body is worked out as the
+        /// game does (the credited player's body), except for a <see cref="BodySource"/> of an AI body, which stays that body.
+        /// </summary>
+        public static DamageSource HandOn(DamageSource from, GameObject effect, bool keepAttack = false)
+        {
+            if (from == null) return null;
+            var src = new DamageSource(effect, from.m_sourceOwner, from.m_sourcePlayer,
+                                       keepAttack ? from.m_sourceAttack : -1, keepAttack ? from.m_sourceAttackUId : -1, from.m_damageMod, false);
+            var body = from.m_sourceOwner;
+            var p = body != null && from.m_sourceOwnerPlayer == body ? body.GetComponent<Player>() : null;
+            if (p != null && p.GetIsAI()) src.m_sourceOwnerPlayer = body;
+            return src;
+        }
+
+        /// <summary>
+        /// The player to credit for <paramref name="source"/> when it names none: the game's own credit for the body or
+        /// effect behind it (its player, or the player who made an AI body). Null when nothing behind it has one.
+        /// </summary>
+        public static PlayerData CreditFor(DamageSource source)
+        {
+            if (source == null) return null;
+            if (source.m_sourcePlayer != null) return source.m_sourcePlayer;
+            foreach (var go in new[] { source.m_sourceOwnerPlayer, source.m_sourceOwner, source.m_source })
+            {
+                var p = go != null ? go.GetComponent<Player>() : null;
+                var pd = p != null ? p.GetAttackSpawnerPlayer() : null;
+                if (pd != null) return pd;
+            }
+            return null;
+        }
+
         static readonly HarmonyLib.AccessTools.FieldRef<Player, bool> s_isGhost = HarmonyLib.AccessTools.FieldRefAccess<Player, bool>("m_isGhost");
 
         /// <summary>True if <paramref name="p"/> is a ghost. Player.m_isGhost has no getter; this field ref is cheap enough

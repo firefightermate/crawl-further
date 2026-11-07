@@ -684,8 +684,7 @@ namespace CrawlFurther.Content.Gods
             if (go == null) yield break;
             go.transform.localScale = scale;
             if (src != null)
-                go.SendMessage(Constants.MSG_SETSPAWNER, new DamageSource(go, src.m_sourceOwner, src.m_sourcePlayer, -1, -1, src.m_damageMod, false),
-                               SendMessageOptions.DontRequireReceiver);
+                go.SendMessage(Constants.MSG_SETSPAWNER, ModUtil.HandOn(src, go), SendMessageOptions.DontRequireReceiver);
             SystemPool.SpawnFinalize(go);
         }
 

@@ -179,11 +179,11 @@ namespace CrawlFurther.Monsters
             ModInd.Heal(gameObject);
         }
 
-        /// <summary>A damage source owned by this monster (and its controlling player), for <see cref="FxFactory.SpawnOwned"/>.</summary>
+        /// <summary>A damage source owned by this monster, credited as its own attacks are (<see cref="ModUtil.BodySource"/>),
+        /// for <see cref="FxFactory.SpawnOwned"/>.</summary>
         public DamageSource OwnSource()
         {
-            var pd = m_player != null ? R.Get<PlayerData>(m_player, "m_playerData") : null;
-            return new DamageSource(gameObject, gameObject, pd);
+            return ModUtil.BodySource(gameObject);
         }
 
         /// <summary>Turn to face the hero.</summary>
@@ -270,8 +270,7 @@ namespace CrawlFurther.Monsters
             if (go == null) yield break;
             go.transform.localScale = scale;
             if (src != null)
-                go.SendMessage(Constants.MSG_SETSPAWNER, new DamageSource(go, src.m_sourceOwner, src.m_sourcePlayer, -1, -1, src.m_damageMod, false),
-                               SendMessageOptions.DontRequireReceiver);
+                go.SendMessage(Constants.MSG_SETSPAWNER, ModUtil.HandOn(src, go), SendMessageOptions.DontRequireReceiver);
             SystemPool.SpawnFinalize(go);
         }
     }

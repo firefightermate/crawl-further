@@ -3,6 +3,17 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## Unreleased
+
+### Library (CrawlFurther.Core)
+- `ModUtil.BodySource(body)` credits a body's own hits the way the game credits its attacks
+  (`Player.GetAttackSpawnerPlayer`): an AI body's hits credit the player who made it. `ModMonster.OwnSource` and the
+  gods' and secrets' own sources use it. Before, an AI body's hits credited nobody, and a hero killed by one was never
+  replaced (`SystemLevel.CoroutineHeroDeath` gives up without a killer).
+- `ModUtil.HandOn` passes a source on to a new effect; `FxFactory.SpawnOwned` and the echo spawners use it.
+- `HeroHandover`: a hero killed in an ordinary room by a hit that still credits nobody (another mod's, say) passes
+  the crown to the player behind the body or effect that hit, and the log names the source.
+
 ## 1.0.1
 
 ### Library (CrawlFurther.Core)

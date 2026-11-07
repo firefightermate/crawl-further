@@ -353,8 +353,7 @@ namespace CrawlFurther.Content.Secrets
         protected Vector2 Feet { get { return (Vector2)transform.position + new Vector2(0f, m_sprite != null ? m_sprite.offset.y + 2f : 0f); } }
         protected DamageSource Own()
         {
-            var pd = m_player != null ? R.Get<PlayerData>(m_player, "m_playerData") : null;
-            return new DamageSource(gameObject, gameObject, pd);
+            return ModUtil.BodySource(gameObject);
         }
         protected Vector2 Facing
         {

@@ -115,7 +115,7 @@ namespace CrawlFurther
             "Patch_VaultCellAction", "Patch_VaultPortraitGem", "Patch_EvolvePanelFonts",
             "Patch_TestWipeKeys", "Patch_TestPanelMouse", "Patch_TestUnlocked", "Patch_TestNoVaultFinds", "Patch_TestFreezeAI", "Patch_TestFreezeAIMove",
             "Patch_TestFreezeAIAttack", "Patch_TestFreezeBot", "Patch_TestFreezeBotMove",
-            "Patch_OnlineRehello",
+            "Patch_OnlineRehello", "Patch_HeroHandover",
         };
 
         /// <summary>
