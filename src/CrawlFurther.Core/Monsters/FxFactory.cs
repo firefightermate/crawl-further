@@ -218,8 +218,7 @@ namespace CrawlFurther.Monsters
             if (go == null) return null;
             if (from != null)
             {
-                var src = new DamageSource(go, from.m_sourceOwner, from.m_sourcePlayer, from.m_sourceAttack, from.m_sourceAttackUId, from.m_damageMod, false);
-                go.SendMessage(Constants.MSG_SETSPAWNER, src, SendMessageOptions.DontRequireReceiver);
+                go.SendMessage(Constants.MSG_SETSPAWNER, ModUtil.HandOn(from, go, keepAttack: true), SendMessageOptions.DontRequireReceiver);
             }
             SystemPool.SpawnFinalize(go);
             return go;

@@ -133,8 +133,7 @@ namespace CrawlFurther.Content.Gods.Umbrael
             if (go == null) return;
             go.transform.localScale = p.scale;
             if (p.src != null)
-                go.SendMessage(Constants.MSG_SETSPAWNER, new DamageSource(go, p.src.m_sourceOwner, p.src.m_sourcePlayer, -1, -1, p.src.m_damageMod, false),
-                               SendMessageOptions.DontRequireReceiver);
+                go.SendMessage(Constants.MSG_SETSPAWNER, ModUtil.HandOn(p.src, go), SendMessageOptions.DontRequireReceiver);
             SystemPool.SpawnFinalize(go);
             var quirk = p.owner.GetComponent<UmbraelBehaviour>();
             if (quirk != null) quirk.EchoFired(go, site, p.plan);

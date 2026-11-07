@@ -26,16 +26,60 @@ namespace CrawlFurther.Util
         }
 
         /// <summary>
-        /// A damage source owned by the monster <paramref name="body"/> and its controlling player, for hits that are not
-        /// its attacks' own effects. It carries the player's damage modifiers (god perks, runes, the balance rules) as the
-        /// game's attacks do. Null for a null body.
+        /// A damage source owned by the monster <paramref name="body"/>, for hits it makes outside its Attacks (effects it
+        /// spawns, statuses, direct damage), set up as the game sets up that body's own attacks (Attacks.SpawnEffect):
+        /// <list type="bullet">
+        /// <item>the player credited is Player.GetAttackSpawnerPlayer: the player in it, or for an AI body (fodder, a
+        /// minion, a thrall) the player who made it. A hit that kills the hero must credit a player: the game hands the
+        /// crown to that player and gives up when there is none (no new hero, and the old one never becomes a ghost).</item>
+        /// <item>the damage modifiers are Player.GetDamageModifierStack: the controlling player's (god perks, runes, the
+        /// balance rules); an AI body has none, as its attacks have none.</item>
+        /// <item>the hitting body (m_sourceOwnerPlayer) stays <paramref name="body"/>, so rules that ask which monster hit
+        /// still see it.</item>
+        /// </list>
+        /// Null for a null body.
         /// </summary>
         public static DamageSource MonsterSource(GameObject body)
         {
             if (body == null) return null;
             var p = body.GetComponent<Player>();
-            var pd = p != null ? R.Get<PlayerData>(p, "m_playerData") : null;
-            return new DamageSource(body, body, pd, -1, -1, p != null ? p.GetDamageModifierStack(false) : null, false);
+            var src = new DamageSource(body, body, p != null ? p.GetAttackSpawnerPlayer() : null, -1, -1,
+                                       p != null ? p.GetDamageModifierStack(false) : null, false);
+            src.m_sourceOwnerPlayer = body;
+            return src;
+        }
+
+        /// <summary>
+        /// <paramref name="from"/> handed on to a new effect <paramref name="effect"/>: the same owner, credited player and
+        /// damage modifiers (<paramref name="keepAttack"/> also keeps the attack ids). The hitting body is worked out as the
+        /// game does (the credited player's body), except for a <see cref="MonsterSource"/> of an AI body, which stays that body.
+        /// </summary>
+        public static DamageSource HandOn(DamageSource from, GameObject effect, bool keepAttack = false)
+        {
+            if (from == null) return null;
+            var src = new DamageSource(effect, from.m_sourceOwner, from.m_sourcePlayer,
+                                       keepAttack ? from.m_sourceAttack : -1, keepAttack ? from.m_sourceAttackUId : -1, from.m_damageMod, false);
+            var body = from.m_sourceOwner;
+            var p = body != null && from.m_sourceOwnerPlayer == body ? body.GetComponent<Player>() : null;
+            if (p != null && p.GetIsAI()) src.m_sourceOwnerPlayer = body;
+            return src;
+        }
+
+        /// <summary>
+        /// The player to credit for <paramref name="source"/> when it names none: the game's own credit for the body or
+        /// effect behind it (its player, or the player who made an AI body). Null when nothing behind it has one.
+        /// </summary>
+        public static PlayerData CreditFor(DamageSource source)
+        {
+            if (source == null) return null;
+            if (source.m_sourcePlayer != null) return source.m_sourcePlayer;
+            foreach (var go in new[] { source.m_sourceOwnerPlayer, source.m_sourceOwner, source.m_source })
+            {
+                var p = go != null ? go.GetComponent<Player>() : null;
+                var pd = p != null ? p.GetAttackSpawnerPlayer() : null;
+                if (pd != null) return pd;
+            }
+            return null;
         }
 
         static readonly HarmonyLib.AccessTools.FieldRef<Player, bool> s_isGhost = HarmonyLib.AccessTools.FieldRefAccess<Player, bool>("m_isGhost");

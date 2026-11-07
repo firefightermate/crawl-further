@@ -11,8 +11,16 @@ Changes to Crawl Further Core and to the repository. What changed in the game fo
 - `MonsterDef.damageMult` scales one monster's hits on the hero. `specialChargeTime` and `attackCooldownMult` now
   apply after the kit, so a monster's balance numbers all sit on its def line.
 - `MonsterFactory.Tier` gives each built monster's tier. Statue rooms and the self-test use it to find finals.
-- `ModMonster.OwnSource` and the new `ModUtil.MonsterSource` carry the controlling player's damage modifiers, so a
-  hit that a behaviour deals or spawns scales with god perks and runes the way the game's own attacks do.
+- `ModUtil.MonsterSource(body)` builds a body's own hits the way the game builds its attacks. It credits
+  `Player.GetAttackSpawnerPlayer` (an AI body's hits credit the player who made it) and carries
+  `Player.GetDamageModifierStack`, so a hit that a behaviour deals or spawns scales with god perks and runes. The
+  hitting body stays the body. `ModMonster.OwnSource` and the gods' and secrets' own sources use it. Before, an AI
+  body's hits credited nobody, and a hero killed by one was never replaced (`SystemLevel.CoroutineHeroDeath` gives
+  up without a killer).
+- `ModUtil.HandOn` passes a source and its modifiers on to a new effect; `FxFactory.SpawnOwned`, the echo spawners
+  and Kaurn nodes use it.
+- `HeroHandover`: a hero killed in an ordinary room by a hit that still credits nobody (another mod's, say) passes
+  the crown to the player behind the body or effect that hit, and the log names the source.
 
 ## 1.0.1
 

@@ -5,6 +5,9 @@
 - Tier 2 and tier 3 monsters of all nine gods are stronger, in line with the game's own tier 3 monsters and
   finals: the finals have more health, hits land harder and specials charge sooner. The Glue Mortar also lobs faster.
 - Hits that monsters deal through their quirks now count god perks and damage runes, like their normal attacks.
+- When a minion, a gold thrall or another monster with no player inside killed the hero, nobody took the crown and
+  the dead hero's player never became a ghost, so the run could not go on. The player who made that monster now
+  becomes the hero, as with the game's own monsters.
 
 ## 1.0.1
 
