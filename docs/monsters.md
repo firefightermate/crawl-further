@@ -241,9 +241,11 @@ pixel font (digits and the letters D, O, G, E).
 
 ## Ghost blobs
 
-A ghost spawns a blob with Back. Each ghost form has its own (the Gleaner's Mote, the Binder's Gel), and a player can
-pick another one on the ghost page of the origin picker, in the row under the forms. `GhostBlobs.Register` adds a blob
-to that row. From `src/CrawlFurther/Ghosts/GhostPack.cs`:
+A ghost spawns a blob with Back. Every form can use the regular blob (the game's own). A form can also have a blob of
+its own that it earns: the Gleaner's Mote, the Poltergeist's Spitter and the Binder's Gel each open with a challenge
+played as that form. Once open, a form's own blob is its default and the regular one stays a pick. Forms with more than
+one blob to choose from show them in a row on the ghost page of the origin picker, under the forms. From
+`src/CrawlFurther/Ghosts/GhostPack.cs`:
 
 ```csharp
 GhostBlobs.Register(new GhostBlobDef
@@ -256,14 +258,15 @@ GhostBlobs.Register(new GhostBlobDef
 
 - `prefab` gives the monster for a player. `art` names the sheet whose Portrait frame is drawn as a dark outline
   while the blob is locked.
-- `unlock` is a challenge id (see [ui.md](ui.md#challenges)). The blob stays locked until it is done; null means
+- `unlock` is a challenge id (see [ui.md](ui.md#challenges)). The blob stays locked until it is done. Null means
   always open.
-- `fits` says which forms may pick it; null means every form.
-- `bodies` is what one costs in bodies of ectoplasm. The game charges one; the rest is charged the same way, and Back
+- `fits` says which forms may pick it. Null means every form.
+- `bodies` is what one costs in bodies of ectoplasm. The game charges one and the rest the same way. Back
   does nothing (the stored bodies blink) while the ghost has fewer.
 
-The row lists the form's own blob first, then every blob that fits the form, open or locked, leaving out the one that
-is the form's own anyway. Picks are kept per player in `GhostBlobs.Chosen`. `GhostBlobs.ChoiceOf(player)` gives the
-pick in effect (null for the form's own: a pick that does not fit the form, or is locked, counts as no pick) and
-`GhostBlobs.PrefabOf(player, own)` what Back spawns. Bots always spawn their form's own. A mod that owns the forms sets
-`GhostBlobs.OwnOf`, so the row can show each form's own blob.
+The mod that owns the forms sets `GhostBlobs.Regular` (always open, every form) and `GhostBlobs.OwnOf` (a form's own
+blob, or null). `GhostBlobs.ChoicesFor(form)` lists what a form can choose, the regular blob first. With one entry the
+picker shows no row. Picks are kept per player and per form (`SetPick`, `PickOf`). A pick that does not fit the form,
+or is locked, counts as none. `GhostBlobs.ChoiceOf(player)` gives the blob in effect (the pick, else `DefaultFor(form)`:
+the form's own once open, else the regular one) and `PrefabOf(player, fallback)` what Back spawns. Bots always spawn
+the default.

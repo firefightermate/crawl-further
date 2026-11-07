@@ -4,7 +4,7 @@
   "attack": "Quick lunging nip, very short range",
   "special": "none",
   "passive": [
-   "A Gleaner ghost's follower: fast but fragile.",
+   "The Gleaner's own blob, earned by its challenge.",
    "They spawn in pairs"
   ]
  },
@@ -13,7 +13,7 @@
   "attack": "Spit goo along the floor; leaves a slowing puddle",
   "special": "none",
   "passive": [
-   "A Poltergeist ghost's follower"
+   "The Poltergeist's own blob, earned by its challenge"
   ]
  },
  "ModBlobGel": {
@@ -21,8 +21,8 @@
   "attack": "Lunging body slam",
   "special": "none",
   "passive": [
-   "A Binder ghost's follower. Fused by the",
-   "ghost button: two make a Brute, three a Titan"
+   "The Binder's own blob, earned by its challenge.",
+   "The ghost button fuses Gels into bigger blobs"
   ]
  },
  "ModBlobBrute": {
@@ -55,7 +55,7 @@
  "ModGhostGleaner": {
   "name": "Gleaner",
   "attack": "Take over the body you float over",
-  "special": "Spawn a pair of Mote blobs",
+  "special": "Spawn a blob, or a pair of Motes once earned",
   "passive": [
    "Ectoplasm drifts to you, and extra wisps appear.",
    "Each pickup is worth less than a normal one"
@@ -64,16 +64,16 @@
  "ModGhostBinder": {
   "name": "Binder",
   "attack": "Take over the body you float over",
-  "special": "Spawn Gels. Ghost button fuses them",
+  "special": "Spawn a blob, or a Gel once earned",
   "passive": [
-   "Two Gels fuse into a Brute, three into a Titan.",
-   "The Gels must be close to you"
+   "Earned Gels fuse with the ghost button:",
+   "two make a Brute, three a Titan, close to you"
   ]
  },
  "ModGhostPoltergeist": {
   "name": "Poltergeist",
   "attack": "Throw a weak hex bolt",
-  "special": "Spawn a Spitter blob",
+  "special": "Spawn a blob, or a Spitter once earned",
   "passive": [
    "On top of a body, Attack takes it over instead"
   ]

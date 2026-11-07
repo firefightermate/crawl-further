@@ -70,9 +70,9 @@ namespace CrawlFurther.Content.Heroes
     /// Origin and ghost pages. Each is its own icon grid built like the god list (same item prefab, spacing and
     /// columns, scrolling when it outgrows three rows), shown in the god list's place. The panel's portrait, name
     /// and text show the highlighted entry. Confirm moves origin -> ghost -> done, back steps out.
-    /// The ghost page has a second row where the starter boxes sit: the blob the form spawns (GhostBlobRow). Down from the
-    /// last row of forms (or the pointer) moves into it, left / right picks, Up or Back moves out, and confirm on either
-    /// row confirms the form with the picked blob.
+    /// The ghost page has a second row where the starter boxes sit: the blob the form spawns, for a form with a choice
+    /// (GhostBlobRow). Down from the last row of forms (or the pointer) moves into it, left / right picks, Up or Back moves
+    /// out, and confirm on either row confirms the form with the picked blob.
     /// </summary>
     public class OriginPicker : MonoBehaviour
     {
@@ -83,7 +83,7 @@ namespace CrawlFurther.Content.Heroes
         int m_prevChoice;
         int m_stage;           // 0 = hero origin, 1 = ghost form
         int m_ghostIndex, m_prevGhost;
-        string m_prevBlob;
+        Dictionary<string, string> m_prevBlobs;
         GhostBlobRow m_blobRow;
         bool m_blobByPointer;     // the row has the focus because a pointer is over it
         bool m_trialsWasActive;
@@ -127,7 +127,7 @@ namespace CrawlFurther.Content.Heroes
             m_stage = 0;
             m_ghostIndex = GhostPack.Chosen.TryGetValue(PlayerId, out prev) ? prev : 0;
             m_prevGhost = m_ghostIndex;
-            GhostBlobs.Chosen.TryGetValue(PlayerId, out m_prevBlob);
+            m_prevBlobs = GhostBlobs.PicksOf(PlayerId);
             if (m_blobRow != null) m_blobRow.Destroy();
             m_blobRow = new GhostBlobRow(menu, PlayerId);
             foreach (var s in R.Get<exSprite[]>(menu, "m_monsters")) if (s != null) s.gameObject.SetActive(false);
@@ -250,7 +250,11 @@ namespace CrawlFurther.Content.Heroes
                 var g = GhostPack.Forms[m_ghostIndex];
                 var gt = SlotCompat.GhostTier(g);
                 bool gOpen = gt == SlotTier.Normal || Unlocks.IsUnlocked(Unlocks.IdFor("Ghost", gt));
-                if (m_blobRow != null) m_blobRow.Show(g);
+                if (m_blobRow != null)
+                {
+                    m_blobRow.Show(g);
+                    if (!m_blobRow.Focused && m_ghostList != null) m_ghostList.SetActive(true);   // a form with no row never keeps the list asleep
+                }
                 if (m_blobRow != null && m_blobRow.Focused)
                 {
                     // the row describes the blob under its cursor; the portrait stays the form's
@@ -361,7 +365,7 @@ namespace CrawlFurther.Content.Heroes
         /// </summary>
         bool BlobInput(int formBefore)
         {
-            if (m_blobRow == null || m_blobRow.Count == 0 || m_ghostList == null) return false;
+            if (m_blobRow == null || !m_blobRow.Shown || m_ghostList == null) return false;
             var pd = SystemPlayers.GetPlayer(PlayerId);
             if (pd == null) return false;
             Vector2 at = Vector2.zero;
@@ -421,13 +425,13 @@ namespace CrawlFurther.Content.Heroes
             if (redraw) Show();
         }
 
-        /// <summary>An open blob is picked as soon as the cursor lands on it (like a form); a locked one is only looked at.</summary>
+        /// <summary>An open blob is picked for the form as soon as the cursor lands on it (like a form); a locked one is
+        /// only looked at.</summary>
         void BlobCursorMoved()
         {
             if (m_blobRow.CursorOpen)
             {
-                var d = m_blobRow.AtCursor;
-                if (d == null) GhostBlobs.Chosen.Remove(PlayerId); else GhostBlobs.Chosen[PlayerId] = d.id;
+                GhostBlobs.SetPick(PlayerId, m_blobRow.Form, m_blobRow.AtCursor);
                 m_blobRow.Refresh();
             }
             Show();
@@ -547,7 +551,7 @@ namespace CrawlFurther.Content.Heroes
 
         void RestoreBlob()
         {
-            if (m_prevBlob == null) GhostBlobs.Chosen.Remove(PlayerId); else GhostBlobs.Chosen[PlayerId] = m_prevBlob;
+            GhostBlobs.RestorePicks(PlayerId, m_prevBlobs);
         }
 
         void OnDisable()

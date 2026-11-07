@@ -43,24 +43,16 @@ namespace CrawlFurther.Content.Testing
             TestMode.AddList(Become, "Ghost blob", GhostBlobList, item =>
             {
                 var pd = Player();
-                if (pd.IsBot) throw new TestModeException("Bots always spawn their form's own blob: pick a human player");
+                if (pd.IsBot) throw new TestModeException("Bots always spawn their form's default blob: pick a human player");
                 var def = item.Value as GhostBlobDef;
-                string before;
-                bool had = GhostBlobs.Chosen.TryGetValue(pd.Id, out before);
-                if (def == null) GhostBlobs.Chosen.Remove(pd.Id);
-                else
-                {
-                    GhostBlobs.Chosen[pd.Id] = def.id;
-                    if (GhostBlobs.ChoiceOf(pd) != def)
-                    {
-                        if (had) GhostBlobs.Chosen[pd.Id] = before; else GhostBlobs.Chosen.Remove(pd.Id);
-                        if (!GhostBlobs.IsOpen(def))
-                            throw new TestModeException(item.Label + " is still locked: switch on Open everything on the Progress page");
-                        throw new TestModeException("The " + GhostPack.DefOf(pd).name + " ghost cannot pick " + item.Label + ", or it is that form's own: pick another form first");
-                    }
-                }
+                var form = GhostPack.DefOf(pd);
+                if (def != null && !GhostBlobs.Fits(def, form))
+                    throw new TestModeException("The " + form.name + " ghost cannot pick " + item.Label + ": the Gleaner, Poltergeist and Binder pick their own, silver and gold pick any");
+                if (def != null && !GhostBlobs.IsOpen(def))
+                    throw new TestModeException(item.Label + " is still locked: switch on Open everything on the Progress page");
+                GhostBlobs.SetPick(pd.Id, form, def);
                 TestGame.BecomeGhost(pd);
-                TestMode.Say("P" + (pd.Id + 1) + "'s ghost spawns " + (def != null ? item.Label : "its own blob"));
+                TestMode.Say("P" + (pd.Id + 1) + "'s ghost spawns the " + GhostBlobs.ChoiceOf(pd).name);
             });
             TestMode.AddList(Become, "Silver ascended final", Finals, item =>
             {
@@ -111,7 +103,7 @@ namespace CrawlFurther.Content.Testing
         /// <summary>The form's own blob, then every blob a ghost can pick.</summary>
         static IEnumerable<TestItem> GhostBlobList()
         {
-            yield return new TestItem("Its own", null);
+            yield return new TestItem("Form default", null);
             foreach (var b in GhostBlobs.All) yield return new TestItem(b.name, b, b.unlock == null ? null : "Unlocked by a challenge");
         }
 
