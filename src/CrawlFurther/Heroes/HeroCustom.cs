@@ -1000,7 +1000,9 @@ namespace CrawlFurther.Content.Heroes
                 }
             }
             var m = new SheetManifest { cellW = PW, cellH = PH, cols = 4, anims = new[] { new SheetAnim { name = "Idle", frames = new[] { 0, 1, 2, 3 }, durations = s_durs } } };
-            return MakeSheet("HcPortrait_" + slot + "_" + tier + "_" + s_portraitSerial, outPx, OW, OH, m);
+            var sheet = MakeSheet("HcPortrait_" + slot + "_" + tier + "_" + s_portraitSerial, outPx, OW, OH, m);
+            CrawlFurther.UI.ModMark.MarkArt(sheet.atlas);   // mod art: the menus give it the one violet gem
+            return sheet;
         }
 
         // ============================================================================================ self-test

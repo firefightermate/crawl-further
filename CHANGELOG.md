@@ -3,6 +3,15 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## Unreleased
+
+### Library (CrawlFurther.Core)
+- `ModMark` places every violet mod gem, one owner per entry: no entry shows two (the vault cell and its big
+  picture, the shop pedestal and its popup, a list pip and the portrait). `ModGem.Attach` and `AttachAt` are internal.
+- `ModMark.MarkArt` marks art composed at run time; custom hero portraits no longer have the gem painted in.
+- `CrawlFurther.UI.cfg` `ModGem = false` hides the gems.
+- `tools/validate.py` checks the marks: one call site per context and no gem painted into art.
+
 ## 1.0.0
 
 ### Library (CrawlFurther.Core)

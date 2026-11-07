@@ -198,13 +198,15 @@ namespace CrawlFurther.Gods
             catch (Exception e) { FurtherCore.Log.LogError("God list layout failed: " + e); }
         }
 
-        /// <summary>The panel's portrait gets the gem whenever it shows mod art: a god, or an origin or ghost form while
-        /// a mod's picker shows those in its place. The starter boxes get theirs in Player.SetupPortrait.</summary>
+        /// <summary>The panel's portrait gets the gem whenever it shows mod art (a god, or an origin or ghost form while
+        /// a mod's picker shows those in its place) and the selected list button is not already the violet pip: a mod
+        /// god or weapon origin is marked by its pip, a spell origin or a silver / gold slot by its portrait. The starter
+        /// boxes get theirs in Player.SetupPortrait.</summary>
         static void Gems(MenuDeitySelectPlayer panel)
         {
             var portrait = R.Get<exSpriteAnimation>(panel, "m_portrait");
             var spr = portrait != null ? portrait.GetComponent<exSprite>() : null;
-            if (spr != null) ModGem.Attach(spr, GemCorner.Cell);
+            if (spr != null) ModMark.Follow(spr, GemCorner.Cell, () => ModMark.IsModArt(spr.atlas) && !ModMark.SelectionShowsMark(panel));
         }
 
         /// <summary>Gods registered through <see cref="DeityFactory"/> get the violet pip.</summary>

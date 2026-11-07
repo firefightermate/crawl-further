@@ -4,7 +4,7 @@ namespace CrawlFurther.UI
 {
     // Every menu picture of a monster goes through Player.SetupPortrait (a still) or SetupPortraitAnimRun (running): the
     // god select's starter boxes, the evolve menu's buttons, the HUD and the floor results. Each gets the mod gem there.
-    // Vault cells are left out: the vault puts its own gem in the cell's corner.
+    // Vault cells are left out by ModMark (they are registered owners: the vault puts its own gem in the cell's corner).
 
     [HarmonyPatch(typeof(Player), "SetupPortrait")]
     static class Patch_PortraitGem
@@ -24,7 +24,7 @@ namespace CrawlFurther.UI
         {
             try
             {
-                if (portrait != null && portrait.GetComponentInParent<MenuItemLibraryMonster>() == null) ModGem.Attach(portrait);
+                ModMark.Follow(portrait);
             }
             catch (System.Exception e) { FurtherCore.Log.LogWarning("Portrait gem: " + e.Message); }
         }

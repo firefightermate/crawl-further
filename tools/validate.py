@@ -21,6 +21,8 @@ Checks (each prints OK or FAIL with the problems underneath):
                 IconWpn<id>Bubble and a Wpn<id> pedestal frame
   portraits     every god (Deity*), origin (Hero*) and ghost form (Ghost*): 29x24 Idle with a non-empty first frame
   badge         the ModBadgeGem sheet is the 5 x 5 gem tools/badge.py defines, pixel for pixel
+  marks         one violet mark per entry: gems placed only through UI/ModMark.cs, one call site per context, no gem
+                painted into any art
   vaultfit      every vault page text (monster lines, FURTHER pages, objects, items, weapons, secrets hidden and found,
                 category summaries) fits its box without the "..." cut, laid out exactly like UI/TextFit.cs
   previews      every monster/fx sheet's _preview.png is at least as new as its png (previews are not committed:
@@ -719,6 +721,85 @@ def c_badge(fails, warns):
                 continue
             fails.append("ModBadgeGem pixel (%d, %d) is %s, badge.py has %s" % (x, y, got, want))
     return 1
+
+def cs_attributes(t, at):
+    """The [attributes] written right before the declaration starting at `at` (modifiers skipped)."""
+    i = at
+    while True:
+        j = i
+        while j > 0 and t[j - 1].isspace(): j -= 1
+        w = re.search(r"\b(static|internal|public|private|protected|sealed|partial|abstract)$", t[:j])
+        if w: i = w.start(); continue
+        if j == 0 or t[j - 1] != "]": return t[i:at]
+        depth, k = 0, j - 1
+        while k >= 0:
+            depth += {"]": 1, "[": -1}.get(t[k], 0)
+            if depth == 0: break
+            k -= 1
+        i = max(k, 0)
+
+
+@check("marks")
+def c_marks(fails, warns):
+    """One violet mod mark per entry:
+    - gems are made only by UI/ModGem.cs and placed only through UI/ModMark.cs (no other ModGem.Attach / AttachAt);
+    - no two ModMark.Follow / ModMark.Pin call sites decorate the same context (one Harmony target, or one method);
+    - no art has the gem painted in (badge.py's 5 x 5 outline around a lit centre): ModGem draws it at run time, where
+      it can be turned off, so a baked one would make two."""
+    import numpy as np
+    import badge
+    n = 0
+    owners = collections.defaultdict(list)       # context -> ["File.cs:line", ...]
+    for f, raw in SRC.items():
+        base = os.path.basename(f)
+        t = strip_comments(raw)
+        line = lambda pos: t.count("\n", 0, pos) + 1
+        if base not in ("ModGem.cs", "ModMark.cs"):
+            for m in re.finditer(r"\bModGem\.(Attach|AttachAt)\s*\(", t):
+                fails.append("%s:%d: ModGem.%s called directly (place gems through ModMark)" % (base, line(m.start()), m.group(1)))
+            for m in re.finditer(r'new\s+GameObject\s*\(\s*"ModGem"', t):
+                fails.append("%s:%d: makes its own ModGem object" % (base, line(m.start())))
+        if base == "ModMark.cs":
+            continue
+        for m in re.finditer(r"\bModMark\.(Follow|Pin)\s*\(", t):
+            n += 1
+            head = t[:m.start()]
+            cls = list(re.finditer(r"\bclass\s+(\w+)", head))
+            if not cls:
+                continue
+            c = cls[-1]
+            hp = list(re.finditer(r'\[HarmonyPatch\(\s*typeof\((\w+)\)\s*,\s*"(\w+)"', cs_attributes(head, c.start())))
+            if hp:
+                ctx = "%s.%s (patch)" % (hp[-1].group(1), hp[-1].group(2))
+            else:
+                meth = list(re.finditer(r"\b(?:static\s+|internal\s+|public\s+|private\s+)*[\w<>\[\],]+\s+(\w+)\s*\([^;{}]*\)\s*\{", head[c.end():]))
+                ctx = "%s.%s" % (c.group(1), meth[-1].group(1) if meth else "?")
+            owners[ctx].append("%s:%d" % (base, line(m.start())))
+    for ctx, sites in sorted(owners.items()):
+        if len(sites) > 1:
+            fails.append("%s is marked from %d places (%s): one owner per context" % (ctx, len(sites), ", ".join(sites)))
+        elif VERBOSE:
+            warns.append("mark owner: %s <- %s" % (ctx, sites[0]))
+    # the gem's signature: the lit centre, the four facets around it (any colour) and the dark outline ring
+    K = np.array(badge.COL["K"][:3]); X = np.array(badge.COL["X"][:3])
+    ring = [(x - 2, y - 2) for y, row in enumerate(badge.GEM) for x, ch in enumerate(row) if ch == "K"]
+    for sid, m in sorted(SHEETS.items()):
+        if sid == "ModBadgeGem":
+            continue
+        a = np.asarray(Image.open(m["_png"]).convert("RGBA")).astype(int)
+        h, w = a.shape[:2]
+        if h < 5 or w < 5:
+            continue
+        rgb, op = a[..., :3], a[..., 3] > 0
+        hit = (rgb[2:h - 2, 2:w - 2] == X).all(-1) & op[2:h - 2, 2:w - 2]
+        for dx, dy in ring:
+            hit &= (rgb[2 + dy:h - 2 + dy, 2 + dx:w - 2 + dx] == K).all(-1) & op[2 + dy:h - 2 + dy, 2 + dx:w - 2 + dx]
+        ys, xs = np.nonzero(hit)
+        if len(ys):
+            fails.append("%s: the mod gem is painted into the art at (%d, %d)%s: ModGem marks it at run time"
+                         % (sid, xs[0] + 2, ys[0] + 2, " and %d more" % (len(ys) - 1) if len(ys) > 1 else ""))
+    return n
+
 
 # ------------------------------------------------------------------------------------------------------- vault text fit
 def cs_unescape(lit):

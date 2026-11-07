@@ -41,7 +41,7 @@ namespace CrawlFurther.Gods
                 b.m_clip = b.img.GetComponent<exClipping>();
                 b.m_anim = b.img.GetComponent<exSpriteAnimation>() ?? b.img.gameObject.AddComponent<exSpriteAnimation>();
                 if (b.img.GetComponent<MenuDisabledAnimTags>() == null) b.img.gameObject.AddComponent<MenuDisabledAnimTags>();   // swallows clip events
-                ModGem.Attach(b.img);
+                ModMark.Follow(b.img);   // claims the gem copied along with the template
                 b.img.gameObject.SetActive(false);
             }
             return b;

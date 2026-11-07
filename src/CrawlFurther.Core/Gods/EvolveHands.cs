@@ -158,7 +158,7 @@ namespace CrawlFurther.Gods
                 }
             }
             catch (Exception e) { FurtherCore.Log.LogWarning("Evolve hand layout: " + e.Message); }
-            try { ModGem.Attach(menuSprite); } catch { }
+            try { ModMark.Follow(menuSprite); } catch { }
         }
     }
 }
