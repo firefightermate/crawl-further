@@ -10,7 +10,7 @@ namespace CrawlFurther.UI
     public static class UiSettings
     {
         static bool s_init;
-        static bool s_wordmark = true, s_dressing = true, s_vaultGrid = true, s_music = true, s_musicTitle;
+        static bool s_wordmark = true, s_dressing = true, s_vaultGrid = true, s_modGem = true, s_music = true, s_musicTitle;
         static float s_musicChance = 0.34f, s_musicVolume = 1f;
 
         static void Init()
@@ -27,6 +27,7 @@ namespace CrawlFurther.UI
                 s_musicTitle = cfg.Bind("Music", "CustomMusicOnTitle", false, "Also roll for a mod track on the title screen and menus.").Value;
                 s_musicVolume = Mathf.Clamp(cfg.Bind("Music", "CustomMusicVolume", 1f, "Loudness of the mod tracks next to the game's own (1 = as mixed; the game's music volume setting applies on top).").Value, 0f, 2f);
                 s_vaultGrid = cfg.Bind("Menus", "VaultGrid", true, "Show weapons, items, objects and the mod categories of the vault as picture grids (off: the old text lists).").Value;
+                s_modGem = cfg.Bind("Menus", "ModGem", true, "Mark mod content in the menus (vault, god select, shop, evolve screen, HUD) with one small violet gem.").Value;
             }
             catch (Exception e) { FurtherCore.Log.LogWarning("UI settings: " + e.Message); }
         }
@@ -34,6 +35,7 @@ namespace CrawlFurther.UI
         public static bool Wordmark { get { Init(); return s_wordmark; } }
         public static bool MenuDressing { get { Init(); return s_dressing; } }
         public static bool VaultGrid { get { Init(); return s_vaultGrid; } }
+        public static bool ModGem { get { Init(); return s_modGem; } }
         public static bool CustomMusic { get { Init(); return s_music; } }
         public static float CustomMusicChance { get { Init(); return s_musicChance; } }
         public static bool CustomMusicOnTitle { get { Init(); return s_musicTitle; } }

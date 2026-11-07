@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using HarmonyLib;
 using UnityEngine;
+using CrawlFurther.UI;
 
 namespace CrawlFurther.Gods
 {
@@ -13,7 +14,7 @@ namespace CrawlFurther.Gods
     ///
     /// The gem: one per panel. It marks the monster being evolved when that is mod art, otherwise the selected choice
     /// when that is; the other choice never carries one. Every sprite the panel draws still goes through
-    /// <see cref="ModGem.Attach(exSprite, GemCorner, Func{bool})"/> (which keeps one gem per sprite, however often the
+    /// <see cref="ModMark.Follow(exSprite, GemCorner, Func{bool})"/> (which keeps one gem per sprite, however often the
     /// panel is shown), so the rule lives in the show conditions below.
     ///
     /// The numbers: in the level5 scene each cost number uses the WRATH label's font and material (CrawlTextBodyWide)
@@ -66,14 +67,15 @@ namespace CrawlFurther.Gods
         {
             if (e == null || sprite == null) return;
             var curr = s_curr(e);
-            if (sprite == curr) { ModGem.Attach(sprite, GemCorner.Art, () => Shown(curr)); return; }
-            for (int i = 0; i < 2; i++)
+            Func<bool> show = null;
+            if (sprite == curr) show = () => Shown(curr);
+            for (int i = 0; show == null && i < 2; i++)
             {
                 if (Choice(e, i) != sprite) continue;
                 int hand = i;
-                ModGem.Attach(sprite, GemCorner.Art, () => e != null && !Shown(s_curr(e)) && s_selected(e) == hand && Shown(sprite));
-                return;
+                show = () => e != null && !Shown(s_curr(e)) && s_selected(e) == hand && Shown(sprite);
             }
+            if (show != null) ModMark.Follow(sprite, GemCorner.Art, show);
         }
 
         /// <summary>Match the panel's numbers to their labels' font and material (see the class summary).</summary>

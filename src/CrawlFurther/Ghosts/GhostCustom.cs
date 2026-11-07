@@ -375,6 +375,7 @@ namespace CrawlFurther.Content.Ghosts
             }
             s = Pack("GhostLookPortrait_" + key, frames, 29, 24, 4,
                      new[] { new SheetAnim { name = "Idle", frames = new[] { 0, 1, 2, 3 }, durations = new[] { 0.25f, 0.2f, 0.25f, 0.2f } } });
+            CrawlFurther.UI.ModMark.MarkArt(s.atlas);   // mod art: the menus give it the one violet gem
             s_portraits[key] = s;
             return s;
         }

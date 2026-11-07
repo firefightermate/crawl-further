@@ -5,9 +5,14 @@ Everything here is in `CrawlFurther.UI`. Text that a player reads is plain words
 
 ## The violet gem
 
-Anything drawn from a sheet loaded through Core counts as mod content and gets a small violet gem in the menus
+Anything drawn from a sheet loaded through Core counts as mod content and gets one small violet gem in the menus
 (portraits, shop pictures, vault cells, the evolve screen), with no call from your mod. `ModGem.Exclude(sheetId)`
-leaves a sheet unmarked.
+leaves a sheet unmarked; `ModMark.MarkArt(atlas)` counts art you compose at run time as mod art.
+
+Every gem is placed through `ModMark`, and each entry has one owner of its mark: a vault entry's cell (not the big
+picture below it), a shop item's pedestal (not the popup), the violet pip of a god or origin in its list (not the
+portrait; an entry whose pip is another colour is marked on its portrait). Never paint the gem into your art:
+`tools/validate.py` fails on it. Players can turn the gems off with `ModGem` in `CrawlFurther.UI.cfg`.
 
 ## Vault pages
 

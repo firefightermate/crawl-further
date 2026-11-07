@@ -138,7 +138,7 @@ namespace CrawlFurther.Items
             if (sheet != null)
             {
                 Show(spr, sheet.atlas, anim.frames[0]);
-                ModGem.Attach(spr);
+                ModMark.Follow(spr);   // the item's one mark (the shop popup leaves its picture bare)
                 return;
             }
 
@@ -151,6 +151,13 @@ namespace CrawlFurther.Items
             Show(spr, van, idx);
             string tag = key ?? bubble.name;
             if (s_warned.Add(tag)) FurtherCore.Log.LogWarning("Shop pedestal: no picture for " + tag + ", showing " + stand);
+        }
+
+        /// <summary>This purchasable stands on its pedestal in its own (mod) picture, which carries its gem.</summary>
+        public static bool HasPicture(IPurchasable p)
+        {
+            SheetAnim anim;
+            return p != null && SheetWith(KeyFor(p), out anim) != null;
         }
 
         static string StandIn(ePurchasableType t)
@@ -181,16 +188,18 @@ namespace CrawlFurther.Items
         }
     }
 
-    /// <summary>The shop popup's picture of a mod purchasable (its bubble) gets the gem.</summary>
+    /// <summary>The shop popup opens over the pedestal it describes: its picture of a mod purchasable (the bubble) gets
+    /// the gem only when that pedestal shows a vanilla stand-in, so the item never wears two.</summary>
     [HarmonyPatch(typeof(GUIStore), "Show")]
     static class Patch_ShopPopupGem
     {
-        static void Postfix(exSpriteAnimation ___m_portrait)
+        static void Postfix(exSpriteAnimation ___m_portrait, IPurchasable purchasable)
         {
             try
             {
+                bool pedestalMarks = ShopPedestal.HasPicture(purchasable);   // per popup: each player has their own
                 var spr = ___m_portrait != null ? ___m_portrait.GetComponent<exSprite>() : null;
-                if (spr != null) ModGem.Attach(spr);
+                if (spr != null) ModMark.Follow(spr, GemCorner.Art, () => !pedestalMarks && ModMark.IsModArt(spr.atlas));
             }
             catch (System.Exception e) { FurtherCore.Log.LogWarning("Shop popup gem: " + e.Message); }
         }

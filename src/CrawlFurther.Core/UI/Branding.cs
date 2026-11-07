@@ -76,7 +76,7 @@ namespace CrawlFurther.UI
             NoModTags(bad);
             ModMusic.SelfCheck(bad);
             Secrets.SelfCheck(bad);
-            ModGem.SelfCheck(bad);
+            ModMark.SelfCheck(bad);
         }
 
         /// <summary>Nothing players read carries a "(MOD)" / "[MOD]" tag (the violet gem marks mod things): shop items,

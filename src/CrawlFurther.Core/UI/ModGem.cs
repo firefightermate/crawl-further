@@ -13,9 +13,10 @@ namespace CrawlFurther.UI
     /// visible part of the tile. Anything drawn from a sheet loaded through Core counts as mod content, so any mod's
     /// monsters, items and portraits are marked without extra work; <see cref="Exclude"/> leaves a sheet unmarked.
     ///
-    /// <see cref="Attach(exSprite, GemCorner)"/> follows a menu sprite (a monster tile, a portrait, a shop bubble) and shows
-    /// the gem whenever that sprite shows mod art. <see cref="AttachAt"/> pins one to a fixed spot (a vault cell corner) and
-    /// leaves showing it to the caller.
+    /// Gems are placed only through <see cref="ModMark"/>, which decides who owns the mark of each picture:
+    /// <see cref="Attach"/> follows a menu sprite (a monster tile, a portrait, a shop bubble) and shows the gem whenever
+    /// that sprite shows mod art; <see cref="AttachAt"/> pins one to a fixed spot (a vault cell corner) and leaves showing
+    /// it to the caller.
     /// </summary>
     public class ModGem : MonoBehaviour
     {
@@ -46,6 +47,7 @@ namespace CrawlFurther.UI
         /// <summary>True when <paramref name="atlas"/> is a mod sheet's atlas that is not excluded.</summary>
         public static bool IsModArt(exAtlas atlas)
         {
+            if (ModMark.IsRuntimeArt(atlas)) return true;
             var sh = SpriteSheets.ByAtlas(atlas);
             return sh != null && !s_excluded.Contains(sh.id);
         }
@@ -54,16 +56,13 @@ namespace CrawlFurther.UI
         /// Mark <paramref name="target"/> whenever it shows mod art (or whenever <paramref name="show"/> says so, if
         /// given). Safe to call every time the sprite is set up: a sprite gets one gem.
         /// </summary>
-        public static ModGem Attach(exSprite target, GemCorner corner = GemCorner.Art, Func<bool> show = null)
+        internal static ModGem Attach(exSprite target, GemCorner corner = GemCorner.Art, Func<bool> show = null)
         {
             if (target == null || Atlas() == null) return null;
-            var g = Find(target.transform);
-            if (g == null)
-            {
-                g = Make(target.transform);
-                g.m_target = target;
-                g.m_targetR = target.GetComponent<Renderer>();
-            }
+            // a gem copied along with its sprite (Instantiate) is found here too: it is claimed, not doubled
+            var g = Find(target.transform, false) ?? Make(target.transform);
+            g.m_target = target;
+            g.m_targetR = target.GetComponent<Renderer>();
             g.m_corner = corner;
             g.m_show = show;
             return g;
@@ -71,22 +70,25 @@ namespace CrawlFurther.UI
 
         /// <summary>A gem at a fixed local position under <paramref name="parent"/>, shown while <see cref="On"/> is set and
         /// <paramref name="follow"/> (if given) is drawn. Safe to call again: a parent gets one gem.</summary>
-        public static ModGem AttachAt(Transform parent, Vector3 localPos, Renderer follow)
+        internal static ModGem AttachAt(Transform parent, Vector3 localPos, Renderer follow)
         {
             if (parent == null || Atlas() == null) return null;
-            var g = Find(parent) ?? Make(parent);
+            var g = Find(parent, true) ?? Make(parent);
             g.m_fixed = true;
             g.m_follow = follow;
             g.transform.localPosition = localPos;
             return g;
         }
 
-        static ModGem Find(Transform parent)
+        /// <summary>A gem pinned with <see cref="AttachAt"/> (not following a sprite).</summary>
+        internal bool Pinned { get { return m_fixed; } }
+
+        static ModGem Find(Transform parent, bool pinned)
         {
             for (int i = 0; i < parent.childCount; i++)
             {
                 var g = parent.GetChild(i).GetComponent<ModGem>();
-                if (g != null) return g;
+                if (g != null && g.m_fixed == pinned && g.gameObject.activeSelf) return g;   // an inactive one is being taken away
             }
             return null;
         }
@@ -122,7 +124,7 @@ namespace CrawlFurther.UI
         {
             // a gem copied along with its parent (Instantiate) has none of its fields: it hides until Attach claims it
             if (m_r == null) m_r = GetComponent<Renderer>();
-            bool show = m_fixed ? FixedVisible() : Place();
+            bool show = ModMark.Enabled && (m_fixed ? FixedVisible() : Place());
             if (m_r.enabled != show) m_r.enabled = show;
         }
 
@@ -144,7 +146,14 @@ namespace CrawlFurther.UI
             Vector2 at = new Vector2(1f, 1f);   // the gem's centre as a share of the target's quad, from its bottom-left
             var sh = SpriteSheets.ByAtlas(m_target.atlas);
             int[] bb;
-            if (sh != null)
+            if (sh == null && ModMark.IsRuntimeArt(m_target.atlas) && m_target.index < m_target.atlas.elements.Length)
+            {
+                // run-time art (ModMark.MarkArt: framed portraits, untrimmed): the cell's corner, sized by the element
+                var el = m_target.atlas.elements[m_target.index];
+                float W = Mathf.Max(1, el.originalWidth), H = Mathf.Max(1, el.originalHeight);
+                at = new Vector2((W - 3.5f) / W, (H - 3.5f) / H);
+            }
+            else if (sh != null)
             {
                 float W = sh.manifest.cellW, H = sh.manifest.cellH;
                 if (m_corner == GemCorner.Cell)

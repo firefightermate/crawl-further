@@ -698,13 +698,6 @@ def L_spell(f):
     return cv.spr()
 
 
-def L_gem(f):
-    """The MOD gem (badge.py style) in the top right corner: every mod portrait wears it."""
-    cv = Cv()
-    cv.stamp(["..K..", ".KNK.", "KNXNK", ".KNK.", "..K.."], W - 6, 1)
-    return cv.spr()
-
-
 def L_unknown(f):
     """Silver / gold slot portrait: a stranger whose face is still in shadow, a question mark glowing."""
     cv = Cv()
@@ -716,7 +709,7 @@ def L_unknown(f):
 # ------------------------------------------------------------------------------------------------ portrait sheet
 def portrait_layers():
     """[(anim name, [4 Spr])] in sheet order."""
-    out = [("Bg", layer(L_bg)), ("Tier", layer(L_tier)), ("TierCrest", layer(L_tierplate)), ("Gem", layer(L_gem)),
+    out = [("Bg", layer(L_bg)), ("Tier", layer(L_tier)), ("TierCrest", layer(L_tierplate)),
            ("Glint", layer(L_glint)), ("Spell", layer(L_spell)), ("Unknown", layer(L_unknown))]
     for oid, _, _ in OUTFITS:
         out.append(("Outfit_" + oid, layer(outfit_layer(oid))))
@@ -732,7 +725,8 @@ def portrait_layers():
 
 
 # portrait draw order (C# composes in this order; the weapon goes behind the body)
-ORDER = ["Bg", "Weapon", "Outfit", "Face", "FacePiece", "Head", "Glint", "Spell", "Tier", "TierCrest", "Gem"]
+# (no "Gem": the violet mod gem is Core's, drawn over the portrait at run time, never baked in)
+ORDER = ["Bg", "Weapon", "Outfit", "Face", "FacePiece", "Head", "Glint", "Spell", "Tier", "TierCrest"]
 
 
 # ------------------------------------------------------------------------------------------------ colour resolution
@@ -772,7 +766,7 @@ def compose(sheet, choice, slot, tier, weapon=None, magic=False, spell=False, fr
             if spell: names.append("Spell")
         elif part == "TierCrest":
             if tier == "Gold" and frame: names.append("TierCrest")
-        elif part in ("Tier", "Gem"):
+        elif part == "Tier":
             if frame: names.append(part)
         else: names.append(part)
     frames = []

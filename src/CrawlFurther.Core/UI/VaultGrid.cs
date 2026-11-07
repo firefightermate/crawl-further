@@ -81,6 +81,7 @@ namespace CrawlFurther.UI
         /// are numbered in the order they are listed.</summary>
         internal static void OnAwake(MenuLibrary lib)
         {
+            ModMark.OwnedBy<MenuItemLibraryMonster>();   // a cell's gem is its own (CellGem), never the portrait's
             if (lib.GetComponent<VaultGridDriver>() == null) lib.gameObject.AddComponent<VaultGridDriver>().Init(lib);
             s_listed.Clear();
             if (!UiSettings.VaultGrid) return;
@@ -190,24 +191,20 @@ namespace CrawlFurther.UI
             grid.SetSelectedItem(first >= 0 ? first : 0);
         }
 
-        /// <summary>The gem in the top-left corner of a vault cell (the red "new" dot sits top-right; the challenge tick
-        /// that shares the top-left never shows for mod entries). It shows and hides with the cell's own background.</summary>
+        static readonly Vector3 CellGemPos = new Vector3(-3.5f, 3.5f, -1.6f);
+
+        /// <summary>The only mark a vault entry gets: the gem in the top-left corner of its cell (the red "new" dot sits
+        /// top-right; the challenge tick that shares the top-left never shows for mod entries). It shows and hides with
+        /// the cell's own background; the big picture below stays bare (<see cref="Patch_VaultPortraitGem"/>).</summary>
         internal static void CellGem(MenuItemLibraryMonster cell, bool on)
         {
             if (cell == null) return;
-            if (!on)
-            {
-                for (int i = 0; i < cell.transform.childCount; i++)
-                {
-                    var g = cell.transform.GetChild(i).GetComponent<ModGem>();
-                    if (g != null) g.On = false;
-                }
-                return;
-            }
-            var bg = R.Get<exSprite>(cell, "m_background");
-            var gem = ModGem.AttachAt(cell.transform, new Vector3(-3.5f, 3.5f, -1.6f), bg != null ? bg.GetComponent<Renderer>() : null);
-            if (gem != null) gem.On = true;
+            var bg = on ? R.Get<exSprite>(cell, "m_background") : null;
+            ModMark.Pin(cell.transform, CellGemPos, bg != null ? bg.GetComponent<Renderer>() : null, on);
         }
+
+        /// <summary>The selected entry of this category sits in a picture cell that carries its mark.</summary>
+        internal static bool CellsMark(int cat) { return cat == Monsters || (UiSettings.VaultGrid && IsGridCategory(cat)); }
 
         struct Pic { public exAtlas atlas; public int index; }
 
@@ -670,30 +667,34 @@ namespace CrawlFurther.UI
             return __instance == null || !VaultGrid.Cells.Contains(__instance.GetInstanceID());
         }
     }
-    /// <summary>The vault's big picture of a found mod entry (and of a found secret) gets the gem.</summary>
+    /// <summary>
+    /// The vault's big picture of a found mod entry (and of a found secret) gets the gem only in the text-list layout
+    /// (CrawlFurther.UI.cfg VaultGrid = false): in a picture grid the entry's cell already carries its one mark.
+    /// </summary>
     [HarmonyPatch(typeof(MenuLibrary), "UpdateItem")]
     static class Patch_VaultPortraitGem
     {
         static bool s_show;
-        static int s_sel = -2, s_cat = -1;
+        static int s_sel = -2, s_cat = -1, s_portrait;
 
         static void Postfix(MenuLibrary __instance, int ___m_selectedItem, exSpriteAnimation ___m_portrait)
         {
             if (___m_portrait == null) return;
             try
             {
-                var spr = ___m_portrait.GetComponent<exSprite>();
-                if (spr != null) ModGem.Attach(spr, GemCorner.Art, () => s_show);
-                int cat = VaultGrid.Category(__instance);
-                if (___m_selectedItem == s_sel && cat == s_cat) return;   // UpdateItem runs every frame; work only on a change
-                s_sel = ___m_selectedItem; s_cat = cat;
+                int cat = VaultGrid.Category(__instance), id = ___m_portrait.GetInstanceID();
+                // UpdateItem runs every frame: work only when the selection, the category or the vault itself changes
+                if (___m_selectedItem == s_sel && cat == s_cat && id == s_portrait) return;
+                s_sel = ___m_selectedItem; s_cat = cat; s_portrait = id;
                 s_show = false;
-                var list = cat == VaultGrid.Monsters ? SystemLibrary.GetMonsters().ConvertAll(m => (SystemLibrary.LibraryEntry)m) : VaultGrid.Entries(__instance, cat);
-                if (___m_selectedItem >= 0 && list != null && ___m_selectedItem < list.Count && cat != VaultGrid.Achievements)
+                var spr = ___m_portrait.GetComponent<exSprite>();
+                if (spr != null) ModMark.Follow(spr, GemCorner.Art, () => s_show);
+                if (VaultGrid.CellsMark(cat) || cat == VaultGrid.Achievements) return;
+                var list = VaultGrid.Entries(__instance, cat);
+                if (___m_selectedItem >= 0 && list != null && ___m_selectedItem < list.Count)
                 {
                     var e = list[___m_selectedItem];
-                    var mc = VaultGrid.CategoryOf(cat);
-                    s_show = mc != null && mc.secrets ? Secrets.IsFound(LibraryEntries.SecretOf(e)) : LibraryEntries.IsMod(e) && e.IsFound(string.Empty);
+                    s_show = LibraryEntries.IsMod(e) && e.IsFound(string.Empty);
                 }
             }
             catch (Exception e) { FurtherCore.Log.LogWarning("Vault portrait gem: " + e.Message); }

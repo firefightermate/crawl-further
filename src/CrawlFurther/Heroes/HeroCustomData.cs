@@ -32,7 +32,7 @@ namespace CrawlFurther.Content.Heroes
         static readonly string[] s_headGear = { "Long", "Topknot", "Mohawk", "Shaved", "Hood", "Helm", "Horned", "WideHat", "Cap", "Wizard", "Bandana", "Circlet" };
         static readonly string[] s_faceGear = { "Beard", "Moustache", "Scar", "Eyepatch", "Paint", "Specs", "Mask" };
         static readonly string[] s_families = { "Sword", "Greatsword", "Axe", "Club", "Dagger", "Spear", "Staff", "Bow", "Crossbow", "Sling", "Knives" };
-        static readonly string[] s_layerOrder = { "Bg", "Weapon", "Outfit", "Face", "FacePiece", "Head", "Glint", "Spell", "Tier", "TierCrest", "Gem" };
+        static readonly string[] s_layerOrder = { "Bg", "Weapon", "Outfit", "Face", "FacePiece", "Head", "Glint", "Spell", "Tier", "TierCrest" };
         static readonly int[] s_leather = { 0x8A603E, 0x6E4A30, 0x543826, 0x3A281E }, s_steel = { 0xB0B2BC, 0x7C7E8A, 0x5C5E68, 0x3C3C46 }, s_dark = { 0x4A4248, 0x3A3438, 0x2C282C, 0x201C20 };
         /// <summary>Per outfit: "role:source:shade" (source m = main, t = trim, l = leather, s = steel, d = dark).</summary>
         static readonly string[] s_outfitRoles = {

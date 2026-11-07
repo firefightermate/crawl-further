@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Mod content shows one violet gem, never two: the vault, the god and origin pickers and the shop each mark an entry once. The gems can be turned off with ModGem in CrawlFurther.UI.cfg.
+
 ## 1.0.0
 
 ### Gods
