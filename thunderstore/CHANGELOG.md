@@ -1,8 +1,16 @@
 # Changelog
 
-## Unreleased
+## 1.0.1
 
+- Fixed a white box on the evolve screen with a translation mod installed. The cost number now uses its label's font.
+- The evolve screen shows one violet gem per panel, not one on every monster.
+- Mod monsters on the evolve screen stay inside their panel.
 - Mod content shows one violet gem, never two: the vault, the god and origin pickers and the shop each mark an entry once. The gems can be turned off with ModGem in CrawlFurther.UI.cfg.
+- Tips, pause pages and vault pages keep working when a translation mod swaps the game's fonts or labels.
+- The Carrion Roc can no longer leave the ally it carried unkillable.
+- A monster that lurks or coils no longer comes back later without collision.
+- The list of monsters you've seen tips for is kept if it fails to load once.
+- The slot machine's health and ectoplasm results no longer show numbers.
 
 ## 1.0.0
 

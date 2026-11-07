@@ -878,19 +878,19 @@ namespace CrawlFurther.Content.Objects
                     case SlotResult.ThreeHearts:
                         if (pd != null) HealFull(pd.GameObject, 2f);
                         Fx(s_confetti, at + new Vector2(0f, 20f));
-                        l1 = "Three hearts: 2 health back!"; l2 = "";
+                        l1 = "Three hearts: health back!"; l2 = "";
                         break;
                     case SlotResult.TwoHearts:
                         if (pd != null) HealFull(pd.GameObject, 0.5f);
-                        l1 = "Two hearts: 0.5 health back."; l2 = "";
+                        l1 = "Two hearts: a little health back."; l2 = "";
                         break;
                     case SlotResult.ThreeSkulls:
-                        // the house feeds the dead: every ghost gets a full ectoplasm bar
+                        // the house feeds the dead: every ghost gets some ectoplasm
                         PlayerData[] all = null;
                         try { all = SystemPlayers.GetPlayers(); } catch { }
                         if (all != null) foreach (var g in all) if (g != null && g.IsActive && !g.IsAlive) { try { g.OnEctoplasmCollected(3f); } catch { } }
                         ObjectKit.PlaySound("SoundSkeletonBark", transform);
-                        l1 = "Three skulls. The dead laugh."; l2 = "Every ghost gets 3 ectoplasm.";
+                        l1 = "Three skulls. The dead laugh."; l2 = "Every ghost gets ectoplasm.";
                         break;
                 }
                 if (res != SlotResult.Lose && res != SlotResult.ThreeSkulls && o != null) o.Play("Win");

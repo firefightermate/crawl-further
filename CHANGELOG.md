@@ -3,7 +3,7 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
-## Unreleased
+## 1.0.1
 
 ### Library (CrawlFurther.Core)
 - `ModMark` places every violet mod gem, one owner per entry: no entry shows two (the vault cell and its big
@@ -11,6 +11,9 @@ Changes to Crawl Further Core and to the repository. What changed in the game fo
 - `ModMark.MarkArt` marks art composed at run time; custom hero portraits no longer have the gem painted in.
 - `CrawlFurther.UI.cfg` `ModGem = false` hides the gems.
 - `tools/validate.py` checks the marks: one call site per context and no gem painted into art.
+- The evolve panel's cost and wrath numbers copy their labels' font and material, so a font-swapping translation mod no longer breaks them. Slot-god art that can't be drawn is skipped and logged once.
+- Patches that fail to apply are listed in the self-test report.
+- `tools/package.sh` builds the source archive with `git archive`, so only committed files go in.
 
 ## 1.0.0
 
