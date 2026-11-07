@@ -73,7 +73,8 @@ namespace CrawlFurther.UI
 
         readonly Slot[] m_slots = new Slot[Players];
 
-        // the HUD's text style
+        // the HUD's text style, and the HUD text it came from (a font-swapping translation mod may change its font later)
+        TextMesh m_src;
         Font m_font;
         Material m_mat;
         int m_fontSize, m_layer = -1, m_sortLayer, m_sortOrder;
@@ -185,6 +186,7 @@ namespace CrawlFurther.UI
         void Apply(Slot s)
         {
             Build(s);
+            FollowFont(s);
             s.dirty = false;
             s.title.text = s.titleText; s.titleShadow.text = s.titleText;
             s.body.text = s.bodyText; s.bodyShadow.text = s.bodyText;
@@ -195,6 +197,34 @@ namespace CrawlFurther.UI
             s.measure = 4;   // measured over the next frames (bounds exist once the meshes are built), invisible until then
             s.appliedFrame = Time.frameCount;
             SetAlpha(s, 0f);
+        }
+
+        /// <summary>Keep the slot on the HUD's current font: a translation mod may swap the game's fonts after the style
+        /// was first read.</summary>
+        void FollowFont(Slot s)
+        {
+            if (m_src == null)
+            {
+                foreach (var gp in FindObjectsOfType<GUIPlayer>())
+                {
+                    var tm = R.Get<TextMesh>(gp, "m_name");
+                    if (tm != null && tm.font != null) { m_src = tm; break; }
+                }
+            }
+            if (m_src != null && m_src.font != null && m_src.font != m_font)
+            {
+                var r = m_src.GetComponent<Renderer>();
+                m_font = m_src.font;
+                m_mat = r != null && r.sharedMaterial != null ? r.sharedMaterial : m_font.material;
+                FurtherCore.Log.LogInfo("Monster tips: the HUD font is now '" + m_font.name + "'");
+            }
+            if (s.title == null || s.title.font == m_font) return;
+            foreach (var tm in new[] { s.title, s.titleShadow, s.body, s.bodyShadow })
+            {
+                tm.font = m_font;
+                var mr = tm.GetComponent<Renderer>();
+                if (mr != null) mr.sharedMaterial = m_mat;
+            }
         }
 
         void Deactivate(Slot s)
@@ -237,6 +267,7 @@ namespace CrawlFurther.UI
                     }
                     break;
                 }
+                if (src != null) m_src = src;
                 if (src != null && m_font == null)
                 {
                     m_font = src.font;

@@ -362,17 +362,32 @@ namespace CrawlFurther.UI
                 else if (p.rule == null && c.name.StartsWith("Line", StringComparison.Ordinal) && c.GetComponent<exSprite>() != null) p.rule = c.gameObject;
             }
             if (p.tab == null) return null;
-            float bestD = float.MaxValue;
+            float bestD = float.MaxValue, nearD = float.MaxValue;
+            TextMesh near = null;
             for (int i = 0; i < page.childCount; i++)
             {
                 var t = page.GetChild(i).GetComponent<TextMesh>();
                 if (t == null) continue;
+                float d = (t.transform.localPosition - p.tab.transform.localPosition).sqrMagnitude;
+                if (d < nearD) { nearD = d; near = t; }
                 if (IsSmall(t))
                 {
-                    float d = (t.transform.localPosition - p.tab.transform.localPosition).sqrMagnitude;
                     if (d < bestD) { bestD = d; p.header = t; }
                 }
                 else if (t.text != null && t.text.Length > bestLen) { bestLen = t.text.Length; p.body = t; }
+            }
+            if (p.header == null && near != null)
+            {
+                // a font-swapping translation mod renamed CrawlSmall: the caption is the text nearest the tab, the body
+                // the longest of the others
+                p.header = near;
+                p.body = null; bestLen = -1f;
+                for (int i = 0; i < page.childCount; i++)
+                {
+                    var t = page.GetChild(i).GetComponent<TextMesh>();
+                    if (t == null || t == near) continue;
+                    if (t.text != null && t.text.Length > bestLen) { bestLen = t.text.Length; p.body = t; }
+                }
             }
             if (p.header == null || p.body == null || p.rule == null) return null;
             if (strip)
