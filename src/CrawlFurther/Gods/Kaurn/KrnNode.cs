@@ -60,7 +60,8 @@ namespace CrawlFurther.Content.Gods.Kaurn
         public DamageSource Source()
         {
             var s = FxFactory.SourceOf(gameObject);
-            if (s != null && s.m_sourceOwner != null) return new DamageSource(gameObject, s.m_sourceOwner, s.m_sourcePlayer);
+            if (s != null && s.m_sourceOwner != null)
+                return new DamageSource(gameObject, s.m_sourceOwner, s.m_sourcePlayer, -1, -1, s.m_damageMod, false);
             return new DamageSource(gameObject, gameObject, null);
         }
 

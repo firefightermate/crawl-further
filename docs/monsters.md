@@ -14,8 +14,9 @@ come from `examples/ExampleGod/GlimmerPack.cs` and `GlimmerFx.cs`.
 | `health` | Max health. 0 or below keeps the base's |
 | `speedMult` | Multiplies the base's move speed |
 | `evolveCost` | The evolution cost, which Core also reads as the tier ([gods.md](gods.md#evolution-trees)). Below 0 keeps the base's |
-| `specialChargeTime` | Seconds to charge the special. 0 or below keeps the base's |
-| `attackCooldownMult` | Multiplies the cooldown of the base's own attacks (not those a `kit` builds) |
+| `specialChargeTime` | Seconds to charge the special, set after the `kit` and the tier rule. 0 or below keeps theirs |
+| `attackCooldownMult` | Multiplies the cooldown of every basic attack, the `kit`'s included |
+| `damageMult` | Multiplies every hit the monster lands on the hero, its behaviours' included, on top of the tier rule ([gods.md](gods.md#evolution-trees)). Statuses keep their own damage |
 | `evolveTo`, `keepEvolutions` | The tree ([gods.md](gods.md#evolution-trees)) |
 | `kit` | Builds the moveset: `(Player prefab, SpriteSheet sheet)` |
 | `aliases` | Without a kit: maps the base's attack slots (`"Attack0"`, `"Attack1"`, `"Special"`) to animations with other names |
@@ -33,8 +34,9 @@ come from `examples/ExampleGod/GlimmerPack.cs` and `GlimmerFx.cs`.
    Each clip gets a name of its own, `Mod<sheet>_<slot>`.
 3. Puts the art's feet on the transform, refits the hurtbox to 90% of the Idle frame, and frames the portrait the
    menus show.
-4. Applies the stats. Unless `keepEvolutions` is set, the base's evolutions are cleared.
-5. Runs `kit`, then scales its offsets by `ArtScale`, then runs `customize`.
+4. Applies health, speed and cost. Unless `keepEvolutions` is set, the base's evolutions are cleared.
+5. Runs `kit`, then scales its offsets by `ArtScale`, applies the tier rule and the def's own tuning
+   (`damageMult`, `specialChargeTime`, `attackCooldownMult`), then runs `customize`.
 6. Registers `traits` under the prefab name.
 
 Without a kit, the base's attacks keep their own timing and events and play the animations of the same name on
@@ -202,7 +204,8 @@ new MonsterDef { id = "GlimmerMoth", basePrefab = "EnemyFlyingEye_Dodge", health
 
 A `MonsterBehaviour` receives clip events as methods of the same name and can run per-frame rules in `Update`.
 `Monster` is the body's `ModMonster`, with `Heal`, `Face`, `FaceHero`, `HeroPos`, `AddPlate`, `OwnSource` (a damage
-source for `FxFactory.SpawnOwned`) and `Traits`:
+source for `FxFactory.SpawnOwned` and direct hits that carries the controlling player's damage modifiers, as the
+game's own attacks do; `ModUtil.MonsterSource(body)` makes one for any body) and `Traits`:
 
 ```csharp
 public class GlimmerGlow : MonsterBehaviour

@@ -179,11 +179,11 @@ namespace CrawlFurther.Monsters
             ModInd.Heal(gameObject);
         }
 
-        /// <summary>A damage source owned by this monster (and its controlling player), for <see cref="FxFactory.SpawnOwned"/>.</summary>
+        /// <summary>A damage source owned by this monster (and its controlling player, with that player's damage modifiers),
+        /// for <see cref="FxFactory.SpawnOwned"/> and direct hits.</summary>
         public DamageSource OwnSource()
         {
-            var pd = m_player != null ? R.Get<PlayerData>(m_player, "m_playerData") : null;
-            return new DamageSource(gameObject, gameObject, pd);
+            return ModUtil.MonsterSource(gameObject);
         }
 
         /// <summary>Turn to face the hero.</summary>

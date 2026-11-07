@@ -25,6 +25,19 @@ namespace CrawlFurther.Util
             return h != null && h.GameObject != null ? new DamageSource(h.GameObject, h.GameObject, h) : null;
         }
 
+        /// <summary>
+        /// A damage source owned by the monster <paramref name="body"/> and its controlling player, for hits that are not
+        /// its attacks' own effects. It carries the player's damage modifiers (god perks, runes, the balance rules) as the
+        /// game's attacks do. Null for a null body.
+        /// </summary>
+        public static DamageSource MonsterSource(GameObject body)
+        {
+            if (body == null) return null;
+            var p = body.GetComponent<Player>();
+            var pd = p != null ? R.Get<PlayerData>(p, "m_playerData") : null;
+            return new DamageSource(body, body, pd, -1, -1, p != null ? p.GetDamageModifierStack(false) : null, false);
+        }
+
         static readonly HarmonyLib.AccessTools.FieldRef<Player, bool> s_isGhost = HarmonyLib.AccessTools.FieldRefAccess<Player, bool>("m_isGhost");
 
         /// <summary>True if <paramref name="p"/> is a ghost. Player.m_isGhost has no getter; this field ref is cheap enough
