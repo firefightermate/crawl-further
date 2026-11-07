@@ -421,7 +421,7 @@ namespace CrawlFurther.Content.Secrets
         protected float Facing { get { return transform.localScale.x < 0f ? -1f : 1f; } }
         public DamageSource Own()
         {
-            return ModUtil.BodySource(gameObject);
+            return ModUtil.MonsterSource(gameObject);
         }
         protected static bool From(DamageInfo d, string prefix)
         {

@@ -145,9 +145,10 @@ namespace CrawlFurther.Content
             }
             // the Gilded Secret line (1 / 2 / 4, no god; gold idol slot 4 only) counts as reached through its own starter
             GoldSecretPack.CheckTree(Bad, Note, reached, statueItems);
-            // evolved mod monsters nobody can reach (minions and blobs have no tier multiplier, so they're not listed)
-            foreach (var kv in MonsterFactory.DamageMult)
+            // evolved mod monsters nobody can reach (minions and blobs stay tier 1, so they're not listed)
+            foreach (var kv in MonsterFactory.Tier)
             {
+                if (kv.Value < 2) continue;
                 Player p = null;
                 foreach (var b in built) if (b != null && b.gameObject.name == kv.Key) { p = b; break; }
                 if (SilverUniques.Ids.Contains(kv.Key)) continue;   // silver unique finals have no tree (silver ghost upgrade only)

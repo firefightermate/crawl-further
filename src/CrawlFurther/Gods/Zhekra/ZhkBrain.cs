@@ -28,7 +28,7 @@ namespace CrawlFurther.Content.Gods.Zhekra
 
         DamageSource OwnSource()
         {
-            return ModUtil.BodySource(gameObject);
+            return ModUtil.MonsterSource(gameObject);
         }
 
         // one shared scan of the scene's players per 0.25 s for every brain

@@ -50,9 +50,9 @@ namespace CrawlFurther.Gods
             var like = items[0];
             int added = 0;
             var skipped = new List<string>();
-            foreach (var kv in MonsterFactory.DamageMult)
+            foreach (var kv in MonsterFactory.Tier)
             {
-                if (kv.Value > MonsterFactory.T3Damage + 0.001f) continue;          // finals only
+                if (kv.Value < 3) continue;          // finals only
                 Player p = null;
                 foreach (var b in MonsterFactory.Built.Values) if (b != null && b.gameObject.name == kv.Key) { p = b; break; }
                 if (p == null) continue;

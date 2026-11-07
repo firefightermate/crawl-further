@@ -6,11 +6,19 @@ Changes to Crawl Further Core and to the repository. What changed in the game fo
 ## Unreleased
 
 ### Library (CrawlFurther.Core)
-- `ModUtil.BodySource(body)` credits a body's own hits the way the game credits its attacks
-  (`Player.GetAttackSpawnerPlayer`): an AI body's hits credit the player who made it. `ModMonster.OwnSource` and the
-  gods' and secrets' own sources use it. Before, an AI body's hits credited nobody, and a hero killed by one was never
-  replaced (`SystemLevel.CoroutineHeroDeath` gives up without a killer).
-- `ModUtil.HandOn` passes a source on to a new effect; `FxFactory.SpawnOwned` and the echo spawners use it.
+- `TierRules` holds the rules for evolved monsters. Their hits on the hero are no longer softened (they were 0.85x
+  at tier 2 and 0.8x at tier 3), and their specials charge in 0.8x the time the kit sets instead of 1.25x.
+- `MonsterDef.damageMult` scales one monster's hits on the hero. `specialChargeTime` and `attackCooldownMult` now
+  apply after the kit, so a monster's balance numbers all sit on its def line.
+- `MonsterFactory.Tier` gives each built monster's tier. Statue rooms and the self-test use it to find finals.
+- `ModUtil.MonsterSource(body)` builds a body's own hits the way the game builds its attacks. It credits
+  `Player.GetAttackSpawnerPlayer` (an AI body's hits credit the player who made it) and carries
+  `Player.GetDamageModifierStack`, so a hit that a behaviour deals or spawns scales with god perks and runes. The
+  hitting body stays the body. `ModMonster.OwnSource` and the gods' and secrets' own sources use it. Before, an AI
+  body's hits credited nobody, and a hero killed by one was never replaced (`SystemLevel.CoroutineHeroDeath` gives
+  up without a killer).
+- `ModUtil.HandOn` passes a source and its modifiers on to a new effect; `FxFactory.SpawnOwned`, the echo spawners
+  and Kaurn nodes use it.
 - `HeroHandover`: a hero killed in an ordinary room by a hit that still credits nobody (another mod's, say) passes
   the crown to the player behind the body or effect that hit, and the log names the source.
 

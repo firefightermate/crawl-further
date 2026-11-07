@@ -26,26 +26,33 @@ namespace CrawlFurther.Util
         }
 
         /// <summary>
-        /// A damage source owned by <paramref name="body"/>, for hits it makes outside its Attacks (effects it spawns,
-        /// statuses, direct damage). The player credited is the one the game credits for that body's own attacks
-        /// (Player.GetAttackSpawnerPlayer): the player in it, or for an AI body (fodder, a minion, a thrall) the player
-        /// who made it. A hit that kills the hero must credit a player: the game hands the crown to that player and gives
-        /// up when there is none (no new hero, and the old one never becomes a ghost). The body stays the hitting body
-        /// (m_sourceOwnerPlayer), so rules that ask which monster hit still see it.
+        /// A damage source owned by the monster <paramref name="body"/>, for hits it makes outside its Attacks (effects it
+        /// spawns, statuses, direct damage), set up as the game sets up that body's own attacks (Attacks.SpawnEffect):
+        /// <list type="bullet">
+        /// <item>the player credited is Player.GetAttackSpawnerPlayer: the player in it, or for an AI body (fodder, a
+        /// minion, a thrall) the player who made it. A hit that kills the hero must credit a player: the game hands the
+        /// crown to that player and gives up when there is none (no new hero, and the old one never becomes a ghost).</item>
+        /// <item>the damage modifiers are Player.GetDamageModifierStack: the controlling player's (god perks, runes, the
+        /// balance rules); an AI body has none, as its attacks have none.</item>
+        /// <item>the hitting body (m_sourceOwnerPlayer) stays <paramref name="body"/>, so rules that ask which monster hit
+        /// still see it.</item>
+        /// </list>
+        /// Null for a null body.
         /// </summary>
-        public static DamageSource BodySource(GameObject body)
+        public static DamageSource MonsterSource(GameObject body)
         {
             if (body == null) return null;
             var p = body.GetComponent<Player>();
-            var src = new DamageSource(body, body, p != null ? p.GetAttackSpawnerPlayer() : null);
+            var src = new DamageSource(body, body, p != null ? p.GetAttackSpawnerPlayer() : null, -1, -1,
+                                       p != null ? p.GetDamageModifierStack(false) : null, false);
             src.m_sourceOwnerPlayer = body;
             return src;
         }
 
         /// <summary>
         /// <paramref name="from"/> handed on to a new effect <paramref name="effect"/>: the same owner, credited player and
-        /// damage modifier (<paramref name="keepAttack"/> also keeps the attack ids). The hitting body is worked out as the
-        /// game does (the credited player's body), except for a <see cref="BodySource"/> of an AI body, which stays that body.
+        /// damage modifiers (<paramref name="keepAttack"/> also keeps the attack ids). The hitting body is worked out as the
+        /// game does (the credited player's body), except for a <see cref="MonsterSource"/> of an AI body, which stays that body.
         /// </summary>
         public static DamageSource HandOn(DamageSource from, GameObject effect, bool keepAttack = false)
         {

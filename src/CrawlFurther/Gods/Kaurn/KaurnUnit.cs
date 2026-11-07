@@ -63,7 +63,7 @@ namespace CrawlFurther.Content.Gods.Kaurn
 
         public DamageSource OwnSource()
         {
-            return ModUtil.BodySource(gameObject);
+            return ModUtil.MonsterSource(gameObject);
         }
 
         void ShowPips()

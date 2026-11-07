@@ -9,7 +9,7 @@ namespace CrawlFurther.Heroes
     /// The crown always passes on. When the hero dies in an ordinary room, SystemLevel.OnPlayerKilled hands the crown to
     /// the player the killing hit credits (DamageSource.m_sourcePlayer); with none, the game gives up: the hero stays
     /// dead, nobody becomes the hero and the dead hero's player never gets a ghost, so the run cannot go on. Our own
-    /// sources credit a player (<see cref="ModUtil.BodySource"/>); for any hit that still credits nobody (another mod's,
+    /// sources credit a player (<see cref="ModUtil.MonsterSource"/>); for any hit that still credits nobody (another mod's,
     /// or a case we missed), this credits the player behind the body or effect that made it, as the game credits that
     /// body's own attacks, and logs it once per source so it can be fixed where it starts.
     /// </summary>

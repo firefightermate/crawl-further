@@ -23,13 +23,17 @@ namespace CrawlFurther.Monsters
         public float health = -1f;
         /// <summary>Multiplies the base's move speed.</summary>
         public float speedMult = 1f;
-        /// <summary>Evolution cost; below 0 keeps the base's. Vanilla tiers: 2.5 for tier 2, 4.5 for tier 3, which also
-        /// soften the monster's hits on the hero and slow its special.</summary>
+        /// <summary>Evolution cost. Below 0 keeps the base's. Core reads it as the tier (<see cref="TierRules"/>): Crawl:
+        /// Further's trees cost 0, 2.5 and 4.5 (the game's own tiers cost 0, 1, 2.5 and 4).</summary>
         public float evolveCost = -1f;
-        /// <summary>Seconds to charge the special; 0 or below keeps the base's.</summary>
+        /// <summary>Seconds to charge the special, set after the <see cref="kit"/> and the tier rule. 0 or below keeps
+        /// theirs.</summary>
         public float specialChargeTime = -1f;
-        /// <summary>Multiplies the cooldown of every base attack (not used by an authored <see cref="kit"/>'s own attacks).</summary>
+        /// <summary>Multiplies the cooldown of every basic attack, the <see cref="kit"/>'s included.</summary>
         public float attackCooldownMult = 1f;
+        /// <summary>Multiplies every hit this monster lands on the hero (its moves and what its behaviours spawn), on top
+        /// of the tier rule. Statuses keep their own damage.</summary>
+        public float damageMult = 1f;
         /// <summary>What it evolves into: ids of mod monsters or vanilla prefab names.</summary>
         public string[] evolveTo = new string[0];
         /// <summary>Keep the base prefab's own evolutions instead of <see cref="evolveTo"/>.</summary>

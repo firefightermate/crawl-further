@@ -80,12 +80,15 @@ new MonsterDef { id = "WaxenKnight", basePrefab = "EnemyOrc", health = 7f, evolv
                  evolveTo = new[] { "TallowColossus", "VhPyreWarden" }, kit = WaxenKnightKit, customize = PyreOnDeath },
 // ...
 // ---- tier 3 ----
-new MonsterDef { id = "TallowColossus", basePrefab = "EnemyTroll", health = 12f, evolveCost = 4.5f, kit = ColossusKit, customize = PyreOnDeath },
+new MonsterDef { id = "TallowColossus", basePrefab = "EnemyTroll", health = 14f, evolveCost = 4.5f, damageMult = 0.9f, kit = ColossusKit, customize = PyreOnDeath },
 ```
 
-- `evolveCost` is the evolution's price. The vanilla tiers cost 0, 2.5 and 4.5, and Core reads the cost as the
-  tier: from 2 up, the monster's hits on the hero do 0.85x damage (0.8x from 4 up) and its special charges 1.25x
-  slower. Below 0 keeps the base's cost.
+- `evolveCost` is the evolution's price. Crawl: Further's tiers cost 0, 2.5 and 4.5 (the game's own four tiers
+  cost 0, 1, 2.5 and 4). Core reads the cost as the tier (`TierRules.Of`: 2 and up is tier 2, 4 and up tier 3)
+  and applies `TierRules`: by default an evolved monster's special charges in 0.8x the time its kit sets, and its
+  hits on the hero are not scaled. Below 0 keeps the base's cost.
+- `damageMult`, `specialChargeTime` and `attackCooldownMult` are the monster's own tuning, applied after the kit
+  and the tier rule, so a monster's balance numbers sit on its def line with its health and speed.
 - `evolveTo` replaces the base prefab's evolutions. `keepEvolutions = true` keeps the base's instead.
 - `MonsterFactory.LinkEvolutions` resolves the names once the whole tree is built. `DeityFactory.Register` calls
   it for `monsters`. A missing target is logged and skipped.

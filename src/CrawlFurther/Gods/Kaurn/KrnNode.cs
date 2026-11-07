@@ -3,6 +3,7 @@ using UnityEngine;
 namespace CrawlFurther.Content.Gods.Kaurn
 {
     using CrawlFurther.Monsters;
+    using CrawlFurther.Util;
 
     /// <summary>
     /// A piece of Kaurn iron on the floor or in the air: a rod, a stud, a hanging wisp, a drifting ball, a Fuse Sapper
@@ -60,7 +61,7 @@ namespace CrawlFurther.Content.Gods.Kaurn
         public DamageSource Source()
         {
             var s = FxFactory.SourceOf(gameObject);
-            if (s != null && s.m_sourceOwner != null) return new DamageSource(gameObject, s.m_sourceOwner, s.m_sourcePlayer);
+            if (s != null && s.m_sourceOwner != null) return ModUtil.HandOn(s, gameObject);
             return new DamageSource(gameObject, gameObject, null);
         }
 
