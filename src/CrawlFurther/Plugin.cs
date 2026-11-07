@@ -15,7 +15,7 @@ namespace CrawlFurther.Content
     public class Plugin : BaseUnityPlugin
     {
         public const string GUID = "com.firefightermate.crawlfurther";
-        public const string NAME = "Crawl: Further";   // display name only; the GUID stays crawlmod (configs and saves key on it)
+        public const string NAME = "Crawl: Further";   // display name only; BepInEx names the [Bosses] config file after GUID
         public const string VERSION = "1.0.0";
 
         public static Plugin I;
