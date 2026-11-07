@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Tier 2 and tier 3 monsters of all nine gods are stronger, in line with the game's own tier 3 monsters and
+  finals: the finals have more health, hits land harder and specials charge sooner. The Glue Mortar also lobs faster.
+- Hits that monsters deal through their quirks now count god perks and damage runes, like their normal attacks.
+
 ## 1.0.1
 
 - Online Crawl: a player who lost the connection and joins again right away gets a working screen. Back in the
