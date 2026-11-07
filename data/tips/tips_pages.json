@@ -128,7 +128,8 @@
     "*Kindler:* lights Fusebelly bombs. *Mason:* stone turrets spit on command.",
     "*Hexer:* hexed heroes take more damage. *Miser:* spends stored bodies on one big Mimic.",
     "*Silver:* your monsters drop orbs. Eight send your next body up a tier.",
-    "*Gold:* jump out of a body and it fights on for you in gold."
+    "*Gold:* jump out of a body and it fights on for you in gold.",
+    "Under the forms, pick the *blob* Back spawns. Each form starts on its own. The *King Blob* is for silver and gold only."
    ]
   },
   {
@@ -155,6 +156,7 @@
     "- *Gold idol*: evolve *20* different final forms.",
     "- *Silver ghost*: gather *1000* ectoplasm as a ghost.",
     "- *Gold ghost*: slay the hero *40* times as a monster.",
+    "- *Blobs*: spawn *100* Motes as the Gleaner, hit the hero with Spitter goo *60* times, fuse *8* Titans as the Binder.",
     "A banner on the next menu tells you when a slot opens."
    ]
   },

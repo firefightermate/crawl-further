@@ -238,3 +238,32 @@ Bodies are pooled: reset anything that lasts one life in `OnEnable`. To carry se
 
 `FloatNumber.Show(text, tone, at)` and `FloatNumber.RollOver(body, value, max)` pop small numbers in the game's
 pixel font (digits and the letters D, O, G, E).
+
+## Ghost blobs
+
+A ghost spawns a blob with Back. Each ghost form has its own (the Gleaner's Mote, the Binder's Gel), and a player can
+pick another one on the ghost page of the origin picker, in the row under the forms. `GhostBlobs.Register` adds a blob
+to that row. From `src/CrawlFurther/Ghosts/GhostPack.cs`:
+
+```csharp
+GhostBlobs.Register(new GhostBlobDef
+{
+    id = "King", name = "King Blob", summary = "Slams, rains globs, and costs more ectoplasm",
+    prefab = pd => King.gameObject, art = "BlobKing", bodies = KingBodies,
+    fits = f => f != null && f.tier != SlotTier.Normal,   // the silver and gold ghosts' own prize
+});
+```
+
+- `prefab` gives the monster for a player. `art` names the sheet whose Portrait frame is drawn as a dark outline
+  while the blob is locked.
+- `unlock` is a challenge id (see [ui.md](ui.md#challenges)). The blob stays locked until it is done; null means
+  always open.
+- `fits` says which forms may pick it; null means every form.
+- `bodies` is what one costs in bodies of ectoplasm. The game charges one; the rest is charged the same way, and Back
+  does nothing (the stored bodies blink) while the ghost has fewer.
+
+The row lists the form's own blob first, then every blob that fits the form, open or locked, leaving out the one that
+is the form's own anyway. Picks are kept per player in `GhostBlobs.Chosen`. `GhostBlobs.ChoiceOf(player)` gives the
+pick in effect (null for the form's own: a pick that does not fit the form, or is locked, counts as no pick) and
+`GhostBlobs.PrefabOf(player, own)` what Back spawns. Bots always spawn their form's own. A mod that owns the forms sets
+`GhostBlobs.OwnOf`, so the row can show each form's own blob.

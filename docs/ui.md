@@ -36,7 +36,7 @@ static readonly VaultCategory s_further = new VaultCategory
 {
     label = "FURTHER",
     stamp = "VaultStampFurther",
-    summary = (found, total) => found + " / " + total + " entries found\n\nThe gods, hero origins and ghost forms of " + Name + ", each with its own page",
+    summary = (found, total) => found + " / " + total + " entries found\n\nThe gods, hero origins, ghost forms and blobs of " + Name + ", each with its own page",
     pages = Pages,
     selfCheck = SelfCheck,
 };

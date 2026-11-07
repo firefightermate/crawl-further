@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+- Pick your ghost's blob. The ghost page has a second row under the forms: the blob your ghost spawns with Back.
+  Every form starts on its own blob, so nothing changes until you pick. Move down from the forms to reach the row.
+- The Mote, Spitter and Gel open for every form through a challenge each: spawn 100 Motes as the Gleaner, hit the
+  hero with Spitter goo 60 times, fuse 8 Titans as the Binder. Locked blobs show as a dark outline with their
+  challenge and progress, and the vault has a page for each.
+- Any ghost that spawns Gels fuses them with the ghost button, and any ghost that spawns Motes gets them in pairs.
+- New blob, the King Blob, for the silver and gold ghosts only. It slams out a ring of goo and rains globs that land
+  where their shadows grow. It has a little more health than a Titan, leaves no Gel behind, and costs three bodies
+  of ectoplasm.
+- The Sexton's graves and the Miser's hoard raise the picked blob too.
+- Test mode: Become > Ghost blob sets the blob.
+
 ## 1.0.2
 
 - Tier 2 and tier 3 monsters of all nine gods are stronger, in line with the game's own tier 3 monsters and
