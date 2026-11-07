@@ -3,6 +3,16 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## Unreleased
+
+### Library (CrawlFurther.Core)
+- Online Crawl 0.4.1 and older: when a client comes back before the host timed its old session out (same Steam
+  id, within 12 s), the host drops the old session first, so the new one starts clean instead of resuming a stale
+  mirror state that left the returning player with an empty or broken screen. The self-test's online section says
+  whether this is on.
+- `PanelInput` lets go of a player whose holder was destroyed without freeing them, and `SlotEditorUI.End` always
+  frees its player, so a player who left mid-edit and joined again is never locked out of their menus.
+
 ## 1.0.1
 
 ### Library (CrawlFurther.Core)

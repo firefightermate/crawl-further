@@ -365,6 +365,8 @@ ONLINE CRAWL
   secrets found by remote players are saved on the host's PC. "Tips: P1 ONLY" means the host. Vault
   scrolling with the wheel or Page Up / Page Down works on the host only; remote players scroll the vault
   with the stick.
+  A player who loses the connection can join the host again. During a run their character plays as a
+  bot meanwhile: back in, press Start and pick Drop In (not offered during a boss fight).
 
 WEAPONS (in the weapon shop slots)
 The hero swings each one with the closest vanilla weapon's animation, and the weapon in your hands is

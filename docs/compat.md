@@ -27,6 +27,12 @@ Core also handles the input side. A client's ghost button reaches the host as a 
 frame, which a stick cannot do; the host takes the pair out before the game sees it. A remote mouse player's
 middle click is the ghost button. The slot editors accept a remote mouse pointer.
 
+When a client comes back before the host timed its old session out (the same Steam id, within 12 s), Online
+Crawl 0.4.1 would resume the old session, whose records say the client already has every mesh, material and
+texture; the new client would only ever get changes. Core drops the old session first (`Patch_OnlineRehello`, on
+Online Crawl 0.4.1 and older), so the next Hello joins as new. As in vanilla drop out, the player's character is a
+bot until they press Start and pick Drop In.
+
 `CompatOnline.Present`, `IsHost` and `IsClient` tell your code where it is running. Test mode switches itself off
 for the length of an online session ([testing.md](testing.md)).
 
