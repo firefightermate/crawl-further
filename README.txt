@@ -185,7 +185,7 @@ Violet pips are mod choices:
   Plain        the game's own blob, always open
   Mote         quick and fragile, comes in pairs. Opens when you spawn 100 Motes as the Gleaner
   Spitter      spits slowing goo. Opens when Spitter goo hits the hero 60 times
-  Gel          fuses into a Brute or a Titan with the ghost button. Opens when you fuse 8 Titans as the Binder
+  Gel          fuses into a Brute or a Titan with the ghost button. Opens when you fuse 3 Titans as the Binder
   King         silver and gold ghosts only, open with them. Slams out a ring of goo and rains globs that
                land where their shadows grow (0.8 s). 6.5 health (a Titan has 6), no Gel when it dies,
                costs 3 bodies of ectoplasm

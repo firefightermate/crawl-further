@@ -5,7 +5,7 @@
 - Pick your ghost's blob. The ghost page has a second row under the forms: the blob your ghost spawns with Back.
   Every form starts on its own blob, so nothing changes until you pick. Move down from the forms to reach the row.
 - The Mote, Spitter and Gel open for every form through a challenge each: spawn 100 Motes as the Gleaner, hit the
-  hero with Spitter goo 60 times, fuse 8 Titans as the Binder. Locked blobs show as a dark outline with their
+  hero with Spitter goo 60 times, fuse 3 Titans as the Binder. Locked blobs show as a dark outline with their
   challenge and progress, and the vault has a page for each.
 - Any ghost that spawns Gels fuses them with the ghost button, and any ghost that spawns Motes gets them in pairs.
 - New blob, the King Blob, for the silver and gold ghosts only. It slams out a ring of goo and rains globs that land

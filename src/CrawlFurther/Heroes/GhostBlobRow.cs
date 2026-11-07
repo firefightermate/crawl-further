@@ -19,11 +19,16 @@ namespace CrawlFurther.Content.Heroes
     public class GhostBlobRow
     {
         const float Scale = 0.8f, Pitch = 9.5f;
+        /// <summary>The most art (px) a box shows at full size: what the Spitter and the Gel take up running, the largest of
+        /// the small blobs. A bigger blob (the King) is drawn smaller to fit the same room, still and running, and so is its
+        /// locked outline.</summary>
+        const float FitW = 16f, FitH = 14f;
 
         readonly MenuDeitySelectPlayer m_panel;
         readonly int m_pid;
         GameObject m_root;
         readonly List<BoxView> m_boxes = new List<BoxView>();
+        readonly List<Vector2> m_baseScale = new List<Vector2>();   // each box picture's own scale
         readonly List<GhostBlobDef> m_entries = new List<GhostBlobDef>();   // [0] = null: the form's own
         readonly List<GameObject> m_hidden = new List<GameObject>();
         GhostFormDef m_form;
@@ -220,7 +225,11 @@ namespace CrawlFurther.Content.Heroes
             var mons = R.Get<exSprite[]>(m_panel, "m_monsters");
             var template = mons[0].transform.parent.gameObject;
             while (m_boxes.Count < m_entries.Count)
-                m_boxes.Add(BoxView.Create(template, m_root.transform, "Blob" + m_boxes.Count, Vector3.zero, Scale));
+            {
+                var b = BoxView.Create(template, m_root.transform, "Blob" + m_boxes.Count, Vector3.zero, Scale);
+                m_boxes.Add(b);
+                m_baseScale.Add(b.img != null ? b.img.scale : Vector2.one);
+            }
             for (int i = 0; i < m_boxes.Count; i++)
             {
                 bool on = i < m_entries.Count;
@@ -240,16 +249,89 @@ namespace CrawlFurther.Content.Heroes
                 var b = m_boxes[i];
                 var d = m_entries[i];
                 bool cur = Focused && i == Cursor;
-                if (d != null && !GhostBlobs.IsOpen(d)) { b.SetClip(Dark(d)); }
+                if (d != null && !GhostBlobs.IsOpen(d))
+                {
+                    var c = Dark(d);
+                    FitTo(i, Fit(c));
+                    b.SetClip(c);
+                }
                 else
                 {
                     var prefab = d == null ? GhostBlobs.Own(m_form, pd) : GhostBlobs.Prefab(d, pd);
                     var p = prefab != null ? prefab.GetComponent<Player>() : null;
+                    // one size for the still picture and the run, so the hovered box does not jump
+                    if (FitTo(i, p != null ? Fit(R.Get<exSpriteAnimClip>(p, "m_portraitAnim") ?? p.GetIdleAnim(), p.GetRunAnim()) : 1f))
+                        b.SetMonster(null, false);   // set the picture up again at its new size
                     b.SetMonster(p, cur);
                 }
                 var metal = m_form != null && m_form.tier == SlotTier.Gold ? "Gold" : "Silver";
                 b.SetFrame(cur ? SlotArt.Clip("EdCell", metal) : i == pick ? SlotArt.Clip("EdCell", "Slot") : null);
             }
+        }
+
+        /// <summary>Scale box <paramref name="i"/>'s picture to <paramref name="k"/> of its own size (keeping its flip).
+        /// True if it changed.</summary>
+        bool FitTo(int i, float k)
+        {
+            var img = m_boxes[i].img;
+            if (img == null) return false;
+            var cur = img.scale;
+            var want = new Vector2(Mathf.Sign(cur.x) * Mathf.Abs(m_baseScale[i].x) * k, Mathf.Sign(cur.y) * Mathf.Abs(m_baseScale[i].y) * k);
+            if ((want - cur).sqrMagnitude < 1e-6f) return false;
+            img.scale = want;
+            return true;
+        }
+
+        /// <summary>How much the clips' largest frame (its drawn pixels) must shrink to fit FitW x FitH (1 when it fits).</summary>
+        static float Fit(params exSpriteAnimClip[] clips)
+        {
+            float w = 0f, h = 0f;
+            foreach (var c in clips)
+            {
+                if (c == null || c.frameInfos == null) continue;
+                foreach (var f in c.frameInfos)
+                {
+                    var r = ArtSize(f.atlas, f.index);
+                    w = Mathf.Max(w, r.x); h = Mathf.Max(h, r.y);
+                }
+            }
+            if (w <= 0f || h <= 0f) return 1f;
+            return Mathf.Min(1f, FitW / w, FitH / h);
+        }
+
+        static readonly Dictionary<exAtlas, Vector2[]> s_artSize = new Dictionary<exAtlas, Vector2[]>();
+
+        /// <summary>
+        /// The drawn size (px) of one atlas element. Mod sheets keep whole cells as their elements, so their opaque
+        /// pixels are measured (once per element); a vanilla atlas is already trimmed to them.
+        /// </summary>
+        static Vector2 ArtSize(exAtlas atlas, int index)
+        {
+            if (atlas == null || atlas.elements == null || index < 0 || index >= atlas.elements.Length) return Vector2.zero;
+            var e = atlas.elements[index];
+            Vector2[] sizes;
+            if (!s_artSize.TryGetValue(atlas, out sizes)) s_artSize[atlas] = sizes = new Vector2[atlas.elements.Length];
+            if (sizes[index] != Vector2.zero) return sizes[index];
+            var size = new Vector2(e.trimRect.width, e.trimRect.height);
+            var tex = atlas.texture as Texture2D;
+            bool whole = Mathf.Approximately(e.trimRect.width, e.originalWidth) && Mathf.Approximately(e.trimRect.height, e.originalHeight);
+            if (whole && tex != null && !e.rotated)
+            {
+                try
+                {
+                    int x0 = Mathf.RoundToInt(e.coords.x * tex.width), y0 = Mathf.RoundToInt(e.coords.y * tex.height);
+                    int w = Mathf.RoundToInt(e.coords.width * tex.width), h = Mathf.RoundToInt(e.coords.height * tex.height);
+                    var px = tex.GetPixels(x0, y0, w, h);
+                    int minX = w, minY = h, maxX = -1, maxY = -1;
+                    for (int y = 0; y < h; y++)
+                        for (int x = 0; x < w; x++)
+                            if (px[y * w + x].a > 0) { minX = Mathf.Min(minX, x); maxX = Mathf.Max(maxX, x); minY = Mathf.Min(minY, y); maxY = Mathf.Max(maxY, y); }
+                    if (maxX >= 0) size = new Vector2(maxX - minX + 1, maxY - minY + 1);
+                }
+                catch { }   // an unreadable texture: keep the element's own size
+            }
+            sizes[index] = size;
+            return size;
         }
 
         /// <summary>The box of the pick that counts for this form.</summary>

@@ -498,7 +498,7 @@ namespace CrawlFurther.Content.Tips
                 "- <color=#d4be9c>Gold idol</color>: evolve <color=#d4be9c>20</color> different final forms.",
                 "- <color=#d4be9c>Silver ghost</color>: gather <color=#d4be9c>1000</color> ectoplasm as a ghost.",
                 "- <color=#d4be9c>Gold ghost</color>: slay the hero <color=#d4be9c>40</color> times as a monster.",
-                "- <color=#d4be9c>Blobs</color>: spawn <color=#d4be9c>100</color> Motes as the Gleaner, hit the hero with Spitter goo <color=#d4be9c>60</color> times, fuse <color=#d4be9c>8</color> Titans as the Binder.",
+                "- <color=#d4be9c>Blobs</color>: spawn <color=#d4be9c>100</color> Motes as the Gleaner, hit the hero with Spitter goo <color=#d4be9c>60</color> times, fuse <color=#d4be9c>3</color> Titans as the Binder.",
                 "A banner on the next menu tells you when a slot opens.",
             }),
             new PauseTopic("icons", "", "ICONS", "what the little markers mean", new[]

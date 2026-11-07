@@ -25,7 +25,7 @@ namespace CrawlFurther.Content.Ghosts
         {
             Add(Mote, "SWARM", "Spawn 100 Motes as the Gleaner", StatMotes, 100, "MOTE BLOB");
             Add(Spitter, "SPATTER", "Hit the hero with Spitter goo 60 times", StatSpits, 60, "SPITTER BLOB");
-            Add(Gel, "FUSION", "Fuse 8 Titans as the Binder", StatTitans, 8, "GEL BLOB");
+            Add(Gel, "FUSION", "Fuse 3 Titans as the Binder", StatTitans, 3, "GEL BLOB");
         }
 
         static void Add(string id, string title, string text, string stat, int target, string slot)
