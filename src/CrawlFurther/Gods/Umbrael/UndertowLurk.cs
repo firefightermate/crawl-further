@@ -23,7 +23,14 @@ namespace CrawlFurther.Content.Gods.Umbrael
         bool m_riding;
 
         protected override void OnEnable() { base.OnEnable(); m_riding = false; m_under = null; }
-        protected override void OnDisable() { base.OnDisable(); DropInk(); m_riding = false; }
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            DropInk();
+            // put away mid-lurk (the coroutine is gone): the pooled body must not keep its collision off
+            if (m_riding && Body != null) Body.AnimCollideOn();
+            m_riding = false;
+        }
 
         void DropInk()
         {
