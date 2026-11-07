@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.1.0
 
 - Pick your ghost's blob. The ghost page has a second row under the forms: the blob your ghost spawns with Back.
   Every form starts on its own blob, so nothing changes until you pick. Move down from the forms to reach the row.

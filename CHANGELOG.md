@@ -3,7 +3,7 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
-## Unreleased
+## 1.1.0
 
 ### Library (CrawlFurther.Core)
 - `GhostBlobs` and `GhostBlobDef`: blobs a ghost can spawn with Back in place of its form's own, picked per player.
