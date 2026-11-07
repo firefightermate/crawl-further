@@ -55,7 +55,7 @@ namespace CrawlFurther.UI
         // the monsters each save has taken, "profile\tkey" (CrawlMod.TipsSeen.txt)
         const string SeenFile = "CrawlMod.TipsSeen.txt";
         static readonly HashSet<string> s_taken = new HashSet<string>();
-        static bool s_takenLoaded;
+        static bool s_takenLoaded, s_takenUnreadable;
         static readonly HashSet<string> s_missingLogged = new HashSet<string>();
         static bool s_audited;
         // per player: the last body / boss part they took (kept even with tips off: the pause menu's page reads it)
@@ -151,11 +151,17 @@ namespace CrawlFurther.UI
                 foreach (var raw in File.ReadAllLines(path))
                     if (raw.IndexOf('\t') > 0) s_taken.Add(raw);   // the header line has no tab
             }
-            catch (Exception e) { FurtherCore.Log.LogWarning("Monster tips: could not read " + SeenFile + ": " + e.Message); }
+            catch (Exception e)
+            {
+                // never write over a list we could not read: this session's takes stay in memory only
+                s_takenUnreadable = true;
+                FurtherCore.Log.LogWarning("Monster tips: could not read " + SeenFile + " (it is left as it is): " + e.Message);
+            }
         }
 
         static void SaveTaken()
         {
+            if (s_takenUnreadable) return;
             try
             {
                 var lines = new List<string> { "# Monsters each save has taken (profile, tab, monster). Tooltips = FirstTime shows a tip only for monsters not listed. Delete a line to see that tip again." };

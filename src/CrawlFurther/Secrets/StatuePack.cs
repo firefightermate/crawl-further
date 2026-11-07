@@ -78,7 +78,7 @@ namespace CrawlFurther.Content.Secrets
                     s_force = "Off";
                     try
                     {
-                        var cfg = new BepInEx.Configuration.ConfigFile(System.IO.Path.Combine(BepInEx.Paths.ConfigPath, "CrawlMod.Debug.cfg"), true);
+                        var cfg = CrawlFurther.Further.Config("CrawlMod.Debug.cfg");   // shared: another instance would drop this file's other entries on save
                         s_force = cfg.Bind("SecretStatues", "Force", "Off",
                             "Testing: Off (normal odds), Normal (every statue room has a normal secret statue), Legendary (every statue room has the legendary), Every (every statue is a secret one, cycling all five)").Value ?? "Off";
                     }

@@ -22,7 +22,16 @@ namespace CrawlFurther.Content.Gods.Vhorrul
         protected override exSpriteAnimClip SwimIdleClip { get { return WyrmSwim; } }
         protected override exSpriteAnimClip SwimRunClip { get { return WyrmSwimRun; } }
 
-        protected override void OnDisable() { m_ring.Clear(); base.OnDisable(); }
+        bool m_coiling;
+
+        protected override void OnDisable()
+        {
+            m_ring.Clear();
+            // put away mid-coil (the coroutine is gone): the pooled body must not keep its collision off
+            if (m_coiling && Body != null) Body.AnimCollideOn();
+            m_coiling = false;
+            base.OnDisable();
+        }
 
         /// <summary>Clip event: begin the coil round where the hero stands now.</summary>
         public void VhCoil()
@@ -40,6 +49,7 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             float a0 = AngleOf(Me - centre);
             float dir = Random.value < 0.5f ? 1f : -1f;
             SendMessage("AnimCollideOff", SendMessageOptions.DontRequireReceiver);
+            m_coiling = true;
             Hold(CoilLoop, Lap + 0.1f);
             float t = 0f, laid = -FlameEvery;
             while (t < Lap && Alive)
@@ -57,6 +67,7 @@ namespace CrawlFurther.Content.Gods.Vhorrul
                 yield return null;
             }
             SendMessage("AnimCollideOn", SendMessageOptions.DontRequireReceiver);
+            m_coiling = false;
             if (!Alive) yield break;
             Monster.Face(centre);
             foreach (var f in m_ring) if (f != null && f.activeInHierarchy) { var c = f.GetComponent<VhCoilFx>(); if (c != null) c.Glow(); }

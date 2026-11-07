@@ -35,6 +35,6 @@ for f in "$ROOT"/music/*.ogg "$ROOT"/music/*.wav; do
 done
 cp "$BUILD/CrawlFurther.Core.dll" "$BUILD/CrawlFurther.dll" "$ROOT/README.txt" "$STAGE/"
 tar cf "$OUT/plugin_pkg.tar" -C "$(dirname "$STAGE")" CrawlFurther
-(cd "$(dirname "$ROOT")" && tar czf "$OUT/CrawlMod-src.tar.gz" --exclude="$(basename "$ROOT")/build" --exclude='*/__pycache__' \
-  --exclude="$(basename "$ROOT")/art/raw" "$(basename "$ROOT")")
+# the source download: committed files only (no .git, local notes, game DLLs in lib/ or build output), minus art/raw
+git -C "$ROOT" archive --format=tar --prefix=CrawlFurther/ HEAD -- . ':(exclude)art/raw' | gzip -9 > "$OUT/CrawlMod-src.tar.gz"
 echo "packaged $(ls "$STAGE/art" | wc -l) art files -> $OUT/plugin_pkg.tar"

@@ -54,7 +54,7 @@ namespace CrawlFurther.UI
                 {
                     try
                     {
-                        var cfg = new BepInEx.Configuration.ConfigFile(System.IO.Path.Combine(BepInEx.Paths.ConfigPath, "CrawlMod.Debug.cfg"), true);
+                        var cfg = CrawlFurther.Further.Config("CrawlMod.Debug.cfg");   // shared: another instance would drop this file's other entries on save
                         s_unlockAll = cfg.Bind("Unlocks", "UnlockAll", false,
                             "Open everything the unlock challenges lock (the silver and gold slots) without doing them. For testing; progress is kept.").Value;
                     }

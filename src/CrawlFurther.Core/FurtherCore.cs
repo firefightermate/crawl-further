@@ -29,6 +29,8 @@ namespace CrawlFurther
 
         /// <summary>Mods whose start callback threw, with the error. The self-test reports each one.</summary>
         internal static readonly System.Collections.Generic.List<string> FailedStarts = new System.Collections.Generic.List<string>();
+        /// <summary>Patch classes that failed to apply, "assembly: class: error" (the self-test lists them).</summary>
+        internal static readonly System.Collections.Generic.List<string> FailedPatches = new System.Collections.Generic.List<string>();
 
         static readonly List<FurtherMod> s_mods = new List<FurtherMod>();
         bool m_started;
@@ -135,7 +137,12 @@ namespace CrawlFurther
             foreach (var t in types)
             {
                 try { harmony.CreateClassProcessor(t).Patch(); ok++; }
-                catch (Exception e) { bad++; log.LogError("Patch " + t.Name + " failed: " + e.Message); }
+                catch (Exception e)
+                {
+                    bad++;
+                    log.LogError("Patch " + t.Name + " failed: " + e.Message);
+                    FailedPatches.Add(assembly.GetName().Name + ": " + t.Name + ": " + e.Message);
+                }
             }
             log.LogInfo("Harmony patches applied (" + assembly.GetName().Name + "): " + ok + " ok, " + bad + " failed");
         }

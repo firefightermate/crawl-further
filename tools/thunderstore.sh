@@ -3,9 +3,9 @@
 #   Crawl_Further-thunderstore-<ver>.zip   manifest.json, icon.png, README.md, CHANGELOG.md, plugins/CrawlFurther/...
 #   CrawlFurther-<ver>.zip                 the manual install: BepInEx loader (from $OUT/bepinex) + the plugin +
 #                                          "INSTALL - READ ME FIRST.txt" (thunderstore/INSTALL.txt)
-# The plugin folder is BepInEx/plugins/CrawlFurther (CrawlFurther.Core.dll + CrawlFurther.dll); the plugin GUID and
-# config file names are unchanged, so updates keep settings and saves. The old plugins/CrawlMod folder must go
-# (INSTALL.txt says so).
+# The plugin folder is BepInEx/plugins/CrawlFurther (CrawlFurther.Core.dll + CrawlFurther.dll); the CrawlMod.* and
+# CrawlFurther.* config file names are unchanged, so updates keep settings and saves. The old plugins/CrawlMod folder
+# must go (INSTALL.txt says so).
 set -e
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 OUT=${1:-$ROOT/dist}

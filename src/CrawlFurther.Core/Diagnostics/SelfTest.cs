@@ -81,6 +81,8 @@ namespace CrawlFurther.Diagnostics
         /// </summary>
         static void CheckPatchClasses()
         {
+            // a patch that did not go in is only in the log otherwise: its feature is silently off
+            foreach (var f in FurtherCore.FailedPatches) Bad("patch failed to apply: " + f);
             int n = 0;
             foreach (var asm in FurtherCore.Assemblies)
                 foreach (var t in asm.GetTypes())
