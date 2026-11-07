@@ -3,7 +3,7 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
-## Unreleased
+## 1.0.2
 
 ### Library (CrawlFurther.Core)
 - `TierRules` holds the rules for evolved monsters. Their hits on the hero are no longer softened (they were 0.85x

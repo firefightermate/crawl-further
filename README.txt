@@ -1,4 +1,4 @@
-CRAWL: FURTHER 1.0.1
+CRAWL: FURTHER 1.0.2
 ====================
 
 Crawl: Further (formerly "Crawl Mod") is a big content mod for Crawl. Nine new gods with 189 monsters between
@@ -9,12 +9,19 @@ violet gem on its picture (portraits, shop pictures, vault cells and the evoluti
 Every mod monster, item, weapon, object, god, origin and ghost form has a vault entry, and everything has its
 own drawn art.
 
-Launch Crawl normally. The top-left banner shows "Crawl: Further 1.0.1" and "self-test OK" when everything
+Launch Crawl normally. The top-left banner shows "Crawl: Further 1.0.2" and "self-test OK" when everything
 loaded. If anything failed, BepInEx\plugins\CrawlFurther\CrawlMod_selftest.txt lists what and why.
 The mod is two DLLs in BepInEx\plugins\CrawlFurther: CrawlFurther.Core.dll (the library) and CrawlFurther.dll.
 Delete an old BepInEx\plugins\CrawlMod folder when you update. The config files keep their old names, so
 updating from any earlier version keeps your settings and saves. New settings files start with CrawlFurther.
 The mod's two bosses are switched off in this version (see BOSSES).
+
+NEW IN 1.0.2
+------------
+  - Tier 2 and tier 3 monsters are stronger, in line with the game's own: more health on the finals, harder hits
+    and specials that charge sooner.
+  - Fixed runs getting stuck when a minion, a thrall or a spawned effect killed the hero: nobody took the crown
+    and the dead hero's player never became a ghost.
 
 NEW IN 1.0.1
 ------------

@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.2
 
 - Tier 2 and tier 3 monsters of all nine gods are stronger, in line with the game's own tier 3 monsters and
   finals: the finals have more health, hits land harder and specials charge sooner. The Glue Mortar also lobs faster.
