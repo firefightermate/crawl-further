@@ -18,11 +18,11 @@ namespace CrawlFurther.Monsters
 
         /// <summary>Every built mod monster by def id (not prefab name).</summary>
         public static readonly Dictionary<string, Player> Built = new Dictionary<string, Player>();
-        /// <summary>Damage multiplier on hits against the hero, by prefab name (evolved tiers hit a bit softer).</summary>
+        /// <summary>Multiplier on hits against the hero, by prefab name: the tier rule times the def's own
+        /// <see cref="MonsterDef.damageMult"/>. Every evolved monster has an entry.</summary>
         public static readonly Dictionary<string, float> DamageMult = new Dictionary<string, float>();
-        /// <summary>Tier 2 / tier 3 damage multipliers against the hero.</summary>
-        public const float T2Damage = 0.85f, T3Damage = 0.8f;
-        const float EvolvedSpecialCharge = 1.25f;
+        /// <summary>The tier of every built monster (1 to 3, see <see cref="TierRules.Of"/>), by prefab name.</summary>
+        public static readonly Dictionary<string, int> Tier = new Dictionary<string, int>();
 
         // inactive and never destroyed: clones parked under it act as prefabs (no Awake, not in any scene)
         internal static GameObject Holder
@@ -127,9 +127,6 @@ namespace CrawlFurther.Monsters
                 if (mv != null) R.Set(mv, "m_speedMax", R.Get<float>(mv, "m_speedMax") * def.speedMult);
             }
             if (def.evolveCost >= 0f) R.Set(p, "m_evolveCost", def.evolveCost);
-            if (def.specialChargeTime > 0f) R.Set(p, "m_specialAttackChargeTime", def.specialChargeTime);
-            if (Math.Abs(def.attackCooldownMult - 1f) > 0.001f)
-                foreach (var a in R.Get<List<AttackData>>(p, "m_attacks")) a.m_cooldown *= def.attackCooldownMult;
 
             if (!def.keepEvolutions) R.Set(p, "m_evolveTo", new Player[0]);
             if (!def.keepEvolutions) R.Set(p, "m_evolveToCostOverride", Array.CreateInstance(R.F(typeof(Player), "m_evolveToCostOverride").FieldType.GetElementType(), 0));
@@ -145,13 +142,7 @@ namespace CrawlFurther.Monsters
                 if (ArtScale.BySheet.TryGetValue(sheet.id, out k) && Math.Abs(k - 1f) > 0.001f) ScaleOffsets(p, k);
                 FitHurtbox(p, sheet);
             }
-            // evolved tiers (cost 2.5 = T2, 4.5 = T3): softer hits and slower specials than the raw kit numbers
-            if (def.evolveCost >= 2f)
-            {
-                DamageMult[def.PrefabName] = def.evolveCost >= 4f ? T3Damage : T2Damage;
-                float ct = R.Get<float>(p, "m_specialAttackChargeTime");
-                if (ct > 0f) R.Set(p, "m_specialAttackChargeTime", ct * EvolvedSpecialCharge);
-            }
+            ApplyTuning(def, p);
             if (def.customize != null)
             {
                 try { def.customize(go, p); }
@@ -164,6 +155,20 @@ namespace CrawlFurther.Monsters
             Built[def.id] = p;
             FurtherCore.Log.LogInfo("Built monster " + def.PrefabName + " from " + def.basePrefab);
             return p;
+        }
+
+        // The tier rule, then the def's own numbers, after the kit so the def line has the last word.
+        static void ApplyTuning(MonsterDef def, Player p)
+        {
+            int tier = TierRules.Of(def.evolveCost);   // a def that keeps its base's cost (minions, blobs) stays tier 1
+            Tier[def.PrefabName] = tier;
+            float dmg = TierRules.Damage(tier) * def.damageMult;
+            if (tier >= 2 || Math.Abs(dmg - 1f) > 0.001f) DamageMult[def.PrefabName] = dmg;
+            float ct = R.Get<float>(p, "m_specialAttackChargeTime");
+            if (ct > 0f) R.Set(p, "m_specialAttackChargeTime", ct * TierRules.SpecialCharge(tier));
+            if (def.specialChargeTime > 0f) R.Set(p, "m_specialAttackChargeTime", def.specialChargeTime);
+            if (Math.Abs(def.attackCooldownMult - 1f) > 0.001f)
+                foreach (var a in R.Get<List<AttackData>>(p, "m_attacks")) a.m_cooldown *= def.attackCooldownMult;
         }
 
         /// <summary>Point each built monster at its <see cref="MonsterDef.evolveTo"/> targets. Call after building the whole tree.</summary>

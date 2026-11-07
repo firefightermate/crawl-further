@@ -32,10 +32,7 @@ namespace CrawlFurther.Content.Gods.Ysveld
         /// <summary>A damage source owned by <paramref name="monster"/> (for hits that are not effects).</summary>
         public static DamageSource Source(GameObject monster)
         {
-            if (monster == null) return null;
-            var pl = monster.GetComponent<Player>();
-            var pd = pl != null ? R.Get<PlayerData>(pl, "m_playerData") : null;
-            return new DamageSource(monster, monster, pd);
+            return ModUtil.MonsterSource(monster);
         }
 
         /// <summary>Hurt <paramref name="victim"/> directly; <paramref name="push"/> &gt; 0 also shoves it along dir.</summary>

@@ -421,8 +421,7 @@ namespace CrawlFurther.Content.Secrets
         protected float Facing { get { return transform.localScale.x < 0f ? -1f : 1f; } }
         public DamageSource Own()
         {
-            var pd = m_player != null ? R.Get<PlayerData>(m_player, "m_playerData") : null;
-            return new DamageSource(gameObject, gameObject, pd);
+            return ModUtil.MonsterSource(gameObject);
         }
         protected static bool From(DamageInfo d, string prefix)
         {

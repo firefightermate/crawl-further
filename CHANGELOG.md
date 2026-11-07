@@ -3,6 +3,17 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## Unreleased
+
+### Library (CrawlFurther.Core)
+- `TierRules` holds the rules for evolved monsters. Their hits on the hero are no longer softened (they were 0.85x
+  at tier 2 and 0.8x at tier 3), and their specials charge in 0.8x the time the kit sets instead of 1.25x.
+- `MonsterDef.damageMult` scales one monster's hits on the hero. `specialChargeTime` and `attackCooldownMult` now
+  apply after the kit, so a monster's balance numbers all sit on its def line.
+- `MonsterFactory.Tier` gives each built monster's tier. Statue rooms and the self-test use it to find finals.
+- `ModMonster.OwnSource` and the new `ModUtil.MonsterSource` carry the controlling player's damage modifiers, so a
+  hit that a behaviour deals or spawns scales with god perks and runes the way the game's own attacks do.
+
 ## 1.0.1
 
 ### Library (CrawlFurther.Core)

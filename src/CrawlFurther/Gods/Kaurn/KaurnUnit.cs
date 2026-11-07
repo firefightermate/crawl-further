@@ -63,8 +63,7 @@ namespace CrawlFurther.Content.Gods.Kaurn
 
         public DamageSource OwnSource()
         {
-            var pd = m_player != null ? R.Get<PlayerData>(m_player, "m_playerData") : null;
-            return new DamageSource(gameObject, gameObject, pd);
+            return ModUtil.MonsterSource(gameObject);
         }
 
         void ShowPips()
