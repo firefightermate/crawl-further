@@ -104,25 +104,37 @@ namespace CrawlFurther.Gods
                                    + (pd != null && pd.GameData != null ? pd.GameData.GetMonsterData().Length : 0) + " starters");
             }
             string anim = SlotArt.Anim(tier);
+            var bracket = Art("EvoBracket", anim);
+            var header = Art("EvoHeader", anim);
             var menu = s_menu(p);
             var items = R.Get<List<MenuButton>>(menu, "m_items");
-            if (items != null)
+            if (items != null && bracket != null)
                 for (int i = 1; i < items.Count; i += 3)
                 {
                     var b = items[i];
                     if (b == null || b.GetComponent<MenuButtonEvolveMonster>() == null || b.transform.Find("ModIdolBracketL") != null) continue;
-                    var cl = SlotArt.Clip("EvoBracket", anim);
-                    var l = SlotArt.Sprite("ModIdolBracketL", b.transform, new Vector3(-22.5f, 0f, -0.5f), cl);
-                    var r = SlotArt.Sprite("ModIdolBracketR", b.transform, new Vector3(22.5f, 0f, -0.5f), cl);
+                    var l = SlotArt.Sprite("ModIdolBracketL", b.transform, new Vector3(-22.5f, 0f, -0.5f), bracket);
+                    var r = SlotArt.Sprite("ModIdolBracketR", b.transform, new Vector3(22.5f, 0f, -0.5f), bracket);
                     r.scale = new Vector2(-1f, 1f);
                 }
             var name = R.Get<OverlayText>(p, "m_name");
-            if (name != null && p.transform.Find("ModIdolHeader") == null)
+            if (name != null && header != null && p.transform.Find("ModIdolHeader") == null)
             {
                 var lp = p.transform.InverseTransformPoint(name.transform.position);
-                var h = SlotArt.Sprite("ModIdolHeader", p.transform, new Vector3(lp.x, lp.y, lp.z + 0.4f), SlotArt.Clip("EvoHeader", anim));
+                var h = SlotArt.Sprite("ModIdolHeader", p.transform, new Vector3(lp.x, lp.y, lp.z + 0.4f), header);
                 h.gameObject.AddComponent<FollowActive>().target = name.gameObject;
             }
+        }
+
+        static readonly HashSet<string> s_missing = new HashSet<string>();
+
+        /// <summary>A slot art clip that can be drawn, or null (logged once): the frame is left out rather than drawn blank.</summary>
+        static exSpriteAnimClip Art(string sheet, string anim)
+        {
+            var c = SlotArt.Clip(sheet, anim);
+            if (SlotArt.Alive(c)) return c;
+            if (s_missing.Add(sheet + "/" + anim)) FurtherCore.Log.LogWarning("Evolve: no " + sheet + " " + anim + " art, the slot god frame is left out");
+            return null;
         }
     }
 

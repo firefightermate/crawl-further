@@ -43,16 +43,27 @@ namespace CrawlFurther.Gods
             if (s == null || s.transform.parent == null) return;
             var sh = SpriteSheets.ByAtlas(s.atlas);
             int bx, by, bw, bh;
+            var limit = s.GetComponent<EvolveStretchLimit>() ?? s.gameObject.AddComponent<EvolveStretchLimit>();
             if (sh == null || !MonsterFactory.Bounds(sh, s.index, out bx, out by, out bw, out bh))
             {
                 s.scale = Vector2.one;   // vanilla monster in a hand that showed a scaled mod one before
+                limit.maxX = float.MaxValue;
                 return;
             }
             float hx = s.transform.parent.localPosition.x + s.transform.localPosition.x;
             Vector2 off; float k, over;
-            Fit(sh.manifest.cellW, bx, by, bw, bh, hx, currentHeight, out k, out off, out over);
+            int cellW = sh.manifest.cellW;
+            Fit(cellW, bx, by, bw, bh, hx, currentHeight, out k, out off, out over);
             s.scale = new Vector2(k, k);
             s.offset = off;
+            // the art's edges from the feet column (the transform's origin), and the widest squash the panel holds
+            float feet = cellW / 2 + 0.5f, shift = off.x + (feet - cellW * 0.5f) * k;
+            float l = (bx - feet) * k + shift, r = (bx + bw - feet) * k + shift;
+            float lo = -PanelHalf + Edge - hx, hi = PanelHalf - Edge - hx;
+            float m = float.MaxValue;
+            if (r > 0f) m = Mathf.Min(m, hi / r);
+            if (l < 0f) m = Mathf.Min(m, lo / l);
+            limit.maxX = Mathf.Max(1f, m);
         }
 
         static bool TryFit(int cellW, int bx, int by, int bw, int bh, float hx, float k, float cross, out Vector2 off, out float over)
@@ -109,6 +120,30 @@ namespace CrawlFurther.Gods
         }
     }
 
+    /// <summary>
+    /// Keeps an evolution choice inside the panel while vanilla squashes it (MenuEvolvePlayerEvolve stretches the choice to
+    /// 1.3 / 1.33 times its width as it appears, after an evolve, with the red and white flashes). A vanilla monster is
+    /// about 20 px wide, so it stays inside; a mod one laid out by <see cref="EvolveHands.Place"/> can fill the panel,
+    /// and stretched about its feet it would cross into the pillar. The horizontal stretch (the hand's and the
+    /// monster's together, relative to the panel) is capped at <see cref="maxX"/> just before the frame is drawn.
+    /// </summary>
+    public class EvolveStretchLimit : MonoBehaviour
+    {
+        /// <summary>The widest stretch that keeps the art inside the panel (MaxValue: no limit, a vanilla monster).</summary>
+        public float maxX = float.MaxValue;
+
+        void LateUpdate()
+        {
+            if (maxX >= float.MaxValue) return;
+            var t = transform;
+            var panel = t.parent != null ? t.parent.parent : null;   // hand, then the evolve panel
+            if (panel == null || Mathf.Abs(panel.lossyScale.x) < 1e-5f) return;
+            var ls = t.localScale;
+            float total = t.lossyScale.x / panel.lossyScale.x;
+            if (total > maxX + 0.001f && Mathf.Abs(total) > 1e-5f) t.localScale = new Vector3(ls.x * maxX / total, ls.y, ls.z);
+        }
+    }
+
     /// <summary>When a choice is wide enough to cross the centre line, the selected hand's monster is drawn in front.</summary>
     [HarmonyPatch(typeof(MenuEvolvePlayerEvolve), "Update")]
     static class Patch_EvolveHandOrder
@@ -143,10 +178,15 @@ namespace CrawlFurther.Gods
         }
     }
 
-    /// <summary>Lays out each evolution choice as it is shown and gives it the mod gem.</summary>
+    /// <summary>
+    /// Lays out each evolution choice as it is shown, gives the panel its one mod gem (<see cref="EvolvePanel"/>) and
+    /// matches the cost numbers vanilla has just written to their label's font.
+    /// </summary>
     [HarmonyPatch(typeof(MenuEvolvePlayerEvolve), "SetMonsterSprite")]
     static class Patch_EvolveHandBadge
     {
+        static bool s_warned;
+
         static void Postfix(MenuEvolvePlayerEvolve __instance, exSprite menuSprite, exSpriteAnimation menuAnim, PlayerMonsterData ___m_monsterDataCurr)
         {
             try
@@ -158,7 +198,12 @@ namespace CrawlFurther.Gods
                 }
             }
             catch (Exception e) { FurtherCore.Log.LogWarning("Evolve hand layout: " + e.Message); }
-            try { ModGem.Attach(menuSprite); } catch { }
+            try
+            {
+                EvolvePanel.Gem(__instance, menuSprite);
+                EvolvePanel.SyncFonts(__instance);
+            }
+            catch (Exception e) { if (!s_warned) { s_warned = true; FurtherCore.Log.LogWarning("Evolve panel gem / fonts: " + e.Message); } }
         }
     }
 }

@@ -110,7 +110,7 @@ namespace CrawlFurther
             "Patch_HeroGearInitAsPlayer", "Patch_PlayerAwake", "Patch_HealthDamage", "Patch_SpawnEffectEcho",
             "Patch_PlayerDataSetDeity", "Patch_HeroLooksSetDeity", "Patch_HeroLooksInitAsPlayer", "Patch_HeroLooksRemoveStatus",
             "Patch_MenuRefresh", "Patch_BrandTitle", "Patch_LibraryCellAction", "Patch_LibraryItemText", "Patch_VaultUpdateItem",
-            "Patch_VaultCellAction", "Patch_VaultPortraitGem",
+            "Patch_VaultCellAction", "Patch_VaultPortraitGem", "Patch_EvolvePanelFonts",
             "Patch_TestWipeKeys", "Patch_TestPanelMouse", "Patch_TestUnlocked", "Patch_TestNoVaultFinds", "Patch_TestFreezeAI", "Patch_TestFreezeAIMove",
             "Patch_TestFreezeAIAttack", "Patch_TestFreezeBot", "Patch_TestFreezeBotMove",
         };
