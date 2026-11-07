@@ -23,13 +23,13 @@ namespace CrawlFurther.Content.Ghosts
             new GhostFormEntry { form = GhostForm.Wisp, name = "WISP", portraitArt = "GhostWisp",
                 summary = "The standard ghost, no changes", flavour = "Float, gather, return.\nThe old way." },
             new GhostFormEntry { form = GhostForm.Gleaner, name = "GLEANER", portraitArt = "GhostGleaner", bodyArt = "FormGleaner",
-                summary = "Ectoplasm flies to you, worth less",
+                summary = "Ectoplasm flies to you, worth less. Earns Motes",
                 flavour = "Every scrap of the dead\nends up in its sack." },
             new GhostFormEntry { form = GhostForm.Binder, name = "BINDER", portraitArt = "GhostBinder", bodyArt = "FormBinder",
-                summary = "Spawn Gels, fuse them with the ghost button",
+                summary = "Earn Gels, then fuse them with the ghost button",
                 flavour = "Two make a brute.\nThree make a titan." },
             new GhostFormEntry { form = GhostForm.Poltergeist, name = "POLTERGEIST", portraitArt = "GhostPoltergeist", bodyArt = "FormPoltergeist",
-                summary = "Attack throws a weak hex bolt",
+                summary = "Attack throws a weak hex bolt. Earns Spitters",
                 flavour = "It cannot touch you.\nIt can throw the cutlery." },
             new GhostFormEntry { form = GhostForm.Banshee, name = "BANSHEE", portraitArt = "GhostBanshee", bodyArt = "FormBanshee",
                 summary = "Attack wails: slows the hero, costs ectoplasm",
@@ -609,23 +609,12 @@ namespace CrawlFurther.Content.Ghosts
             atk.Add(a);
         }
 
-        /// <summary>What a player's Back spawns: their picked blob, else their form's own (<paramref name="vanilla"/>: the
-        /// game's plain blob).</summary>
+        /// <summary>What a player's Back spawns (<paramref name="vanilla"/>: the game's plain blob). The Banshee to the Miser
+        /// always raise their own monster, which their abilities work on; the rest spawn the blob in effect (GhostBlobs):
+        /// the regular blob, their own once earned, or what they picked.</summary>
         public static GameObject FodderFor(PlayerData pd, GameObject vanilla)
         {
-            return GhostBlobs.PrefabOf(pd, OwnFodder(FormOf(pd)) ?? vanilla);
-        }
-
-        /// <summary>A form's own Back monster, or null for the game's plain blob.</summary>
-        static GameObject OwnFodder(GhostForm f)
-        {
-            switch (f)
-            {
-                case GhostForm.Gleaner: return Mote != null ? Mote.gameObject : null;
-                case GhostForm.Binder: return Gel != null ? Gel.gameObject : null;
-                case GhostForm.Poltergeist: return Spitter != null ? Spitter.gameObject : null;
-                default: return GhostV11.FodderFor(f);
-            }
+            return GhostV11.FodderFor(FormOf(pd)) ?? GhostBlobs.PrefabOf(pd, vanilla);
         }
 
         /// <summary>The game's plain blob for a player (the large one when their god uses it), read straight from their
@@ -641,21 +630,30 @@ namespace CrawlFurther.Content.Ghosts
 
         // ------------------------------------------------------------------ the blob choice
         /// <summary>
-        /// The blobs any ghost can pick in place of its form's own (GhostBlobs): the plain blob always, Mote, Spitter and Gel
-        /// once their challenge is done (BlobChallenges), and the King for the silver and gold ghosts only.
+        /// The blobs (GhostBlobs): the regular blob for every form. The Gleaner, Poltergeist and Binder each earn their own
+        /// (Mote, Spitter, Gel) through a challenge played as that form (BlobChallenges); until then they spawn the regular
+        /// blob, and after it their own is the default with the regular one still a pick. The silver and gold ghosts pick
+        /// from the regular blob, every earned Mote, Spitter and Gel, and the King, which is theirs alone.
         /// </summary>
         static void RegisterBlobs()
         {
-            GhostBlobs.OwnOf = (def, pd) =>
+            var regular = new GhostBlobDef { id = "Plain", name = "Regular Blob", summary = "The game's own blob, nothing added", prefab = PlainBlob };
+            GhostBlobs.Register(regular);
+            GhostBlobs.Regular = regular;
+            Blob("Mote", "Mote Blob", "Quick and fragile. They come in pairs", Mote, BlobChallenges.Mote, GhostForm.Gleaner);
+            Blob("Spitter", "Spitter Blob", "Spits goo along the floor that slows", Spitter, BlobChallenges.Spitter, GhostForm.Poltergeist);
+            Blob("Gel", "Gel Blob", "Fuses into bigger blobs with the ghost button", Gel, BlobChallenges.Gel, GhostForm.Binder);
+            GhostBlobs.OwnOf = def =>
             {
                 var e = def as GhostFormEntry;
-                return OwnFodder(e != null ? e.form : GhostForm.Wisp) ?? PlainBlob(pd);
+                switch (e != null ? e.form : GhostForm.Wisp)
+                {
+                    case GhostForm.Gleaner: return GhostBlobs.Find("Mote");
+                    case GhostForm.Poltergeist: return GhostBlobs.Find("Spitter");
+                    case GhostForm.Binder: return GhostBlobs.Find("Gel");
+                }
+                return null;
             };
-            GhostBlobs.Register(new GhostBlobDef { id = "Plain", name = "Plain Blob", summary = "The game's own blob, nothing added",
-                                                    prefab = PlainBlob });
-            Blob("Mote", "Mote Blob", "Quick and fragile. They come in pairs", Mote, BlobChallenges.Mote);
-            Blob("Spitter", "Spitter Blob", "Spits goo along the floor that slows", Spitter, BlobChallenges.Spitter);
-            Blob("Gel", "Gel Blob", "Fuses into bigger blobs with the ghost button", Gel, BlobChallenges.Gel);
             if (King != null)
                 GhostBlobs.Register(new GhostBlobDef
                 {
@@ -665,19 +663,26 @@ namespace CrawlFurther.Content.Ghosts
                 });
         }
 
-        static void Blob(string id, string name, string summary, Player p, string unlock)
+        /// <summary>A form's own blob: that form and the silver and gold ghosts may pick it once its challenge is done.</summary>
+        static void Blob(string id, string name, string summary, Player p, string unlock, GhostForm owner)
         {
             if (p == null) return;
-            GhostBlobs.Register(new GhostBlobDef { id = id, name = name, summary = summary, prefab = pd => p.gameObject, art = "Blob" + id, unlock = unlock });
+            GhostBlobs.Register(new GhostBlobDef
+            {
+                id = id, name = name, summary = summary, prefab = pd => p.gameObject, art = "Blob" + id, unlock = unlock,
+                fits = f => f != null && (f.tier != SlotTier.Normal || (f as GhostFormEntry) != null && ((GhostFormEntry)f).form == owner),
+            });
         }
 
-        /// <summary>The player's ghost spawns Gels (its own or picked): the ghost button fuses them.</summary>
+        /// <summary>The player's ghost spawns Gels (the Binder once it earns them, or a silver / gold ghost that picked
+        /// them): the ghost button fuses them.</summary>
         public static bool FusesGels(PlayerData pd)
         {
             return pd != null && Gel != null && FodderFor(pd, null) == Gel.gameObject;
         }
 
-        /// <summary>The player's ghost spawns Motes (its own or picked): they come in pairs.</summary>
+        /// <summary>The player's ghost spawns Motes (the Gleaner once it earns them, or a silver / gold ghost that picked
+        /// them): they come in pairs.</summary>
         public static bool SpawnsMotes(PlayerData pd)
         {
             return pd != null && Mote != null && FodderFor(pd, null) == Mote.gameObject;
@@ -689,7 +694,7 @@ namespace CrawlFurther.Content.Ghosts
         public const int MaxGels = 3;
 
         /// <summary>
-        /// Any ghost that spawns Gels (the Binder, or a form that picked them): fuse its own Gels near the ghost into one
+        /// A ghost that spawns Gels (the Binder once it earns them, or a silver / gold ghost that picked them): fuse its Gels near the ghost into one
         /// blob: 2 Gels make a Brute, 3 a Titan. The nearest Gels go in first. Brutes and Titans never go into a fusion, so
         /// a fused blob stays what it is until it dies.
         /// </summary>
@@ -720,7 +725,6 @@ namespace CrawlFurther.Content.Ghosts
             if (MergeBurst != null) SystemPool.Spawn(MergeBurst, mid);
             var go = made.gameObject.Spawn(mid, Quaternion.identity);
             if (go != null) go.GetComponent<Player>().InitAsAI(ghost.gameObject);
-            if (made == Titan) BlobChallenges.TitanFused(pd);
             return true;
         }
 
@@ -940,18 +944,18 @@ namespace CrawlFurther.Content.Ghosts
     {
         static void Postfix(Player fromPlayer, Vector2 position, bool __result)
         {
-            if (!__result || fromPlayer == null || GhostPack.Mote == null) return;
+            if (!__result || fromPlayer == null) return;
             try
             {
                 var pd = fromPlayer.GetPlayerData();
-                if (!GhostPack.SpawnsMotes(pd)) return;
-                BlobChallenges.MoteSpawned(pd);
+                BlobChallenges.BlobSpawned(pd);
+                if (GhostPack.Mote == null || !GhostPack.SpawnsMotes(pd)) return;
                 foreach (var off in new[] { new Vector2(9f, -3f), new Vector2(-9f, -3f), new Vector2(0f, 8f), new Vector2(0f, -8f) })
                 {
                     var at = position + off;
                     if (!SystemLevel.GetInCurrentRoom(at)) continue;
                     var go = GhostPack.Mote.gameObject.Spawn(at, Quaternion.identity);
-                    if (go != null) { go.GetComponent<Player>().InitAsAI(fromPlayer.gameObject); BlobChallenges.MoteSpawned(pd); }
+                    if (go != null) go.GetComponent<Player>().InitAsAI(fromPlayer.gameObject);
                     break;
                 }
             }

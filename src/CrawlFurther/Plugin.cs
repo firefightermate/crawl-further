@@ -64,11 +64,11 @@ namespace CrawlFurther.Content
         {
             "Patch_Items3PlayerAwake", "Patch_Items3HeroChange", "Patch_Items3Kill", "Patch_Items3Damage", "Patch_SilverAwake",
             "Patch_HeroKill", "Patch_UmbraelHits", "Patch_JinxHeroHits",
-            "Patch_VhorrulHits", "Patch_GhostSlotsNewRun", "Patch_GhostSlotDamage", "Patch_BlobSpitHits", "Patch_SylveneHeroHits",
+            "Patch_VhorrulHits", "Patch_GhostSlotsNewRun", "Patch_GhostSlotDamage", "Patch_HexBoltHits", "Patch_SylveneHeroHits",
             "Patch_GoldDamage", "Patch_GoldSecretAwake", "Patch_StatueDamageOut", "Patch_StatueDamageIn", "Patch_StatueAwake",
             "Patch_WeaponRuntimeAwake", "Patch_WeaponHeroHit", "Patch_WeaponHandsMaterial", "Patch_ItemDamageTag",
             "Patch_OssHits", "Patch_ZhkHeroHits", "Patch_ZhkHeroStruck",
-            "Patch_ZhekraMantisExecute", "Patch_ZhekraAwake", "Patch_GleanerValue", "Patch_KaurnAwake", "Patch_BelMoraHits",
+            "Patch_ZhekraMantisExecute", "Patch_ZhekraAwake", "Patch_GleanerValue", "Patch_GleanerGathered", "Patch_KaurnAwake", "Patch_BelMoraHits",
             "Patch_SilverVariantFrames", "Patch_CustomGodInUse", "Patch_CustomPerkEcho",
         };
 

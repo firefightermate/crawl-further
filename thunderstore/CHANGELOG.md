@@ -2,17 +2,18 @@
 
 ## 1.1.0
 
-- Pick your ghost's blob. The ghost page has a second row under the forms: the blob your ghost spawns with Back.
-  Every form starts on its own blob, so nothing changes until you pick. Move down from the forms to reach the row.
-- The Mote, Spitter and Gel open for every form through a challenge each: spawn 100 Motes as the Gleaner, hit the
-  hero with Spitter goo 60 times, fuse 3 Titans as the Binder. Locked blobs show as a dark outline with their
-  challenge and progress, and the vault has a page for each.
-- Any ghost that spawns Gels fuses them with the ghost button, and any ghost that spawns Motes gets them in pairs.
-- New blob, the King Blob, for the silver and gold ghosts only. It slams out a ring of goo and rains globs that land
-  where their shadows grow. It has a little more health than a Titan, leaves no Gel behind, and costs three bodies
-  of ectoplasm.
-- The Sexton's graves and the Miser's hoard raise the picked blob too.
-- Test mode: Become > Ghost blob sets the blob.
+- The Gleaner, Poltergeist and Binder each earn a blob of their own: the Mote, the Spitter and the Gel. Until then
+  they spawn the regular blob. Once earned, their own blob is the default and the regular one can still be picked in
+  a second row on the ghost page, under the forms.
+- The challenges, played as that form: gather 250 ectoplasm as the Gleaner, hit the hero with 40 hex bolts as the
+  Poltergeist, spawn 40 blobs as the Binder. Locked blobs show as a dark outline with their challenge and progress,
+  and the vault has a page for each.
+- The Gleaner's Motes come in pairs and the Binder fuses Gels with the ghost button once they are earned.
+- Silver and gold ghosts pick from the regular blob, every blob already earned and the new King Blob, which is theirs
+  alone. It slams out a ring of goo and rains globs that land where their shadows grow. It has a little more health
+  than a Titan, leaves no Gel behind, and costs three bodies of ectoplasm. A silver or gold ghost with Motes gets
+  them in pairs, and with Gels fuses them.
+- Test mode: Become > Ghost blob sets the blob for your form.
 
 ## 1.0.2
 

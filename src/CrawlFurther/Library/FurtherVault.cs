@@ -125,11 +125,13 @@ namespace CrawlFurther.Content.Library
                    " starting monsters from every god's starters. Each one evolves along its own tree.";
         }
 
+        /// <summary>The blob's line, then whose it is: a form's own (silver and gold can pick it too), or silver and gold's alone.</summary>
         static string BlobText(GhostBlobDef b)
         {
-            bool every = true;
-            foreach (var f in GhostForms.All) if (!GhostBlobs.Fits(b, f)) every = false;
-            return b.summary + "\n" + (every ? "Any ghost can pick it" : "Only silver and gold ghosts pick it");
+            foreach (var f in GhostForms.All)
+                if (f.tier == SlotTier.Normal && GhostBlobs.Own(f) == b)
+                    return b.summary + "\nThe " + Title(f.name) + "'s own. Silver and gold ghosts pick it too";
+            return b.summary + "\nOnly silver and gold ghosts pick it";
         }
 
         /// <summary>A blob with no challenge of its own (the King) opens with the first form that can pick it.</summary>

@@ -18,9 +18,10 @@ The mod's two bosses are switched off in this version (see BOSSES).
 
 NEW IN 1.1.0
 ------------
-  - Pick your ghost's blob from a second row under the ghost forms. Each form starts on its own blob.
-  - The Mote, Spitter and Gel open for every form through a challenge each. Locked blobs show their challenge.
-  - New King Blob for the silver and gold ghosts: a goo slam and a rain of globs that land where shadows grow.
+  - The Gleaner, Poltergeist and Binder earn their own blobs (Mote, Spitter, Gel) through a challenge each,
+    played as that form. Until then they spawn the regular blob. After it, a row under the forms lets them pick.
+  - Silver and gold ghosts pick from every earned blob and the new King Blob: a goo slam and a rain of globs
+    that land where their shadows grow.
 
 NEW IN 1.0.2
 ------------
@@ -187,15 +188,17 @@ Violet pips are mod choices:
                click, controller X. Change it in the game's controls settings (GHOST BUTTON row).
 3. Blob (the second row of the ghost page, where the god page shows its starters). The blob your ghost
   spawns with Back. Move down from the forms to reach it (or point at it), left and right to pick, confirm
-  to finish. Every form starts on its own blob. Locked blobs show as a dark outline with their challenge.
-  Plain        the game's own blob, always open
-  Mote         quick and fragile, comes in pairs. Opens when you spawn 100 Motes as the Gleaner
-  Spitter      spits slowing goo. Opens when Spitter goo hits the hero 60 times
-  Gel          fuses into a Brute or a Titan with the ghost button. Opens when you fuse 3 Titans as the Binder
-  King         silver and gold ghosts only, open with them. Slams out a ring of goo and rains globs that
-               land where their shadows grow (0.8 s). 6.5 health (a Titan has 6), no Gel when it dies,
-               costs 3 bodies of ectoplasm
-  The Sexton's graves and the Miser's hoard raise the picked blob. Bots always use their form's own.
+  to finish. Only forms with a choice show the row. Locked blobs show as a dark outline with their challenge.
+  Gleaner      the regular blob, or its Motes (quick, fragile, in pairs). Earn them: gather 250 ectoplasm as
+               the Gleaner
+  Poltergeist  the regular blob, or its Spitters (slowing goo). Earn them: hit the hero with 40 hex bolts
+  Binder       the regular blob, or its Gels (fuse into a Brute or a Titan with the ghost button). Earn them:
+               spawn 40 blobs as the Binder
+               Until a form earns its blob it spawns the regular one. After that its own is the default.
+  Silver/Gold  the regular blob, any blob already earned, and the King Blob. The King is
+               theirs alone: it slams out a ring of goo and rains globs that land where their shadows grow
+               (0.8 s). 6.5 health (a Titan has 6), no Gel when it dies, costs 3 bodies of ectoplasm
+  The other forms spawn what they always did. Bots always use their form's default.
 
 SILVER AND GOLD SLOTS
 ---------------------

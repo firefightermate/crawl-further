@@ -4,9 +4,8 @@ using UnityEngine;
 namespace CrawlFurther.Ghosts
 {
     /// <summary>
-    /// A blob a ghost can spawn with Back instead of its form's own. Players pick one per player on the ghost page of the
-    /// origin picker, under the forms; the default is always the form's own. Register it with
-    /// <see cref="GhostBlobs.Register"/>.
+    /// A blob a ghost spawns with Back. A form with more than one blob to choose from shows them in a row on the ghost
+    /// page of the origin picker, under the forms. Register it with <see cref="GhostBlobs.Register"/>.
     /// </summary>
     public class GhostBlobDef
     {
@@ -22,7 +21,7 @@ namespace CrawlFurther.Ghosts
         public string art;
         /// <summary>The challenge that opens it (<see cref="UI.Unlocks"/> id); null: always open.</summary>
         public string unlock;
-        /// <summary>Which ghost forms may pick it; null: every form.</summary>
+        /// <summary>Which ghost forms may pick it; null: every form. The regular blob fits every form anyway.</summary>
         public Func<GhostFormDef, bool> fits;
         /// <summary>What one costs, in bodies of ectoplasm (the game charges one body for a blob).</summary>
         public int bodies = 1;
