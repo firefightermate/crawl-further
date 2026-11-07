@@ -23,6 +23,7 @@ NEW IN 1.0.1
   - Mod content shows one violet gem everywhere. ModGem = false in CrawlFurther.UI.cfg hides them.
   - Tips, pause pages and the vault keep working when a translation mod swaps fonts or labels.
   - The Carrion Roc can no longer leave the ally it carried unkillable.
+  - Online Crawl: a player who drops and joins again right away gets a working screen.
 
 NEW IN 1.0.0
 ------------

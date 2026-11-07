@@ -3,7 +3,7 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
-## Unreleased
+## 1.0.1
 
 ### Library (CrawlFurther.Core)
 - Online Crawl 0.4.1 and older: when a client comes back before the host timed its old session out (same Steam
@@ -12,10 +12,6 @@ Changes to Crawl Further Core and to the repository. What changed in the game fo
   whether this is on.
 - `PanelInput` lets go of a player whose holder was destroyed without freeing them, and `SlotEditorUI.End` always
   frees its player, so a player who left mid-edit and joined again is never locked out of their menus.
-
-## 1.0.1
-
-### Library (CrawlFurther.Core)
 - `ModMark` places every violet mod gem, one owner per entry: no entry shows two (the vault cell and its big
   picture, the shop pedestal and its popup, a list pip and the portrait). `ModGem.Attach` and `AttachAt` are internal.
 - `ModMark.MarkArt` marks art composed at run time; custom hero portraits no longer have the gem painted in.

@@ -1,12 +1,9 @@
 # Changelog
 
-## Unreleased
+## 1.0.1
 
 - Online Crawl: a player who lost the connection and joins again right away gets a working screen. Back in the
   game, their character plays as a bot until they press Start and pick Drop In.
-
-## 1.0.1
-
 - Fixed a white box on the evolve screen with a translation mod installed. The cost number now uses its label's font.
 - The evolve screen shows one violet gem per panel, not one on every monster.
 - Mod monsters on the evolve screen stay inside their panel.
