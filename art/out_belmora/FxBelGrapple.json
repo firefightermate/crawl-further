@@ -1,0 +1,1 @@
+{"cellW": 16, "cellH": 16, "cols": 8, "anims": [{"name": "Bite", "frames": [0, 1, 2], "durations": [0.05, 0.05, 0.05]}, {"name": "Hold", "frames": [3, 4], "durations": [0.3, 0.3]}]}

@@ -1,0 +1,1 @@
+{"cellW": 28, "cellH": 10, "cols": 8, "anims": [{"name": "Fly", "frames": [0, 1, 2, 3], "durations": [0.05, 0.05, 0.05, 0.05]}, {"name": "Pop", "frames": [4, 5, 6, 7], "durations": [0.04, 0.05, 0.07, 0.09]}], "origin": [14, 5]}

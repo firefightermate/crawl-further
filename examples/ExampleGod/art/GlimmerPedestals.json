@@ -1,0 +1,13 @@
+{
+ "cellW": 35,
+ "cellH": 33,
+ "cols": 1,
+ "anims": [
+  {
+   "name": "SpellGlimmerVolley",
+   "frames": [
+    0
+   ]
+  }
+ ]
+}

@@ -1,0 +1,20 @@
+{
+  "ModBossLeviathan/TrapA": {"name": "Leviathan - Brine Head",
+    "attack": "Aim a long jet of brine; may slow the hero",
+    "special": "none, aim with movement"},
+  "ModBossLeviathan/TrapB": {"name": "Leviathan - Hook Head",
+    "attack": "Spit globs; the hooks pull the hero in",
+    "special": "none, aim with movement"},
+  "ModBossLeviathan/TrapC": {"name": "Leviathan - Spit Head",
+    "attack": "Spit globs that land as slowing brine",
+    "special": "none, aim with movement"},
+  "ModBossPandemonium/TentacleL": {"name": "Pandemonium - Left Tentacle",
+    "attack": "Roll juggling balls that burst in confetti; may stun",
+    "special": "none, aim with movement"},
+  "ModBossPandemonium/TentacleR": {"name": "Pandemonium - Right Tentacle",
+    "attack": "Throw dice that burst in confetti",
+    "special": "none, aim with movement"},
+  "ModBossPandemonium/Eye": {"name": "Pandemonium - Eye",
+    "attack": "Sweep a golden spotlight beam",
+    "special": "none, aim with movement"}
+}

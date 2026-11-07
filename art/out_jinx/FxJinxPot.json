@@ -1,0 +1,1 @@
+{"cellW": 34, "cellH": 22, "cols": 8, "anims": [{"name": "Land", "frames": [0, 1, 2], "durations": [0.05, 0.05, 0.1]}, {"name": "Tick", "frames": [3, 4], "durations": [0.25, 0.25]}, {"name": "Burst", "frames": [5, 6, 7, 8, 9], "durations": [0.04, 0.05, 0.06, 0.08, 0.1]}, {"name": "Bust", "frames": [10, 11, 12, 13, 14], "durations": [0.06, 0.08, 0.1, 0.12, 0.14]}]}

@@ -1,0 +1,1 @@
+{"cellW": 60, "cellH": 48, "cols": 8, "anims": [{"name": "Rise", "frames": [0, 1, 2, 3], "durations": [0.08, 0.08, 0.08, 0.1]}, {"name": "Idle", "frames": [4, 5, 6, 7], "durations": [0.16, 0.14, 0.16, 0.14]}, {"name": "Swing", "frames": [8, 9, 10, 11, 12], "durations": [0.08, 0.06, 0.05, 0.1, 0.12]}, {"name": "Fade", "frames": [13, 14, 15], "durations": [0.08, 0.1, 0.12]}]}

@@ -1,0 +1,1 @@
+{"cellW": 24, "cellH": 16, "cols": 8, "anims": [{"name": "Fly", "frames": [0, 1, 2, 3], "durations": [0.06, 0.06, 0.06, 0.06]}, {"name": "Land", "frames": [4, 5, 6], "durations": [0.06, 0.08, 0.1]}, {"name": "Chatter", "frames": [7, 8, 9, 10], "durations": [0.1, 0.1, 0.1, 0.1]}, {"name": "Roll", "frames": [11, 12, 13, 14], "durations": [0.06, 0.06, 0.06, 0.06]}]}

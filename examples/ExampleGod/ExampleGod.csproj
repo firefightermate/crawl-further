@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The example mod, built on CrawlFurther.Core. Settings and game references come from the repo's
+       Directory.Build.props (set GameDir there or with -p:GameDir=...). Outside this repo, copy those settings in and
+       reference CrawlFurther.Core.dll from your BepInEx/plugins/CrawlFurther folder instead of the project. -->
+  <PropertyGroup>
+    <AssemblyName>ExampleGod</AssemblyName>
+    <RootNamespace>ExampleGod</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\CrawlFurther.Core\CrawlFurther.Core.csproj" Private="false" />
+  </ItemGroup>
+</Project>

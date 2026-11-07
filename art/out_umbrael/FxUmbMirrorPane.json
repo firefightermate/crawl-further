@@ -1,0 +1,1 @@
+{"cellW": 25, "cellH": 25, "cols": 8, "anims": [{"name": "Rise", "frames": [0, 1, 2], "durations": [0.06, 0.06, 0.1]}, {"name": "Idle", "frames": [3, 4, 5, 6], "durations": [0.3, 0.3, 0.3, 0.1]}, {"name": "Flash", "frames": [7, 8, 9], "durations": [0.05, 0.06, 0.08]}, {"name": "Shatter", "frames": [10, 11, 12, 13, 14], "durations": [0.05, 0.05, 0.06, 0.08, 0.1]}]}

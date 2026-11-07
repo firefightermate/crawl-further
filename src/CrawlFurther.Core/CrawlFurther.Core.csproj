@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The library: BepInEx plugin "Crawl Further Core". Shared settings and references: Directory.Build.props. -->
+  <PropertyGroup>
+    <AssemblyName>CrawlFurther.Core</AssemblyName>
+    <RootNamespace>CrawlFurther</RootNamespace>
+  </PropertyGroup>
+</Project>

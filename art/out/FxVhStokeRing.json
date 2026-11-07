@@ -1,0 +1,1 @@
+{"cellW": 80, "cellH": 36, "cols": 8, "anims": [{"name": "R1", "frames": [0, 1, 2, 3], "durations": [0.06, 0.08, 0.1, 0.12]}, {"name": "R2", "frames": [4, 5, 6, 7], "durations": [0.06, 0.08, 0.1, 0.12]}, {"name": "R3", "frames": [8, 9, 10, 11], "durations": [0.06, 0.08, 0.1, 0.12]}]}

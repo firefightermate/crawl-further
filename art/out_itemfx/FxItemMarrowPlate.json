@@ -1,0 +1,1 @@
+{"cellW": 28, "cellH": 22, "cols": 8, "anims": [{"name": "Orbit1", "frames": [0, 1, 2, 3, 4, 5], "durations": [0.1, 0.1, 0.1, 0.1, 0.1, 0.1]}, {"name": "Orbit2", "frames": [6, 7, 8, 9, 10, 11], "durations": [0.1, 0.1, 0.1, 0.1, 0.1, 0.1]}, {"name": "Break", "frames": [12, 13, 14, 15], "durations": [0.05, 0.06, 0.08, 0.1]}], "origin": [14, 20]}

@@ -1,0 +1,1 @@
+{"cellW": 29, "cellH": 24, "cols": 7, "anims": [{"name": "Idle", "frames": [0, 1, 2, 3, 4, 5], "durations": [0.07, 0.07, 0.07, 0.07, 0.07, 0.9]}, {"name": "Locked", "frames": [6], "durations": [1.0]}]}

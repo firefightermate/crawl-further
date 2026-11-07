@@ -1,0 +1,43 @@
+{
+ "cellW": 12,
+ "cellH": 12,
+ "cols": 4,
+ "anims": [
+  {
+   "name": "Undiscovered",
+   "frames": [
+    0
+   ],
+   "durations": [
+    1.0
+   ]
+  },
+  {
+   "name": "NoArt",
+   "frames": [
+    1
+   ],
+   "durations": [
+    1.0
+   ]
+  },
+  {
+   "name": "Locked",
+   "frames": [
+    2
+   ],
+   "durations": [
+    1.0
+   ]
+  },
+  {
+   "name": "Further",
+   "frames": [
+    3
+   ],
+   "durations": [
+    1.0
+   ]
+  }
+ ]
+}

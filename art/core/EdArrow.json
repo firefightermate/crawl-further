@@ -1,0 +1,1 @@
+{"cellW": 5, "cellH": 7, "cols": 6, "anims": [{"name": "Silver", "frames": [0, 1], "durations": [0.4, 0.25]}, {"name": "Gold", "frames": [2, 3], "durations": [0.4, 0.25]}, {"name": "Off", "frames": [4], "durations": [1.0]}, {"name": "Lit", "frames": [5], "durations": [1.0]}]}

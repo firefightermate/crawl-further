@@ -1,0 +1,201 @@
+{
+  "ModWickling": {
+    "name": "Wickling",
+    "attack": "Flare Bite: a hop-lunge bite that may burn",
+    "special": "Gutter Dash: sprint, leaving fire",
+    "passive": [
+      "Touch fire to flare your tail up",
+      "A flared bite hits harder and always burns"
+    ]
+  },
+  "ModTallowGrub": {
+    "name": "Tallow Grub",
+    "attack": "Wax Spit: a glob that skids and pools, and slows",
+    "special": "Melt: glide as a puddle (can't be hit), then rise",
+    "passive": [
+      "Melt, glide your puddle under him, then rise",
+      "Fire on your puddle burns you out"
+    ]
+  },
+  "ModAshMoth": {
+    "name": "Ash Moth",
+    "attack": "Ash Puff: a drifting ash cloud that may daze",
+    "special": "Flame Dive: dive ahead, bending toward fire",
+    "passive": [
+      "Near fire you fly faster",
+      "Your death leaves a pyre that cools to wax"
+    ]
+  },
+  "ModWaxenKnight": {
+    "name": "Waxen Knight",
+    "attack": "Three cuts, and the overhead spills wax",
+    "special": "Seal: wax over yourself, then crack off as a ring",
+    "passive": [
+      "Seal throws your flames out as a ring",
+      "Burning: cuts burn, but you take more harm"
+    ]
+  },
+  "ModChandler": {
+    "name": "Chandler",
+    "attack": "Molten Glob: lands as a burning pool",
+    "special": "Pour: a line of unlit wax ahead",
+    "passive": [
+      "Pour a line, wait, then shoot it: it all goes up",
+      "The flame runs down the line to him"
+    ]
+  },
+  "ModVhWickworm": {
+    "name": "Wickworm",
+    "attack": "Rearing Bite: short reach",
+    "special": "Drip Road: slither fast, laying wax",
+    "passive": [
+      "Swim in wax unseen. Only your candles show",
+      "Lit wax burns you out. Death leaves a pyre"
+    ],
+    "vault": "A long grub with five candles down its back. It swims through wax"
+  },
+  "ModVhTallowSow": {
+    "name": "Tallow Sow",
+    "attack": "Fat Spray: three drops of hot fat that may slow",
+    "special": "Lay three wax eggs: soon each spits at the hero",
+    "passive": [
+      "Wallow in wax: his shots glance off your coat",
+      "Fire melts the coat. Unlit wax heals you"
+    ],
+    "vault": "Swollen with rendered fat and eggs. Wax makes her slippery"
+  },
+  "ModMothMatron": {
+    "name": "Moth Matron",
+    "attack": "Ember Rake: leaves an ash puff that may daze",
+    "special": "Moth Lamp: let loose three ember moths",
+    "passive": [
+      "Your moths hunt a burning hero. Else they drift",
+      "Drifting moths light any wax they touch"
+    ]
+  },
+  "ModCandelabra": {
+    "name": "Candelabra",
+    "attack": "Five Flames: a fan of five candle flames",
+    "special": "Vigil: plant and light the wax near you",
+    "passive": [
+      "Your flames fork in two when they cross wax",
+      "Your death leaves a pyre that cools to wax"
+    ]
+  },
+  "ModTallowColossus": {
+    "name": "Tallow Colossus",
+    "attack": "Fist One-Two: two huge blows",
+    "special": "Topple: rear up and fall flat on him",
+    "passive": [
+      "Soak up wax to grow. Fire melts your layers off",
+      "Each layer: harder fists and a longer Topple"
+    ]
+  },
+  "ModVhPyreWarden": {
+    "name": "Pyre Warden",
+    "attack": "Censer Smash: an ember ring that lights wax",
+    "special": "Stoke: the fire near him spreads in three rings",
+    "passive": [
+      "Pyres near you never cool",
+      "No fire near? Stoke lights a pyre at your feet"
+    ],
+    "vault": "It keeps the Saint's pyres. Near it the dead never stop burning"
+  },
+  "ModVhRenderer": {
+    "name": "Tallow Renderer",
+    "attack": "Ladle Fling: boiling tallow that may slow",
+    "special": "Boil Over: a wave of tallow rolls ahead",
+    "passive": [
+      "Tip the pot and ride the wave in",
+      "Riding, you can't be knocked back"
+    ],
+    "vault": "It boils down what the candles leave, and rides the boil"
+  },
+  "ModVhWickHag": {
+    "name": "Wick Hag",
+    "attack": "Hex Flame: a flicked flame that lights wax",
+    "special": "Poppet: set down a wax poppet of the hero",
+    "passive": [
+      "Burn his poppet and he feels it",
+      "Hex flames go for the poppet while he keeps away"
+    ],
+    "vault": "She sells candles to the dead, and poppets of the living"
+  },
+  "ModVhCandleWyrm": {
+    "name": "Candle Wyrm",
+    "attack": "Rear Strike: strike down just ahead",
+    "special": "Wick Coil: race a ring of fire round the hero",
+    "passive": [
+      "Coil round him. The closed ring tightens",
+      "You swim in wax like the Wickworm"
+    ],
+    "vault": "The worm reared up for good. Its mane burns blue at the root"
+  },
+  "ModVhFuseScorpion": {
+    "name": "Fuse Scorpion",
+    "attack": "Twin Snap: both claws",
+    "special": "Light the Fuse: a spark runs his footsteps",
+    "passive": [
+      "Your fuse follows his footsteps. Wax speeds it up",
+      "The spark bursts on him, or burns out"
+    ],
+    "vault": "Ash-grey plates on old beeswax. Its tail is a fuse, always lit"
+  },
+  "ModVhBroodMother": {
+    "name": "Grub Mother",
+    "attack": "Head Slam: leaves a wax pool",
+    "special": "Brood Spit: three grublings land by the hero",
+    "passive": [
+      "Grubs that crawl through fire burst into flame",
+      "Dying lets three grublings loose"
+    ],
+    "vault": "She carries her clutch on her back. The grublings hatch hungry"
+  },
+  "ModVhPyreTick": {
+    "name": "Pyre Tick",
+    "attack": "Barbed Bite: gives the hero a fever",
+    "special": "Ember Spray: five drops of burning blood",
+    "passive": [
+      "Your bite gives him fever: wax he steps on lights",
+      "Your death leaves a pyre that cools to wax"
+    ],
+    "vault": "It drank from a pyre until it cracked. The fire still shows through"
+  },
+  "ModVhAshSeraph": {
+    "name": "Ashen Seraph",
+    "attack": "Lance Thrust: a long cinder lance",
+    "special": "Ash to Ash: fires near you go out as ash clouds",
+    "passive": [
+      "Beat fires out: each becomes a dazing ash cloud",
+      "The clouds drift after him"
+    ]
+  },
+  "ModLanternWraith": {
+    "name": "Lantern Wraith",
+    "attack": "Soul Orb: an orb that bursts where it stops",
+    "special": "Take the Light: a cone that steals his soul flame",
+    "passive": [
+      "Steal his soul flame: he hits softer",
+      "Your orbs hit harder while you hold it"
+    ]
+  },
+  "ModVhChandelier": {
+    "name": "Grand Chandelier",
+    "attack": "Wheel: burn all round you",
+    "special": "Drip and Flare: drip a ring of wax, then light it",
+    "passive": [
+      "High on your chain, blades can't reach you",
+      "You bob low, then high, in turn"
+    ]
+  },
+  "ModVhReliquary": {
+    "name": "Votive Reliquary",
+    "attack": "Votive Fan: three flames that light wax",
+    "special": "Anoint: holy oil on every kin near you",
+    "passive": [
+      "Anoint your kin: their next two hits burn",
+      "Anointed, your own fan throws five flames"
+    ],
+    "vault": "A shrine on roots with a weeping skull. Its oil sets kin alight"
+  }
+}

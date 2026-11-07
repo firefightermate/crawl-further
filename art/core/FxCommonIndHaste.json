@@ -1,0 +1,1 @@
+{"cellW": 32, "cellH": 18, "cols": 4, "anims": [{"name": "Loop", "frames": [0, 1, 2, 3], "durations": [0.07, 0.07, 0.07, 0.07]}, {"name": "LoopBig", "frames": [4, 5, 6, 7], "durations": [0.07, 0.07, 0.07, 0.07]}]}

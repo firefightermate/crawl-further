@@ -1,0 +1,39 @@
+CRAWL: FURTHER __VER__ - INSTALL
+==============================
+
+What it adds: 9 new gods with 189 monsters, 15 secret monsters, 25 weapons, 67 shop items
+(22 spells, 38 artifacts, 7 potions) plus 2 secret items, 32 room objects, hero origins with silver and
+gold custom heroes, ghost forms, and a refreshed title screen, menus and vault with a secrets page.
+Everything from the mod is marked with a violet pip or gem.
+Windows only (Steam version of Crawl). Bundles the BepInEx 5 mod loader, already set up for Crawl.
+
+INSTALL (about one minute)
+1. In Steam, right-click Crawl > Manage > Browse local files. A folder opens with Crawl.exe in it.
+2. Back up your save: copy Crawl.sav from that folder somewhere safe.
+3. Unzip this whole zip into that folder (the one with Crawl.exe), so winhttp.dll and the BepInEx
+   folder sit next to Crawl.exe. Say yes if Windows asks to merge or replace.
+4. Launch Crawl from Steam as usual. The first launch takes a few extra seconds.
+   A small banner in the top-left corner shows "Crawl: Further __VER__" and "self-test OK" when it loaded,
+   and the title screen reads CRAWL with "Further" under its right end.
+
+UPDATING
+From 0.10.0 on the mod lives in BepInEx\plugins\CrawlFurther (CrawlFurther.Core.dll and CrawlFurther.dll).
+Delete the old BepInEx\plugins\CrawlMod folder first, then unzip over the old install. The config
+file names are unchanged, so your settings and saves carry over.
+
+If the banner doesn't appear
+- Make sure winhttp.dll is next to Crawl.exe, not inside a subfolder.
+- Steam Deck / Linux (Proton): set the game's launch options to
+  WINEDLLOVERRIDES="winhttp=n,b" %command%
+- If the banner shows problems, BepInEx\plugins\CrawlFurther\CrawlMod_selftest.txt says what failed.
+  Please include that file and BepInEx\LogOutput.log when reporting a bug.
+
+UNINSTALL
+Delete winhttp.dll, doorstop_config.ini, .doorstop_version and the BepInEx folder from the Crawl
+folder (or just delete BepInEx\plugins\CrawlFurther to keep the loader). Restore your Crawl.sav backup
+if anything looks odd afterwards.
+
+Full feature list: BepInEx\plugins\CrawlFurther\README.txt
+Menu touches can be turned off in BepInEx\config\CrawlFurther.UI.cfg, room objects in
+BepInEx\config\CrawlFurther.Objects.cfg.
+Source, developer docs and bug reports: https://github.com/firefightermate/crawl-further

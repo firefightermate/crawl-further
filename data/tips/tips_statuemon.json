@@ -1,0 +1,52 @@
+{
+  "ModStmGrotesque": {
+    "name": "Grotesque",
+    "attack": "Rake with your stone talons",
+    "special": "Turn to stone: no harm; hits return as shards",
+    "passive": [
+      "First killing blow: crumble to rubble, then reform",
+      "with some health. Your ember ring shows it is still to come"
+    ],
+    "vault": "A gargoyle that turns to stone, then spits the hits it took back as shards"
+  },
+  "ModStmSixfold": {
+    "name": "Sixfold Idol",
+    "attack": "A random weapon a swing: sword, mace, spear, flail",
+    "special": "A rite of jade: Ring, Fan, Spiral or Cross",
+    "passive": [
+      "Your next rite's sigil glows over you when ready.",
+      "All four rites come once before any of them repeats"
+    ],
+    "vault": "A six-armed temple idol. Each hand holds a different weapon"
+  },
+  "ModStmGambit": {
+    "name": "Gambit",
+    "attack": "Rear up and slam your head down",
+    "special": "Knight's Tour: three L-shaped leaps",
+    "passive": [
+      "A landing on the hero puts him in check.",
+      "Slam him while in check for checkmate"
+    ],
+    "vault": "A knight from a giant's chessboard. It has never once moved in a straight line"
+  },
+  "ModStmCaryatid": {
+    "name": "Caryatid",
+    "attack": "Smash your stone capital down in front",
+    "special": "Raise a column under the hero; it stands a while",
+    "passive": [
+      "Beside one of your columns you take less damage.",
+      "Two columns at most; the oldest crumbles first"
+    ],
+    "vault": "A temple maiden who held up a roof for a thousand years. She has columns to spare"
+  },
+  "ModStmLachrymosa": {
+    "name": "Lachrymosa",
+    "attack": "Lament: rake with both hands",
+    "special": "Lights Out: the room goes dark; none see you",
+    "passive": [
+      "Watched, you turn to slow stone",
+      "Unseen, you are swift and fierce"
+    ],
+    "vault": "A weeping angel from the last gallery. She moves when nobody is looking at her"
+  }
+}

@@ -1,0 +1,1 @@
+{"cellW": 28, "cellH": 24, "cols": 8, "anims": [{"name": "Trail", "frames": [0, 1, 2, 3], "durations": [0.06, 0.06, 0.08, 0.1]}, {"name": "Spin", "frames": [4, 5, 6, 7], "durations": [0.05, 0.05, 0.05, 0.05]}, {"name": "Crash", "frames": [8, 9, 10, 11, 12], "durations": [0.04, 0.05, 0.06, 0.08, 0.1]}]}

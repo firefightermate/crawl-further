@@ -1,0 +1,1 @@
+{"cellW": 24, "cellH": 18, "cols": 8, "anims": [{"name": "Root", "frames": [0, 1, 2, 3], "durations": [0.06, 0.06, 0.08, 0.1]}, {"name": "Sting", "frames": [4, 5, 6, 7], "durations": [0.15, 0.15, 0.15, 0.15]}, {"name": "Wilt", "frames": [8, 9, 10], "durations": [0.12, 0.12, 0.12]}]}

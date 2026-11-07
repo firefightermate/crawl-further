@@ -1,0 +1,16 @@
+{
+ "cellW": 59,
+ "cellH": 48,
+ "cols": 1,
+ "anims": [
+  {
+   "name": "Stamp",
+   "frames": [
+    0
+   ],
+   "durations": [
+    1.0
+   ]
+  }
+ ]
+}

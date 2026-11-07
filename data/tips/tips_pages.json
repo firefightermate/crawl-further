@@ -1,0 +1,231 @@
+{
+ "_comment": "Pause menu > Tips pages for the mod (read by tools/merge_tips.py, NOT a monster tip table). Each topic becomes one or more pages of 7 lines: header (on the tab, max 8 capitals), subtitle (next to the tab, keep it short), paragraphs. *word* = highlight colour; a paragraph starting with '- ' is a bullet; a number and its unit (0.8 s, 70 px) never split. Pages break between paragraphs where they can. god = the deity name for god topics (pages for the gods in the current game come first). Only characters every HUD font has; no square brackets.",
+ "topics": [
+  {
+   "id": "ysveld",
+   "god": "Ysveld",
+   "header": "YSVELD",
+   "subtitle": "the Frost Widow",
+   "text": [
+    "*Blizzard* (god perk): while Ysveld monsters fight, blizzards sweep the room and lay *ice paths*.",
+    "- The *hero* slides on ice. *Ysveld monsters* run faster on it.",
+    "- A dying Ysveld monster leaves a patch of ice. *The Pale Empress* brings blizzards more often.",
+    "*Rime:* frost hits fill *frost pips* over the hero. Three pips *pin* him in ice for a moment."
+   ]
+  },
+  {
+   "id": "kaurn",
+   "god": "Kaurn",
+   "header": "KAURN",
+   "subtitle": "the Storm Forge",
+   "text": [
+    "*Lightning arcs* (god perk): crackling arcs join nearby Kaurn monsters and iron rods. Crossing one *zaps* the hero.",
+    "*Rods:* a Kaurn monster leaves an iron rod where it dies. Rods from attacks are arc posts too.",
+    "*Static sparks:* basic attacks store sparks. The *special* fires them all at the hero.",
+    "*Static Build:* when your hair stands on end, stand by a rod: it takes the bolt."
+   ]
+  },
+  {
+   "id": "zhekra",
+   "god": "Zhekra",
+   "header": "ZHEKRA",
+   "subtitle": "the Brood Queen",
+   "text": [
+    "*Larvae* (god perk): a dying Zhekra monster hatches a weak, fast *Hive Larva*.",
+    "*Swarm:* a Zhekra monster near any other monster *swarms*: faster and fiercer.",
+    "*Mark:* an amber chevron over the hero. Every Zhekra near him swarms.",
+    "*Acid:* a green tint on the hero. He takes *more damage*.",
+    "*Resin* roots the hero. *Frenzy:* the Brood Mother speeds up every monster near her."
+   ]
+  },
+  {
+   "id": "belmora",
+   "god": "Bel'Mora",
+   "header": "BEL'MORA",
+   "subtitle": "the Drowned Bell",
+   "text": [
+    "*Rising Tide* (god perk): while Bel'Mora monsters fight, the tide leaves *brine pools*. Bel'Mora monsters also spill brine where they die.",
+    "- Brine *slows the hero*.",
+    "- *Bel'Mora monsters* in brine *heal*.",
+    "*Hooks and currents* haul the hero in. Cross a current sideways."
+   ]
+  },
+  {
+   "id": "umbrael",
+   "god": "Umbrael",
+   "header": "UMBRAEL",
+   "subtitle": "the Hollow Mirror",
+   "text": [
+    "*Echoes* (god perk): every Umbrael basic attack *repeats a beat later* in the same spot. Dodge, then dodge again.",
+    "*Darkness* hides Umbrael monsters. When *the Unblinking* opens its eye, stand still."
+   ]
+  },
+  {
+   "id": "ossivar",
+   "god": "Ossivar",
+   "header": "OSSIVAR",
+   "subtitle": "the Marrow King",
+   "text": [
+    "*Bone piles* (god perk): an Ossivar monster leaves bones where it dies. They *crawl* to the nearest Ossivar and become a *plate* that blocks a hit.",
+    "*Bleeding* draws Marrow Hounds, Gravetusks and Cairn Crows to you.",
+    "*Rattlebones:* while its skull lies on the floor, only the skull can be hurt.",
+    "*Church Grim* falls into bones once. Stand on the pile or it gets up."
+   ]
+  },
+  {
+   "id": "sylvene",
+   "god": "Sylvene",
+   "header": "SYLVENE",
+   "subtitle": "the Rot Orchard",
+   "text": [
+    "*Seeds* (god perk): a dying Sylvene monster drops a seed that ripens into a *pod*. A ripe pod bursts with *poison* when you come close.",
+    "*Grafted pods* ride on monsters' heads. *Cordyceps* make the dead fight on."
+   ]
+  },
+  {
+   "id": "vhorrul",
+   "god": "Vhorrul",
+   "header": "VHORRUL",
+   "subtitle": "the Tallow Saint",
+   "text": [
+    "*Pyres* (god perk): a Vhorrul monster burns where it dies, then cools into a *tallow slick*.",
+    "*Wax* slows you. *Fire lights wax*. Tallow monsters *heal* in unlit wax.",
+    "*Lantern Wraith* steals your soul flame. Step into fire to take it back."
+   ]
+  },
+  {
+   "id": "jinx",
+   "god": "Jinx",
+   "header": "JINX",
+   "subtitle": "the Grinning Jester",
+   "text": [
+    "*Wild Card* (god perk): each special flips a card over the monster: *Hearts* heal, *Spades* hit harder, *Diamonds* block a hit, *Clubs* run faster.",
+    "*Chance:* cards and dice curse or hurt at random. Every Jinx monster has a trick of its own."
+   ]
+  },
+  {
+   "id": "status",
+   "header": "STATUS",
+   "subtitle": "mod status effects",
+   "text": [
+    "Mod crowd control is short:",
+    "- *Slow:* sludge at the feet.",
+    "- *Root:* roots grip the feet. Can still attack.",
+    "- *Stun:* stars over the head.",
+    "After a chain of these the target is *immune* for a while.",
+    "*Plates* (bone, shell, wax, ice, resin, card...) each block one hero hit."
+   ]
+  },
+  {
+   "id": "ghosts",
+   "header": "GHOSTS",
+   "subtitle": "the ten ghost forms",
+   "text": [
+    "*Wisp* is the normal ghost. Every form takes a body the usual way.",
+    "*Poltergeist:* throws hex bolts. *Gleaner:* draws ectoplasm to you.",
+    "*Binder:* spawns Gels and fuses them into bigger blobs.",
+    "*Banshee:* wails to slow the hero. *Sexton:* digs graves that raise Revenants.",
+    "*Kindler:* lights Fusebelly bombs. *Mason:* stone turrets spit on command.",
+    "*Hexer:* hexed heroes take more damage. *Miser:* spends stored bodies on one big Mimic.",
+    "*Silver:* your monsters drop orbs. Eight send your next body up a tier.",
+    "*Gold:* jump out of a body and it fights on for you in gold."
+   ]
+  },
+  {
+   "id": "slots",
+   "header": "SLOTS",
+   "subtitle": "silver and gold",
+   "text": [
+    "The *silver* and *gold* slots sit last on the god, origin and ghost lists. A challenge opens each.",
+    "- *Idols:* pick a god's *perk* and starters from any god (three for silver, four for gold).",
+    "- *Heroes:* pick your look and weapon (gold adds a spell). Every pick costs stats.",
+    "- *Ghosts:* your own look. Silver *Ascends*, gold makes *Thralls*.",
+    "Your picks are saved for your player slot."
+   ]
+  },
+  {
+   "id": "unlocks",
+   "header": "UNLOCKS",
+   "subtitle": "opening the slots",
+   "text": [
+    "Progress counts in every game you play (bots do not count) and is kept between games. A locked slot shows its count.",
+    "- *Silver origin*: kill *400* monsters as the hero.",
+    "- *Gold origin*: win *5* games as the hero.",
+    "- *Silver idol*: evolve your monsters *60* times.",
+    "- *Gold idol*: evolve *20* different final forms.",
+    "- *Silver ghost*: gather *1000* ectoplasm as a ghost.",
+    "- *Gold ghost*: slay the hero *40* times as a monster.",
+    "A banner on the next menu tells you when a slot opens."
+   ]
+  },
+  {
+   "id": "icons",
+   "header": "ICONS",
+   "subtitle": "what the little markers mean",
+   "text": [
+    "Markers over the head:",
+    "- *Shields:* plates left.",
+    "- *Lightning bolts:* stored Kaurn sparks.",
+    "- *Ice crystals:* frost pips.",
+    "- *Red double chevron:* more damage.",
+    "At the feet: *green sparkles* heal, *white streaks* mean faster, a *blue skid* means ice."
+   ]
+  },
+  {
+   "id": "bosses",
+   "header": "BOSSES",
+   "subtitle": "the mod's two bosses",
+   "text": [
+    "*The Leviathan* (Bel'Mora): tides wash the arena. Its heads jet brine, hook the hero and spit.",
+    "*Pandemonium* (Jinx): its Wheel of Misfortune drops knives, bombs and Jack-in-the-Boxes. Its tentacles juggle and throw dice; its eye sweeps a golden beam."
+   ]
+  },
+  {
+   "id": "items3",
+   "header": "TRINKETS",
+   "subtitle": "new potions and trinkets",
+   "text": [
+    "*Potions* change stats for good. Some have a short catch, shown on the hero.",
+    "*Trinket markers:* a *linen roll* is the Bandage, a *red crosshair* is the Wanted mark, a *coin* is the Gambler's flip.",
+    "Two trinkets are never sold. The first hides behind a cracked wall."
+   ]
+  },
+  {
+   "id": "objects",
+   "header": "OBJECTS",
+   "subtitle": "new traps and shrines",
+   "text": [
+    "*Ghost traps:* step a ghost in, aim with movement, attack to fire. Each shows its tip the first time.",
+    "*On the floor:* *Iron Snares* bite and hold. *Warp Stones* come in pairs.",
+    "*For the hero* (outside fights): *Mending Spring* heals, *Weapon Rack* swaps your weapon, *Ward Shrine* softens hits, *Cursed Altar* trades safety for damage, *Strongboxes* hold gold, or a mimic.",
+    "*Spirit Urn:* a ghost smashes it for ectoplasm."
+   ]
+  },
+  {
+   "id": "objects2",
+   "header": "FUN",
+   "subtitle": "party, games and secrets",
+   "text": [
+    "*Jukebox:* changes the music for the floor.",
+    "*Disco Ball:* stand on lit tiles to the beat for *Disco Fever*.",
+    "*Confetti Cannon:* dazes all in front, then everyone runs faster.",
+    "*Pinata:* hit it for gold. *Bounce Shroom:* a springy jump. *Firework Crate:* light it and stand back.",
+    "*Games of chance:* the *Slot Machine*, the *Fortune Teller* and the *Wishing Well* pay out gold, health or ectoplasm.",
+    "*Secrets:* some objects keep a secret. The vault holds a riddle for each."
+   ]
+  },
+  {
+   "id": "statues",
+   "header": "STATUES",
+   "subtitle": "secret statues",
+   "text": [
+    "Now and then a statue room holds a *secret statue* with a *gold seam* on its plinth. Only a ghost can wake it.",
+    "- *Grotesque:* turns to stone and throws hits back.",
+    "- *Sixfold Idol:* a random weapon every swing.",
+    "- *Gambit:* leaps like a chess knight.",
+    "- *Caryatid:* raises marble columns.",
+    "- *Lachrymosa (legendary):* stone while watched, swift unseen. She puts out the lights."
+   ]
+  }
+ ]
+}

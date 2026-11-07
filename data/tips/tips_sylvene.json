@@ -1,0 +1,216 @@
+{
+  "ModSporeling": {
+    "name": "Sporeling",
+    "attack": "Puff a short cloud of poison spores",
+    "special": "Scatter: shake two seeds out of your cap",
+    "passive": [
+      "Seeds next to you ripen much faster",
+      "Death drops a seed that ripens into a poison pod"
+    ]
+  },
+  "ModThornbiter": {
+    "name": "Thornbiter",
+    "attack": "Long vine whip that may bleed",
+    "special": "Root Run: roots race at the hero and root him",
+    "passive": [
+      "Your roots plant a seed where they stop",
+      "Death drops a seed that ripens into a poison pod"
+    ]
+  },
+  "ModRotfly": {
+    "name": "Rotfly",
+    "attack": "Spit a poison glob, mid range",
+    "special": "Buzz Bomb: dive, burst a poison puff, climb back",
+    "passive": [
+      "Spit that misses lands as a seed",
+      "Death drops a seed that ripens into a poison pod"
+    ]
+  },
+  "ModSylSporeHusk": {
+    "name": "Spore Husk",
+    "attack": "Club smash that bursts a poison cloud",
+    "special": "Spore Belch: a wide cone of poison spores",
+    "passive": [
+      "Your smash bursts every ripe pod nearby",
+      "Death drops a seed that ripens into a poison pod"
+    ]
+  },
+  "ModBloomWitch": {
+    "name": "Bloom Witch",
+    "attack": "Pollen lance: pierces, long range, may poison",
+    "special": "Graft a ripe pod onto your kin and yourself",
+    "passive": [
+      "Graft ripe pods onto your kin's heads",
+      "Death drops a seed that ripens into a poison pod"
+    ]
+  },
+  "ModBrambleKnight": {
+    "name": "Bramble Knight",
+    "attack": "Two-hit thorn sweep, may bleed",
+    "special": "Overgrow: four thorn patches burst up round you",
+    "passive": [
+      "Your sweep's tip plants a thorn patch",
+      "Death drops a seed that ripens into a poison pod"
+    ]
+  },
+  "ModSylStrangler": {
+    "name": "Strangler Vine",
+    "attack": "Lunging bite",
+    "special": "Lasso a pod or seed near you and sling it at him",
+    "passive": [
+      "Lasso a pod and sling it at him",
+      "Death drops a seed that ripens into a poison pod"
+    ],
+    "vault": "A braided vine serpent. It lassoes ripe pods and slings them at its prey"
+  },
+  "ModSylGallWasp": {
+    "name": "Gall Wasp",
+    "attack": "Needle that plants a seed where it lands",
+    "special": "Dart through the hero, dropping two seeds",
+    "passive": [
+      "Your seeds ripen faster",
+      "Death drops a seed that ripens into a poison pod"
+    ]
+  },
+  "ModSylBloatfly": {
+    "name": "Bloatfly",
+    "attack": "Retch a cone of poison bile",
+    "special": "Bile Rain: retch straight down on him; steer it",
+    "passive": [
+      "In your bile, his poison lasts longer",
+      "Death drops a seed that ripens into a poison pod"
+    ],
+    "vault": "Retches bile from on high. Poison lingers on whoever stands in it"
+  },
+  "ModSylBriarBehemoth": {
+    "name": "Briar Behemoth",
+    "attack": "Tusk hook, may bleed",
+    "special": "Charge; your bush swings in as you stop",
+    "passive": [
+      "Your dragged bush swings in when you turn or stop",
+      "Death drops a seed that ripens into a poison pod"
+    ]
+  },
+  "ModSylBriarChampion": {
+    "name": "Briar Champion",
+    "attack": "Lance thrust, may bleed",
+    "special": "Lunge: plant your feet and thrust further",
+    "passive": [
+      "Each hit grows your lance. Each hit taken trims it",
+      "Death drops a seed that ripens into a poison pod"
+    ],
+    "vault": "Its thorn lance grows with every wound it deals, and is cut back by every blow it takes"
+  },
+  "ModSylPuffball": {
+    "name": "Puffball Brute",
+    "attack": "Fist slam in a ring of spores",
+    "special": "Bounce at the hero, steered; land in a spore ring",
+    "passive": [
+      "Knocked into a wall, you bounce back at him",
+      "Death drops a seed that ripens into a poison pod"
+    ],
+    "vault": "Light as a puffball. Struck into a wall, it bounces straight back"
+  },
+  "ModSylCordyceps": {
+    "name": "Cordyceps Saint",
+    "attack": "Spine flick, long range, may poison",
+    "special": "Infect your kin or yourself",
+    "passive": [
+      "Infect your kin: they fight on after death",
+      "Death drops a seed that ripens into a poison pod"
+    ],
+    "vault": "Drives spores into its kin. The infected rise again for a few seconds"
+  },
+  "ModRotMother": {
+    "name": "The Rot Mother",
+    "attack": "Roots erupt under the hero twice, may root",
+    "special": "Sprouting: three Sprouts burst up round the hero",
+    "passive": [
+      "Each pod that bursts on him heals you",
+      "Death drops a seed that ripens into a poison pod"
+    ]
+  },
+  "ModSylNightshade": {
+    "name": "Nightshade",
+    "attack": "Berry toss: splits into three, may poison",
+    "special": "Shade Garden: hide your pods, plant two by him",
+    "passive": [
+      "Your pods go unseen a while. He has to guess",
+      "Death drops a seed that ripens into a poison pod"
+    ],
+    "vault": "Hides the orchard's pods from sight, and tosses berries that split in three"
+  },
+  "ModSylPollenMonarch": {
+    "name": "Pollen Monarch",
+    "attack": "Wing clap: three pollen darts in a fan",
+    "special": "Pollen Storm: a wide cloud ahead, and four seeds",
+    "passive": [
+      "Dusted, he sets off pods from further away",
+      "Death drops a seed that ripens into a poison pod"
+    ]
+  },
+  "ModSylSower": {
+    "name": "The Sower",
+    "attack": "Seed shot: plants a seed where it lands",
+    "special": "Strafe across his front, sowing a row of seeds",
+    "passive": [
+      "Seeds from one pass burst together",
+      "Death drops a seed that ripens into a poison pod"
+    ],
+    "vault": "A hornet with a drill for a belly. It plants a row in one pass"
+  },
+  "ModSylCarrionLily": {
+    "name": "Carrion Lily",
+    "attack": "Stalk lunge: a poison bite",
+    "special": "Corpse Bloom: a wide cone of rot",
+    "passive": [
+      "Planted, you heal and reach far. Uproot to move",
+      "Death drops a seed that ripens into a poison pod"
+    ]
+  },
+  "ModSylBriarWyrm": {
+    "name": "Briar Wyrm",
+    "attack": "Mace tail: hits in front, then behind you",
+    "special": "Thorn Spiral: spin out thorns in two arms",
+    "passive": [
+      "Your mace hits in front, then behind you",
+      "Death drops a seed that ripens into a poison pod"
+    ],
+    "vault": "A bramble serpent whose mace-tail strikes before it and then behind it"
+  },
+  "ModSylBlightBellows": {
+    "name": "Blight Bellows",
+    "attack": "Bladder lob: bounces three times, then bursts",
+    "special": "Gas Lanes: pump three lanes of gas; turn between",
+    "passive": [
+      "Your bladders bounce three times, puffing gas",
+      "Death drops a seed that ripens into a poison pod"
+    ],
+    "vault": "A wheezing bellows on wings. Its gas hangs in the air longer"
+  },
+  "ModSylCarrionQueen": {
+    "name": "Carrion Queen",
+    "attack": "Proboscis stab, may poison",
+    "special": "Proboscis Dive: a long dive you steer",
+    "passive": [
+      "Your drone keeps dazing him: stay close",
+      "Death drops a seed that ripens into a poison pod"
+    ],
+    "vault": "A fly queen whose droning wings daze anyone caught in the ring"
+  },
+  "ModSprout": {
+    "name": "Sprout",
+    "attack": "Puff a tiny poison spore cloud",
+    "special": "none",
+    "passive": "Burst up through the floor round the hero"
+  },
+  "ModSylShambler": {
+    "name": "Shambler",
+    "attack": "Puff a poison spore cloud",
+    "special": "none",
+    "passive": [
+      "You stagger on a moment, then burst into seeds"
+    ],
+    "vault": "A corpse the cordyceps would not let die. It staggers on, then bursts into seeds"
+  }
+}

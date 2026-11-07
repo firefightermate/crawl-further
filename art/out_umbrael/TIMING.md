@@ -1,0 +1,67 @@
+# Umbrael art: effect origins (tools/sprites/umbrael_v2_fx.py)
+
+Pixel in the cell that sits on the spawn point (x from the left, y from the top). Projectiles are drawn facing
+right round that point; ground effects stand on it. Monster sheets keep the feet at (cellW / 2, cellH - 2).
+
+- DeityGoldIdolUmbrael: cell 29x26, origin (14, 25); Idle 4, T1 2, T2 2, T3 4
+- DeityUmbrael: cell 29x24, origin (14, 23); Idle 4
+- FxDarkness: cell 61x27, origin (30, 24); Life 28
+- FxDecoyBurst: cell 62x24, origin (24, 19); Play 5
+- FxMirrorShard: cell 21x9, origin (10, 4); Fly 4, Hot 4
+- FxReflectBolt: cell 21x9, origin (10, 4); Fly 4
+- FxShadowPuff: cell 22x22, origin (11, 20); Play 5
+- FxSwapFlash: cell 24x26, origin (12, 24); Play 5
+- FxUmbArgusCatch: cell 24x26, origin (12, 25); Play 4
+- FxUmbArgusScale: cell 13x9, origin (6, 4); Fly 4
+- FxUmbBeam: cell 51x6, origin (0, 3); Play 6, End 4
+- FxUmbBlackout: cell 205x86, origin (102, 79); Life 28
+- FxUmbCaltrop: cell 12x9, origin (6, 7); Life 12
+- FxUmbCorona: cell 61x59, origin (30, 29); Loop 4
+- FxUmbCrack: cell 33x4, origin (0, 1); Line 3
+- FxUmbCrown: cell 21x15, origin (10, 7); Fly 4
+- FxUmbCrownShade: cell 60x48, origin (24, 46); Rise 4, Idle 4, Swing 5, Fade 3
+- FxUmbDuskEdge: cell 71x32, origin (35, 29); R16 4, R20 4, R24 4, R28 4, R32 4
+- FxUmbEchoBite: cell 18x23, origin (9, 11); Play 5
+- FxUmbEchoMark: cell 24x22, origin (12, 16); Play 5, Quick 3, Sparkle 4
+- FxUmbEchoSmear: cell 24x22, origin (12, 20); Play 4
+- FxUmbEclipseBurst: cell 56x30, origin (28, 22); Play 6
+- FxUmbEyeFlash: cell 186x80, origin (93, 78); Play 6
+- FxUmbFeather: cell 19x9, origin (9, 4); Fly 4, Split 3
+- FxUmbGlaze: cell 18x26, origin (9, 24); Loop 4
+- FxUmbGlazeCrack: cell 30x28, origin (15, 24); Play 5
+- FxUmbGlazeWeb: cell 30x40, origin (15, 36); Play 10
+- FxUmbGlitter: cell 26x16, origin (13, 13); Life 12
+- FxUmbGloamPool: cell 32x14, origin (16, 12); Life 28
+- FxUmbImpClaw: cell 26x24, origin (9, 12); Play 4
+- FxUmbInkUnder: cell 30x10, origin (15, 8); Spread 3, Loop 4, Fade 3
+- FxUmbKingCleave: cell 44x44, origin (16, 26); Play 5
+- FxUmbLightThread: cell 33x3, origin (0, 1); Line 3
+- FxUmbLurkEyes: cell 16x10, origin (8, 8); Loop 4
+- FxUmbMirrorPane: cell 25x25, origin (12, 22); Rise 3, Idle 4, Flash 3, Shatter 5
+- FxUmbMothScale: cell 13x9, origin (6, 4); Fly 4
+- FxUmbNail: cell 21x7, origin (10, 3); Fly 4
+- FxUmbNailRake: cell 30x26, origin (10, 13); Play 4
+- FxUmbPaleCut: cell 28x26, origin (13, 13); Play 4
+- FxUmbPaleHalf: cell 56x37, origin (26, 35); Idle 4, Rush 4, Drift 6, Cut 6
+- FxUmbPendulumSpin: cell 32x32, origin (16, 16); Play 6
+- FxUmbPin: cell 21x5, origin (10, 2); Fly 4
+- FxUmbPinned: cell 20x17, origin (10, 13); Play 6
+- FxUmbQuill: cell 9x13, origin (4, 10); Fly 4
+- FxUmbRejoinCut: cell 24x16, origin (12, 10); Play 4
+- FxUmbRewind: cell 28x28, origin (13, 22); Mark 10, Snap 5
+- FxUmbRingShard: cell 19x7, origin (9, 3); Fly 4
+- FxUmbSandBall: cell 21x9, origin (10, 4); Fly 4
+- FxUmbSandColumn: cell 28x87, origin (14, 83); Shadow 4, Fall 6
+- FxUmbSandGlass: cell 17x20, origin (8, 17); Fill0 2, Fill1 2, Fill2 2, Fill3 2, Fill4 2
+- FxUmbSandShard: cell 15x7, origin (7, 3); Fly 4
+- FxUmbScissor: cell 30x24, origin (10, 12); Play 5
+- FxUmbSmokeStep: cell 38x18, origin (19, 16); Life 28
+- FxUmbStuckShot: cell 24x20, origin (12, 18); One 2, Two 2, Three 2
+- FxUmbSwarmBite: cell 31x22, origin (8, 11); Play 5
+- FxUmbSwarmGhost: cell 39x35, origin (19, 17); Fly 4
+- FxUmbSwarmGlint: cell 20x18, origin (10, 16); Play 6
+- FxUmbTick: cell 10x14, origin (5, 12); Play 4
+- FxUmbTimeRing: cell 84x38, origin (42, 36); Loop 4
+- FxUmbTwinCut: cell 30x28, origin (10, 14); Play 4
+- FxUmbVenomBite: cell 28x19, origin (9, 9); Play 5, Echo 5
+- FxUmbWidowFang: cell 24x26, origin (8, 14); Play 4

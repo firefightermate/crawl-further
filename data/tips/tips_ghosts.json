@@ -1,0 +1,201 @@
+{
+ "ModBlobMote": {
+  "name": "Mote Blob",
+  "attack": "Quick lunging nip, very short range",
+  "special": "none",
+  "passive": [
+   "A Gleaner ghost's follower: fast but fragile.",
+   "They spawn in pairs"
+  ]
+ },
+ "ModBlobSpitter": {
+  "name": "Spitter Blob",
+  "attack": "Spit goo along the floor; leaves a slowing puddle",
+  "special": "none",
+  "passive": [
+   "A Poltergeist ghost's follower"
+  ]
+ },
+ "ModBlobGel": {
+  "name": "Gel Blob",
+  "attack": "Lunging body slam",
+  "special": "none",
+  "passive": [
+   "A Binder ghost's follower. Fused by the",
+   "ghost button: two make a Brute, three a Titan"
+  ]
+ },
+ "ModBlobBrute": {
+  "name": "Brute Blob",
+  "attack": "Heavy lunging body slam",
+  "special": "Bounce: hop forward, land in a knockback ring",
+  "passive": [
+   "Fused from two Gels. It never fuses again",
+   "Left alone, it still uses its special"
+  ]
+ },
+ "ModBlobTitan": {
+  "name": "Titan Blob",
+  "attack": "Crushing body slam",
+  "special": "Engulf: lunge and swallow the hero; slows",
+  "passive": [
+   "Fused from three Gels. Leaves a Gel when it dies",
+   "Left alone, it still uses its special"
+  ]
+ },
+ "ModGhostGleaner": {
+  "name": "Gleaner",
+  "attack": "Take over the body you float over",
+  "special": "Spawn a pair of Mote blobs",
+  "passive": [
+   "Ectoplasm drifts to you, and extra wisps appear.",
+   "Each pickup is worth less than a normal one"
+  ]
+ },
+ "ModGhostBinder": {
+  "name": "Binder",
+  "attack": "Take over the body you float over",
+  "special": "Spawn Gels. Ghost button fuses them",
+  "passive": [
+   "Two Gels fuse into a Brute, three into a Titan.",
+   "The Gels must be close to you"
+  ]
+ },
+ "ModGhostPoltergeist": {
+  "name": "Poltergeist",
+  "attack": "Throw a weak hex bolt",
+  "special": "Spawn a Spitter blob",
+  "passive": [
+   "On top of a body, Attack takes it over instead"
+  ]
+ },
+ "ModGhostBanshee": {
+  "name": "Banshee",
+  "attack": "Wail (costs ectoplasm): slows a hero close by",
+  "special": "Spawn a Keener",
+  "passive": [
+   "On top of a body, Attack takes it over instead"
+  ]
+ },
+ "ModGhostSexton": {
+  "name": "Sexton",
+  "attack": "Take over the body you float over",
+  "special": "Dig a grave (one body), up to three at once",
+  "passive": [
+   "A Revenant claws out when the hero comes near,",
+   "or after a while"
+  ]
+ },
+ "ModGhostKindler": {
+  "name": "Kindler",
+  "attack": "Light the sparking Fusebelly from afar",
+  "special": "Spawn a Fusebelly bomb",
+  "passive": [
+   "On top of a body, Attack takes it over instead.",
+   "Light your nearest Fusebelly from afar"
+  ]
+ },
+ "ModGhostMason": {
+  "name": "Mason",
+  "attack": "Every Gargling you own spits a stone",
+  "special": "Spawn a Gargling, a stone turret",
+  "passive": [
+   "On top of a body, Attack takes it over instead"
+  ]
+ },
+ "ModGhostHexer": {
+  "name": "Hexer",
+  "attack": "Throw a pin: the hero is hexed for a while",
+  "special": "Spawn a Poppet",
+  "passive": [
+   "Hexed heroes take more damage.",
+   "On top of a body, Attack takes it over instead"
+  ]
+ },
+ "ModGhostMiser": {
+  "name": "Miser",
+  "attack": "Take over the body you float over",
+  "special": "Spend every stored body on one Mimic",
+  "passive": [
+   "The Mimic has that many times the health.",
+   "Coins circle you while you hold two or more"
+  ]
+ },
+ "ModGhostSilver": {
+  "name": "Silver Shade",
+  "attack": "Take over the body you float over",
+  "special": "Spawn a slime as usual",
+  "passive": [
+   "Touch the silver orbs your monsters drop.",
+   "With eight, your next body goes up a tier"
+  ]
+ },
+ "ModGhostGold": {
+  "name": "Gold Spectre",
+  "attack": "Take over the body you float over",
+  "special": "Spawn a slime as usual",
+  "passive": [
+   "As a monster, press the ghost button",
+   "to jump out. The body fights on for you"
+  ]
+ },
+ "ModFodKeener": {
+  "name": "Keener",
+  "attack": "Shriek a short sound wave that can slow the hero",
+  "special": "none",
+  "passive": [
+   "A Banshee ghost's follower: quick and fragile"
+  ],
+  "vault": "A Banshee's wailing head. Its shriek can slow the hero"
+ },
+ "ModFodRevenant": {
+  "name": "Revenant",
+  "attack": "Lunging bone claw swipe",
+  "special": "none",
+  "passive": [
+   "A Sexton ghost's follower. It claws out of a grave",
+   "when the hero comes near"
+  ],
+  "vault": "A Sexton's grave ghoul. It claws out of the earth when the hero passes"
+ },
+ "ModFodFusebelly": {
+  "name": "Fusebelly",
+  "attack": "Lick the hero with your burning fuse",
+  "special": "Blow: swell up and burst in a big blast (you die)",
+  "passive": [
+   "A Kindler ghost's follower. It pops when it dies.",
+   "The Kindler's Attack can light it from afar"
+  ],
+  "vault": "A Kindler's tallow bomb on legs. It always goes off in the end"
+ },
+ "ModFodGargling": {
+  "name": "Gargling",
+  "attack": "Spit a stone at the hero",
+  "special": "Fan: spit three stones in a spread",
+  "passive": [
+   "A Mason ghost's follower: tough but barely moves.",
+   "The Mason's Attack makes every Gargling spit"
+  ],
+  "vault": "A Mason's stone sentry. It holds its post and spits stones"
+ },
+ "ModFodPoppet": {
+  "name": "Poppet",
+  "attack": "Jab a pin; it can hex the hero",
+  "special": "none",
+  "passive": [
+   "A Hexer ghost's follower. Hexed heroes take",
+   "more damage"
+  ],
+  "vault": "A Hexer's voodoo doll. Its pin leaves the hero hexed"
+ },
+ "ModFodMimic": {
+  "name": "Mimic",
+  "attack": "Chomp the hero with your lid",
+  "special": "Spit: a spray of three coins",
+  "passive": [
+   "A Miser ghost's follower. It has the health of",
+   "every body the Miser spent on it"
+  ],
+  "vault": "A Miser's hoard with teeth. Stronger for every body spent on it"
+ }
+}

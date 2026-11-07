@@ -1,0 +1,209 @@
+{
+ "ModShadeImp": {
+  "name": "Shade Imp",
+  "attack": "Two quick claw rakes",
+  "special": "Smoke Step: blink at the hero through smoke",
+  "passive": [
+   "In darkness, your echoes come faster",
+   "Your basic hits echo a beat later"
+  ]
+ },
+ "ModGlimmer": {
+  "name": "Glimmer",
+  "attack": "A mirror shard that ricochets off walls",
+  "special": "Two decoys flick shards, then burst",
+  "passive": [
+   "Shards hit harder after a wall bounce",
+   "Your basic hits echo a beat later"
+  ]
+ },
+ "ModGloomLurker": {
+  "name": "Gloom Lurker",
+  "attack": "Lunging bite, harder from hiding, may daze",
+  "special": "Breathe a darkness cloud that hides your kin",
+  "passive": [
+   "Keep still or stay dark to hide. Bite from hiding",
+   "Your basic hits echo a beat later"
+  ]
+ },
+ "ModTwinned": {
+  "name": "The Twinned",
+  "attack": "Slash ahead, then your back body slashes behind",
+  "special": "Swap places with the hero, then cut",
+  "passive": [
+   "After a swap, your cut echoes in both spots",
+   "Your basic hits echo a beat later"
+  ]
+ },
+ "ModNailshade": {
+  "name": "Nailshade",
+  "attack": "Fling a fan of three glass nails",
+  "special": "Pin roots him, then re-form by him and rake",
+  "passive": [
+   "Each fan that hits throws the next one tighter",
+   "Your basic hits echo a beat later"
+  ]
+ },
+ "ModMirrorWitch": {
+  "name": "Mirror Witch",
+  "attack": "A long-lived bolt that banks off walls",
+  "special": "Set a mirror pane between you and the hero",
+  "passive": [
+   "Your mirror bounces your bolts and his shots",
+   "Your basic hits echo a beat later"
+  ]
+ },
+ "ModGloamcoil": {
+  "name": "Gloamcoil",
+  "attack": "Rearing lunge bite",
+  "special": "Dash along the floor, leaving darkness pools",
+  "passive": [
+   "Darkness you lie in spreads",
+   "Your basic hits echo a beat later"
+  ]
+ },
+ "ModEclipseWyrm": {
+  "name": "Eclipse Wyrm",
+  "attack": "Void head bites, then glass head, may daze",
+  "special": "Eclipse: swallow your glass head",
+  "passive": [
+   "Eclipse: a black disc with a burning ring",
+   "Your basic hits echo a beat later"
+  ]
+ },
+ "ModHollowKing": {
+  "name": "The Hollow King",
+  "attack": "A great eclipse cleave",
+  "special": "Throw your crown down by the hero",
+  "passive": [
+   "Throw your crown: your echoes strike there",
+   "Your basic hits echo a beat later"
+  ]
+ },
+ "ModGlassSeraph": {
+  "name": "Glass Seraph",
+  "attack": "Three glass feathers that ricochet",
+  "special": "Prism: five feathers, each splits on a wall",
+  "passive": [
+   "Echoes near you bend toward him",
+   "Your basic hits echo a beat later"
+  ]
+ },
+ "ModUnblinking": {
+  "name": "The Unblinking",
+  "attack": "A short straight gaze beam",
+  "special": "Lights Out: shut your eye; darkness falls round you",
+  "passive": [
+   "When your eye opens, a moving hero is dazed",
+   "Your basic hits echo a beat later"
+  ]
+ },
+ "ModGlimmerDecoy": {
+  "name": "Glimmer Decoy",
+  "attack": "Flick a weak mirror shard",
+  "special": "none",
+  "passive": [
+   "Bursts after a while, or when killed"
+  ]
+ },
+ "ModGlassmoth": {
+  "name": "Glassmoth",
+  "attack": "Two glass scales in a V",
+  "special": "Glitter cloud drifts at the hero and slows him",
+  "passive": [
+   "Echoes inside your glitter hit at full damage",
+   "Your basic hits echo a beat later"
+  ],
+  "vault": "Its wings are panes of leaded glass. Inside its glitter, every echo lands whole"
+ },
+ "ModHourglass": {
+  "name": "Hourglass",
+  "attack": "Spit a shard of fused sand",
+  "special": "Rewind: soon after, snap back to your mark",
+  "passive": [
+   "Snap back to your mark, health and all",
+   "Your basic hits echo a beat later"
+  ],
+  "vault": "It turns itself over, and the last few moments run back the way they came"
+ },
+ "ModArgusMoth": {
+  "name": "Argus Moth",
+  "attack": "A fan of three eye scales",
+  "special": "Scale Storm: three widening waves of scales",
+  "passive": [
+   "Shots near you veer into your wings, weakened",
+   "Your basic hits echo a beat later"
+  ],
+  "vault": "A moth of a hundred painted eyes. They follow every shot and draw it in"
+ },
+ "ModGlitterswarm": {
+  "name": "Glitterswarm",
+  "attack": "The swarm surges ahead and bites",
+  "special": "Surge through the hero on a line you steer",
+  "passive": [
+   "Your Surge echoes along its path a beat later",
+   "Your basic hits echo a beat later"
+  ],
+  "vault": "A mirror heart in a whirl of glass moths. Where it rushes, its ghost rushes again"
+ },
+ "ModPendulum": {
+  "name": "The Pendulum",
+  "attack": "Heavy swing: the blade goes all the way round",
+  "special": "Stop the Clock: he and his shots slow near you",
+  "passive": [
+   "Your blade swings on its own. Time it",
+   "Your basic hits echo a beat later"
+  ],
+  "vault": "A clock with an eye for a face. Its blade keeps time by itself, and it can stop it"
+ },
+ "ModSandWraith": {
+  "name": "Sand Wraith",
+  "attack": "Hurl a fist of sand",
+  "special": "Time Out: an hourglass hangs over him",
+  "passive": [
+   "Your hits are held, then fall as one column",
+   "Your basic hits echo a beat later"
+  ],
+  "vault": "The hourglass broke and its sand stood up. What it strikes in its glass falls later"
+ },
+ "ModSundered": {
+  "name": "The Sundered",
+  "attack": "Two sabres scissor shut ahead",
+  "special": "Rejoin: your pale half rushes home, cutting",
+  "passive": [
+   "Your pale half rushes back to you through him",
+   "Your basic hits echo a beat later"
+  ],
+  "vault": "Torn in two. The pale half follows a second behind, then rushes home through you"
+ },
+ "ModBristleback": {
+  "name": "Bristleback",
+  "attack": "Lob three nails, left as caltrops",
+  "special": "Shake: a horseshoe of nails behind and aside",
+  "passive": [
+   "His shots stick in you. Your next lob throws them",
+   "Your basic hits echo a beat later"
+  ],
+  "vault": "A hound under a thicket of glass nails. It keeps the bolts you shoot at it"
+ },
+ "ModGlassWidow": {
+  "name": "Glass Widow",
+  "attack": "Front legs stab down",
+  "special": "Glaze Web lands on his spot a beat on, roots",
+  "passive": [
+   "Glazed, his next hit taken cracks for more",
+   "Your basic hits echo a beat later"
+  ],
+  "vault": "A spider of black glass. Her bite leaves a glaze that cracks at the next blow"
+ },
+ "ModUndertow": {
+  "name": "The Undertow",
+  "attack": "Rearing bite, may poison",
+  "special": "Lurk Beneath an ally, biting out",
+  "passive": [
+   "Hide under a friend's feet and bite from there",
+   "Your basic hits echo a beat later"
+  ],
+  "vault": "It lives in a pool of ink that goes wherever it goes, even under a friend's feet"
+ }
+}

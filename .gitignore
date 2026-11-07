@@ -1,0 +1,17 @@
+# game and BepInEx binaries: never commit (they belong to their owners; see docs/building.md)
+lib/
+build/
+*.dll
+*.pdb
+# generated previews and scratch
+*_preview.png
+__pycache__/
+*.pyc
+obj/
+bin/
+
+# internal working notes (kept locally, not published)
+design/
+
+# packaging output (tools/package.sh, tools/thunderstore.sh)
+dist/

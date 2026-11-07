@@ -1,0 +1,1 @@
+{"cellW": 11, "cellH": 7, "cols": 8, "anims": [{"name": "Glow", "frames": [0, 1], "durations": [0.4, 0.4]}, {"name": "Hollow", "frames": [2, 3], "durations": [0.4, 0.4]}, {"name": "Slits", "frames": [4, 5], "durations": [0.4, 0.4]}, {"name": "Cyclops", "frames": [6, 7], "durations": [0.4, 0.4]}, {"name": "Stars", "frames": [8, 9], "durations": [0.4, 0.4]}]}

@@ -1,0 +1,1 @@
+{"cellW": 24, "cellH": 18, "cols": 8, "anims": [{"name": "Play", "frames": [0, 1], "durations": [0.08, 0.1]}, {"name": "Life", "frames": [2, 3, 4, 5], "durations": [0.3, 0.3, 0.3, 0.3]}]}

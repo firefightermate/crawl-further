@@ -1,0 +1,201 @@
+{
+ "ModBellUrchin": {
+  "name": "Bell Urchin",
+  "attack": "Curl up and roll at the hero; may bleed",
+  "special": "Fire a ring of spines all round you",
+  "passive": [
+   "In brine your tube feet grip: no knockback",
+   "You heal in brine"
+  ]
+ },
+ "ModLurefish": {
+  "name": "Lurefish",
+  "attack": "Snap forward and bite, short range",
+  "special": "Cast your lure: tug the hero in, then bite",
+  "passive": [
+   "Hold back: a brighter lure tugs from further away",
+   "You heal in brine"
+  ]
+ },
+ "ModBarnacleCrab": {
+  "name": "Barnacle Crab",
+  "attack": "Heavy claw pinch, melee",
+  "special": "Shell up and gain a plate",
+  "passive": [
+   "You scuttle sideways faster: circle in",
+   "You heal in brine"
+  ]
+ },
+ "ModBellDiver": {
+  "name": "Bell Diver",
+  "attack": "Anchor slam; a quake ring ahead knocks back",
+  "special": "Chain hook: reels the hero in on a hit",
+  "passive": [
+   "A missed hook anchors: you haul yourself to it",
+   "You heal in brine"
+  ]
+ },
+ "ModSpinewalker": {
+  "name": "Spinewalker",
+  "attack": "Spear the floor just ahead with a stilt",
+  "special": "Drop spined eggs that burst as he nears",
+  "passive": [
+   "Your eggs drift after the hero in brine",
+   "You heal in brine"
+  ],
+  "vault": "An urchin up on four tall spines. Its eggs float after you through the brine"
+ },
+ "ModSaltSiren": {
+  "name": "Salt Siren",
+  "attack": "Water bolt, long range; may slow",
+  "special": "Song: tug the hero to you, brine wells under him",
+  "passive": [
+   "Your song drags nearby brine pools to the hero",
+   "You heal in brine"
+  ]
+ },
+ "ModBrineLamprey": {
+  "name": "Brine Lamprey",
+  "attack": "Rasping bite; may bleed",
+  "special": "Lunge along the floor",
+  "passive": [
+   "A lunge that lands latches on, then rasps again",
+   "You heal in brine"
+  ]
+ },
+ "ModBellHermit": {
+  "name": "Bell Hermit",
+  "attack": "Lunging claw crush with big knockback",
+  "special": "Bell down: take far less damage, hits ring out",
+  "passive": [
+   "Brine fills your bell; Bell Down pours it out",
+   "You heal in brine"
+  ]
+ },
+ "ModAnemoneBoxer": {
+  "name": "Anemone Boxer",
+  "attack": "One-two punch with anemone gloves; may poison",
+  "special": "Hop in with poison jabs",
+  "passive": [
+   "After every punch you hop back out of reach",
+   "You heal in brine"
+  ],
+  "vault": "A crab that boxes with a stinging anemone on each claw. It hops back after every punch"
+ },
+ "ModDrownedBell": {
+  "name": "The Drowned Bell",
+  "attack": "Toll: a heavy ring just ahead; may stun",
+  "special": "Cast the Bell at the hero; it lands in brine",
+  "passive": [
+   "Bell off: faster, but hits hurt more",
+   "You heal in brine"
+  ]
+ },
+ "ModDrownedCaptain": {
+  "name": "Drowned Captain",
+  "attack": "Gaff slash that hauls the hero in; may bleed",
+  "special": "Grapple Swing: swing across (can't be hit), boot",
+  "passive": [
+   "A hero you haul or kick into brine is held under",
+   "You heal in brine"
+  ]
+ },
+ "ModCrownOfThorns": {
+  "name": "Crown of Thorns",
+  "attack": "Lash an arm down ahead; may bleed",
+  "special": "Fling a thorn per arm left; they stick and bleed",
+  "passive": [
+   "Broken-off arms crawl to brine and regrow",
+   "You heal in brine"
+  ],
+  "vault": "A spined starfish walking on two arms. Its broken arms crawl to the brine and grow back"
+ },
+ "ModBroodUrchin": {
+  "name": "Brood Urchin",
+  "attack": "Spit a fan of three spines",
+  "special": "Lob eggs that burst when the tide comes",
+  "passive": [
+   "When the tide comes in, every egg bursts in spines",
+   "You heal in brine"
+  ],
+  "vault": "A bloated urchin queen. Her eggs sit on the floor and burst when the tide comes in"
+ },
+ "ModTideMatriarch": {
+  "name": "Tide Matriarch",
+  "attack": "Trident thrust that also flings a coral shard",
+  "special": "Riptide Lanes: currents from brine carry him to you",
+  "passive": [
+   "No brine near? You call the tide in early",
+   "You heal in brine"
+  ]
+ },
+ "ModJellySiren": {
+  "name": "Jelly Siren",
+  "attack": "Tentacle lash ahead; may slow",
+  "special": "Jet Pulse: circle the hero, leaving sting rings",
+  "passive": [
+   "Your long tentacles trail behind: they sting",
+   "You heal in brine"
+  ],
+  "vault": "The siren grew a jellyfish bell. Her stinging tentacles trail far behind her"
+ },
+ "ModGulperEel": {
+  "name": "Gulper Eel",
+  "attack": "Wide jaw scoop just ahead",
+  "special": "Unhinge, then swallow the hero whole and spit him",
+  "passive": [
+   "Full pouch: slow and vulnerable",
+   "You heal in brine"
+  ],
+  "vault": "A pelican eel that is all jaw. It swallows you whole, and its full throat is soft"
+ },
+ "ModSlimeHag": {
+  "name": "Slime Hag",
+  "attack": "Rasping bite that ties you in a knot",
+  "special": "Spew slime that slows the hero's shots",
+  "passive": [
+   "A bite that lands twists into a second bite",
+   "You heal in brine"
+  ],
+  "vault": "An eyeless hagfish tied in a knot. Its slime gums up your weapons"
+ },
+ "ModAbyssKraken": {
+  "name": "Abyss Kraken",
+  "attack": "Two arms slam the floor ahead; may slow",
+  "special": "Arms burst under the hero and from brine; they root",
+  "passive": [
+   "With three arms up, your head is open",
+   "You heal in brine"
+  ]
+ },
+ "ModBelltowerHermit": {
+  "name": "Belltower Hermit",
+  "attack": "Crusher claw snap with big knockback",
+  "special": "Five peals march out to the hero; may stun",
+  "passive": [
+   "A peal in brine rings through it: stuns all in it",
+   "You heal in brine"
+  ],
+  "vault": "A hermit crab carrying a drowned bell tower. Its peals ring through the brine"
+ },
+ "ModAnemoneColossus": {
+  "name": "Anemone Colossus",
+  "attack": "Both pincers hammer the floor ahead",
+  "special": "Flick two anemone buds by the hero: they sting",
+  "passive": [
+   "In brine your garden opens and stings all round",
+   "You heal in brine"
+  ],
+  "vault": "A crab so old its shell is a garden of anemones. In the brine they open and sting"
+ },
+ "ModReefChampion": {
+  "name": "Reef Champion",
+  "attack": "Rising uppercut with a club fist",
+  "special": "Haymaker: wind up, one punch that knocks far back",
+  "passive": [
+   "Now and then the bell rings: rest, heal, speed up",
+   "You heal in brine"
+  ],
+  "vault": "A mantis shrimp prizefighter. It fights in rounds and rests in its corner at the bell"
+ }
+}

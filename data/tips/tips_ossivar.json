@@ -1,0 +1,209 @@
+{
+  "ModRattlebones": {
+    "name": "Rattlebones",
+    "attack": "Lob your skull: it stays where it lands and bites",
+    "special": "Collapse into a bone pile and heal",
+    "passive": [
+      "While your skull is out, only the skull can be hit",
+      "Swipe headless to call your skull home"
+    ]
+  },
+  "ModMarrowHound": {
+    "name": "Marrow Hound",
+    "attack": "Two snapping bites; may bleed",
+    "special": "Howl: a bleed ring round you, then sprint",
+    "passive": [
+      "Run faster at a bleeding hero",
+      "When hurt, a bone pile heals you a great deal"
+    ]
+  },
+  "ModCairnCrow": {
+    "name": "Cairn Crow",
+    "attack": "Diving peck",
+    "special": "Caw: bone piles near you hop toward your kin",
+    "passive": [
+      "Peck a bleeding hero: a splinter falls as a pile",
+      "Bone piles crawl to you: eat one for a plate"
+    ]
+  },
+  "ModBoneLancer": {
+    "name": "Bone Lancer",
+    "attack": "Long spine-spear thrust; may bleed",
+    "special": "Throw three spears in a fan",
+    "passive": [
+      "Your spears stand in the floor and snag him",
+      "Standing spears crumble into bone piles"
+    ]
+  },
+  "ModOssGravedigger": {
+    "name": "Gravedigger",
+    "attack": "Spade swing that flings grave dirt",
+    "special": "Unearth: dig two bone piles out of the floor",
+    "passive": [
+      "Two quick spade hits bury him to the knees",
+      "Buried, he moves slowly for a moment"
+    ],
+    "vault": "Two spade blows in quick succession bury its victim to the knees"
+  },
+  "ModOssGravetusk": {
+    "name": "Gravetusk",
+    "attack": "Tusk gore that tosses the hero back",
+    "special": "Charge: trampled piles burst into shards",
+    "passive": [
+      "Your charge bends to a bleeding hero",
+      "Piles ahead of your charge glow before they burst"
+    ]
+  },
+  "ModOssBarghest": {
+    "name": "Barghest",
+    "attack": "Two rending bites; may bleed",
+    "special": "Pounce (can't be hit): land past him, facing him",
+    "passive": [
+      "Bite him from behind to hit harder",
+      "Your eyes flare while you are behind him"
+    ],
+    "vault": "Leaps over its prey and bites from behind, where it hurts most"
+  },
+  "ModOssuaryPriest": {
+    "name": "Ossuary Priest",
+    "attack": "Slow marrow bolt that homes in on the hero",
+    "special": "Raise nearby bone piles as rats",
+    "passive": [
+      "Bones come to you from further, and faster",
+      "They wait at your feet for Raise. Kin may eat them"
+    ]
+  },
+  "ModOssCarrionVulture": {
+    "name": "Carrion Vulture",
+    "attack": "Swoop through the hero, raking; may bleed",
+    "special": "Plummet (can't be hit): drop on his marked spot",
+    "passive": [
+      "When he's below half health, you're faster",
+      "and your rake always bleeds"
+    ]
+  },
+  "ModOssCharnelRider": {
+    "name": "Charnel Rider",
+    "attack": "Wide lance sweep in front",
+    "special": "Joust: gallop a long way or into a wall, then wheel",
+    "passive": [
+      "Badly hurt, your horse falls: fight on foot",
+      "On foot: throw your lance, run in with a thrust"
+    ]
+  },
+  "ModOssSpinehook": {
+    "name": "Spinehook",
+    "attack": "Hook rake; may bleed",
+    "special": "Harpoon: it bites the hero or a bone pile",
+    "passive": [
+      "Harpoon a bone pile and reel it in through him",
+      "A pile reeled in to you becomes a plate"
+    ],
+    "vault": "Harpoons bone piles and hauls them home along its rope, through anyone in the way"
+  },
+  "ModOssTombwright": {
+    "name": "Tombwright",
+    "attack": "Mallet smash; knocks over a headstone it hits",
+    "special": "Raise three headstones in a line at the hero",
+    "passive": [
+      "Raise headstones, then mallet them over onto him",
+      "A falling stone topples the next, then breaks to bones"
+    ],
+    "vault": "Raises headstones as walls, then knocks them over like dominoes"
+  },
+  "ModOssCoffinBearer": {
+    "name": "Coffin Bearer",
+    "attack": "Coffin slam in front",
+    "special": "Whirl: up to three hits, then you are dizzy",
+    "passive": [
+      "Press again mid-whirl to let the coffin fly",
+      "It flies out on its chain and you skip the daze"
+    ],
+    "vault": "Whirls a coffin on its chains, and sometimes lets it fly"
+  },
+  "ModOssBoneMammoth": {
+    "name": "Bone Mammoth",
+    "attack": "Tusk sweep with knockback",
+    "special": "Cross Quake: rear, stamp, spikes along a cross",
+    "passive": [
+      "Your stamp splits the floor in a cross",
+      "Each footfall jolts the floor round your foot"
+    ],
+    "vault": "The floor shakes under every step. Its stamp splits the ground in a cross"
+  },
+  "ModOssRazorback": {
+    "name": "Razorback",
+    "attack": "Tusk slash; may bleed",
+    "special": "Skid: fire every raised quill ahead in a fan",
+    "passive": [
+      "Run to raise your quills",
+      "Each second of standing still lowers a quill"
+    ],
+    "vault": "Its quills rise one by one as it runs, and fly when it skids"
+  },
+  "ModOssCerberus": {
+    "name": "Cerberus",
+    "attack": "Three heads bite at once in a fan",
+    "special": "Three gas cones sweep in and poison",
+    "passive": [
+      "Your three breaths sweep in and meet on him",
+      "The outer heads glow first: the way out is back"
+    ],
+    "vault": "Three heads breathe grave gas from both sides at once. The only way out is back"
+  },
+  "ModOssChurchGrim": {
+    "name": "Church Grim",
+    "attack": "Long lunging bite",
+    "special": "Graveward Lunge: run through him; may bleed",
+    "passive": [
+      "Once, when slain, you rise from your bones",
+      "If he stands on your bones meanwhile, you're gone"
+    ],
+    "vault": "Falls into its bones once, eyes still lit, and rises unless someone stands on them"
+  },
+  "ModOssCarrionSaint": {
+    "name": "Carrion Saint",
+    "attack": "Send a perched crow at the hero",
+    "special": "Murder: every perched crow flies as a wall",
+    "passive": [
+      "Your perched crows are your shots. Bones bring more",
+      "Up to four perch, and lost ones come back"
+    ]
+  },
+  "ModOssuary": {
+    "name": "The Ossuary",
+    "attack": "Fists slam a ring of spikes ahead",
+    "special": "Ribcage: six ribs burst up round him",
+    "passive": [
+      "Cage him in ribs. He breaks one to get out",
+      "You hold up to three plates: soak his way out"
+    ]
+  },
+  "ModOssMarrowWyrm": {
+    "name": "Marrow Wyrm",
+    "attack": "Long-necked lunge; may bleed",
+    "special": "Neck Lash: cock back, then sweep the arc in front",
+    "passive": [
+      "Piles near you give two plates, not one",
+      "Red lines show the piles you filled with marrow"
+    ]
+  },
+  "ModOssCarrionRoc": {
+    "name": "Carrion Roc",
+    "attack": "Diving beak stab; may bleed",
+    "special": "Airlift: fly a friend or a pile onto the hero",
+    "passive": [
+      "Fly a friend to the hero and drop them on him",
+      "They land with a plate. Their shadow marks the spot"
+    ],
+    "vault": "Carries its kin through the air and drops them on its prey"
+  },
+  "ModBoneRat": {
+    "name": "Bone Rat",
+    "attack": "Small snapping bite",
+    "special": "none",
+    "passive": [
+      "Raised from a bone pile"
+    ]
+  }
+}

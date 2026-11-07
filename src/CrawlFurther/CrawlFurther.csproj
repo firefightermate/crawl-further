@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The content mod: BepInEx plugin "Crawl: Further", built on CrawlFurther.Core. Settings: Directory.Build.props. -->
+  <PropertyGroup>
+    <AssemblyName>CrawlFurther</AssemblyName>
+    <RootNamespace>CrawlFurther.Content</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CrawlFurther.Core\CrawlFurther.Core.csproj" Private="false" />
+  </ItemGroup>
+</Project>

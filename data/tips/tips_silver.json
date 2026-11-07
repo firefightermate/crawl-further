@@ -1,0 +1,32 @@
+{
+  "ModSilverMoonwarden": {
+    "name": "Moonwarden",
+    "attack": "Crescent glaive sweep",
+    "special": "Moonfall: strike harder as the moon fills",
+    "passive": [
+      "Your moon waxes a phase at a time, New to Full.",
+      "Silver unique: only from a silver ghost's orbs"
+    ],
+    "vault": "A hollow knight with a moon for a face. The fuller its moon, the harder it falls"
+  },
+  "ModSilverCometStag": {
+    "name": "Comet Stag",
+    "attack": "Antler gore",
+    "special": "Comet: fly ahead, rebounding off three walls",
+    "passive": [
+      "Run straight for a bursting gore",
+      "Silver unique: only from a silver ghost's orbs"
+    ],
+    "vault": "A stag of silver and starlight. It runs as a comet, glancing off the walls"
+  },
+  "ModSilverAstrarch": {
+    "name": "The Astrarch",
+    "attack": "Starshot: leaves a star on the floor",
+    "special": "Join your stars: starfall hits inside them",
+    "passive": [
+      "Three or more stars out: you take less damage.",
+      "Legendary silver unique: a very rare upgrade"
+    ],
+    "vault": "She marks the floor under the hero, then calls the stars down on it"
+  }
+}

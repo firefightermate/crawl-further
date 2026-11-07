@@ -1,0 +1,1 @@
+{"cellW": 30, "cellH": 10, "cols": 8, "anims": [{"name": "Spread", "frames": [0, 1, 2], "durations": [0.06, 0.06, 0.08]}, {"name": "Loop", "frames": [3, 4, 5, 6], "durations": [0.3, 0.25, 0.3, 0.1]}, {"name": "Fade", "frames": [7, 8, 9], "durations": [0.08, 0.08, 0.1]}]}

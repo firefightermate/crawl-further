@@ -1,0 +1,1 @@
+{"cellW": 20, "cellH": 11, "cols": 8, "anims": [{"name": "Groove1", "frames": [0, 1], "durations": [0.25, 0.25]}, {"name": "Groove2", "frames": [2, 3], "durations": [0.25, 0.25]}, {"name": "Groove3", "frames": [4, 5], "durations": [0.25, 0.25]}, {"name": "Groove4", "frames": [6, 7], "durations": [0.25, 0.25]}, {"name": "Hat", "frames": [8, 9], "durations": [0.3, 0.3]}]}
