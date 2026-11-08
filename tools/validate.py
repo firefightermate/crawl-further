@@ -269,6 +269,39 @@ def c_manifests(fails, warns):
     return len(SHEETS)
 
 
+@check("control-pictures")
+def c_control_pictures(fails, warns):
+    """art/core/ControlDiagrams.json (tools/sprites/control_diagrams.py): parses, names the pictures the join screen
+    plays, and every step is one ControlDiagrams.cs runs."""
+    path = os.path.join(ROOT, "art", "core", "ControlDiagrams.json")
+    if not os.path.exists(path):
+        fails.append("art/core/ControlDiagrams.json missing (run tools/sprites/control_diagrams.py)")
+        return 0
+    d = json.load(open(path))
+    if "ControlDiagrams.json" not in open(os.path.join(ROOT, "tools", "package.sh")).read():
+        fails.append("package.sh does not ship art/core/ControlDiagrams.json")
+    if d.get("atlas") != "AtlasMenuConnect":
+        fails.append("ControlDiagrams.json: atlas is %r" % d.get("atlas"))
+    used = {"controller_diagrams_%02d" % i for i in (4, 5, 6, 8, 9)}
+    frames = d.get("frames", {})
+    for name in sorted(used - set(frames)):
+        fails.append("ControlDiagrams.json: no steps for %s" % name)
+    need = {"copy": ("src", "dst"), "recolor": ("rect", "map"), "clear": ("rect",), "pixels": ("color", "pts")}
+    n = 0
+    for name, steps in frames.items():
+        if name not in used:
+            warns.append("ControlDiagrams.json: %s is not shown by any clip" % name)
+        for st in steps:
+            n += 1
+            op = st.get("op")
+            if op not in need:
+                fails.append("%s: unknown step %r" % (name, op)); continue
+            for k in need[op]:
+                if k not in st:
+                    fails.append("%s: %s step without %s" % (name, op, k))
+    return n
+
+
 @check("duplicates")
 def c_duplicates(fails, warns):
     for sid, copies in ALL_COPIES.items():

@@ -121,6 +121,8 @@ namespace CrawlFurther.Testing
                 TestGame.BeatBoss();
                 TestMode.Say("The boss falls: " + SystemPlayers.GetTotalBossAttempts() + " of " + SystemMenu.GetBossAttemptsAllowed() + " boss tries used");
             });
+            TestMode.AddChoice(Run, "Chaos in this game (two spells: give one under Items)", new[] { "Off", "On" },
+                () => Game.ChaosMode.Active ? 1 : 0, i => { Game.ChaosMode.SetForThisGame(i == 1); TestMode.Say("Chaos " + (i == 1 ? "on" : "off") + " for this game"); });
             TestMode.AddAction(Run, "Open the doors", () => TestGame.OpenDoors());
             TestMode.AddAction(Run, "Next room", () => TestGame.NextRoom());
             TestMode.AddAction(Run, "Go to the shop", () => TestGame.GoToStore());
@@ -185,7 +187,7 @@ namespace CrawlFurther.Testing
             TestMode.AddToggle(Unlocks, "Open everything for this session (nothing is saved)", () => TestCheats.UnlockAll, v =>
             {
                 TestCheats.UnlockAll = v;
-                TestMode.Say(v ? "Everything is open until the game closes or this is switched off" : "Back to your real unlocks");
+                TestMode.Say(v ? "Everything is open until the game closes or this is switched off: gods, heroes, slots, blobs, secrets and every vault entry (so every monster challenge)" : "Back to your real unlocks");
             });
             TestMode.AddAction(Unlocks, "The game's open-everything item (writes your save)", () =>
             {

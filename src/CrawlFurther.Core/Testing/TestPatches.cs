@@ -52,6 +52,26 @@ namespace CrawlFurther.Testing
         }
     }
 
+    /// <summary>Open everything for the session also finds every vault entry (monsters, weapons, items, objects), so any
+    /// monster's challenge can be started from the vault. Nothing is written.</summary>
+    [HarmonyPatch]
+    static class Patch_TestVaultAllFound
+    {
+        static bool Prepare() { return TestMode.On; }
+
+        static System.Reflection.MethodBase TargetMethod()
+        {
+            return AccessTools.Method(AccessTools.Inner(typeof(SystemLibrary), "LibraryEntry"), "IsFound");
+        }
+
+        static bool Prefix(ref bool __result)
+        {
+            if (!TestCheats.UnlockAll || !TestMode.Active) return true;
+            __result = true;
+            return false;
+        }
+    }
+
     /// <summary>Test play finds nothing for the vault: becoming or spawning a monster must not mark it found in the save.</summary>
     [HarmonyPatch(typeof(SystemLibrary), "OnEntryFound", new[] { typeof(PlayerData), typeof(GameObject), typeof(string) })]
     static class Patch_TestNoVaultFinds

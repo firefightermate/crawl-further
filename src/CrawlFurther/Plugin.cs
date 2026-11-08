@@ -16,7 +16,7 @@ namespace CrawlFurther.Content
     {
         public const string GUID = "com.firefightermate.crawlfurther";
         public const string NAME = "Crawl: Further";   // display name only; BepInEx names the [Bosses] config file after GUID
-        public const string VERSION = "1.2.1";
+        public const string VERSION = "1.3.0";
 
         public static Plugin I;
         internal static ManualLogSource Log;

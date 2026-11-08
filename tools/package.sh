@@ -26,6 +26,8 @@ for d in "$ROOT"/art/core "$ROOT"/art/out*; do
     [ -f "$d/$b.png" ] && cp "$d/$b.png" "$d/$b.json" "$STAGE/art/"
   done
 done
+# paint steps for the join screen's controls pictures (no png: they run on the game's own art)
+cp "$ROOT/art/core/ControlDiagrams.json" "$STAGE/art/"
 # Crawl: Further soundtrack (ModMusic loads every .ogg/.wav in plugins/CrawlFurther/music); placeholder test tones stay home
 mkdir -p "$STAGE/music"
 for f in "$ROOT"/music/*.ogg "$ROOT"/music/*.wav; do

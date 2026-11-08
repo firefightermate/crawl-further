@@ -162,6 +162,21 @@ namespace CrawlFurther.Ghosts
             return IsKeyboard(cid) ? KeyName((KeyCode)s_eff[cid]) : PadName(s_eff[cid]);
         }
 
+        /// <summary>The controller's ghost button is the one the join screen's controls picture shows: C on a keyboard,
+        /// X on a pad, middle click on the mouse. False for an online player's pad (their button is set on their PC).</summary>
+        public static bool IsPictured(int cid)
+        {
+            try
+            {
+                if (IsMouse(cid)) return true;
+                if (!IsKeyboard(cid) && !IsPad(cid)) return false;
+                if (CompatOnline.IsRemotePad(cid)) return false;
+                Resolve();
+                return IsKeyboard(cid) ? s_eff[cid] == (int)KeyCode.C : s_eff[cid] == (int)InputControlType.Action3 + 1;
+            }
+            catch (Exception e) { Warn("IsPictured", e); return false; }
+        }
+
         /// <summary>
         /// Text naming the ghost button, made personal: the first "ghost button" (also inside a colour tag) gets " (name)"
         /// after it, unless a name in brackets already follows; the old fixed "C, middle click or X" becomes the name.
