@@ -3,6 +3,18 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## Unreleased
+
+### Library (CrawlFurther.Core)
+- The join screen's controls picture (`MenuJoinPlayer`, state `InputDiagram`) gets a line under it naming the
+  player's ghost button (`GhostControls.Name`), in a copy of the god page's label text.
+
+### Repository
+- Ghost blobs carry `BlobSpecialInput`: a player in one starts its special with the ghost button, and
+  `Player.HandleAlternateInput` is skipped there, so Back only lets the player out (`PropFodder` releases on Back
+  up, and the game starts a special on Back down). The gold ghost's jump-out and the mouse player's middle click
+  pause give way to it in a blob with a special.
+
 ## 1.2.0
 
 ### Library (CrawlFurther.Core)

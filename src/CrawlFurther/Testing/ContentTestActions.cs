@@ -54,6 +54,16 @@ namespace CrawlFurther.Content.Testing
                 TestGame.BecomeGhost(pd);
                 TestMode.Say("P" + (pd.Id + 1) + "'s ghost spawns the " + GhostBlobs.ChoiceOf(pd).name);
             });
+            TestMode.AddList(Become, "Blob (special ready)", BlobBodies, item =>
+            {
+                var pd = Player();
+                var body = TestGame.Become(pd, (GameObject)item.Value);
+                var p = body != null ? body.GetComponent<Player>() : null;
+                if (p == null) throw new TestModeException("The blob did not spawn");
+                if (!p.HasSpecialAttack()) { TestMode.Say("P" + (pd.Id + 1) + " is a " + item.Label + " (it has no special)"); return; }
+                CrawlFurther.Util.R.Set(p, "m_specialCharge", p.GetSpecialChargeTime() + 0.01f);
+                TestMode.Say("P" + (pd.Id + 1) + " is a " + item.Label + ": press " + GhostControls.Name(pd) + " for its special");
+            });
             TestMode.AddList(Become, "Silver ascended final", Finals, item =>
             {
                 var pd = Player();
@@ -98,6 +108,13 @@ namespace CrawlFurther.Content.Testing
                 var f = GhostPack.Forms[i];
                 yield return new TestItem(f.name, i, f.tier == SlotTier.Normal ? null : "Custom slots");
             }
+        }
+
+        /// <summary>Every ghost blob body, small to big.</summary>
+        static IEnumerable<TestItem> BlobBodies()
+        {
+            foreach (var b in new[] { GhostPack.Mote, GhostPack.Spitter, GhostPack.Gel, GhostPack.Brute, GhostPack.Titan, GhostPack.King })
+                if (b != null) yield return new TestItem(Name(b.gameObject), b.gameObject);
         }
 
         /// <summary>The form's own blob, then every blob a ghost can pick.</summary>

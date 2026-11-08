@@ -252,7 +252,7 @@ with every blob the form can choose, open or locked. A form with no choice skips
 ```csharp
 GhostBlobs.Register(new GhostBlobDef
 {
-    id = "King", name = "King Blob", summary = "Slams, rains globs, and costs more ectoplasm",
+    id = "King", name = "King Blob", summary = "Ghost button rains globs. Costs more",
     prefab = pd => King.gameObject, art = "BlobKing", bodies = KingBodies,
     fits = f => f != null && f.tier != SlotTier.Normal,   // the silver and gold ghosts' own prize
 });
@@ -265,6 +265,10 @@ GhostBlobs.Register(new GhostBlobDef
 - `fits` says which forms may pick it. Null means every form.
 - `bodies` is what one costs in bodies of ectoplasm. The game charges one and the rest the same way. Back
   does nothing (the stored bodies blink) while the ghost has fewer.
+
+A player inside a ghost blob uses its special with the ghost button (`GhostControls.Down`), not Back: in the game
+Back starts a special when pressed and lets the player out of a blob body when released, so both would happen.
+`BlobSpecialInput` on every blob prefab does this, and an AI blob still uses its special through `AiSpecial`.
 
 The mod that owns the forms sets `GhostBlobs.Regular` (always open, every form) and `GhostBlobs.OwnOf` (a form's own
 blob, or null). `GhostBlobs.ChoicesFor(form)` lists what a form can choose, the regular blob first. With one entry the

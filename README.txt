@@ -198,7 +198,9 @@ Violet pips are mod choices:
                time, and not in boss fights (a gold padlock flickers on your monster instead). You get 2
                ectoplasm when the hero kills your thrall.
   GHOST BUTTON   defaults: keyboard 1 C, keyboard 2 B, keyboard 3 M, keyboard 4 full stop, mouse middle
-               click, controller X. Change it in the game's controls settings (GHOST BUTTON row).
+               click, controller X. Change it in the game's controls settings (GHOST BUTTON row). The join
+               screen's controls picture names it under the picture. In a Brute, Titan or King Blob it uses
+               the blob's special; Back only leaves the blob.
 3. Blob (a third page, after you confirm a ghost form that has a choice). The blob your ghost spawns with
   Back, shown in boxes where the god page shows its starters. Left and right (or the mouse) to pick, confirm
   to finish, back to return to the forms. It starts on the blob you had last. Forms with no choice skip it.
@@ -210,8 +212,8 @@ Violet pips are mod choices:
                spawn 40 blobs as the Binder
                Until a form earns its blob it spawns the regular one. After that its own is the default.
   Silver/Gold  the regular blob, any blob already earned, and the King Blob. The King is
-               theirs alone: it slams out a ring of goo and rains globs that land where their shadows grow
-               (0.8 s). 6.5 health (a Titan has 6), no Gel when it dies, costs 3 bodies of ectoplasm
+               theirs alone: it slams out a ring of goo, and the ghost button rains globs that land where
+               their shadows grow (0.8 s). 6.5 health (a Titan has 6), no Gel when it dies, costs 3 bodies of ectoplasm
   The other forms spawn what they always did. Bots always use their form's default.
 
 SILVER AND GOLD SLOTS
