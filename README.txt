@@ -17,7 +17,7 @@ updating from any earlier version keeps your settings and saves. New settings fi
 The mod's two bosses are switched off in this version (see BOSSES).
 
 NEW IN 1.2.0
-----------
+------------
   - Every god monster and secret monster has a challenge in the vault, like the game's own monsters: select
     it in MONSTERS and press Challenge. Play it against a bot hero who comes back stronger each time you kill
     him. Starters ask for hero level 4, tier 2 for level 7, finals for level 10. A passed challenge gets the
