@@ -25,7 +25,7 @@ namespace CrawlFurther.Content.Gods.Vhorrul
         /// <summary>Wax chips instead of red blood when a Vhorrul monster is hit.</summary>
         public static GameObject HitSplat;
 
-        public static GameObject WaxGlob, MoltenGlob, WickBite, WickDashHit, WickDashTrail, Flare, Upwell, AshPuff, EmberPuff, MothDive,
+        public static GameObject WaxGlob, ChandelierGlob, MoltenGlob, WickBite, WickDashHit, WickDashTrail, Flare, Upwell, AshPuff, EmberPuff, MothDive,
                                  KnightCut, KnightCut3, SealRing, LitRing, KindledSpill, WormBite, WaxRoad, SowDrop, EggGlob, WaxEgg,
                                  EggHatch, Glance, MatronRake, EmberMoth, CandelabraFlame, Fork, ColossusFist, ToppleShadow, CenserSmash,
                                  SigilFlame, LadleFan, BoilWave, LadleSwing, HexFlame, Poppet, Thread, WyrmStrike, CoilFlame, CoilClose,
@@ -224,11 +224,13 @@ namespace CrawlFurther.Content.Gods.Vhorrul
                 var sh = SpriteSheets.Get("FxWaxGlob");
                 FxFactory.Reskin(WaxGlob, new ClipBuilder(sh, "Fly", "ModWaxGlobFly").Repeat(3).Once().Build(), sh);
                 FxFactory.SetEffect(WaxGlob, destroyOnAnimEnd: true, spawnOnDestroy: WaxPuddle);
-                FxFactory.SetMotion(WaxGlob, speed: 175f, accel: 20f, speedMax: 8f, collide: true, bounce: 0.2f);
-                FxFactory.SetDamage(WaxGlob, 0.6f, knockback: 0.2f, collisionAtStart: true);
+                FxFactory.SetMotion(WaxGlob, speed: 210f, accel: 20f, speedMax: 8f, collide: true, bounce: 0.2f);
+                FxFactory.SetDamage(WaxGlob, 0.8f, knockback: 0.2f, collisionAtStart: true);
                 FxFactory.SetContacts(WaxGlob, destroyOnHit: true, spawnOnHit: WaxPuddle);
                 Strike.ArtAt(WaxGlob, "FxWaxGlob", 6, 12);
             }
+            // the Grand Chandelier flings four of them at once: each hits softer than the grub's one
+            ChandelierGlob = FxKit.Weakened(WaxGlob, "ModVhChandelierGlob", 0.75f);
             // Wickling
             WickBite = Hit("ModVhWickBite", 0.8f, 0.5f, 12f, 11f, 0.15f, OnFire, 0.35f);
             WickDashHit = Hit("ModWickDashHit", 0.7f, 0.8f, 13f, 11f, 0.5f, OnFire, 0.2f, rate: 0.4f);
@@ -238,7 +240,7 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             Flare = FxKit.Visual("ModVhFlare", "FxVhFlare", "Play");
             if (Flare != null) Strike.ArtAt(Flare, "FxVhFlare", 10, 14);
             // Tallow Grub: bursting up through its own puddle
-            Upwell = Hit("ModVhUpwell", 0.8f, 0.9f, 24f, 12f, 0.12f, aimed: false);
+            Upwell = Hit("ModVhUpwell", 1.2f, 1f, 28f, 14f, 0.12f, aimed: false);
             // Ash Moth: the ash puff (dazes), the same puff carrying embers (lights wax) near fire, the dive
             AshPuff = FxFactory.Clone("DFX_skelMageNewProjectile", "ModAshPuff");
             EmberPuff = FxFactory.Clone("DFX_skelMageNewProjectile", "ModVhEmberPuff");

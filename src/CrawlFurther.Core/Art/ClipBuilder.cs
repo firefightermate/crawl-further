@@ -23,6 +23,8 @@ namespace CrawlFurther.Art
         float m_speed = 1f;
         float[] m_durations;
         int m_repeat = 1;
+        bool m_handOff;
+        static readonly HashSet<exSpriteAnimClip> s_handOffs = new HashSet<exSpriteAnimClip>();
         readonly List<KeyValuePair<string, int>> m_then = new List<KeyValuePair<string, int>>();
         readonly List<exSpriteAnimClip.EventInfo> m_events = new List<exSpriteAnimClip.EventInfo>();
         readonly List<KeyValuePair<int, float>> m_eventAnchors = new List<KeyValuePair<int, float>>();
@@ -33,6 +35,15 @@ namespace CrawlFurther.Art
         {
             m_sheet = sheet; m_anim = anim; m_name = clipName;
         }
+
+        /// <summary>
+        /// The clip ends by handing the body to a behaviour (a charge, a carry, a dig) that gives control back itself, so it
+        /// has no AnimRun of its own. The self-test accepts it; without this it reports the clip as never returning control.
+        /// </summary>
+        public ClipBuilder HandOff() { m_handOff = true; return this; }
+
+        /// <summary>Was <paramref name="clip"/> built with <see cref="HandOff"/>?</summary>
+        public static bool HandsOff(exSpriteAnimClip clip) { return clip != null && s_handOffs.Contains(clip); }
 
         /// <summary>Play the clip in a loop (idle, run). The default is once.</summary>
         public ClipBuilder Loop() { m_wrap = WrapMode.Loop; return this; }
@@ -151,6 +162,7 @@ namespace CrawlFurther.Art
             }
             m_events.Sort((x, y) => x.time.CompareTo(y.time));
             c.eventInfos = new List<exSpriteAnimClip.EventInfo>(m_events);
+            if (m_handOff) s_handOffs.Add(c);
             SpriteSheets.Keep(c);
             return c;
         }

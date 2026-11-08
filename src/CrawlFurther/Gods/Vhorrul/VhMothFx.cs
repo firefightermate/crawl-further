@@ -30,6 +30,8 @@ namespace CrawlFurther.Content.Gods.Vhorrul
                 if (pm != null) pm.enabled = false;
                 float a = transform.eulerAngles.z * Mathf.Deg2Rad;
                 m_dir = new Vector2(Mathf.Cos(a), Mathf.Sin(a));
+                // the moth isn't free-rotated: a left-facing Matron flips it by scale, not by angle
+                if (transform.lossyScale.x < 0f) m_dir.x = -Mathf.Abs(m_dir.x);
                 transform.rotation = Quaternion.identity;
                 m_wob = Random.Range(0f, 6f);
                 m_anim = GetComponent<exSpriteAnimation>();

@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.2.1
+
+- New art for every hero. The origin portraits are close-up faces painted like the game's own god portraits, in
+  all four player colours. The silver and gold heroes' portraits, editor icons and slot pictures match them.
+- The headwear heroes wear in game is redrawn at the size of the hero's head: helms, hoods, hats, hair and face
+  pieces no longer sit on top like oversized blocks, for the origins and for every silver and gold hero choice.
+- Tallow Grub is stronger: it moves at normal speed, its Wax Spit flies further, hits harder and comes back
+  sooner, Melt charges faster, and the puddle rises the moment it is under the hero, for a player as for a bot.
+  The rising burst hits harder over a wider area.
+- The secret monsters had less health than every other final. The gold line's finals, the silver uniques and the
+  secret statue monsters now have as much as the gods' finals.
+- The Brood Mother's Royal Grub has its own art: gold plates and royal jelly running down its back.
+- Fixed: the Moth Matron's ember moths always flew to the right when no burning hero drew them in.
+- Fixed: the Fuse Scorpion's death held one pose for three frames. It now falls in four.
+- Fixed: a Wire Wyvern whose dive found nowhere to ride could stay frozen.
+- Fixed: the self-test reported problems that were not problems (monsters whose special hands the body to its own
+  behaviour, the Sundered's menu picture, the Royal Grub sharing the Acid Grub's art) and one that was: the Well
+  Spirit's rarity line was one letter too long.
+
 ## 1.2.0
 
 - A blob's special is on the ghost button (C, middle click or X), not on Back. Using the Brute's Bounce, the

@@ -75,6 +75,7 @@ The item icons (IconZhk*) still come from tools/sprites/zhekra_rigs.py.
 | ZhkMortar | 50 x 35 | (25, 33) | 36 x 29 | Idle 4, Run 6, Shell 6, Bombard 9, Death 4, Dead 1, Statue 1, Knockback 1, Portrait 1 |
 | ZhkMother | 60 x 47 | (30, 45) | 42 x 38 | Idle 4, Run 6, Rain 8, Call 8, Death 4, Dead 1, Statue 1, Knockback 1, Portrait 1 |
 | ZhkNasute | 54 x 37 | (27, 35) | 28 x 22 | Idle 4, Run 6, Specks 6, ShoreUp 7, Puff 4, Death 4, Dead 1, Statue 1, Knockback 1, Portrait 1 |
+| ZhkRoyalGrub | 42 x 18 | (21, 16) | 20 x 10 | Idle 4, Run 6, Bite 6, Death 4, Dead 1, Statue 1, Knockback 1, Portrait 1 |
 | ZhkScarab | 62 x 32 | (31, 30) | 28 x 12 | Idle 4, Run 6, Idle2 4, Run2 6, Idle1 4, Run1 6, Idle0 4, Run0 6, Bowl 7, Hurl 8, Bowl2 7, Hurl2 8, Bowl1 7, Hurl1 8, Butt 6, Death 4, Dead 1, Statue 1, Knockback 1, Portrait 1 |
 | ZhkSiphon | 48 x 36 | (24, 34) | 28 x 24 | Idle 4, Run 6, Idle1 4, Run1 6, Idle2 4, Run2 6, Idle3 4, Run3 6, Stab 6, Feed 9, Death 4, Dead 1, Statue 1, Knockback 1, Portrait 1 |
 | ZhkSoldier | 48 x 30 | (24, 28) | 28 x 25 | Idle 4, Run 6, Scythe 7, Guard 4, GuardHold 2, Strike 4, Death 4, Dead 1, Statue 1, Knockback 1, Portrait 1 |
@@ -128,6 +129,8 @@ The item icons (IconZhk*) still come from tools/sprites/zhekra_rigs.py.
 | ZhkNasute | Specks | 6 | speck 3 | 4 | 0.36 | 0.54 |
 | ZhkNasute | ShoreUp | 7 | SPRAY: resin plates for it and its kin | 4 | 0.42 | 0.78 |
 | ZhkNasute | Puff | 4 | PUFF: one speck at the hero | 2 | 0.10 | 0.28 |
+| ZhkRoyalGrub | Bite | 6 | LUNGE: jaws at (10, -3); box 12 x 12 at (12, -4) | 2 | 0.24 | 0.58 |
+| ZhkRoyalGrub | Bite | 6 | snap | 3 | 0.29 | 0.58 |
 | ZhkScarab | Bowl | 7 | HEAVE: the ball leaves at (14, -5) and rolls along the floor | 2 | 0.24 | 0.69 |
 | ZhkScarab | Hurl | 8 | KICK: the ball arcs over its back toward the hero's spot | 3 | 0.34 | 0.82 |
 | ZhkScarab | Butt | 6 | BUTT: head at (9, -4); box 12 x 10 at (8, -4) | 2 | 0.22 | 0.59 |
@@ -407,6 +410,14 @@ The item icons (IconZhk*) still come from tools/sprites/zhekra_rigs.py.
 - ZhkNasute Statue: 0.2
 - ZhkNasute Knockback: 0.2
 - ZhkNasute Portrait: 0.2
+- ZhkRoyalGrub Idle: 0.14, 0.12, 0.14, 0.12
+- ZhkRoyalGrub Run: 0.08, 0.08, 0.08, 0.08, 0.08, 0.08
+- ZhkRoyalGrub Bite: 0.12, 0.12, 0.05, 0.07, 0.1, 0.12
+- ZhkRoyalGrub Death: 0.1, 0.12, 0.12, 0.4
+- ZhkRoyalGrub Dead: 0.3
+- ZhkRoyalGrub Statue: 0.2
+- ZhkRoyalGrub Knockback: 0.2
+- ZhkRoyalGrub Portrait: 0.2
 - ZhkScarab Idle: 0.14, 0.12, 0.14, 0.12
 - ZhkScarab Run: 0.08, 0.08, 0.08, 0.08, 0.08, 0.08
 - ZhkScarab Idle2: 0.14, 0.12, 0.14, 0.12

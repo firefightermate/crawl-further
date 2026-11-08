@@ -324,7 +324,7 @@ namespace CrawlFurther.Content.Gods.Zhekra
             int dirt = Kit.AddEffect(p, ZhekraFx.Dirt, spawnPoint: DamageEffectData.eSpawnPoint.Position);
             var cl = Kit.Melee(sh, "Clamp", "ModZhkAntlionClamp", v, 2, bite, 40f).Build();
             var dg = Still(sh, "Dig", "ModZhkAntlionDig").Ev(0, "AnimAttack", dirt).EvO(0, "AnimSound", v).Ev(3, "AnimAttack", dirt)
-                .Ev(-1, "ModZhkPit").Build();
+                .Ev(-1, "ModZhkPit").HandOff().Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, cl, 1.5f, rangeInner: 14f, rangeOuter: 30f));
             Kit.SetSpecial(p, Kit.Attack(sp, dg, 0f, rangeInner: 0f, rangeOuter: 45f, rangeRetreat: 0f), 7.5f);
@@ -525,7 +525,7 @@ namespace CrawlFurther.Content.Gods.Zhekra
 
         public static readonly MonsterDef Grubling = new MonsterDef
         {
-            id = "ZhkGrubling", art = "ZhkGrub", basePrefab = "EnemyFodderMushroom", health = 4f, speedMult = 0.9f, kit = GrublingKit
+            id = "ZhkGrubling", art = "ZhkRoyalGrub", basePrefab = "EnemyFodderMushroom", health = 4f, speedMult = 0.9f, kit = GrublingKit
         };
 
         // Evolution tree: every evolution has exactly one parent.

@@ -124,7 +124,9 @@ namespace CrawlFurther.Content.Gods.Kaurn
         /// <summary>Clip event: it is gone into the arcs.</summary>
         public void KrnRideGo()
         {
-            if (m_route.Count == 0 || !Alive) return;
+            if (!Alive) return;
+            // the Dive clip hands the body over here: with no route to ride, give control straight back
+            if (m_route.Count == 0) { SendMessage("AnimRun", SendMessageOptions.DontRequireReceiver); return; }
             m_planning = false;
             ClearLit();
             StartCoroutine(Ride());

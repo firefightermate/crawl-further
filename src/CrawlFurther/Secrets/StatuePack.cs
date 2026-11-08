@@ -576,15 +576,15 @@ namespace CrawlFurther.Content.Secrets
         public static readonly List<MonsterDef> Monsters = new List<MonsterDef>
         {
             // unique finals: no parent, evolve no further, tier-3 cost so they get the T3 multipliers (0.8x damage, slower specials)
-            new MonsterDef { id = "StmGrotesque", art = "StmGrotesque", basePrefab = "EnemyCapraDemon", health = 11f, speedMult = 1.05f,
+            new MonsterDef { id = "StmGrotesque", art = "StmGrotesque", basePrefab = "EnemyCapraDemon", health = 12.5f, speedMult = 1.05f,
                              evolveCost = 4.5f, kit = GrotesqueKit, customize = Statue },
-            new MonsterDef { id = "StmSixfold", art = "StmSixfold", basePrefab = "EnemyTroll", health = 11.5f, speedMult = 0.92f,
+            new MonsterDef { id = "StmSixfold", art = "StmSixfold", basePrefab = "EnemyTroll", health = 13f, speedMult = 0.92f,
                              evolveCost = 4.5f, kit = SixfoldKit, customize = Statue },
-            new MonsterDef { id = "StmGambit", art = "StmGambit", basePrefab = "EnemyMinotaur", health = 11f, speedMult = 1.0f,
+            new MonsterDef { id = "StmGambit", art = "StmGambit", basePrefab = "EnemyMinotaur", health = 12.5f, speedMult = 1.0f,
                              evolveCost = 4.5f, kit = GambitKit, customize = Statue },
-            new MonsterDef { id = "StmCaryatid", art = "StmCaryatid", basePrefab = "EnemyDarkGuardian", health = 11.5f, speedMult = 0.9f,
+            new MonsterDef { id = "StmCaryatid", art = "StmCaryatid", basePrefab = "EnemyDarkGuardian", health = 13f, speedMult = 0.9f,
                              evolveCost = 4.5f, kit = CaryatidKit, customize = Statue },
-            new MonsterDef { id = "StmLachrymosa", art = "StmLachrymosa", basePrefab = "EnemyPriestess", health = 12.5f, speedMult = 1.0f,
+            new MonsterDef { id = "StmLachrymosa", art = "StmLachrymosa", basePrefab = "EnemyPriestess", health = 13.5f, speedMult = 1.0f,
                              evolveCost = 4.5f, kit = LachrymosaKit, customize = Statue },
         };
 

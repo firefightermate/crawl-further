@@ -5,12 +5,12 @@ namespace CrawlFurther.Content.Gods.Vhorrul
 {
     /// <summary>
     /// Tallow Grub, Upwelling: Melt slumps it into a puddle with its candle stub showing (can't be hit) that glides where
-    /// it is steered for up to <see cref="GlideTime"/> s, then bubbles for 0.4 s and bursts up through the puddle (the
-    /// Rise clip's hit). The puddle is still wax: fire touching it burns the grub and pops it out with no burst.
+    /// it is steered for up to <see cref="GlideTime"/> s, or until it is under the hero, then bubbles for 0.4 s and bursts up
+    /// through the puddle (the Rise clip's hit). The puddle is still wax: fire touching it burns the grub and pops it out with no burst.
     /// </summary>
     public class GrubGlide : VhorrulBehaviour
     {
-        public const float GlideTime = 2f, BurnOut = 0.5f, Speed = 1.35f, RiseUnder = 7f;
+        public const float GlideTime = 2.5f, BurnOut = 0.5f, Speed = 1.5f, RiseUnder = 7f;
         public static exSpriteAnimClip Puddle, Glide, Rise, Pop;
         const string Source = "VhGlide";
         bool m_gliding;
@@ -40,7 +40,7 @@ namespace CrawlFurther.Content.Gods.Vhorrul
                 t += Time.deltaTime;
                 Steer(HeroPos);
                 if (FireNear(8f) != null) { popped = true; break; }
-                if (IsBot && HeroDist < RiseUnder) break;
+                if (HeroDist < RiseUnder) break;      // rise as soon as the puddle is under him, steered by a player or a bot
                 yield return null;
             }
             Steer(null);

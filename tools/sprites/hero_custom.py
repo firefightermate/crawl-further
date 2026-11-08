@@ -202,8 +202,11 @@ def colour_shades(cid, slot):
 
 
 def bg_tones(slot):
-    base = HP.BG["HeroWanderer"]
-    return [rgb(HL.SLOT_HUE[slot] / 360.0, hls(c)[1], 0.28) for c in base]
+    """frame, edge, fill, fill: the origin portraits' backdrop in the slot hue."""
+    import origin_portraits as OP
+    base = [H6(c) for c in OP.BG["Wanderer"]]
+    base = base + [base[-1]]
+    return [rgb(HL.SLOT_HUE[slot] / 360.0, hls(c)[1], 0.22) for c in base]
 
 
 # ------------------------------------------------------------------------------------------------ canvas helpers
@@ -222,11 +225,6 @@ BREATH = [0, 0, 1, 0]
 
 
 # ------------------------------------------------------------------------------------------------ portrait layers
-def L_bg(f):
-    cv = Cv(); HP.background(cv)
-    return cv.tr(BGM).spr()
-
-
 def L_tier(f):
     """The silver / gold frame: the 1px border in the tier colours, a bright glint running round it, and corner studs.
     Same layer for both tiers (the tier colours are the markers)."""
@@ -255,472 +253,24 @@ def L_tierplate(f):
     return cv.spr()
 
 
-def _collar_hem(cv, dy, female=False):
-    """Collar hem in the player slot colour (every outfit has it)."""
-    V = {15: (11, 16), 16: (12, 15), 17: (13, 14)} if not female else {15: (12, 15), 16: (13, 14)}
-    for y, (a, b) in V.items():
-        cv.put(a - 1, y + dy, S2); cv.put(b + 1, y + dy, S3)
-    ylast = max(V) + 1
-    a, b = V[max(V)]
-    for x in range(a, b + 1):
-        cv.put(x, ylast + dy, S2)
-
-
-def _base_body(cv, pal, dy, female=False, collar=True):
-    HP.neck(cv, female)
-    HP.body(cv, pal, female=female, dy=dy, collar=collar, seams=True)
-
-
-def outfit_layer(oid, female=False):
-    def fn(f):
-        cv = Cv()
-        dy = BREATH[f]
-        if oid == "Tunic":
-            _base_body(cv, MAIN, dy, female)
-            # trim colour vest panels either side of the collar, with a seam of buttons
-            for y in range(18, 26):
-                for x in range(8, 12):
-                    cv.put(x, y + dy, T4 if x == 8 else T2 if x < 11 else T3)
-                for x in range(16, 20):
-                    cv.put(x, y + dy, T3 if x < 19 else T4)
-            for y in (20, 23):
-                cv.put(11, y + dy, T1)
-            # leather strap over the right shoulder
-            for (x, y) in [(20, 16), (19, 17), (18, 18), (18, 19), (19, 20)]:
-                cv.put(x, y + dy, 'T')
-        elif oid == "Robe":
-            _base_body(cv, MAIN, dy, female)
-            # deep hood folds on the shoulders and a trim colour cord tied at the chest
-            for (x, y) in [(5, 16), (6, 16), (7, 17), (20, 16), (21, 16), (22, 17)]:
-                cv.put(x, y + dy, A4)
-            cord = [(11, 18), (12, 19), (13, 19), (14, 19), (15, 19), (16, 18)]
-            for (x, y) in cord: cv.put(x, y + dy, T2)
-            cv.put(13, 20 + dy, T1); cv.put(13, 21 + dy, T3); cv.put(14, 20 + dy, T3); cv.put(14, 22 + dy, T2)
-            for y in range(21, 27):   # long central fold
-                cv.put(14, y + dy, A3)
-        elif oid == "Jerkin":
-            _base_body(cv, tuple('T' if c == 'x' else c for c in ('h', 'T', 't', 'K')), dy, female)
-            # main colour jerkin over the chest, laced up the middle
-            for y in range(17, 27):
-                half = min(6, 3 + (y - 17))
-                for x in range(14 - half, 14 + half):
-                    c = A4 if x in (14 - half, 14 + half - 1) else (A1 if x < 12 else A2 if x < 16 else A3)
-                    cv.put(x, y + dy, c)
-            for y in range(18, 26, 2):
-                cv.put(13, y + dy, 'W'); cv.put(14, y + 1 + dy, 'W')
-            cv.put(9, 21 + dy, T1); cv.put(18, 21 + dy, T2)    # trim colour studs
-        elif oid == "Tabard":
-            _base_body(cv, ('7', '6', '5', 'K'), dy, female)
-            for (x, y), c in list(cv.px.items()):     # mail rings on the sleeves
-                if c in ('6', '7') and (x + y) % 2 == 0: cv.put(x, y, '5' if c == '6' else '6')
-            for y in range(17, 27):
-                a, b = 8, 19
-                for x in range(a, b + 1):
-                    cv.put(x, y + dy, A4 if x in (a, b) else (A1 if x < 12 else A2 if x < 16 else A3))
-            # trim colour emblem: a diamond
-            cv.stamp(["..ε..", ".εζζ.", "εζεζη", ".ζζη.", "..η.."], 12, 19 + dy)
-        elif oid == "Leathers":
-            _base_body(cv, ('h', 'T', 't', 'K'), dy, female)
-            # trim colour shirt in the open neck, crossed straps and a buckle
-            for y in range(16, 22):
-                half = max(1, 4 - (y - 16) // 2)
-                for x in range(14 - half, 14 + half):
-                    cv.put(x, y + dy, T1 if x < 14 else T2)
-            for i in range(10):
-                cv.put(6 + i, 16 + i + dy, 'K'); cv.put(7 + i, 16 + i + dy, 'A')
-                cv.put(21 - i, 16 + i + dy, 'K'); cv.put(20 - i, 16 + i + dy, 'A')
-            cv.stamp(["KKK", "KeK", "KKK"], 12, 21 + dy)
-            for (x, y) in [(4, 18), (23, 18), (3, 21), (24, 21)]:
-                cv.put(x, y + dy, 'h')
-        elif oid == "Cloak":
-            _base_body(cv, DARK_CH, dy, female)
-            # cloak over both shoulders, parting at the chest; trim colour clasp
-            sp = HP.spans(female)
-            for y, (x0, x1) in sp.items():
-                for x in range(x0, x1 + 1):
-                    inner = 14 - max(1, (y - 15) // 2 + 1), 14 + max(1, (y - 15) // 2 + 1)
-                    if inner[0] <= x < inner[1] and y >= 17: continue
-                    u = (x - 13.5) / max(1.0, (x1 - x0) / 2.0)
-                    c = A4 if x in (x0, x1) else (A1 if u < -0.35 else A2 if u < 0.4 else A3)
-                    if x in (inner[0] - 1, inner[1]) and y >= 17: c = A4
-                    cv.put(x, y + dy, c)
-            cv.stamp([".K.", "KεK", "KηK", ".K."], 8, 16 + dy)
-            cv.stamp([".K.", "KεK", "KηK", ".K."], 17, 16 + dy)
-            for x in range(10, 18):
-                cv.put(x, 17 + dy, T2 if x % 2 else T3)   # chain between the clasps
-        elif oid == "Mail":
-            _base_body(cv, MAIN, dy, female)
-            for y in range(17, 27):
-                a, b = 6 - min(0, 17 - y), 21
-                for x in range(7, 21):
-                    c = '6' if (x + y) % 2 == 0 else '7'
-                    if x in (7, 20): c = '5'
-                    cv.put(x, y + dy, c)
-            for x in range(7, 21):
-                cv.put(x, 26 + dy, T2)       # trim colour hem
-        if oid != "Cloak":
-            pass
-        _collar_hem(cv, dy, female)
-        return cv.tr(SK).spr()
-    return fn
-
-
-DARK_CH = ('①', '②', '③', 'K')
-anim.PALETTE.update({'①': DARK[0], '②': DARK[1], '③': DARK[2], 'W': (0xdc, 0xc9, 0x98)})
-
-
-def face_layer(fid):
-    female = fid == "Soft"
-
-    def fn(f):
-        cv = Cv()
-        HP.face(cv, female=female, blink=(f == 3))
-        # brows in the hair colour
-        m = {"D": HR["D"]}
-        m.update(SK)
-        return cv.tr(m).spr()
-    return fn
-
-
-def facepiece_layer(fid):
-    def fn(f):
-        cv = Cv()
-        if fid == "Beard":
-            cv.stamp([
-                "..ππππππππ..",
-                ".πο.μμμμ.ππ.",
-                "ποοποοποππρ",
-                ".ποοποπππρ.",
-                "..ποπππρρ..",
-                "...ρππρρ...",
-                "....ρρρ....",
-            ], 8, 10)
-        elif fid == "Moustache":
-            cv.stamp(["ποοππρ", "ρ....ρ"], 11, 10)
-        elif fid == "Scar":
-            for (x, y) in [(15, 6), (16, 7), (16, 9), (17, 10), (17, 11)]:
-                cv.put(x, y, 'r' if y in (7, 10) else '!')
-            cv.put(16, 8, 'μ')   # the eye on the scarred side half shut
-        elif fid == "Eyepatch":
-            for x in range(8, 20):
-                y = 6 if x < 12 else 7 if x < 14 else 6 if x > 17 else 7
-                cv.put(x, y, 'K')
-            cv.stamp(["KKK", "KkK", "KKK"], 15, 7)
-        elif fid == "Paint":
-            for x in range(9, 19):
-                if x in (13, 14): continue
-                cv.put(x, 9, T2 if x < 16 else T3)
-            for (x, y) in [(11, 10), (16, 10), (12, 4), (13, 5), (14, 5), (15, 4)]:
-                cv.put(x, y, T2)
-        elif fid == "Specs":
-            for (x, y) in [(10, 8), (13, 8), (14, 8), (17, 8), (11, 9), (12, 9), (15, 9), (16, 9), (11, 7), (12, 7),
-                           (15, 7), (16, 7)]:
-                cv.put(x, y, 'e')
-            cv.put(12, 8, 'c'); cv.put(16, 8, 'c')
-        elif fid == "Mask":
-            for y in range(10, 14):
-                a, b = (9, 18) if y < 13 else (10, 17)
-                for x in range(a, b + 1):
-                    cv.put(x, y, T1 if x < 12 else T2 if x < 16 else T3)
-            cv.put(13, 10, T2); cv.put(14, 11, T3)
-            cv.put(9, 10, T4); cv.put(18, 10, T4)
-        return cv.spr()
-    return fn
-
-
-HAIR_SHORT = [  # stamped at (8, 1): a side-parted crop
-    "..ρρππρρ....",
-    ".ροοοπππρρ..",
-    "ροοοοοππππρ.",
-    "ροοποοοππππρ",
-    "ρποππποοπππρ",
-    "ρπ..........ρ",
-    "ρπ.........πρ",
-]
-
-
-def tr_rows(rows, m):
-    t = str.maketrans(m)
-    return [r.translate(t) for r in rows]
-
-
-def head_layer(hid):
-    h_, d_, D_ = HR["H"], HR["d"], HR["D"]
-
-    def hair(cv):
-        cv.stamp(HAIR_SHORT, 8, 1)
-
-    def fn(f):
-        cv = Cv()
-        if hid == "Bare":
-            hair(cv)
-            if f == 2: cv.put(13, 1, h_)
-        elif hid == "Long":
-            hair(cv)
-            for y in range(7, 19):           # long hair falling behind both shoulders
-                for x in (6, 7, 8):
-                    cv.put(x, y, d_ if x == 7 else (D_ if x == 6 else h_))
-                for x in (19, 20, 21):
-                    cv.put(x, y, d_ if x == 20 else (D_ if x == 21 else h_))
-            sway = [0, 0, 1, 0][f]
-            for x in (6, 7, 8, 19, 20, 21):
-                cv.put(x + (sway if x < 10 else -sway), 19, D_)
-        elif hid == "Topknot":
-            hair(cv)
-            by = [0, 0, -1, 0][f]
-            cv.stamp([".KKKK.", "K" + h_ + h_ + d_ + D_ + "K", "K" + h_ + d_ + d_ + D_ + "K", ".KrrK."], 11, -1 + by)
-            cv.put(12, 0 + by, 'y') if f == 1 else None
-        elif hid == "Mohawk":
-            # shaved sides (skin) + a tall crest
-            for y in range(2, 6):
-                for x in range(9, 19):
-                    cv.put(x, y, SK["l"] if x < 14 else SK["j"])
-            crest = [h_, d_, h_, d_]
-            for i, x in enumerate(range(11, 17)):
-                top = [0, -1, -1, 0, 0, 1][i] + (1 if (f == 1 and i % 2) else 0)
-                for y in range(top, 5):
-                    cv.put(x, y, crest[(x + y) % 4] if y > top else D_)
-        elif hid == "Shaved":
-            for y in range(2, 6):
-                for x in range(9, 19):
-                    cv.put(x, y, SK["L"] if (x < 12 and y < 4) else SK["l"] if x < 15 else SK["j"])
-            for x in range(10, 18): cv.put(x, 1, SK["J"])
-            cv.put(9, 2, SK["J"]); cv.put(18, 2, SK["J"])
-            cv.put(11, 2, SK["*"])     # shine
-        elif hid == "Hood":
-            rows = [
-                "........KKK.......",
-                "......KKaabKK.....",
-                ".....KaabbbbcK....",
-                "....KabbbbbbccK...",
-                "...KabbdddddbccK..",
-                "...Kabd......dcK..",
-                "...Kbd........dK..",
-                "...Kbd........dK..",
-                "...Kbd........dK..",
-                "...Kbd........dK..",
-                "...Kbbd......dcK..",
-                "...Kbbcd....dccK..",
-                "..KabbccdddddccK..",
-                "..KabbbcccccccccK.",
-            ]
-            rows = tr_rows(rows, {'a': A1, 'b': A2, 'c': A3, 'd': A4})
-            if f == 2: rows[0] = ".......KKK........"
-            cv.stamp(rows, 5, 0)
-        elif hid == "Helm":
-            cv.stamp([
-                "....KKKKKK....",
-                "...K788766K...",
-                "..K78876665K..",
-                "..K77666665K..",
-                ".K7766666655K.",
-                ".K666KKKK655K.",
-                ".K66K....K55K.",
-                ".K65K....K55K.",
-                ".KK5K....K5KK.",
-            ], 7, 0)
-            # trim colour plume
-            plume = [[(12, -1), (13, -1), (11, 0)], [(12, -1), (13, -2), (11, 0)], [(13, -1), (14, -1), (12, 0)], [(12, -1), (13, -1), (11, 0)]][f]
-            for i, (x, y) in enumerate(plume):
-                cv.put(x, y + 1, T1 if i == 0 else T2)
-            for x in range(10, 18): cv.put(x, 1, T3 if x % 2 else T2)
-        elif hid == "Horned":
-            cv.stamp([
-                "...KKKKKK...",
-                "..K788766K..",
-                ".K78876665K.",
-                ".K66666655K.",
-                "K5555555555K",
-                "KKKKKKKKKKKK",
-            ], 8, 1)
-            horn = ["WW..", ".WX.", "..WX", "..KW"]
-            cv.stamp(["W..", "XW.", ".XW", ".KW"], 4, 0)
-            cv.stamp(["..W", ".WX", "WX.", "WK."], 21, 0)
-            if f == 1: cv.put(5, 1, 'y')
-        elif hid == "WideHat":
-            cv.stamp([
-                ".......KKKKKKK.......",
-                "......KεζζζζηK......",
-                "......KεζζζηηK......",
-                "......KσττττυK......",
-                ".KKKKKζζζζζηηKKKKK.",
-                "KεεζζζζζζζζηηηηηηθθθK",
-                ".KKKKKKKKKKKKKKKKKKK.",
-            ], 4, 0)
-            for x in range(10, 18): cv.put(x, 7, SK["J"] if x > 14 else SK["j"])   # brim shadow
-        elif hid == "Cap":
-            cv.stamp([
-                "....KKKKKKK....",
-                "..KKααβββγKK...",
-                ".KααββββγγγδK..",
-                "KαββββγγγγδδδK.",
-                ".KKKKKKKKKKKKKK",
-            ], 6, 1)
-            fe = [["...ε", "..εζ", ".εζ.", "ζη.."],
-                  ["....", "..εε", ".εζ.", "ζη.."],
-                  ["...ε", "..εζ", ".εζ.", "ζη.."],
-                  ["..ε.", "..εζ", ".εζ.", "ζη.."]][f]
-            cv.stamp(fe, 18, -1)
-            HP_hair_sides(cv)
-        elif hid == "Wizard":
-            tilt = [0, 0, 1, 0][f]
-            rows = [
-                "........K.....",
-                ".......KεK....",
-                "......KεζK....",
-                "......KζζηK...",
-                ".....KεζζηK...",
-                ".....KζζζηηK..",
-                "....KεζYζηθK..",
-                "..KKKζζζζηθKKK",
-                ".KεζζζζζηηηθθK",
-                "..KKKKKKKKKKKK",
-            ]
-            for i, r in enumerate(rows):
-                sh = tilt if i < 3 else 0
-                for x, c in enumerate(r):
-                    if c != '.': cv.put(7 + x + sh, -2 + i, c)
-            if f == 1: cv.put(13, 4, 'y')
-            HP_hair_sides(cv)
-        elif hid == "Bandana":
-            hair(cv)
-            for x in range(8, 20):
-                cv.put(x, 4, T2 if x < 15 else T3)
-                cv.put(x, 5, T3 if x < 15 else T4)
-            for x in range(9, 19):
-                cv.put(x, 3, T1 if x < 13 else T2)
-            tails = [[(20, 5), (21, 6), (21, 7), (22, 8)], [(20, 5), (21, 6), (22, 6), (23, 7)],
-                     [(20, 5), (21, 6), (21, 7), (22, 8)], [(20, 5), (21, 5), (22, 6), (23, 6)]][f]
-            for i, (x, y) in enumerate(tails):
-                cv.put(x, y, T2 if i % 2 else T3)
-        elif hid == "Circlet":
-            hair(cv)
-            for x in range(8, 20):
-                cv.put(x, 4, 'Y' if x < 15 else 'e')
-            cv.stamp(["KεK", "εζη", "KηK"], 12, 3)
-            if f == 2: cv.put(13, 3, 'y')
-        return cv.tr({k: v for k, v in SK.items() if k in ("L", "l", "j", "J", "*")} if False else {}).spr()
-    return fn
-
-
-def HP_hair_sides(cv):
-    cv.stamp([HR["D"] + HR["d"], HR["d"] + HR["D"], HR["D"] + "."], 8, 6)
-    cv.stamp([HR["d"] + HR["D"], HR["D"] + HR["d"]], 18, 6)
-
-
-# ---- weapons: behind the right shoulder (drawn before the body) or held across the front
-def weapon_layer(fam):
-    def fn(f):
-        cv = Cv()
-        g = f  # glint phase
-        if fam == "Sword":
-            cv.stamp([".KK..", "K77K.", ".Kh..", ".Tt..", ".hT..", ".Tt..", "K676K", "567765", ".K87K.", ".K87K.",
-                      ".K87K.", ".K76K.", ".K76K.", ".K76K."], 21, 1)
-            g = [None, (23, 9), (23, 11), None][f]
-            if g: cv.put(g[0], g[1], 'y')
-        elif fam == "Greatsword":
-            cv.stamp(["...55...", "..5785..", "...5t...", "...Tt...", "...Tt...", "56777765", "K667765K",
-                      "..7776..", "..7776..", "..7776..", "..7776..", "..7776..", "..7776.."], 20, 0)
-            if f == 2: cv.put(22, 8, '8')
-        elif fam == "Axe":
-            for y in range(2, 22):
-                cv.put(22, y, 'K'); cv.put(23, y, 'T' if y % 4 else 'h'); cv.put(24, y, 't'); cv.put(25, y, 'K')
-            cv.stamp([".KK......", "K67K.....", "K678KKK..", "K6788766K", "K678KKK..", "K67K.....", ".KK......"][::1], 17, 1)
-            if f == 1: cv.put(18, 3, '8')
-        elif fam == "Club":
-            for y in range(6, 22):
-                cv.put(22, y, 'K'); cv.put(23, y, 'T'); cv.put(24, y, 't'); cv.put(25, y, 'K')
-            cv.stamp(["..K.K..", ".K7K7K.", "KhTThhK", "K7ThhhK", "KhThh7K", ".KhhhK.", "..KTK.."], 20, 0)
-            if f == 2: cv.put(21, 1, '8')
-        elif fam == "Dagger":
-            cv.stamp(["..K..", ".K8K.", ".K7K.", ".K7K.", ".K76K", "K5665", ".KTK.", ".KtK."], 21, 9)
-            if f == 0: cv.put(23, 10, 'y')
-        elif fam == "Spear":
-            for y in range(4, 24):
-                cv.put(22, y, 'K'); cv.put(23, y, 'T' if y % 5 else 'h'); cv.put(24, y, 't'); cv.put(25, y, 'K')
-            cv.stamp([".K.", "K8K", "K7K", "K76K", "K75K", ".K6K", ".KKK"], 22, -2)
-            if f == 3: cv.put(23, 0, 'y')
-        elif fam == "Staff":
-            for y in range(4, 24):
-                cv.put(23, y, 'K'); cv.put(24, y, 'T' if y % 3 else 'h'); cv.put(25, y, 't'); cv.put(26, y, 'K')
-            orb = [["KKK", "KcBK", "KBbK", ".KK"], ["KKK", "KBcK", "KbBK", ".KK"], ["KKK", "KcBK", "KBbK", ".KK"], ["KKK", "KccK", "KBBK", ".KK"]][f]
-            cv.stamp(["K..K", ".KK."], 23, 3)
-            cv.stamp(orb, 23, 0)
-        elif fam == "Bow":
-            arc = [(21, 1), (22, 2), (23, 3), (24, 4), (24, 5), (25, 6), (25, 7), (25, 8), (25, 9), (25, 10),
-                   (25, 11), (25, 12), (24, 13), (24, 14), (24, 15)]
-            for i, (x, y) in enumerate(arc):
-                cv.put(x + 1, y, 'K'); cv.put(x, y, 'h' if i % 4 else 'T'); cv.put(x - 1, y, 't')
-            for y in range(1, 15):
-                cv.put(20 + (y > 8), y, '~')
-        elif fam == "Crossbow":
-            for y in range(5, 22):
-                cv.put(23, y, 'K'); cv.put(24, y, 'T' if y % 5 else 'h'); cv.put(25, y, 't'); cv.put(26, y, 'K')
-            for x in range(20, 29):
-                cv.put(x, 3, 'K'); cv.put(x, 4, '7' if 21 <= x <= 27 else '6'); cv.put(x, 5, '5')
-            for (x, y) in [(21, 7), (22, 8), (27, 7), (26, 8)]:
-                cv.put(x, y, '~')
-            cv.stamp(["KK", "87", "ht"], 23, 0)
-            if f == 2: cv.put(23, 1, 'y')
-        elif fam == "Sling":
-            sw = [0, 1, 0, -1][f]
-            for (x, y) in [(22, 4), (22, 5), (22 + max(0, sw), 6), (22 + sw, 7), (22 + sw, 8)]:
-                cv.put(x, y, ':')
-            cv.stamp([".KK.", "KTtK", "KteK", ".KK."], 21 + sw, 9)
-            cv.stamp(["KK", "Kl", "jJ"], 21, 2)
-        elif fam == "Knives":
-            for i, x in enumerate((21, 23, 25)):
-                cv.stamp(["K", "8", "7", "6", "T", "t"], x, 3 + i)
-            for x in range(20, 27):
-                cv.put(x, 9 + (x - 20) // 3, 'T')
-        return cv.tr(SK).spr()
-    return fn
-
-
-def L_glint(f):
-    """Magic / mod weapon: sparkles running over the weapon area."""
-    cv = Cv()
-    pts = [[(22, 3), (25, 9)], [(24, 6), (21, 12)], [(23, 9), (26, 4)], [(25, 12), (22, 6)]][f]
-    for (x, y) in pts:
-        for (dx, dy) in [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]:
-            cv.put(x + dx, y + dy, 'c' if (dx, dy) == (0, 0) else 'B')
-    return cv.spr()
-
-
-def L_spell(f):
-    """A spell mote circling the left shoulder: rune in the trim colour, with sparks."""
-    cv = Cv()
-    pos = [(3, 5), (4, 4), (5, 5), (4, 6)][f]
-    x, y = pos
-    cv.stamp([".KζK.", "KεcηK", "ζcεcη", "KζcθK", ".KηK."], x, y)
-    for (sx, sy) in [[(2, 3), (8, 9)], [(8, 3), (3, 10)], [(9, 8), (2, 4)], [(3, 11), (9, 4)]][f]:
-        cv.put(sx, sy, 'c')
-    return cv.spr()
-
-
-def L_unknown(f):
-    """Silver / gold slot portrait: a stranger whose face is still in shadow, a question mark glowing."""
-    cv = Cv()
-    q = [".ύύύ.", "ύ...ύ", "...ύ.", "..ύ..", "..ύ..", ".....", "..ώ.."]
-    cv.stamp(q, 12, 6 + [0, 0, 1, 0][f])
-    return cv.spr()
-
-
 # ------------------------------------------------------------------------------------------------ portrait sheet
 def portrait_layers():
-    """[(anim name, [4 Spr])] in sheet order."""
-    out = [("Bg", layer(L_bg)), ("Tier", layer(L_tier)), ("TierCrest", layer(L_tierplate)),
-           ("Glint", layer(L_glint)), ("Spell", layer(L_spell)), ("Unknown", layer(L_unknown))]
+    """[(anim name, [4 Spr])] in sheet order. The layers are painted by hero_bust_layers (the origin portraits'
+    close-up style); the tier frame and crest stay as drawn here."""
+    import hero_bust_layers as BL
+    out = [("Bg", BL.bg_layer()), ("Tier", layer(L_tier)), ("TierCrest", layer(L_tierplate)),
+           ("Glint", [BL.L_glint(f) for f in range(4)]), ("Spell", [BL.L_spell(f) for f in range(4)]),
+           ("Unknown", [BL.L_unknown(f) for f in range(4)])]
     for oid, _, _ in OUTFITS:
-        out.append(("Outfit_" + oid, layer(outfit_layer(oid))))
-        out.append(("OutfitF_" + oid, layer(outfit_layer(oid, female=True))))
+        out.append(("Outfit_" + oid, BL.layer(BL.outfit_fn(oid))))
+        out.append(("OutfitF_" + oid, BL.layer(BL.outfit_fn(oid, female=True))))
     for fid, _ in FACES:
-        out.append(("Face_" + fid, layer(face_layer(fid))))
-        out.append(("FacePiece_" + fid, layer(facepiece_layer(fid))))
+        out.append(("Face_" + fid, BL.layer(BL.face_fn(fid))))
+        out.append(("FacePiece_" + fid, BL.layer(BL.facepiece_fn(fid))))
     for hid, _ in HEADS:
-        out.append(("Head_" + hid, layer(head_layer(hid))))
+        out.append(("Head_" + hid, BL.layer(BL.head_fn(hid))))
     for fam in FAMILIES:
-        out.append(("Weapon_" + fam, layer(weapon_layer(fam))))
+        out.append(("Weapon_" + fam, BL.layer(BL.weapon_fn(fam))))
     return out
 
 
@@ -789,147 +339,131 @@ def compose(sheet, choice, slot, tier, weapon=None, magic=False, spell=False, fr
 
 
 # ------------------------------------------------------------------------------------------------ in-game gear
-# canonical 15x15 cell, head reference R at (7,7); hair crown (8..10, 6); face x 7..9 rows 7..10, eye (9, 8)
-# chars: k outline, H d D hair, a b c d(=δ) main, e f g h(θ) trim, s skin, plus fixed colours
+# canonical 15x15 cell, head reference R at (7,7); hair crown (8..10, 6); face x 8..9 rows 7..10, eye (9, 8).
+# The vanilla head is 3-4 px across, so every piece stays at that scale, edged in its own darkest tone (no black ring).
+# chars: H d D hair, a b c q main (L M S D), e f g h trim, S s skin, m n o slot, plus fixed colours
 GEAR_HEAD = {
-    "Long": dict(y0=5, rows=[
-        "........kkk....",
-        ".......kHHdk...",
-        "......kHddDk...",
-        "......kdD......",
-        ".....kdD.......",
-        ".....kdD.......",
-        ".....kDD.......",
-        "......kk.......",
+    "Long": dict(y0=6, rows=[
+        ".......HHHd....",
+        "......Hd.......",
+        "......dD.......",
+        "......dD.......",
+        ".....dD........",
+        ".....DD........",
+        "......D........",
     ]),
-    "Topknot": dict(y0=2, rows=[
-        "........kk.....",
-        ".......kHdk....",
-        "........rk.....",
-        "........kk.....",
-        ".......kHdk....",
+    "Topknot": dict(y0=3, rows=[
+        "........HD.....",
+        "........dD.....",
+        "........f......",
+        ".......HHd.....",
     ]),
-    "Mohawk": dict(y0=2, rows=[
-        "........k.k....",
-        ".......kHkHk...",
-        "......kHdHdk...",
-        ".......kdddk...",
-        ".......sss.....",
+    "Mohawk": dict(y0=4, rows=[
+        "........H.H....",
+        ".......HdHd....",
+        "........ddD....",
     ]),
-    "Shaved": dict(y0=5, rows=[
-        "........kkk....",
-        ".......kSssk...",
-        ".......sss.....",
+    "Shaved": dict(y0=6, rows=[
+        "........Sss....",
+        ".......s.......",
     ]),
-    "Hood": dict(y0=4, rows=[
-        ".......kkk.....",
-        "......kabbk....",
-        ".....kabbcck...",
-        "....kabc..ck...",
-        "....kbc.....k..",
-        "....kbc........",
-        "....kcc........",
-        ".....kk........",
+    "Hood": dict(y0=5, rows=[
+        ".......qqq.....",
+        "......qabbq....",
+        ".....qab..bq...",
+        ".....qbc.......",
+        "....qbcq.......",
+        "....qcc........",
+        "...qcq.........",
     ]),
-    "Helm": dict(y0=2, rows=[
-        "........ef.....",
-        ".......kkkk....",
-        "......k5443k...",
-        ".....k543322k..",
-        ".....k43k22k...",
-        "....kk22k21kk..",
-        ".....k2k..k....",
-        ".....kk........",
+    "Helm": dict(y0=4, rows=[
+        "........fe.....",
+        ".......KK......",
+        "......K432K....",
+        "......K3221K...",
+        "......K1111K...",
+        "......M...2....",
+        "......N........",
     ]),
-    "Horned": dict(y0=2, rows=[
-        "....W.....W....",
-        "....XW...WX....",
-        ".....kkkkkk....",
-        ".....k5443k....",
-        "....kk33222k...",
-        "....kk22221kk..",
+    "Horned": dict(y0=3, rows=[
+        ".....W.....W...",
+        ".....XW...WX...",
+        "......XKK.X....",
+        "......K432K....",
+        "......K3221K...",
+        "......K1111K...",
     ]),
     "WideHat": dict(y0=3, rows=[
-        ".......kkkk....",
-        "......keffgk...",
-        "......kmnnok...",
-        "...kkffffgggkk.",
-        "..keffffgggghhk",
-        "...kkkkkkkkkk..",
+        ".......qqq.....",
+        "......qabbq....",
+        "......qmnoq....",
+        "....qabbbbcq...",
+        ".....qq...qq...",
     ]),
-    "Cap": dict(y0=3, rows=[
-        "..........ef...",
-        "......kkkkfe...",
-        ".....kaabbcc...",
-        "....kabbbccdk..",
-        "....kkkkkkkkk..",
+    "Cap": dict(y0=4, rows=[
+        "...........e...",
+        "......qabbcf...",
+        ".....qabbbcq...",
+        ".....qqqqqq....",
     ]),
-    "Wizard": dict(y0=0, rows=[
-        ".......k.......",
-        "......kek......",
-        "......kfgk.....",
-        ".....kefgk.....",
-        ".....kffgk.....",
-        "....keYfgk.....",
-        "...kkfffggkk...",
-        "..keffffggghk..",
-        "...kkkkkkkkk...",
+    "Wizard": dict(y0=2, rows=[
+        ".......q.......",
+        "......qaq......",
+        "......abcq.....",
+        ".....qabYcq....",
+        ".....qffggq....",
+        "....qabbbccq...",
     ]),
-    "Bandana": dict(y0=4, rows=[
-        "........kkk....",
-        ".....g.kefffk..",
-        "....hgkeffggk..",
-        "....h..kkkkk...",
+    "Bandana": dict(y0=5, rows=[
+        ".......effg....",
+        "......efffgh...",
+        ".....hg........",
+        "....h..........",
     ]),
-    "Circlet": dict(y0=5, rows=[
+    "Circlet": dict(y0=6, rows=[
         "........HHd....",
-        "......YYefYk...",
-        ".......dDD.....",
+        "......YYfY.....",
     ]),
 }
 # face pieces: every pixel is a face piece (hidden when the face is turned away)
 GEAR_FACE = {
     "Beard": dict(y0=9, rows=[
-        "........HH.....",
-        ".......dHHd....",
-        ".......dddD....",
-        "........DD.....",
+        ".........d.....",
+        ".......dHd.....",
+        ".......dD......",
     ]),
     "Moustache": dict(y0=9, rows=[
-        "........dHd....",
+        "........dH.....",
     ]),
     "Scar": dict(y0=7, rows=[
-        ".........r.....",
         "........r......",
-        ".........!.....",
+        "........!......",
+        "........r......",
     ]),
     "Eyepatch": dict(y0=7, rows=[
-        "......kkkk.....",
-        ".........kk....",
-        ".........k.....",
+        "......KKKK.....",
+        ".........K.....",
     ]),
     "Paint": dict(y0=8, rows=[
-        ".......ff.f....",
-        "........g......",
+        "........ff.....",
     ]),
     "Specs": dict(y0=8, rows=[
         "........eYe....",
     ]),
     "Mask": dict(y0=9, rows=[
+        "........fg.....",
         ".......effg....",
-        ".......ffgg....",
     ]),
 }
 GEAR_MARK = {"H": (254, 4, 1), "d": (254, 4, 2), "D": (254, 4, 3),
-             "a": (254, 1, 1), "b": (254, 1, 2), "c": (254, 1, 3), "d": (254, 4, 2),
+             "a": (254, 1, 1), "b": (254, 1, 2), "c": (254, 1, 3), "q": (254, 1, 4),
              "e": (254, 2, 1), "f": (254, 2, 2), "g": (254, 2, 3), "h": (254, 2, 4),
              "S": (254, 3, 1), "s": (254, 3, 2),
              "m": (254, 5, 1), "n": (254, 5, 2), "o": (254, 5, 3)}
-GEAR_FIXED = {"k": H6("1d1a1e"), "5": H6("dcdce4"), "4": H6("a0a0aa"), "3": H6("85858f"), "2": H6("666672"),
-              "1": H6("4a4a54"), "W": H6("e8e0c8"), "X": H6("a89c80"), "Y": H6("ffd85e"), "r": H6("a81e1a"),
-              "!": H6("963430")}
-# the head gear uses 'd' for hair mid in hair styles but main-colour D elsewhere: per piece map overrides
-GEAR_D_MAIN = {"Cap": True}
+GEAR_FIXED = {"K": H6("2a2c36"), "4": H6("e2e4ec"), "3": H6("a8aab6"), "2": H6("767884"), "1": H6("4c4e5a"),
+              "M": H6("8c8c98"), "N": H6("4a4a56"), "W": H6("e8e0c8"), "X": H6("a89c80"), "Y": H6("ffd85e"),
+              "r": H6("a81e1a"), "!": H6("963430")}
+GEAR_D_MAIN = {}
 
 
 def gear_pixels_custom(piece, face_piece, ramps):
@@ -1069,7 +603,8 @@ def slot_portrait(sheet, tier):
     for i, c in enumerate(TIER_COLS[tier]): pal[(254, 5, i + 1)] = c     # collar hem in the tier colour, no slot
     # neutral background in the tier tone instead of a slot hue
     tone = TIER_COLS[tier]
-    for i, c in enumerate(HP.BG["HeroWanderer"]):
+    import origin_portraits as OP
+    for i, c in enumerate([H6(c) for c in OP.BG["Wanderer"]] + [H6(OP.BG["Wanderer"][-1])]):
         h, l, s = hls(tone[1])
         pal[(254, 6, i + 1)] = rgb(h, hls(c)[1], 0.10 if tier == "Silver" else 0.22)
     names = ["Bg", "Outfit_Cloak", "Face_Plain", "Head_Hood", "Unknown", "Tier"] + (["TierCrest"] if tier == "Gold" else [])

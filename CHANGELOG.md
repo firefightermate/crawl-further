@@ -3,6 +3,25 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## 1.2.1
+
+### Library (CrawlFurther.Core)
+- `ClipBuilder.HandOff()` marks a clip that ends by handing the body to a behaviour (a charge, a carry, a dig) which
+  gives control back itself. `ClipBuilder.HandsOff(clip)` tells the self-test, which no longer reports such a clip
+  as never returning control.
+- The self-test accepts a prefab sprite on the first frame of its sheet's own Idle when a kit swaps the body's idle
+  clip for a stance (the menus keep the sheet's Idle).
+
+### Repository
+- `tools/sprites/bust_painter.py`: the portrait painter (cushion-lit fills, five clean tones a surface, the game's
+  god-portrait look). `tools/sprites/origin_portraits.py` redraws the origin portraits with it, close up, and
+  `tools/sprites/hero_bust_layers.py` paints the custom hero's portrait layers the same way for `hero_custom.py`.
+- `tools/sprites/hero_gear.py` and `hero_custom.py`: the in-game headwear and face pieces are redrawn at the
+  vanilla head's scale, edged in each material's own dark tone.
+- `tools/sprites/zhekra_v2_t1.py` draws `ZhkRoyalGrub` (the Royal Grub's own sheet). `vhorrul_v2_t3a.py` gives the
+  Fuse Scorpion four death poses.
+- `tools/validate.py` (text) checks the length limit of every secret line, as the self-test does.
+
 ## 1.2.0
 
 ### Library (CrawlFurther.Core)
