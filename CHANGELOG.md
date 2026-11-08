@@ -3,6 +3,27 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## Unreleased
+
+### Library (CrawlFurther.Core)
+- Mod monsters have the game's own vault challenge: its button, level, HUD, scoring and save, hooked in through
+  their vault entries. A monster a player can become (reached from a god's starters, or a secret monster and its
+  evolutions) gets the goal for its evolution cost from `Challenges.GoalByCost` (4, 5, 7, 10 at costs 0, 1, 2.5
+  and 4: the game's own averages). Minions and ghost blobs get none. `MonsterDef.challenge` / `ChallengeDef` (or
+  `Challenges.Register`) sets a goal or takes the challenge away. See [docs/ui.md](docs/ui.md#monster-challenges).
+- A mod monster's vault page shows the game's challenge lines under its line, copied from the vault's live text,
+  as many as fit above the buttons, best level first (`VaultGrid.ShowChallengePage`). The MONSTERS summary counts
+  mod challenges passed. `tools/validate.py` (vaultfit) now keeps monster vault lines to three rows so at least one
+  challenge line fits; 23 of Crawl: Further's lines were shortened. The challenge-passed tick is the game's own,
+  so the gem of a MONSTERS cell moved to its bottom-left corner.
+- No achievement is granted while a mod monster's challenge is played (`AchievementBase.Unlock` is skipped), and mod
+  challenges still never count toward the game's challenge achievements.
+- Test mode: Run > Monster challenge (from the menus) starts any monster's challenge (`TestGame.StartChallenge`);
+  no challenge score is saved while test mode is on.
+- Self-test: a "vault challenges" section (every built mod monster has its vault entry, found by prefab and by save
+  key, with a goal exactly when it should), and Crawl: Further's "monster challenges" (189 god monsters and 15
+  secret monsters have one, the ghost blobs none).
+
 ## 1.1.0
 
 ### Library (CrawlFurther.Core)

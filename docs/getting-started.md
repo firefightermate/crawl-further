@@ -205,7 +205,7 @@ spawn one to fight, or give the hero the spell.
 - [monsters.md](monsters.md): `MonsterDef`, kits, effects, traits, behaviours, statuses
 - [items.md](items.md): shop items and weapons
 - [objects.md](objects.md): room objects and traps
-- [ui.md](ui.md): vault pages, secrets, challenges, branding, tips, music, HUD timers
+- [ui.md](ui.md): vault pages, monster challenges, secrets, challenges, branding, tips, music, HUD timers
 - [events.md](events.md): game events instead of Harmony patches
 - [compat.md](compat.md): working alongside Online Crawl, CrawlAPI or other boss mods
 - [testing.md](testing.md): the test panel

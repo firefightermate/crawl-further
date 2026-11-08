@@ -111,8 +111,11 @@ namespace ExampleGod
                              evolveCost = 0f, kit = RatKit },
             new MonsterDef { id = "GlimmerGrub", basePrefab = "EnemyMushroom", health = 4.5f, speedMult = 0.9f,
                              evolveCost = 0f, kit = GrubKit, traits = new MonsterTraits().Add<GlimmerGlow>() },
+            // every monster a player can become gets the game's vault challenge, its goal by tier (4 for a starter);
+            // the moth hides between dives, so its goal is one hero level higher
             new MonsterDef { id = "GlimmerMoth", basePrefab = "EnemyFlyingEye_Dodge", health = 3f, speedMult = 1.1f,
-                             evolveCost = 0f, kit = MothKit, traits = new MonsterTraits { stealth = true } },
+                             evolveCost = 0f, kit = MothKit, traits = new MonsterTraits { stealth = true },
+                             challenge = new ChallengeDef { goal = 5 } },
         };
 
         // ---------------------------------------------------------------------------------------------- the god

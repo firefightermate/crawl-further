@@ -61,6 +61,20 @@ namespace CrawlFurther.Testing
         static bool Prefix() { return !TestMode.Active; }
     }
 
+    /// <summary>Test play wins no challenges: a vault challenge's score (any monster's) is not written to the save.</summary>
+    [HarmonyPatch(typeof(SystemLibrary), "SetChallengeScore")]
+    static class Patch_TestNoChallengeScores
+    {
+        static bool Prepare() { return TestMode.On; }
+
+        static bool Prefix(int score)
+        {
+            if (!TestMode.Active) return true;
+            TestMode.Say("Challenge level " + score + " not recorded: test mode is on");
+            return false;
+        }
+    }
+
     /// <summary>Frozen AI: room monsters with their own AI stop thinking...</summary>
     [HarmonyPatch(typeof(PlayerAI), "Update")]
     static class Patch_TestFreezeAI

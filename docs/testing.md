@@ -27,7 +27,8 @@ Set `TestMode = false` again for real runs. While test mode is on, nothing you d
 
 - monsters you become or spawn are not marked found in the vault,
 - challenge counters (hero kills, finals reached, ectoplasm banked and the rest) do not move,
-- secrets you become, spawn or take are not recorded.
+- secrets you become, spawn or take are not recorded,
+- monster challenges (the vault's, vanilla or mod) save no score.
 
 Crawl's own lifetime stats (games played, gold earned) still count, as they do with its debug menu.
 
@@ -94,6 +95,7 @@ there is nothing to drop at his feet.
 | Reload this floor | Loads the floor again | The game's Reload Level |
 | God of the player acting | Swaps the god mid-run, so its tree and perks apply | `PlayerData.SetDeity`, as the god select does. Gold resets to the god's starting gold |
 | Boss | Picks the boss for Go to the boss now: vanilla bosses, mod bosses when they are switched on, or the game's pick | With mod bosses built, the run's own next boss fight takes the pick too |
+| Challenge controls, Monster challenge (from the menus) | Starts any monster's vault challenge, vanilla or mod, played with the keyboard or the first pad. Works from the menus, not during a run. Minions and blobs have no challenge and are not listed | `SystemMenu.StartChallengeMode`, as the vault's Challenge button does, without its rule that the monster must be found first |
 
 ### Player
 

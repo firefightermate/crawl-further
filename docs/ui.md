@@ -9,8 +9,8 @@ Anything drawn from a sheet loaded through Core counts as mod content and gets o
 (portraits, shop pictures, vault cells, the evolve screen), with no call from your mod. `ModGem.Exclude(sheetId)`
 leaves a sheet unmarked; `ModMark.MarkArt(atlas)` counts art you compose at run time as mod art.
 
-Every gem is placed through `ModMark`, and each entry has one owner of its mark: a vault entry's cell (not the big
-picture below it), a shop item's pedestal (not the popup), the violet pip of a god or origin in its list (not the
+Every gem is placed through `ModMark`, and each entry has one owner of its mark: a vault entry's cell (top-left,
+or bottom-left in MONSTERS, where the game's challenge tick sits top-left; never the big picture below it), a shop item's pedestal (not the popup), the violet pip of a god or origin in its list (not the
 portrait; an entry whose pip is another colour is marked on its portrait). Never paint the gem into your art:
 `tools/validate.py` fails on it. Players can turn the gems off with `ModGem` in `CrawlFurther.UI.cfg`.
 
@@ -57,6 +57,53 @@ static readonly VaultCategory s_secrets = new VaultCategory
   its `Portrait`, else `Vault`, else `Idle`), and optionally `unlock` (a challenge id) or `locked` (a test) to show
   a padlock until it opens.
 - A category with no pages is not listed. Register categories from your start callback.
+
+## Monster challenges
+
+The game's vault lets a player pick a monster and press Challenge: they play that monster in one cave room against a
+bot hero, and every time they kill him he comes back a level higher, with a better weapon and now and then a spell
+or artifact. The score is the hero's level when the monster dies. Reaching the monster's goal passes the challenge
+and puts a tick on its vault cell.
+
+Mod monsters get the same challenge with no call from your mod. It is the game's own: the same button, level, HUD,
+scoring and save. The only thing the game sets per monster is the goal, and Core picks it from
+`Challenges.GoalByCost`, one table for every mod:
+
+| Evolution cost from | Goal (hero level) |
+| --- | --- |
+| 0 | 4 |
+| 1 | 5 |
+| 2.5 | 7 |
+| 4 | 10 |
+
+Those are the averages of the game's own goals at its tier costs (0, 1, 2.5 and 4). Crawl: Further's tiers cost 0,
+2.5 and 4.5, so they ask for 4, 7 and 10.
+
+Who gets one is also the game's rule: its vault lists only monsters a player can become. Every mod monster reached
+from a god's starting monsters through its evolutions has a challenge, and so does every secret monster (made with
+`Secrets.AddMonster`, or a secret whose id is the monster's prefab name) and what it evolves into. Minions and
+ghost blobs have none, and their vault pages show no Challenge button. Set your own with `MonsterDef.challenge` (or
+`Challenges.Register(prefabName, def)` for a monster built some other way). From `examples/ExampleGod/GlimmerPack.cs`:
+
+```csharp
+new MonsterDef { id = "GlimmerMoth", basePrefab = "EnemyFlyingEye_Dodge", health = 3f, speedMult = 1.1f,
+                 evolveCost = 0f, kit = MothKit, traits = new MonsterTraits { stealth = true },
+                 challenge = new ChallengeDef { goal = 5 } },
+```
+
+- `goal` is the hero level to reach, up to 30. Leave it at 0 to use the table.
+- `none = true` takes the challenge away.
+
+The page of a mod monster shows its name and line, then the game's own challenge lines under them, copied from the
+vault's text as it reads at that moment (so a translation mod's words show). They share the rows above the buttons
+with the line, so the page shows as many as fit, in this order of need: the best level (or "not yet attempted"),
+the passed line once it is passed, the last level, the heading. A vault line therefore takes three rows at most
+(`tools/validate.py` checks it). The MONSTERS summary counts mod challenges passed with the game's own.
+
+Scores are saved by the game with the rest of the vault, under the prefab name (`"Mod" + id`). Keep ids stable once
+released. Without the mod the game skips those records and keeps its own. Mod challenges never count towards the
+game's challenge achievements, and no achievement is granted while a mod monster's challenge is played. In test mode
+no challenge score is saved.
 
 ## Secrets
 

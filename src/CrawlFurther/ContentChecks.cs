@@ -46,6 +46,7 @@ namespace CrawlFurther.Content
             SelfTest.AddSection(1100, "ghost forms", () => GhostV11.SelfCheck(Bad));
             SelfTest.AddSection(1500, "silver uniques", () => { SilverPack.SelfCheck(Bad); MonsterSecrets.SelfCheck(Bad); });
             SelfTest.AddSection(1600, "secret statues", () => StatuePack.SelfCheck(Bad));
+            SelfTest.AddSection(1650, "monster challenges", () => Library.MonsterChallenges.SelfCheck(Bad, Note));
             SelfTest.AddSection(1700, "items wave 3", () => ItemPack3.SelfCheck(Bad));
             SelfTest.AddSection(1800, "room objects A (and ObjectKit)", () => ObjectPack.SelfCheck(Bad));
             SelfTest.AddSection(1900, "room objects B (fun and secret)", () => ObjectPack2.SelfCheck(Bad));

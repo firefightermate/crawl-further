@@ -25,14 +25,15 @@ namespace CrawlFurther.UI
     ///  - Mod content registers late. If a user's save was read before that, the loader skipped the mod records; the
     ///    Sync postfix keeps them aside and they are applied when the entries are added (then saved normally).
     ///  - Completion ratios (vault / weapon vault / challenge achievements) are computed over vanilla entries only.
-    ///  - Mod monsters have no hero challenge: the Challenge action and label are disabled for them.
+    ///  - Mod monsters a player can become have the game's own hero challenge (<see cref="Challenges"/>): their
+    ///    m_targetScore is their goal, and the game's level, HUD, scoring and save run unchanged. Minions and blobs
+    ///    have none (goal <see cref="Challenges.NoGoal"/>), and their Challenge action and label are disabled.
     /// </summary>
     public static class LibraryEntries
     {
         /// <summary>The " (MOD)" tag 0.9.0 put on entry names. Names carry no tag now; it is kept only so that 0.9.0
         /// weapon records ("prefab + combo name (MOD)") still find their entry.</summary>
         public const string OldTag = " (MOD)";
-        const int NoChallengeTarget = 9999;
 
         class Info
         {
@@ -47,6 +48,8 @@ namespace CrawlFurther.UI
         static readonly Dictionary<string, SystemLibrary.LibraryEntry> s_keys = new Dictionary<string, SystemLibrary.LibraryEntry>();
         /// <summary>Monster prefabs that no god's roster or evolution reaches (minions, ghost blobs).</summary>
         static readonly HashSet<GameObject> s_summoned = new HashSet<GameObject>();
+        /// <summary>Mod monster entries with a challenge.</summary>
+        static readonly HashSet<SystemLibrary.LibraryEntry> s_challenge = new HashSet<SystemLibrary.LibraryEntry>();
 
         struct SavedRec { public bool found, isNew; public int high, last; }
         /// <summary>uid -> entry name -> record read from a save before the mod entries existed.</summary>
@@ -61,6 +64,10 @@ namespace CrawlFurther.UI
         public static bool IsMod(SystemLibrary.LibraryEntry e) { return e != null && s_mod.Contains(e); }
         public static bool HasModEntries { get { return s_mod.Count > 0; } }
         public static bool IsSummoned(GameObject prefab) { return prefab != null && s_summoned.Contains(prefab); }
+        /// <summary>A mod monster entry with a vault challenge.</summary>
+        public static bool HasChallenge(SystemLibrary.LibraryEntry e) { return e != null && s_challenge.Contains(e); }
+        /// <summary>A mod monster entry the game would offer a challenge for, but which has none (minions, blobs).</summary>
+        public static bool NoChallenge(SystemLibrary.LibraryEntry e) { return IsMod(e) && e is SystemLibrary.LibraryEntryMonster && !s_challenge.Contains(e); }
 
         /// <summary>Called once from ContentManager after every pack has registered.</summary>
         public static void Register()
@@ -80,7 +87,7 @@ namespace CrawlFurther.UI
             var lib = Singleton<SystemLibrary>.Instance;
             if (lib == null || lib == s_registeredInto) return;
             s_registeredInto = lib;
-            s_mod.Clear(); s_keys.Clear(); s_summoned.Clear(); s_pages.Clear(); s_pageInfo.Clear();
+            s_mod.Clear(); s_keys.Clear(); s_summoned.Clear(); s_challenge.Clear(); s_pages.Clear(); s_pageInfo.Clear();
             SecretList.Clear(); s_secretOf.Clear(); s_pageOf.Clear();
             try { AddAll(lib); }
             catch (Exception e) { FurtherCore.Log.LogError("Library entries failed: " + e); }
@@ -113,7 +120,7 @@ namespace CrawlFurther.UI
                     m_description = info.name + "\n" + info.desc,
                     m_portraitOffset = PortraitOffset(p),
                     m_startFound = false,
-                    m_targetScore = NoChallengeTarget,
+                    m_targetScore = Challenges.NoGoal,   // set by RefreshChallenges below
                 };
                 if (!Add(entryList, entries, e, users)) continue;
                 lib.m_monsters.Add(e);
@@ -177,6 +184,7 @@ namespace CrawlFurther.UI
             FurtherCore.Log.LogInfo("Library: " + SecretList.Count + " secret pages (" + Secrets.All.Count + " registered)");
 
             ApplyPending();
+            try { RefreshChallenges(); } catch (Exception ex) { FurtherCore.Log.LogError("Library challenges: " + ex); }
             try { SystemLibrary.UpdateHasNewEntries(); } catch (Exception ex) { FurtherCore.Log.LogWarning("Library: UpdateHasNewEntries: " + ex.Message); }
             FurtherCore.Log.LogInfo("Library: added " + nm + " monsters (" + s_summoned.Count + " summoned-only), " + ni + " items, " + nw +
                                " weapons, " + np + " category pages for " + users.Count + " user(s). Vanilla: " + (lib.m_monsters.Count - nm) + "/" +
@@ -259,6 +267,171 @@ namespace CrawlFurther.UI
                 if (next != null) foreach (var n in next) if (n != null && !set.Contains(n.gameObject)) todo.Push(n);
             }
             return set;
+        }
+
+        // ------------------------------------------------------------------ challenges
+        /// <summary>Monster prefabs a player can become: <see cref="Reachable"/>, plus every secret monster and what it
+        /// evolves into (no god's roster offers those).</summary>
+        static HashSet<GameObject> Playable()
+        {
+            var set = Reachable();
+            var todo = new Stack<Player>();
+            foreach (var se in Secrets.All)
+            {
+                var p = SecretMonster(se);
+                if (p != null) todo.Push(p);
+            }
+            while (todo.Count > 0)
+            {
+                var p = todo.Pop();
+                if (p == null || !set.Add(p.gameObject)) continue;
+                var next = p.GetEvolveTo();
+                if (next != null) foreach (var n in next) if (n != null && !set.Contains(n.gameObject)) todo.Push(n);
+            }
+            return set;
+        }
+
+        /// <summary>The built mod monster a secret stands for, or null: a monster secret (<see cref="Secrets.AddMonster"/>)
+        /// or any secret whose id is a mod monster's prefab name (the secret statues register theirs that way).</summary>
+        public static Player SecretMonster(SecretDef se)
+        {
+            if (se == null || string.IsNullOrEmpty(se.id)) return null;
+            bool prefabId = se.id.StartsWith("Mod", StringComparison.Ordinal);
+            if (!se.monster && !prefabId) return null;
+            Player p;
+            return MonsterFactory.Built.TryGetValue(prefabId ? se.id.Substring(3) : se.id, out p) ? p : null;
+        }
+
+        /// <summary>Give every mod monster entry its challenge goal (<see cref="Challenges.GoalOf"/>) or none. Runs when
+        /// the entries are added and whenever the vault opens (secrets and challenge defs may register late).</summary>
+        public static void RefreshChallenges()
+        {
+            if (s_lib == null) return;
+            var playable = Playable();
+            s_challenge.Clear();
+            foreach (var m in s_lib.m_monsters)
+            {
+                if (m == null || !s_mod.Contains(m) || m.m_prefab == null) continue;
+                int goal = Challenges.GoalOf(m.m_prefab.GetComponent<Player>(), playable.Contains(m.m_prefab));
+                m.m_targetScore = goal > 0 ? goal : Challenges.NoGoal;
+                if (goal > 0) s_challenge.Add(m);
+            }
+        }
+
+        /// <summary>Mod challenges passed (high score at or above the goal) by the primary user. The vault summary adds
+        /// them to the game's own count. Achievements never see them.</summary>
+        internal static int ModChallengesPassed()
+        {
+            int n = 0;
+            foreach (var e in s_challenge)
+            {
+                var m = e as SystemLibrary.LibraryEntryMonster;
+                if (m != null && m.GetHighScore(string.Empty) >= m.m_targetScore) n++;
+            }
+            return n;
+        }
+
+        /// <summary>
+        /// The challenge lines of a mod monster's vault page, as the game words them for its own monsters, most important
+        /// first, each with its place on the page: the score from the vault's own strings (best attempt first, then the
+        /// last), the "-PASSED-" line once passed and the "CHALLENGE" heading, both read from the vault's own text
+        /// objects so a translation shows. Empty for an entry without a challenge.
+        /// </summary>
+        internal static List<KeyValuePair<int, string>> ChallengeLines(MenuLibrary lib, SystemLibrary.LibraryEntryMonster e)
+        {
+            var list = new List<KeyValuePair<int, string>>();
+            if (lib == null || !HasChallenge(e)) return list;
+            int high = e.GetHighScore(string.Empty);
+            bool hidePassed = Singleton<SystemDebug>.HasInstance() && Singleton<SystemDebug>.Get.m_challengeModeHidePassedFeature;
+            bool passed = !hidePassed && high > 0 && high >= e.m_targetScore;
+            string score;
+            if (high == 0) score = R.Get<string>(lib, "m_stringHeroChallengeNotAttempted");
+            else
+            {
+                string fmt = R.Get<string>(lib, "m_stringHeroChallenge") ?? string.Empty;
+                try { score = string.Format(fmt, e.GetLastScore(), high); }
+                catch (FormatException) { score = fmt; }
+            }
+            var rows = new List<string>();
+            foreach (var r in (score ?? string.Empty).Replace("\r", string.Empty).Split('\n')) if (r.Trim().Length > 0) rows.Add(r.Trim());
+            const int Heading = 0, Passed = 1, Score = 2;
+            // the game's score text ends with the best attempt: that row first, then the rest
+            if (rows.Count > 0) list.Add(new KeyValuePair<int, string>(Score + rows.Count - 1, rows[rows.Count - 1]));
+            var normal = Headings(R.Get<GUIText>(lib, "m_textDescriptionMonster"));
+            if (passed)
+                foreach (var h in Headings(R.Get<GUIText>(lib, "m_textDescriptionMonsterPassed")))
+                    if (!normal.Contains(h)) list.Add(new KeyValuePair<int, string>(Passed, h));
+            for (int i = 0; i < rows.Count - 1; i++) list.Add(new KeyValuePair<int, string>(Score + i, rows[i]));
+            if (normal.Count > 0) list.Add(new KeyValuePair<int, string>(Heading, normal[0]));
+            return list;
+        }
+
+        /// <summary>The texts drawn above a vault challenge text, top to bottom, as they read now.</summary>
+        static List<string> Headings(GUIText holder)
+        {
+            var found = new List<KeyValuePair<float, string>>();
+            if (holder != null)
+                foreach (var tm in holder.GetComponentsInChildren<TextMesh>(true))
+                {
+                    if (tm == null || tm.gameObject == holder.gameObject || string.IsNullOrEmpty(tm.text)) continue;
+                    float y = holder.transform.InverseTransformPoint(tm.transform.position).y;
+                    found.Add(new KeyValuePair<float, string>(y, tm.text.Replace("\r", string.Empty).Trim()));
+                }
+            found.Sort((a, b) => b.Key.CompareTo(a.Key));
+            var list = new List<string>();
+            foreach (var kv in found) if (kv.Value.Length > 0) list.Add(kv.Value);
+            return list;
+        }
+
+        /// <summary>
+        /// Self-test of the challenges: every built mod monster has its vault entry, found by the lookups the game's
+        /// challenge uses (the prefab for the level, HUD and score, the name for the save), and has a goal exactly when
+        /// a player can become it or its <see cref="ChallengeDef"/> says so.
+        /// </summary>
+        public static void ChallengeSelfCheck(Action<string> bad, Action<string> note)
+        {
+            foreach (var f in new[] { "m_stringHeroChallenge", "m_stringHeroChallengeNotAttempted", "m_stringMonstersCategorySummary",
+                                      "m_textDescriptionMonster", "m_textDescriptionMonsterPassed", "m_selectedCategory", "m_menuItemsMonster" })
+                if (AccessTools.Field(typeof(MenuLibrary), f) == null) bad("MenuLibrary." + f + " not found (mod monster challenge pages)");
+            if (AccessTools.Method(typeof(MenuLibrary), "StartChallenge") == null) bad("MenuLibrary.StartChallenge not found");
+            if (AccessTools.Method(typeof(AchievementBase), "Unlock") == null) bad("AchievementBase.Unlock not found (no achievements in mod challenges)");
+            if (AccessTools.Field(typeof(Player), "m_evolveCost") == null) bad("Player.m_evolveCost not found (challenge goals by cost)");
+            if (s_lib == null || !Singleton<SystemLibrary>.HasInstance())
+            {
+                note("the vault is not built yet: challenges are given when it is");
+                return;
+            }
+            var playable = Playable();
+            int with = 0, without = 0;
+            var goals = new SortedDictionary<int, int>();
+            foreach (var kv in MonsterFactory.Built)
+            {
+                var p = kv.Value;
+                if (p == null) continue;
+                string label = p.gameObject.name;
+                if (!label.StartsWith("Mod", StringComparison.Ordinal)) bad(label + ": prefab name does not start with Mod (its save key would not be a mod key)");
+                var e = SystemLibrary.GetMonsterEntry(p.gameObject);
+                if (e == null) { bad(label + ": no vault entry, so no challenge"); continue; }
+                if (!IsMod(e)) bad(label + ": its vault entry is not a mod entry");
+                if (e.m_prefab == null || e.m_prefab.GetComponent<Player>() != p) bad(label + ": its vault entry does not resolve to its prefab");
+                if (SystemLibrary.GetLibraryEntry(p.gameObject) != e) bad(label + ": its save key does not find its vault entry");
+                bool want = Challenges.GoalOf(p, playable.Contains(p.gameObject)) > 0;
+                if (want != HasChallenge(e)) bad(label + (want ? ": should have a challenge but has none" : ": has a challenge it should not have"));
+                if (HasChallenge(e))
+                {
+                    with++;
+                    if (e.m_targetScore < 1 || e.m_targetScore > Challenges.MaxGoal) bad(label + ": challenge goal " + e.m_targetScore + " is out of range");
+                    int c; goals.TryGetValue(e.m_targetScore, out c); goals[e.m_targetScore] = c + 1;
+                }
+                else
+                {
+                    without++;
+                    if (e.m_targetScore != Challenges.NoGoal) bad(label + ": no challenge, but its goal is " + e.m_targetScore);
+                }
+            }
+            var by = new List<string>();
+            foreach (var g in goals) by.Add("level " + g.Key + " x" + g.Value);
+            note(with + " mod monsters have a challenge (" + string.Join(", ", by.ToArray()) + "), " + without + " have none (minions and blobs)");
         }
 
         /// <summary>
@@ -858,20 +1031,22 @@ namespace CrawlFurther.UI
 
     // ---------------------------------------------------------------------------------------------- vault menu
 
-    /// <summary>Late safety net: add the entries when the vault opens if Register ran before SystemLibrary existed.</summary>
+    /// <summary>Late safety net: add the entries when the vault opens if Register ran before SystemLibrary existed.
+    /// Then give the mod monsters their challenge goals again (a secret or challenge def may have registered since).</summary>
     [HarmonyPatch(typeof(MenuLibrary), "OnEnable")]
     static class Patch_LibraryMenuEnable
     {
         static void Prefix()
         {
-            try { LibraryEntries.EnsureRegistered(); }
+            try { LibraryEntries.EnsureRegistered(); LibraryEntries.RefreshChallenges(); }
             catch (Exception e) { FurtherCore.Log.LogError("Library late register: " + e); }
         }
     }
 
-    /// <summary>Mod monsters have no hero challenge: never launch one from the vault.</summary>
+    /// <summary>Mod monsters without a challenge (minions, blobs): never launch one from the vault. Every other entry,
+    /// mod monsters with a challenge included, goes through the game's own StartChallenge.</summary>
     [HarmonyPatch(typeof(MenuLibrary), "StartChallenge")]
-    static class Patch_LibraryNoModChallenge
+    static class Patch_LibraryChallengeStart
     {
         static bool Prefix(MenuTextMenu ___m_menuItemsMonster)
         {
@@ -879,42 +1054,46 @@ namespace CrawlFurther.UI
             {
                 var list = SystemLibrary.GetMonsters();
                 int i = ___m_menuItemsMonster != null ? ___m_menuItemsMonster.GetSelectedId() : -1;
-                if (list != null && i >= 0 && i < list.Count && LibraryEntries.IsMod(list[i])) return false;
+                if (list != null && i >= 0 && i < list.Count && LibraryEntries.NoChallenge(list[i])) return false;
             }
             catch (Exception e) { FurtherCore.Log.LogWarning("Library challenge guard: " + e.Message); }
             return true;
         }
     }
 
-    /// <summary>Remember which monster cells are mod entries, so pressing them does nothing (like an undiscovered cell).</summary>
+    /// <summary>Remember which monster cells are mod entries without a challenge, so pressing them does nothing (like an
+    /// undiscovered cell). Mark found mod monsters' cells with the gem. The passed tick is the game's own
+    /// (SetMonster shows it from the entry's goal and high score, for mod monsters too).</summary>
     [HarmonyPatch(typeof(MenuItemLibraryMonster), "SetMonster", new[] { typeof(Player), typeof(SystemLibrary.LibraryEntryMonster) })]
     static class Patch_LibraryCellSet
     {
-        internal static readonly HashSet<int> ModCells = new HashSet<int>();
+        internal static readonly HashSet<int> NoChallengeCells = new HashSet<int>();
         static void Postfix(MenuItemLibraryMonster __instance, SystemLibrary.LibraryEntryMonster libraryEntry)
         {
             if (__instance == null) return;
             int id = __instance.GetInstanceID();
-            if (LibraryEntries.IsMod(libraryEntry)) ModCells.Add(id); else ModCells.Remove(id);
-            // the gem marks a found mod monster's cell
-            try { VaultGrid.CellGem(__instance, LibraryEntries.IsMod(libraryEntry) && libraryEntry.IsFound(string.Empty)); }
+            if (LibraryEntries.NoChallenge(libraryEntry)) NoChallengeCells.Add(id); else NoChallengeCells.Remove(id);
+            try { VaultGrid.CellGem(__instance, LibraryEntries.IsMod(libraryEntry) && libraryEntry.IsFound(string.Empty), true); }
             catch (Exception e) { FurtherCore.Log.LogWarning("Vault gem: " + e.Message); }
         }
     }
 
-    /// <summary>The cell's own action hides its art and sends MsgChallenge; skip both for mod monsters.</summary>
+    /// <summary>The cell's own action hides its art and sends MsgChallenge. Skip both for mod monsters without a
+    /// challenge.</summary>
     [HarmonyPatch(typeof(MenuItemLibraryMonster), "OnAction")]
     static class Patch_LibraryCellAction
     {
         static bool Prefix(MenuItemLibraryMonster __instance)
         {
-            return __instance == null || !Patch_LibraryCellSet.ModCells.Contains(__instance.GetInstanceID());
+            return __instance == null || !Patch_LibraryCellSet.NoChallengeCells.Contains(__instance.GetInstanceID());
         }
     }
 
     /// <summary>
-    /// When the selection lands on a found mod monster: no "Challenge" label and no challenge text (mod monsters have
-    /// none); the page uses the item layout instead, its name under the rule and its line below, laid out to fit.
+    /// When the selection lands on a found mod monster, the page uses the item layout: its name under the rule, then
+    /// its line, laid out to fit. A monster with a challenge keeps the game's "Challenge" label and gets the game's
+    /// challenge lines under its line (<see cref="LibraryEntries.ChallengeLines"/>, as many as fit above the button
+    /// row). One without (minions, blobs) shows neither.
     /// </summary>
     [HarmonyPatch(typeof(MenuLibrary), "UpdateItem")]
     static class Patch_LibraryItemText
@@ -935,16 +1114,59 @@ namespace CrawlFurther.UI
                 if (___m_selectedItem >= list.Count) return;
                 var e = list[___m_selectedItem];
                 if (!LibraryEntries.IsMod(e)) return;
-                if (___m_textButtonA != null && ___m_textButtonA.gameObject.activeSelf) ___m_textButtonA.gameObject.SetActive(false);
+                bool challenge = LibraryEntries.HasChallenge(e);
+                if (!challenge && ___m_textButtonA != null && ___m_textButtonA.gameObject.activeSelf) ___m_textButtonA.gameObject.SetActive(false);
                 if (__state == ___m_selectedItem) return;   // only when the selection just changed
                 if (___m_textDescriptionMonsterPassed != null) ___m_textDescriptionMonsterPassed.gameObject.SetActive(false);
                 if (___m_textDescriptionMonster != null) ___m_textDescriptionMonster.gameObject.SetActive(false);
                 // the entry's text is "Name\nline": the name becomes the page title
                 string text = e.m_description ?? string.Empty;
                 if (!string.IsNullOrEmpty(e.m_name) && text.StartsWith(e.m_name + "\n", StringComparison.Ordinal)) text = text.Substring(e.m_name.Length + 1);
-                VaultGrid.ShowPage(__instance, e.m_name, text);
+                if (challenge) VaultGrid.ShowChallengePage(__instance, e.m_name, text, LibraryEntries.ChallengeLines(__instance, e));
+                else VaultGrid.ShowPage(__instance, e.m_name, text);
             }
             catch (Exception ex) { FurtherCore.Log.LogWarning("Library item text: " + ex.Message); }
+        }
+    }
+
+    /// <summary>
+    /// The MONSTERS summary says how many challenges are passed ("{2} challenges passed", the game's own string). The
+    /// game counts that from its completion stats, which leave mod entries out so achievements never see them. Here the
+    /// mod challenges passed are added to the number shown, with the same live string.
+    /// </summary>
+    [HarmonyPatch(typeof(MenuLibrary), "UpdateCategory")]
+    static class Patch_LibraryChallengeSummary
+    {
+        static FieldInfo s_selected;
+
+        static void Prefix(MenuLibrary __instance, MenuTextMenu ___m_menuCategories, bool force, out bool __state)
+        {
+            __state = false;
+            try
+            {
+                if (s_selected == null) s_selected = AccessTools.Field(typeof(MenuLibrary), "m_selectedCategory");
+                int want = ___m_menuCategories != null ? Mathf.Max(0, ___m_menuCategories.GetSelectedId()) : -1;
+                // vanilla rewrites the summary only when the highlighted category changed or it is forced
+                __state = want == VaultGrid.Monsters && (force || Convert.ToInt32(s_selected.GetValue(__instance)) != want);
+            }
+            catch (Exception e) { FurtherCore.Log.LogWarning("Vault challenge summary: " + e.Message); }
+        }
+
+        static void Postfix(MenuLibrary __instance, bool __state, GUIText ___m_textCategorySummary, string ___m_stringMonstersCategorySummary)
+        {
+            if (!__state || !LibraryEntries.HasModEntries || ___m_textCategorySummary == null || !___m_textCategorySummary.gameObject.activeSelf) return;
+            try
+            {
+                if (!Singleton<SystemDebug>.HasInstance() || Singleton<SystemDebug>.Get.m_challengeModeHidePassedFeature) return;
+                int passed = LibraryEntries.ModChallengesPassed();
+                if (passed == 0) return;   // the game's own number is already right
+                var list = SystemLibrary.GetMonsters();
+                int found = 0;
+                foreach (var m in list) if (m != null && m.IsFound(string.Empty)) found++;
+                int total = Mathf.RoundToInt(SystemLibrary.GetCompletionCountChallenges(string.Empty)) + passed;
+                ___m_textCategorySummary.SetText(string.Format(___m_stringMonstersCategorySummary ?? string.Empty, found, list.Count, total));
+            }
+            catch (Exception e) { FurtherCore.Log.LogWarning("Vault challenge summary: " + e.Message); }
         }
     }
 

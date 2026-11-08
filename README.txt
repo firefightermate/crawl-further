@@ -16,6 +16,17 @@ Delete an old BepInEx\plugins\CrawlMod folder when you update. The config files 
 updating from any earlier version keeps your settings and saves. New settings files start with CrawlFurther.
 The mod's two bosses are switched off in this version (see BOSSES).
 
+UNRELEASED
+----------
+  - Every god monster and secret monster has a challenge in the vault, like the game's own monsters: select
+    it in MONSTERS and press Challenge. Play it against a bot hero who comes back stronger each time you kill
+    him. Starters ask for hero level 4, tier 2 for level 7, finals for level 10. A passed challenge gets the
+    game's tick on its vault cell, and the mod's violet gem moves to that cell's bottom-left corner.
+  - Minions and blobs have no challenge, as the game's own have none.
+  - A monster's vault page shows its challenge under its line. A few long lines are a little shorter so it fits.
+  - Mod challenges never count toward Steam achievements, and playing one earns none.
+  - Test mode: Run > Monster challenge starts any monster's challenge from the menus. Scores are not saved.
+
 NEW IN 1.1.0
 ------------
   - The Gleaner, Poltergeist and Binder earn their own blobs (Mote, Spitter, Gel) through a challenge each,
@@ -377,7 +388,8 @@ TEST MODE
   in BepInEx\config\CrawlMod.Debug.cfg. F2 opens the panel (mouse-driven): become any monster, ghost form
   or the hero, spawn hostile monsters and room objects, give the hero items and weapons, pick the run's
   gods, skip floors, go to the boss, slow the game down and show hitboxes. It also turns on Crawl's own
-  hidden debug menu (Tab + `). While it is on, nothing counts toward the vault, challenges or secrets.
+  hidden debug menu (Tab + `), and start any monster's vault challenge from the menus. While it is on,
+  nothing counts toward the vault, challenges or secrets.
   It turns itself off in an Online Crawl match. Set it back to false for real runs.
 
 OTHER MODS

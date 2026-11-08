@@ -192,15 +192,19 @@ namespace CrawlFurther.UI
         }
 
         static readonly Vector3 CellGemPos = new Vector3(-3.5f, 3.5f, -1.6f);
+        /// <summary>MONSTERS cells: the game's passed tick owns the top corner on the left there (mod monsters pass
+        /// challenges too), so the gem takes the bottom corner on the left.</summary>
+        static readonly Vector3 MonsterCellGemPos = new Vector3(-3.5f, -3.5f, -1.6f);
 
-        /// <summary>The only mark a vault entry gets: the gem in the top-left corner of its cell (the red "new" dot sits
-        /// top-right; the challenge tick that shares the top-left never shows for mod entries). It shows and hides with
-        /// the cell's own background; the big picture below stays bare (<see cref="Patch_VaultPortraitGem"/>).</summary>
-        internal static void CellGem(MenuItemLibraryMonster cell, bool on)
+        /// <summary>The only mark a vault entry gets: the gem in a corner of its cell. In the picture grids it sits top
+        /// left. In MONSTERS it sits bottom left, since the game's passed tick takes the top left there (the red "new"
+        /// dot is top right). It shows and hides with the cell's own background. The big picture below stays bare
+        /// (<see cref="Patch_VaultPortraitGem"/>).</summary>
+        internal static void CellGem(MenuItemLibraryMonster cell, bool on, bool monsters)
         {
             if (cell == null) return;
             var bg = on ? R.Get<exSprite>(cell, "m_background") : null;
-            ModMark.Pin(cell.transform, CellGemPos, bg != null ? bg.GetComponent<Renderer>() : null, on);
+            ModMark.Pin(cell.transform, monsters ? MonsterCellGemPos : CellGemPos, bg != null ? bg.GetComponent<Renderer>() : null, on);
         }
 
         /// <summary>The selected entry of this category sits in a picture cell that carries its mark.</summary>
@@ -243,7 +247,7 @@ namespace CrawlFurther.UI
             // mod entries get the gem; a secret only once it is found (a silhouette gives nothing away)
             var c = CategoryOf(cat);
             bool gem = c != null && c.secrets ? Secrets.IsFound(LibraryEntries.SecretOf(e)) : found && LibraryEntries.IsMod(e);
-            CellGem(cell, gem);
+            CellGem(cell, gem, false);
             // the private SetMonster(Player) with no player only hides the cell's renderers for the spawn-in, as vanilla
             if (s_setMonsterNull == null) s_setMonsterNull = AccessTools.Method(typeof(MenuItemLibraryMonster), "SetMonster", new[] { typeof(Player) });
             s_setMonsterNull.Invoke(cell, new object[] { null });
@@ -388,6 +392,10 @@ namespace CrawlFurther.UI
         // hangs from under the name and may use x up to 68 while above the BACK row, up to 40 beside it.
         const float TextLeft = -32f, TitleY = -14.5f, DescTop = -20f;
         const float RightOpen = 68f, RightBesideBack = 40f, BackRowTop = -51f, ScreenBottom = -68f;
+        // A monster page with a challenge also shows the game's "Challenge" label on the button row (its button glyph
+        // from x -6): its text stays above that row, every line full width. The rows are shared: the monster's line
+        // first, then at least one row of challenge text (tools/validate.py keeps monster lines short enough).
+        const float ButtonRowTop = -51f;
         // The category summary hangs under the category list: vanilla's five rows end above SummaryTop, but every mod
         // category adds a row, so it moves down below the list's last row, no lower than SummaryLowest.
         const float SummaryLeft = -65.3f, SummaryTop = -10.1f, SummaryLowest = -26f, SummaryGap = 2f;
@@ -448,6 +456,41 @@ namespace CrawlFurther.UI
             desc.gameObject.SetActive(true);
             float lh = TextFit.LineHeight(desc.GetComponent<TextMesh>());
             TextFit.Set(desc, text, new Vector2(TextLeft, DescTop), Widths(TextLeft, DescTop, lh), MaxLines(DescTop, lh));
+        }
+
+        /// <summary>
+        /// A mod monster's page with a challenge: <paramref name="name"/> under the rule, then <paramref name="line"/>,
+        /// then the challenge lines that fit above the button row. <paramref name="challenge"/> lists them most
+        /// important first, each with the place it takes on the page (the game's order); at least the first one shows,
+        /// and the monster's line gives up rows for it only when it must.
+        /// </summary>
+        internal static void ShowChallengePage(MenuLibrary lib, string name, string line, List<KeyValuePair<int, string>> challenge)
+        {
+            var desc = R.Get<GUIText>(lib, "m_textDescription");
+            var tm = desc != null ? desc.GetComponent<TextMesh>() : null;
+            if (tm == null || challenge == null || challenge.Count == 0) { ShowPage(lib, name, line); return; }
+            ShowPage(lib, name, string.Empty);   // the title, and the description's saved layout
+            float lh = TextFit.LineHeight(tm);
+            int rows = Mathf.Max(1, Mathf.FloorToInt((DescTop - ButtonRowTop) / lh));
+            TextFit.LineWidth full = i => RightOpen - TextLeft;
+            var lines = string.IsNullOrEmpty(line) ? new List<string>() : TextFit.Lines(tm, line, full, 0);
+            int room = Mathf.Max(1, rows - lines.Count);
+            if (rows - room <= 0) lines.Clear();
+            else if (lines.Count > rows - room) lines = TextFit.Lines(tm, line, full, rows - room);
+            var picked = new List<KeyValuePair<int, string>>();
+            foreach (var c in challenge)
+            {
+                if (string.IsNullOrEmpty(c.Value)) continue;
+                int need = TextFit.Lines(tm, c.Value, full, 0).Count;
+                int used = 0;
+                foreach (var p in picked) used += TextFit.Lines(tm, p.Value, full, 0).Count;
+                if (picked.Count > 0 && used + need > room) continue;
+                picked.Add(c);
+            }
+            picked.Sort((a, b) => a.Key.CompareTo(b.Key));
+            foreach (var p in picked) lines.Add(p.Value);
+            desc.gameObject.SetActive(true);
+            TextFit.Set(desc, string.Join("\n", lines.ToArray()), new Vector2(TextLeft, DescTop), full, rows);
         }
 
         /// <summary>The category summary (vanilla's or a mod category's), laid out to fit.</summary>

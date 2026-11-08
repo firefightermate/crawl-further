@@ -114,7 +114,8 @@ or two lines. The pause page is a `PauseTopic`; see [ui.md](ui.md#tips) for both
 
 Every monster built through `MonsterFactory` gets a page in the vault's MONSTERS grid without any call. Give it a
 line with `Vault.AddMonsterLine(id, name, line)` (one line, up to 90 characters, in the tone of the vanilla
-pages). Without one it uses the tip's `vault` line (`TipRegistry.AddVaultLine`), and failing that the tip's name
+pages). The page shows it in three rows at most, about 70 characters, because the row under it is kept for the
+monster's challenge ([ui.md](ui.md#monster-challenges)); `tools/validate.py` checks it. Without one it uses the tip's `vault` line (`TipRegistry.AddVaultLine`), and failing that the tip's name
 and moves, with a warning in the log.
 
 ## Monster statues
