@@ -431,6 +431,8 @@ namespace CrawlFurther.Content.Ghosts
                 foreach (var b in built.Values)
                     foreach (var e in Kit.Effects(b))
                         if (e != null && e.m_object != null && e.m_object.name == "FX_SlimeSpawnShockwave") e.m_object = BlobSpawnSplash;
+            // a blob's special is on the ghost button, Back only lets its player out (BlobSpecialInput)
+            foreach (var b in built.Values) if (b.GetComponent<BlobSpecialInput>() == null) b.gameObject.AddComponent<BlobSpecialInput>();
             built.TryGetValue("BlobMote", out Mote);
             built.TryGetValue("BlobSpitter", out Spitter);
             built.TryGetValue("BlobGel", out Gel);
@@ -464,8 +466,10 @@ namespace CrawlFurther.Content.Ghosts
             var go = pd.GameObject;
             var p = go != null ? go.GetComponent<Player>() : null;
             if (p == null) return false;
-            // a ghost that spawns Gels fuses them with it; a gold monster jumps out with it
+            // a ghost that spawns Gels fuses them with it; in a blob it starts the blob's special; a gold monster jumps
+            // out with it
             if (ModUtil.IsGhost(p)) return FusesGels(pd);
+            if (BlobSpecialInput.SpecialOnGhostButton(p)) return true;
             return FormOf(pd) == GhostForm.Gold && !pd.IsHero;
         }
 
@@ -657,7 +661,7 @@ namespace CrawlFurther.Content.Ghosts
             if (King != null)
                 GhostBlobs.Register(new GhostBlobDef
                 {
-                    id = "King", name = "King Blob", summary = "Slams, rains globs, and costs more ectoplasm",
+                    id = "King", name = "King Blob", summary = "Ghost button rains globs. Costs more",
                     prefab = pd => King.gameObject, art = "BlobKing", bodies = KingBodies,
                     fits = f => f != null && f.tier != SlotTier.Normal,   // the silver and gold ghosts' own prize
                 });

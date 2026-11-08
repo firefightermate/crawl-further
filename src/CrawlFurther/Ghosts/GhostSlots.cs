@@ -549,7 +549,8 @@ namespace CrawlFurther.Content.Ghosts
                 st.countOn = body; st.countShown = show;
             }
             var p = MonsterBody(pd);
-            if (p == null || st.cd > 0f || !GhostControls.Down(pd)) return;
+            // in a blob with a special the ghost button is that special (BlobSpecialInput), never a jump-out
+            if (p == null || st.cd > 0f || BlobSpecialInput.SpecialOnGhostButton(p) || !GhostControls.Down(pd)) return;
             st.cd = 0.4f;
             if (st.thrall != null || SystemLevel.GetBossEncounterActive() || p.GetComponent<ThrallMark>() != null)
             {

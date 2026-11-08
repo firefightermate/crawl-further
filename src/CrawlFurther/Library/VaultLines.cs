@@ -129,9 +129,9 @@ namespace CrawlFurther.Content.Library
             M("BlobMote", "Mote Blob", "A Gleaner's little blob. Quick, fragile, and it nips");
             M("BlobSpitter", "Spitter Blob", "A Poltergeist's blob. It spits goo that slides along the floor");
             M("BlobGel", "Gel Blob", "A Binder's blob. Two fuse into a Brute, three into a Titan");
-            M("BlobBrute", "Brute Blob", "Two Gels fused into one. It hops in and lands with a slam");
-            M("BlobTitan", "Titan Blob", "Three Gels fused into one. It slams, engulfs, and leaves a Gel when it dies");
-            M("BlobKing", "King Blob", "The silver and gold ghosts' prize. It slams out a ring of goo and rains globs");
+            M("BlobBrute", "Brute Blob", "Two Gels fused into one. The ghost button makes it hop in and land with a slam");
+            M("BlobTitan", "Titan Blob", "Three Gels fused into one. It slams, engulfs on the ghost button, and leaves a Gel");
+            M("BlobKing", "King Blob", "Silver and gold's prize. It slams out goo, and the ghost button rains globs");
         }
 
         static void M(string id, string name, string line) { Vault.AddMonsterLine(id, name, line); }

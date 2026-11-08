@@ -54,12 +54,12 @@ namespace CrawlFurther.Content.Tips
             T("ModBossPandemonium/TentacleL", "Pandemonium - Left Tentacle", "Roll juggling balls that burst in confetti; may stun", "none, aim with movement"); Group["ModBossPandemonium/TentacleL"] = "bosses";
             T("ModBossPandemonium/TentacleR", "Pandemonium - Right Tentacle", "Throw dice that burst in confetti", "none, aim with movement"); Group["ModBossPandemonium/TentacleR"] = "bosses";
             // tips_ghosts.json
-            T("ModBlobBrute", "Brute Blob", "Heavy lunging body slam", "Bounce: hop forward, land in a knockback ring", "Fused from two Gels. It never fuses again\nLeft alone, it still uses its special"); Group["ModBlobBrute"] = "ghosts";
+            T("ModBlobBrute", "Brute Blob", "Heavy lunging body slam", "Ghost button: Bounce, hop and land in a ring", "Fused from two Gels. It never fuses again\nBack leaves it. Left alone, it uses its special"); Group["ModBlobBrute"] = "ghosts";
             T("ModBlobGel", "Gel Blob", "Lunging body slam", "none", "The Binder's own blob, earned by its challenge.\nThe ghost button fuses Gels into bigger blobs"); Group["ModBlobGel"] = "ghosts";
-            T("ModBlobKing", "King Blob", "Heavy slam that sends a ring of goo out ahead", "Rain: globs land where their shadows grow", "Silver and gold ghosts only. Costs more ectoplasm\nLeft alone, it still uses its special"); Group["ModBlobKing"] = "ghosts";
+            T("ModBlobKing", "King Blob", "Heavy slam that sends a ring of goo out ahead", "Ghost button: Rain, globs fall on shadows", "Silver and gold ghosts only. Costs more ectoplasm\nBack leaves it. Left alone, it uses its special"); Group["ModBlobKing"] = "ghosts";
             T("ModBlobMote", "Mote Blob", "Quick lunging nip, very short range", "none", "The Gleaner's own blob, earned by its challenge.\nThey spawn in pairs"); Group["ModBlobMote"] = "ghosts";
             T("ModBlobSpitter", "Spitter Blob", "Spit goo along the floor; leaves a slowing puddle", "none", "The Poltergeist's own blob, earned by its challenge"); Group["ModBlobSpitter"] = "ghosts";
-            T("ModBlobTitan", "Titan Blob", "Crushing body slam", "Engulf: lunge and swallow the hero; slows", "Fused from three Gels. Leaves a Gel when it dies\nLeft alone, it still uses its special"); Group["ModBlobTitan"] = "ghosts";
+            T("ModBlobTitan", "Titan Blob", "Crushing body slam", "Ghost button: Engulf, lunge and swallow", "Fused from three Gels. Leaves a Gel when it dies\nBack leaves it. Left alone, it uses its special"); Group["ModBlobTitan"] = "ghosts";
             T("ModFodFusebelly", "Fusebelly", "Lick the hero with your burning fuse", "Blow: swell up and burst in a big blast (you die)", "A Kindler ghost's follower. It pops when it dies.\nThe Kindler's Attack can light it from afar"); Group["ModFodFusebelly"] = "ghosts";
             T("ModFodGargling", "Gargling", "Spit a stone at the hero", "Fan: spit three stones in a spread", "A Mason ghost's follower: tough but barely moves.\nThe Mason's Attack makes every Gargling spit"); Group["ModFodGargling"] = "ghosts";
             T("ModFodKeener", "Keener", "Shriek a short sound wave that can slow the hero", "none", "A Banshee ghost's follower: quick and fragile"); Group["ModFodKeener"] = "ghosts";
@@ -480,6 +480,7 @@ namespace CrawlFurther.Content.Tips
                 "<color=#d4be9c>Silver:</color> your monsters drop orbs. Eight send your next body up a tier.",
                 "<color=#d4be9c>Gold:</color> jump out of a body and it fights on for you in gold.",
                 "The Gleaner, Poltergeist and Binder each earn a <color=#d4be9c>blob</color> of their own through a challenge. Until then they spawn the regular blob. Silver and gold pick from every earned blob and the <color=#d4be9c>King Blob</color>.",
+                "In a <color=#d4be9c>Brute</color>, <color=#d4be9c>Titan</color> or <color=#d4be9c>King Blob</color>, the <color=#d4be9c>ghost button</color> uses its special. Back only leaves the blob.",
             }),
             new PauseTopic("slots", "", "SLOTS", "silver and gold", new[]
             {

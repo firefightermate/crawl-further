@@ -28,28 +28,28 @@
  "ModBlobBrute": {
   "name": "Brute Blob",
   "attack": "Heavy lunging body slam",
-  "special": "Bounce: hop forward, land in a knockback ring",
+  "special": "Ghost button: Bounce, hop and land in a ring",
   "passive": [
    "Fused from two Gels. It never fuses again",
-   "Left alone, it still uses its special"
+   "Back leaves it. Left alone, it uses its special"
   ]
  },
  "ModBlobTitan": {
   "name": "Titan Blob",
   "attack": "Crushing body slam",
-  "special": "Engulf: lunge and swallow the hero; slows",
+  "special": "Ghost button: Engulf, lunge and swallow",
   "passive": [
    "Fused from three Gels. Leaves a Gel when it dies",
-   "Left alone, it still uses its special"
+   "Back leaves it. Left alone, it uses its special"
   ]
  },
  "ModBlobKing": {
   "name": "King Blob",
   "attack": "Heavy slam that sends a ring of goo out ahead",
-  "special": "Rain: globs land where their shadows grow",
+  "special": "Ghost button: Rain, globs fall on shadows",
   "passive": [
    "Silver and gold ghosts only. Costs more ectoplasm",
-   "Left alone, it still uses its special"
+   "Back leaves it. Left alone, it uses its special"
   ]
  },
  "ModGhostGleaner": {
