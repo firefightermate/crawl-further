@@ -14,12 +14,14 @@ Changes to Crawl Further Core and to the repository. What changed in the game fo
   far, for mods that change the game after a continue.
 - A win counts toward `Unlocks.StatWins` once per player per game, however often the game is continued.
 - Test mode: Run > Beat the boss now ends the boss fight as a win, to reach the prompt quickly.
-- `Challenges.GoalByCost` is 3, 4, 5 and 7 at costs 0, 1, 2.5 and 4 (it was 4, 5, 7 and 10, the game's average
-  goals). The game's goals are passed by very few players. The new ones are the hero level a player of moderate
-  skill reaches in half of all runs of five tries, from a model of the challenge.
 - `TierRules.StarterDamage` and `TierRules.StarterMinHealth`: a hit multiplier and a health floor for starting
   monsters (evolve cost exactly 0, `TierRules.IsStarter`). Minions and blobs keep their base's cost and are not
-  starters. Both default to no change. Crawl: Further sets 1.3 and 4.
+  starters.
+- `TierRules.StarterHealth`, `T2Health` and `T3Health`: max health multipliers by tier (`TierRules.Health`).
+- `TierRules.StarterChallenge`, `T2Challenge` and `T3Challenge`: extra strength inside a vault challenge only.
+  Health and hits on the hero each get the square root (`ChallengeBoost`, `MonsterFactory.ChallengeStrength`).
+- All of these default to no change. Crawl: Further sets them so a player of moderate skill can pass the game's
+  own goals: half of the needed strength in every game, half only in challenges (`ContentSetup`).
 - `ClipBuilder.HandOff()` marks a clip that ends by handing the body to a behaviour (a charge, a carry, a dig) which
   gives control back itself. `ClipBuilder.HandsOff(clip)` tells the self-test, which no longer reports such a clip
   as never returning control.
@@ -27,8 +29,8 @@ Changes to Crawl Further Core and to the repository. What changed in the game fo
   clip for a stance (the menus keep the sheet's Idle).
 
 ### Repository
-- `tools/challenge_sim.py`: the model of the vault challenge behind the new goals. It prints each tier's chance to
-  pass in 1, 5 and 20 attempts for four skill levels, under the old and the new goals.
+- `tools/challenge_sim.py`: a model of the vault challenge, behind the 1.2.1 monster strengths. It prints each
+  tier's chance to pass in 1, 5 and 20 attempts for four skill levels, before and after.
 - `tools/sprites/bust_painter.py`: the portrait painter (cushion-lit fills, five clean tones a surface, the game's
   god-portrait look). `tools/sprites/origin_portraits.py` redraws the origin portraits with it, close up, and
   `tools/sprites/hero_bust_layers.py` paints the custom hero's portrait layers the same way for `hero_custom.py`.

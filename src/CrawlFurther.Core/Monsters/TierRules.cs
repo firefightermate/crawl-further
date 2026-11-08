@@ -23,6 +23,21 @@ namespace CrawlFurther.Monsters
         /// <summary>The least max health a starting monster has (0 for no floor).</summary>
         public static float StarterMinHealth = 0f;
 
+        /// <summary>Multiplier on a starting monster's max health (after <see cref="StarterMinHealth"/>).</summary>
+        public static float StarterHealth = 1f;
+        /// <summary>Multiplier on a tier 2 monster's max health.</summary>
+        public static float T2Health = 1f;
+        /// <summary>Multiplier on a tier 3 monster's max health.</summary>
+        public static float T3Health = 1f;
+
+        /// <summary>Extra strength (max health times hits on the hero) a starting monster has in a vault challenge only,
+        /// split evenly: health and hits each get the square root. 1 for none.</summary>
+        public static float StarterChallenge = 1f;
+        /// <summary>The same for tier 2 monsters.</summary>
+        public static float T2Challenge = 1f;
+        /// <summary>The same for tier 3 monsters.</summary>
+        public static float T3Challenge = 1f;
+
         /// <summary>A def's evolution cost is a starting monster's: exactly 0.</summary>
         public static bool IsStarter(float evolveCost) { return Math.Abs(evolveCost) < 0.001f; }
 
@@ -31,6 +46,22 @@ namespace CrawlFurther.Monsters
 
         /// <summary>The hit multiplier against the hero for <paramref name="tier"/> (starters: see <see cref="StarterDamage"/>).</summary>
         public static float Damage(int tier) { return tier >= 3 ? T3Damage : tier == 2 ? T2Damage : 1f; }
+
+        /// <summary>The max health multiplier for a def's evolution cost (minions and blobs: 1).</summary>
+        public static float Health(float evolveCost)
+        {
+            if (IsStarter(evolveCost)) return StarterHealth;
+            int t = Of(evolveCost);
+            return t >= 3 ? T3Health : t == 2 ? T2Health : 1f;
+        }
+
+        /// <summary>The vault challenge strength for a def's evolution cost (minions and blobs: 1).</summary>
+        public static float Challenge(float evolveCost)
+        {
+            if (IsStarter(evolveCost)) return StarterChallenge;
+            int t = Of(evolveCost);
+            return t >= 3 ? T3Challenge : t == 2 ? T2Challenge : 1f;
+        }
 
         /// <summary>The special charge-time multiplier for <paramref name="tier"/>.</summary>
         public static float SpecialCharge(int tier) { return tier >= 3 ? T3SpecialCharge : tier == 2 ? T2SpecialCharge : 1f; }

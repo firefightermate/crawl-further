@@ -48,9 +48,18 @@ namespace CrawlFurther.Content
                 wordmark = "BrandFurther", spark = "BrandSpark", menuPip = "BrandPip", menuMote = "BrandMote",
             });
             ModMusic.AddFolder(System.IO.Path.Combine(Plugin.ModDir, "music"));
-            // starters: the game's own hit harder and have 4 or 5 health; ours were well behind both (1.2.1)
-            TierRules.StarterDamage = 1.3f;
+            // 1.2.1: strong enough that a player of moderate skill can pass the vault challenges (hero level 4, 7, 10;
+            // tools/challenge_sim.py). Half of it in every game, the other half only inside a challenge.
             TierRules.StarterMinHealth = 4f;
+            TierRules.StarterDamage = 1.45f;     // starters were also behind the game's own (1.3 to catch up)
+            TierRules.StarterHealth = 1.1f;
+            TierRules.T2Damage = 1.15f;
+            TierRules.T2Health = 1.15f;
+            TierRules.T3Damage = 1.25f;
+            TierRules.T3Health = 1.2f;
+            TierRules.StarterChallenge = 1.25f;
+            TierRules.T2Challenge = 1.32f;
+            TierRules.T3Challenge = 1.5f;
             Game.ContinueGame.Enabled = Plugin.I.Config.Bind("Game", "ContinueAfterWin", true,
                 "When the hero beats the boss, offer to keep playing with two more tries at the boss.").Value;
             ShopPedestal.AddSheet(PedestalSheet);

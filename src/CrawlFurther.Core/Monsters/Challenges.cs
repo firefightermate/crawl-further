@@ -28,18 +28,15 @@ namespace CrawlFurther.Monsters
         public const int MaxGoal = 30;
 
         /// <summary>
-        /// The goal by evolution cost: a monster takes the goal of the highest cost it reaches. The game's own goals (4,
-        /// 5, 7 and 10 on average at its costs 0, 1, 2.5 and 4) are passed by few players. These are about 70% of them:
-        /// the hero level a player of moderate skill reaches in half of all runs of five tries, from a model of the
-        /// challenge (tools/challenge_sim.py). Crawl: Further's tiers cost 0, 2.5 and 4.5, so they get 3, 5 and 7.
-        /// Change it before the vault opens.
+        /// The goal by evolution cost: a monster takes the goal of the highest cost it reaches. These are the averages of
+        /// the game's own goals at its costs 0, 1, 2.5 and 4. Change it before the vault opens.
         /// </summary>
         public static readonly List<KeyValuePair<float, int>> GoalByCost = new List<KeyValuePair<float, int>>
         {
-            new KeyValuePair<float, int>(0f, 3),
-            new KeyValuePair<float, int>(1f, 4),
-            new KeyValuePair<float, int>(2.5f, 5),
-            new KeyValuePair<float, int>(4f, 7),
+            new KeyValuePair<float, int>(0f, 4),
+            new KeyValuePair<float, int>(1f, 5),
+            new KeyValuePair<float, int>(2.5f, 7),
+            new KeyValuePair<float, int>(4f, 10),
         };
 
         static readonly Dictionary<string, ChallengeDef> s_defs = new Dictionary<string, ChallengeDef>();
