@@ -22,8 +22,8 @@ NEW IN 1.2.1
     with ContinueAfterWin in com.firefightermate.crawlfurther.cfg. Online Crawl games end as before for now.
   - New art for every hero: close-up origin portraits in the style of the game's god portraits, matching
     silver and gold hero portraits and icons, and headwear redrawn to fit the hero's head in game.
-  - Mod monsters are stronger in every game, and stronger again inside a vault challenge, so the challenges
-    are within reach of a player with a fair number of hours in. The goals are unchanged.
+  - Mod monsters are rebalanced against the game's own, in normal games and in vault challenges. Starters
+    were well behind and are stronger now.
   - Tallow Grub is stronger: normal speed, a further and harder Wax Spit, a faster Melt that rises as soon
     as the puddle is under the hero, and a harder burst.
   - The secret monsters' finals have as much health as the gods' finals.

@@ -30,7 +30,7 @@ namespace CrawlFurther.Monsters
         /// <summary>Multiplier on a tier 3 monster's max health.</summary>
         public static float T3Health = 1f;
 
-        /// <summary>Extra strength (max health times hits on the hero) a starting monster has in a vault challenge only,
+        /// <summary>Strength (max health times hits on the hero) a starting monster has in a vault challenge only, above or below 1,
         /// split evenly: health and hits each get the square root. 1 for none.</summary>
         public static float StarterChallenge = 1f;
         /// <summary>The same for tier 2 monsters.</summary>

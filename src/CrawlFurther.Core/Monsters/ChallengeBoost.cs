@@ -7,7 +7,7 @@ namespace CrawlFurther.Monsters
     using CrawlFurther.Util;
 
     /// <summary>
-    /// The vault challenge's extra strength for mod monsters (<see cref="TierRules.Challenge"/>, per monster in
+    /// The vault challenge's strength adjustment for mod monsters, up or down (<see cref="TierRules.Challenge"/>, per monster in
     /// <see cref="MonsterFactory.ChallengeStrength"/>). Inside a challenge only, the monster's max health and its hits on
     /// the hero each get the square root of its boost. Outside a challenge nothing changes.
     /// </summary>

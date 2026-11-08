@@ -10,11 +10,11 @@
   all four player colours. The silver and gold heroes' portraits, editor icons and slot pictures match them.
 - The headwear heroes wear in game is redrawn at the size of the hero's head: helms, hoods, hats, hair and face
   pieces no longer sit on top like oversized blocks, for the origins and for every silver and gold hero choice.
-- Every god's monsters and the secret monsters are stronger, so their vault challenges are within reach of a
-  player with a fair number of hours in. In every game: starters have at least 4 health, 10% more on top, and hit
-  45% harder (they were well behind the game's own starters); tier 2 monsters have 15% more health and hit 15%
-  harder; finals have 20% more health and hit 25% harder. Inside a vault challenge they get stronger again. The
-  challenge goals are unchanged: hero level 4, 7 and 10.
+- Mod monsters are rebalanced against the game's own. In normal games, starters have at least 4 health and hit
+  45% harder (they were well behind the game's own starters), tier 2 monsters have 10% more health and hit 8%
+  harder, and finals are unchanged. In vault challenges, at the same goals (hero level 4, 7 and 10), they are set
+  so players pass them about as often as the game's own challenges: starters and tier 2 a little weaker there,
+  finals a little stronger.
 - Tallow Grub is stronger: it moves at normal speed, its Wax Spit flies further, hits harder and comes back
   sooner, Melt charges faster, and the puddle rises the moment it is under the hero, for a player as for a bot.
   The rising burst hits harder over a wider area.

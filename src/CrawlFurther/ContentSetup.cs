@@ -48,18 +48,15 @@ namespace CrawlFurther.Content
                 wordmark = "BrandFurther", spark = "BrandSpark", menuPip = "BrandPip", menuMote = "BrandMote",
             });
             ModMusic.AddFolder(System.IO.Path.Combine(Plugin.ModDir, "music"));
-            // 1.2.1: strong enough that a player of moderate skill can pass the vault challenges (hero level 4, 7, 10;
-            // tools/challenge_sim.py). Half of it in every game, the other half only inside a challenge.
+            // 1.2.1 (tools/challenge_sim.py): in normal games each tier matches the game's own monsters of that tier;
+            // in vault challenges players pass ours about as often as the game's own (Steam's global rates)
             TierRules.StarterMinHealth = 4f;
-            TierRules.StarterDamage = 1.45f;     // starters were also behind the game's own (1.3 to catch up)
-            TierRules.StarterHealth = 1.1f;
-            TierRules.T2Damage = 1.15f;
-            TierRules.T2Health = 1.15f;
-            TierRules.T3Damage = 1.25f;
-            TierRules.T3Health = 1.2f;
-            TierRules.StarterChallenge = 1.25f;
-            TierRules.T2Challenge = 1.32f;
-            TierRules.T3Challenge = 1.5f;
+            TierRules.StarterDamage = 1.45f;     // starters were well behind the game's own
+            TierRules.T2Health = 1.1f;
+            TierRules.T2Damage = 1.08f;
+            TierRules.StarterChallenge = 0.75f;
+            TierRules.T2Challenge = 0.85f;
+            TierRules.T3Challenge = 1.2f;
             Game.ContinueGame.Enabled = Plugin.I.Config.Bind("Game", "ContinueAfterWin", true,
                 "When the hero beats the boss, offer to keep playing with two more tries at the boss.").Value;
             ShopPedestal.AddSheet(PedestalSheet);
