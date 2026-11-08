@@ -92,7 +92,7 @@
     "attack": "Shove your ball into the hero, big knockback",
     "special": "Release the ball at him: it cracks on impact",
     "passive": ["Your ball picks up larvae. They jump out at him", "Your death hatches a larva"],
-    "vault": "Rolls a glowing ball of amber with larvae caught inside, and lets them out on the hero"},
+    "vault": "Rolls a glowing amber ball full of larvae and lets them out on the hero"},
   "ModZhkLarva": {"name": "Hive Larva",
     "attack": "Weak bite",
     "special": "none",

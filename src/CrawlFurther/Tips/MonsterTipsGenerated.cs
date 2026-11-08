@@ -282,8 +282,8 @@ namespace CrawlFurther.Content.Tips
             T("ModZhkSunScarab", "Sun Scarab", "Shove your ball into the hero, big knockback", "Release the ball at him: it cracks on impact", "Your ball picks up larvae. They jump out at him\nYour death hatches a larva"); Group["ModZhkSunScarab"] = "zhekra";
             // vault lines (114), in file order
             V("ModSpinewalker", "Spinewalker", "An urchin up on four tall spines. Its eggs float after you through the brine");
-            V("ModAnemoneBoxer", "Anemone Boxer", "A crab that boxes with a stinging anemone on each claw. It hops back after every punch");
-            V("ModCrownOfThorns", "Crown of Thorns", "A spined starfish walking on two arms. Its broken arms crawl to the brine and grow back");
+            V("ModAnemoneBoxer", "Anemone Boxer", "A crab boxing with a stinging anemone on each claw. It hops back after each punch");
+            V("ModCrownOfThorns", "Crown of Thorns", "A spined starfish on two arms. Broken arms crawl to the brine and grow back");
             V("ModBroodUrchin", "Brood Urchin", "A bloated urchin queen. Her eggs sit on the floor and burst when the tide comes in");
             V("ModJellySiren", "Jelly Siren", "The siren grew a jellyfish bell. Her stinging tentacles trail far behind her");
             V("ModGulperEel", "Gulper Eel", "A pelican eel that is all jaw. It swallows you whole, and its full throat is soft");
@@ -306,14 +306,14 @@ namespace CrawlFurther.Content.Tips
             V("ModGoldTreasurer", "Grand Treasurer", "It keeps the hoard's books in gold ink, and puts the hero in debt");
             V("ModJinxCardSoldier", "Card Soldier", "A playing card on stick legs, with a pike. Aim at it and it turns edge-on");
             V("ModJinxLoadedDie", "Loaded Die", "A living die that keeps the face it lands on, and never keeps a one");
-            V("ModJinxRoulette", "Ouroboros", "A serpent coiled round a roulette wheel. The ball calls red or black, and the floor erupts");
+            V("ModJinxRoulette", "Ouroboros", "A serpent coiled round a roulette wheel. The ball calls a colour, the floor erupts");
             V("ModJinxGorgon", "Gorgon", "Her hair hisses and her eyes are two red pips. Do not meet them");
             V("ModJinxCardKing", "Card King", "The King of Clubs. He blocks behind a raised card, throws cards back and walks at you");
             V("ModJinxHouseOfCards", "House of Cards", "A tower of cards three tiers high. Each hit knocks a tier off, and it gets quicker");
             V("ModJinxHighRoller", "High Roller", "A demon gambler in a fedora. He bets his chips on a pot and dares you to hit him");
             V("ModJinxTwenty", "Natural Twenty", "A twenty-sided die on brass legs. It leaps and rolls. A twenty bursts, a one trips it");
-            V("ModJinxNutcracker", "Nutcracker", "A wind-up toy soldier with a lever jaw. When its key stops, it stands there rewinding");
-            V("ModJinxOracle", "The Oracle", "A three-eyed seer. Her ghost acts out her next move a second before she does");
+            V("ModJinxNutcracker", "Nutcracker", "A wind-up soldier with a lever jaw. When its key stops, it stands rewinding");
+            V("ModJinxOracle", "The Oracle", "A three-eyed seer. Her ghost acts out her next move just before she does");
             V("ModKrnWireGremlin", "Wire Gremlin", "Flicks hot staples, and wires its prey into the circuit");
             V("ModKrnArcLantern", "Arc Lantern", "A lamp nobody lit. Its wisps follow you round corners");
             V("ModKrnForgemaster", "Forgemaster", "Gathers the rods off the floor and throws them round you");
@@ -326,13 +326,13 @@ namespace CrawlFurther.Content.Tips
             V("ModKrnStaticMoth", "Static Moth", "Drawn to the forge light. It drinks the lightning out of the rods");
             V("ModOssGravedigger", "Gravedigger", "Two spade blows in quick succession bury its victim to the knees");
             V("ModOssBarghest", "Barghest", "Leaps over its prey and bites from behind, where it hurts most");
-            V("ModOssSpinehook", "Spinehook", "Harpoons bone piles and hauls them home along its rope, through anyone in the way");
+            V("ModOssSpinehook", "Spinehook", "Harpoons bone piles and hauls them home, through anyone in the way");
             V("ModOssTombwright", "Tombwright", "Raises headstones as walls, then knocks them over like dominoes");
             V("ModOssCoffinBearer", "Coffin Bearer", "Whirls a coffin on its chains, and sometimes lets it fly");
             V("ModOssBoneMammoth", "Bone Mammoth", "The floor shakes under every step. Its stamp splits the ground in a cross");
             V("ModOssRazorback", "Razorback", "Its quills rise one by one as it runs, and fly when it skids");
             V("ModOssCerberus", "Cerberus", "Three heads breathe grave gas from both sides at once. The only way out is back");
-            V("ModOssChurchGrim", "Church Grim", "Falls into its bones once, eyes still lit, and rises unless someone stands on them");
+            V("ModOssChurchGrim", "Church Grim", "Falls into its bones once, eyes lit, and rises unless someone stands on them");
             V("ModOssCarrionRoc", "Carrion Roc", "Carries its kin through the air and drops them on its prey");
             V("ModSilverMoonwarden", "Moonwarden", "A hollow knight with a moon for a face. The fuller its moon, the harder it falls");
             V("ModSilverCometStag", "Comet Stag", "A stag of silver and starlight. It runs as a comet, glancing off the walls");
@@ -344,7 +344,7 @@ namespace CrawlFurther.Content.Tips
             V("ModStmLachrymosa", "Lachrymosa", "A weeping angel from the last gallery. She moves when nobody is looking at her");
             V("ModSylStrangler", "Strangler Vine", "A braided vine serpent. It lassoes ripe pods and slings them at its prey");
             V("ModSylBloatfly", "Bloatfly", "Retches bile from on high. Poison lingers on whoever stands in it");
-            V("ModSylBriarChampion", "Briar Champion", "Its thorn lance grows with every wound it deals, and is cut back by every blow it takes");
+            V("ModSylBriarChampion", "Briar Champion", "Its thorn lance grows with each wound it deals and shrinks when it is hit");
             V("ModSylPuffball", "Puffball Brute", "Light as a puffball. Struck into a wall, it bounces straight back");
             V("ModSylCordyceps", "Cordyceps Saint", "Drives spores into its kin. The infected rise again for a few seconds");
             V("ModSylNightshade", "Nightshade", "Hides the orchard's pods from sight, and tosses berries that split in three");
@@ -352,14 +352,14 @@ namespace CrawlFurther.Content.Tips
             V("ModSylBriarWyrm", "Briar Wyrm", "A bramble serpent whose mace-tail strikes before it and then behind it");
             V("ModSylBlightBellows", "Blight Bellows", "A wheezing bellows on wings. Its gas hangs in the air longer");
             V("ModSylCarrionQueen", "Carrion Queen", "A fly queen whose droning wings daze anyone caught in the ring");
-            V("ModSylShambler", "Shambler", "A corpse the cordyceps would not let die. It staggers on, then bursts into seeds");
-            V("ModGlassmoth", "Glassmoth", "Its wings are panes of leaded glass. Inside its glitter, every echo lands whole");
+            V("ModSylShambler", "Shambler", "A corpse the cordyceps won't let die. It staggers on, then bursts into seeds");
+            V("ModGlassmoth", "Glassmoth", "Wings of leaded glass. Inside its glitter, every echo lands whole");
             V("ModHourglass", "Hourglass", "It turns itself over, and the last few moments run back the way they came");
             V("ModArgusMoth", "Argus Moth", "A moth of a hundred painted eyes. They follow every shot and draw it in");
-            V("ModGlitterswarm", "Glitterswarm", "A mirror heart in a whirl of glass moths. Where it rushes, its ghost rushes again");
+            V("ModGlitterswarm", "Glitterswarm", "A mirror heart in a whirl of glass moths. Its ghost repeats every rush");
             V("ModPendulum", "The Pendulum", "A clock with an eye for a face. Its blade keeps time by itself, and it can stop it");
-            V("ModSandWraith", "Sand Wraith", "The hourglass broke and its sand stood up. What it strikes in its glass falls later");
-            V("ModSundered", "The Sundered", "Torn in two. The pale half follows a second behind, then rushes home through you");
+            V("ModSandWraith", "Sand Wraith", "The hourglass broke and its sand stood up. Hits inside its glass land later");
+            V("ModSundered", "The Sundered", "Torn in two. The pale half trails behind, then rushes home through you");
             V("ModBristleback", "Bristleback", "A hound under a thicket of glass nails. It keeps the bolts you shoot at it");
             V("ModGlassWidow", "Glass Widow", "A spider of black glass. Her bite leaves a glaze that cracks at the next blow");
             V("ModUndertow", "The Undertow", "It lives in a pool of ink that goes wherever it goes, even under a friend's feet");
@@ -393,7 +393,7 @@ namespace CrawlFurther.Content.Tips
             V("ModZhkBotfly", "Botfly Matron", "Lays its egg in the hero. Every blow he takes while it is in him hatches a larva");
             V("ModZhkMortar", "Glue Mortar", "Its head is a barrel. It shells the hero through its kin, who spot for it");
             V("ModZhkStag", "Stag Titan", "Antler jaws longer than its body. They toss the hero up, but can't reach in close");
-            V("ModZhkSunScarab", "Sun Scarab", "Rolls a glowing ball of amber with larvae caught inside, and lets them out on the hero");
+            V("ModZhkSunScarab", "Sun Scarab", "Rolls a glowing amber ball full of larvae and lets them out on the hero");
             V("ModZhkGrubling", "Royal Grub", "A larva the Brood Mother fed on royal jelly until it grew into an Acid Grub");
         }
     }

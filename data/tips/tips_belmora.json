@@ -80,7 +80,7 @@
    "After every punch you hop back out of reach",
    "You heal in brine"
   ],
-  "vault": "A crab that boxes with a stinging anemone on each claw. It hops back after every punch"
+  "vault": "A crab boxing with a stinging anemone on each claw. It hops back after each punch"
  },
  "ModDrownedBell": {
   "name": "The Drowned Bell",
@@ -108,7 +108,7 @@
    "Broken-off arms crawl to brine and regrow",
    "You heal in brine"
   ],
-  "vault": "A spined starfish walking on two arms. Its broken arms crawl to the brine and grow back"
+  "vault": "A spined starfish on two arms. Broken arms crawl to the brine and grow back"
  },
  "ModBroodUrchin": {
   "name": "Brood Urchin",

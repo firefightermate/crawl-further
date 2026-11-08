@@ -56,16 +56,16 @@ namespace CrawlFurther.Content.Library
             M("GloomLurker", "Gloom Lurker", "Bites harder unseen, and breathes a darkness that hides its kin");
             M("Twinned", "The Twinned", "Two bodies, two cuts. After it swaps with the hero, its cut echoes in both places");
             M("Nailshade", "Nailshade", "Flings glass nails, tighter each time they hit. When its pin holds, it is already there");
-            M("MirrorWitch", "Mirror Witch", "Her bolts bank off the walls. Her standing mirror turns them on you and your shots back");
+            M("MirrorWitch", "Mirror Witch", "Her bolts bank off the walls. Her mirror turns them on you, and your shots back");
             M("Gloamcoil", "Gloamcoil", "A rearing bite. It leaves pools of darkness, and the dark it lies in spreads");
             M("EclipseWyrm", "Eclipse Wyrm", "Two heads, two bites. One swallows the other and it burns as a black eclipse");
             M("HollowKing", "The Hollow King", "He throws his crown down, and a shadow king takes every echo of his cleaves");
             M("GlassSeraph", "Glass Seraph", "Its feathers ricochet and split. Echoes near it bend toward the hero");
-            M("Unblinking", "The Unblinking", "Its gaze burns. When it shuts its eye the dark falls, and when it opens, stand still");
+            M("Unblinking", "The Unblinking", "Its gaze burns. When its eye shuts the dark falls. When it opens, stand still");
             // Bel'Mora, the Drowned Bell
-            M("BellUrchin", "Bell Urchin", "Rolls into the hero as a spiked ball. In brine its tube feet grip and nothing moves it");
+            M("BellUrchin", "Bell Urchin", "Rolls into the hero as a spiked ball. In brine its feet grip and nothing moves it");
             M("Lurefish", "Lurefish", "Its lure brightens while it waits, and a bright lure tugs the hero in from far off");
-            M("BarnacleCrab", "Barnacle Crab", "Pinches hard and grows a barnacle plate. It scuttles sideways faster than you walk");
+            M("BarnacleCrab", "Barnacle Crab", "Pinches hard and grows a barnacle plate. Sideways, it outruns you");
             M("BellDiver", "Bell Diver", "Its hook reels you in. When it misses, the Diver hauls itself along the chain");
             M("SaltSiren", "Salt Siren", "Her song pulls the hero close, and drags the brine pools to his feet");
             M("BellHermit", "Bell Hermit", "It carries the sea in its bell, and pours it out when the bell comes down");
@@ -75,15 +75,15 @@ namespace CrawlFurther.Content.Library
             M("DrownedCaptain", "Drowned Captain", "He swings across the room on his grapple. Kicked into brine, you are held under");
             M("AbyssKraken", "Abyss Kraken", "Its arms rise from the brine and stay to swat. With three up, its head is open");
             // Jinx, the Grinning Jester
-            M("JackInTheBox", "Jack-in-the-Box", "Winds itself up while it stands still, then punches harder. It pops out by the hero");
-            M("CardSharp", "Card Sharp", "Throws cursed cards, and every third deal a gold Ace. It swaps places with its allies");
+            M("JackInTheBox", "Jack-in-the-Box", "Winds up while it stands still, then punches harder. It pops out by the hero");
+            M("CardSharp", "Card Sharp", "Throws cursed cards, every third deal a gold Ace. It swaps places with allies");
             M("DiceImp", "Dice Imp", "Rolls dice that hit for what they show. A six makes its next toss two dice");
             M("Ringmaster", "Ringmaster", "A long whip, and a flaming hoop. A hoop that misses comes back for an encore");
             M("Marionette", "Marionette", "Its strings pull the hero in. Then it mirrors the hero's every step");
-            M("JinxFortuneTeller", "Fortune Teller", "Her crystal ball shows the hero's fate before the mark seals: knives, bombs or a blessing");
+            M("JinxFortuneTeller", "Fortune Teller", "Her crystal ball shows his fate before it seals: knives, bombs or a blessing");
             M("JinxSnakeEyes", "Snake-Eyes", "A venomous bite and a pair of dice. Doubles roll again, and a craps roll dazes her");
             M("GrandJester", "The Grand Jester", "Two masks. Smiling, he juggles from afar. Weeping, he smashes up close");
-            M("JinxChimera", "Big-Top Chimera", "Mauls and leaps through a ring of fire. Badly hurt, its mane burns and its paws scorch");
+            M("JinxChimera", "Big-Top Chimera", "Mauls and leaps through a ring of fire. Badly hurt, its mane and paws burn");
             M("JinxPuppeteer", "Puppeteer", "Hauls its allies onto the stage round the hero and guards them on its strings");
             M("JinxBandit", "One-Armed Bandit", "Spins its reels for knives, bombs, coins or health. Hit it mid-spin and it jams");
             M("JackMinion", "Loose Jack", "A Jack-in-the-Box let out by the wheel. It punches whatever is near");
@@ -92,7 +92,7 @@ namespace CrawlFurther.Content.Library
             M("ZhkDrone", "Brood Drone", "Fires stinger darts and dives through the hero. Dying, it spends its life on one sting");
             M("ZhkBeetle", "Resin Beetle", "Spits sticky resin, then shoves the hero into it with its shovel jaws");
             M("ZhkSpitter", "Acid Spitter", "Its sac of acid fills as it waits. Full, it floods the floor, or bursts if struck");
-            M("ZhkSoldier", "Hive Soldier", "Stands guard with its scythes raised and cuts down whatever steps too close");
+            M("ZhkSoldier", "Hive Soldier", "Stands guard, scythes raised, and cuts down whatever steps too close");
             M("ZhkHornet", "Hive Hornet", "Marks the hero with its scent. The whole hive follows the trail he leaves");
             M("ZhkNasute", "Nasute", "A termite with a glue nozzle for a head. Strike its kin and it squirts you");
             M("ZhkMother", "Brood Mother", "The queen. Her larvae never wither while she lives, and she raises them into grubs");

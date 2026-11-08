@@ -99,7 +99,7 @@
       "Harpoon a bone pile and reel it in through him",
       "A pile reeled in to you becomes a plate"
     ],
-    "vault": "Harpoons bone piles and hauls them home along its rope, through anyone in the way"
+    "vault": "Harpoons bone piles and hauls them home, through anyone in the way"
   },
   "ModOssTombwright": {
     "name": "Tombwright",
@@ -159,7 +159,7 @@
       "Once, when slain, you rise from your bones",
       "If he stands on your bones meanwhile, you're gone"
     ],
-    "vault": "Falls into its bones once, eyes still lit, and rises unless someone stands on them"
+    "vault": "Falls into its bones once, eyes lit, and rises unless someone stands on them"
   },
   "ModOssCarrionSaint": {
     "name": "Carrion Saint",
