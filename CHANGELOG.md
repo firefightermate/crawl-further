@@ -6,6 +6,12 @@ Changes to Crawl Further Core and to the repository. What changed in the game fo
 ## 1.2.1
 
 ### Library (CrawlFurther.Core)
+- `Challenges.GoalByCost` is 3, 4, 5 and 7 at costs 0, 1, 2.5 and 4 (it was 4, 5, 7 and 10, the game's average
+  goals). The game's goals are passed by very few players. The new ones are the hero level a player of moderate
+  skill reaches in half of all runs of five tries, from a model of the challenge.
+- `TierRules.StarterDamage` and `TierRules.StarterMinHealth`: a hit multiplier and a health floor for starting
+  monsters (evolve cost exactly 0, `TierRules.IsStarter`). Minions and blobs keep their base's cost and are not
+  starters. Both default to no change. Crawl: Further sets 1.3 and 4.
 - `ClipBuilder.HandOff()` marks a clip that ends by handing the body to a behaviour (a charge, a carry, a dig) which
   gives control back itself. `ClipBuilder.HandsOff(clip)` tells the self-test, which no longer reports such a clip
   as never returning control.
@@ -13,6 +19,8 @@ Changes to Crawl Further Core and to the repository. What changed in the game fo
   clip for a stance (the menus keep the sheet's Idle).
 
 ### Repository
+- `tools/challenge_sim.py`: the model of the vault challenge behind the new goals. It prints each tier's chance to
+  pass in 1, 5 and 20 attempts for four skill levels, under the old and the new goals.
 - `tools/sprites/bust_painter.py`: the portrait painter (cushion-lit fills, five clean tones a surface, the game's
   god-portrait look). `tools/sprites/origin_portraits.py` redraws the origin portraits with it, close up, and
   `tools/sprites/hero_bust_layers.py` paints the custom hero's portrait layers the same way for `hero_custom.py`.

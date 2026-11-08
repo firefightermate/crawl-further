@@ -6,6 +6,11 @@
   all four player colours. The silver and gold heroes' portraits, editor icons and slot pictures match them.
 - The headwear heroes wear in game is redrawn at the size of the hero's head: helms, hoods, hats, hair and face
   pieces no longer sit on top like oversized blocks, for the origins and for every silver and gold hero choice.
+- Monster challenges are easier to pass. Starters ask for hero level 3, tier 2 for level 5 and finals for level 7.
+  They asked for 4, 7 and 10, the game's own goals, which very few players reach. Your best scores are kept, so a
+  challenge you already took that far shows as passed.
+- Every god's starting monsters hit harder and have at least 4 health. They were well behind the game's own
+  starters in both.
 - Tallow Grub is stronger: it moves at normal speed, its Wax Spit flies further, hits harder and comes back
   sooner, Melt charges faster, and the puddle rises the moment it is under the hero, for a player as for a bot.
   The rising burst hits harder over a wider area.

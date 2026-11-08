@@ -48,6 +48,9 @@ namespace CrawlFurther.Content
                 wordmark = "BrandFurther", spark = "BrandSpark", menuPip = "BrandPip", menuMote = "BrandMote",
             });
             ModMusic.AddFolder(System.IO.Path.Combine(Plugin.ModDir, "music"));
+            // starters: the game's own hit harder and have 4 or 5 health; ours were well behind both (1.2.1)
+            TierRules.StarterDamage = 1.3f;
+            TierRules.StarterMinHealth = 4f;
             ShopPedestal.AddSheet(PedestalSheet);
             // the vanilla choices in the mod's picker lists are drawn as mod sheets: no gem on them
             foreach (var id in new[] { "HeroWanderer", "HeroWanderer_P1", "HeroWanderer_P2", "HeroWanderer_P3", "HeroWanderer_P4", "GhostWisp" })

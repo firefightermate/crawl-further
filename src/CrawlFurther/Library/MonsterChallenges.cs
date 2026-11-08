@@ -11,7 +11,7 @@ namespace CrawlFurther.Content.Library
     /// <summary>
     /// Crawl: Further's vault challenges. Core gives them (see <see cref="Challenges"/>): every monster of the nine
     /// gods' trees and every secret monster (statues, silver uniques, the gold line) has the game's hero challenge,
-    /// with the goal for its tier from <see cref="Challenges.GoalByCost"/> (4, 7 and 10). Minions and the ghost blobs
+    /// with the goal for its tier from <see cref="Challenges.GoalByCost"/> (3, 5 and 7). Minions and the ghost blobs
     /// have none, as the game's own fodder and blobs have none. This is the self-test of that.
     /// </summary>
     public static class MonsterChallenges

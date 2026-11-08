@@ -1,3 +1,5 @@
+using System;
+
 namespace CrawlFurther.Monsters
 {
     /// <summary>
@@ -15,11 +17,19 @@ namespace CrawlFurther.Monsters
         public static float T2SpecialCharge = 0.8f;
         /// <summary>Multiplier on the special's charge time a tier 3 kit sets.</summary>
         public static float T3SpecialCharge = 0.8f;
+        /// <summary>Multiplier on the hits a starting monster (evolve cost 0, see <see cref="IsStarter"/>) lands on the
+        /// hero. Minions and blobs keep their base's cost and are not starters.</summary>
+        public static float StarterDamage = 1f;
+        /// <summary>The least max health a starting monster has (0 for no floor).</summary>
+        public static float StarterMinHealth = 0f;
+
+        /// <summary>A def's evolution cost is a starting monster's: exactly 0.</summary>
+        public static bool IsStarter(float evolveCost) { return Math.Abs(evolveCost) < 0.001f; }
 
         /// <summary>The tier an evolution cost stands for: 1, 2 or 3.</summary>
         public static int Of(float evolveCost) { return evolveCost >= 4f ? 3 : evolveCost >= 2f ? 2 : 1; }
 
-        /// <summary>The hit multiplier against the hero for <paramref name="tier"/>.</summary>
+        /// <summary>The hit multiplier against the hero for <paramref name="tier"/> (starters: see <see cref="StarterDamage"/>).</summary>
         public static float Damage(int tier) { return tier >= 3 ? T3Damage : tier == 2 ? T2Damage : 1f; }
 
         /// <summary>The special charge-time multiplier for <paramref name="tier"/>.</summary>
