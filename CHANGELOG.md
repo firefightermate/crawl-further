@@ -14,7 +14,6 @@ Changes to Crawl Further Core and to the repository. What changed in the game fo
   MenuTextMenu never ran and took no input. Every copy of the god list is now switched on when it is made. The
   blob page logs `ModBlobList: ...` when it is built and `Blob step: open / confirm / back / locked blob` as it is
   used.
-### Repository
 - The blob choice is its own page of the origin picker, after the ghost form, instead of a row on the ghost page.
   It is a copy of the god list like the origin and form pages, one entry per blob laid over a row of starter
   boxes, with each entry's mouse hotspot set to its column. Every player's input reaches it the way it reaches
