@@ -264,13 +264,9 @@ def head_fn(hid):
             for (x, y) in ((-6, 4), (-5, 6), (4, 5), (5, 3), (-7, 7), (6, 6)):
                 r.put(CX + x, y + hy, 3.5, "m_hair", 0.5, stub, 1)
         elif hid == "Shaved":
-            stub = r.part(True, 3.5); r.hand.add(stub)
-            # a dark shadow of stubble over the scalp: a scatter of hair-coloured specks, denser toward the back
-            for y in range(2, 8):
-                for x in range(-7, 7):
-                    inside = (x / 7.2) ** 2 + ((y - 7.5) / 5.6) ** 2 <= 1.0
-                    if inside and ((x * 7 + y * 5) % 11 == 0 or (x < -4 and (x * 3 + y) % 5 == 0)):
-                        r.put(CX + x, y + hy, 3.5, "m_hair", 0.5, stub, 1.5 if x < 0 else 1)
+            # a buzz cut: a thin cap of stubble hugging the scalp, the hairline crisp over the brow
+            OP.hair(r, p, {1: (-4, 3), 2: (-6, 5), 3: (-7, 6), 4: (-7, 6), 5: (-7, 6), 6: (-7, -4), 7: (-7, -6)},
+                    mat="m_hair", z=2.5, bias=-0.15)
         elif hid == "Hood":
             hood_cut(r, p, "m_main")
         elif hid == "Helm":
