@@ -3,7 +3,7 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
-## Unreleased
+## 1.2.0
 
 ### Library (CrawlFurther.Core)
 - Mod monsters have the game's own vault challenge: its button, level, HUD, scoring and save, hooked in through

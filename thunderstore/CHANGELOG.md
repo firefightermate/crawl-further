@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.2.0
 
 - Every god monster and secret monster has a challenge in the vault, like the game's own monsters: select it in
   MONSTERS and press Challenge. Play it against a bot hero who comes back stronger each time you kill him.

@@ -1,4 +1,4 @@
-CRAWL: FURTHER 1.1.0
+CRAWL: FURTHER 1.2.0
 ====================
 
 Crawl: Further (formerly "Crawl Mod") is a big content mod for Crawl. Nine new gods with 189 monsters between
@@ -9,14 +9,14 @@ violet gem on its picture (portraits, shop pictures, vault cells and the evoluti
 Every mod monster, item, weapon, object, god, origin and ghost form has a vault entry, and everything has its
 own drawn art.
 
-Launch Crawl normally. The top-left banner shows "Crawl: Further 1.1.0" and "self-test OK" when everything
+Launch Crawl normally. The top-left banner shows "Crawl: Further 1.2.0" and "self-test OK" when everything
 loaded. If anything failed, BepInEx\plugins\CrawlFurther\CrawlMod_selftest.txt lists what and why.
 The mod is two DLLs in BepInEx\plugins\CrawlFurther: CrawlFurther.Core.dll (the library) and CrawlFurther.dll.
 Delete an old BepInEx\plugins\CrawlMod folder when you update. The config files keep their old names, so
 updating from any earlier version keeps your settings and saves. New settings files start with CrawlFurther.
 The mod's two bosses are switched off in this version (see BOSSES).
 
-UNRELEASED
+NEW IN 1.2.0
 ----------
   - Every god monster and secret monster has a challenge in the vault, like the game's own monsters: select
     it in MONSTERS and press Challenge. Play it against a bot hero who comes back stronger each time you kill
