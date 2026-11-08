@@ -10,14 +10,13 @@ namespace CrawlFurther.Content.Heroes
     using CrawlFurther.Util;
 
     /// <summary>
-    /// The ghost page's second row: which blob the highlighted form spawns with Back. It sits where the god page shows its
-    /// starter boxes (hidden on the ghost page) as a row of the same boxes: the regular blob first, then every blob the
-    /// form can choose (GhostBlobs). A form with no choice (the Wisp, the Banshee to the Miser) shows no row. An open blob
-    /// shows its picture, a locked one only its dark outline. The blob in effect has a dashed frame; while the row has the
-    /// focus the box under the cursor has the form's metal frame and runs.
-    /// The row only draws and keeps the cursor: the origin picker routes input to it and writes the pick.
+    /// The pictures of the blob step (OriginPicker stage 2): one starter box per blob the confirmed form can choose, in
+    /// the place of the god page's starter boxes (hidden while they show), with a plain "BLOB" label over them. An open
+    /// blob shows its picture, a locked one its dark outline. The highlighted box has the form's metal frame and runs;
+    /// the blob the form would spawn now has a dashed frame. This class only draws: the step's input is a vanilla
+    /// MenuTextMenu (OriginPicker), whose items sit over these boxes and take their mouse hotspots from them.
     /// </summary>
-    public class GhostBlobRow
+    public class GhostBlobBoxes
     {
         const float Scale = 0.8f, Pitch = 9.5f;
         /// <summary>The most art (px) a box shows at full size: what the Spitter and the Gel take up running, the largest of
@@ -28,65 +27,41 @@ namespace CrawlFurther.Content.Heroes
         readonly MenuDeitySelectPlayer m_panel;
         readonly int m_pid;
         GameObject m_root;
+        TextMesh m_label;
         readonly List<BoxView> m_boxes = new List<BoxView>();
         readonly List<Vector2> m_baseScale = new List<Vector2>();   // each box picture's own scale
-        readonly List<GhostBlobDef> m_entries = new List<GhostBlobDef>();   // [0] = the regular blob
+        readonly List<GhostBlobDef> m_entries = new List<GhostBlobDef>();
         readonly List<GameObject> m_hidden = new List<GameObject>();
         GhostFormDef m_form;
         Vector3 m_centre;
         float m_shake;
-        AudioCue m_sndMove, m_sndAction;
         static readonly Dictionary<string, exSpriteAnimClip> s_dark = new Dictionary<string, exSpriteAnimClip>();
 
-        /// <summary>The box under the cursor (0 = the regular blob).</summary>
-        public int Cursor { get; private set; }
-        /// <summary>The row has the focus (the cursor is shown and the text panel describes it).</summary>
-        public bool Focused { get; private set; }
-        /// <summary>The form has a choice: the row shows and can take the focus.</summary>
-        public bool Shown { get { return m_entries.Count > 1; } }
-
-        public GhostBlobRow(MenuDeitySelectPlayer panel, int playerId)
+        public GhostBlobBoxes(MenuDeitySelectPlayer panel, int playerId)
         {
             m_panel = panel;
             m_pid = playerId;
-            var item = R.Get<MenuItemImage>(panel, "m_prefabMenuItem");
-            if (item != null) { m_sndMove = R.Get<AudioCue>(item, "m_soundOnSelect"); m_sndAction = R.Get<AudioCue>(item, "m_soundOnAction"); }
         }
-
-        /// <summary>The blob under the cursor.</summary>
-        public GhostBlobDef AtCursor { get { return Cursor >= 0 && Cursor < m_entries.Count ? m_entries[Cursor] : null; } }
-
-        /// <summary>The blob under the cursor can be picked.</summary>
-        public bool CursorOpen { get { return GhostBlobs.IsOpen(AtCursor); } }
-
-        /// <summary>The form the row shows.</summary>
-        public GhostFormDef Form { get { return m_form; } }
 
         PlayerData Player { get { try { return SystemPlayers.GetPlayer(m_pid); } catch { return null; } } }
 
-        /// <summary>Show the row for <paramref name="form"/> (rebuilt when the form changes) in place of the starter boxes;
-        /// a form with no choice shows nothing there.</summary>
-        public void Show(GhostFormDef form)
+        /// <summary>Show one box per entry of <paramref name="entries"/> for <paramref name="form"/>, in place of the starter
+        /// boxes. False when the panel has no starter boxes to stand in for.</summary>
+        public bool Show(GhostFormDef form, List<GhostBlobDef> entries)
         {
-            if (m_root == null && !Build()) return;
+            if (m_root == null && !Build()) return false;
             HidePlates();
-            if (form != m_form)
-            {
-                m_form = form;
-                m_entries.Clear();
-                m_entries.AddRange(GhostBlobs.ChoicesFor(form));
-                if (!Shown) Focused = false;
-                Layout();
-                CursorToPick();
-            }
-            m_root.SetActive(Shown);
-            Refresh();
+            m_form = form;
+            m_entries.Clear();
+            m_entries.AddRange(entries);
+            Layout();
+            m_root.SetActive(true);
+            return true;
         }
 
-        /// <summary>Hide the row and put the starter boxes back as they were.</summary>
+        /// <summary>Hide the boxes and put the starter boxes back as they were.</summary>
         public void Hide()
         {
-            Focused = false;
             if (m_root != null) m_root.SetActive(false);
             foreach (var g in m_hidden) if (g != null) g.SetActive(true);
             m_hidden.Clear();
@@ -97,89 +72,30 @@ namespace CrawlFurther.Content.Heroes
             Hide();
             foreach (var b in m_boxes) b.Destroy();
             m_boxes.Clear();
+            m_baseScale.Clear();
             if (m_root != null) Object.Destroy(m_root);
             m_root = null;
-            m_form = null;
         }
 
-        /// <summary>Give the row the focus (the cursor starts on the pick) or take it away.</summary>
-        public void SetFocus(bool on)
+        /// <summary>World rectangle of box <paramref name="i"/>'s plate (for the list item's mouse hotspot).</summary>
+        public Rect WorldRect(int i) { return i >= 0 && i < m_boxes.Count ? m_boxes[i].WorldRect() : new Rect(0f, 0f, 0f, 0f); }
+
+        /// <summary>World centre of box <paramref name="i"/>.</summary>
+        public Vector3 WorldCentre(int i)
         {
-            if (Focused == on) return;
-            Focused = on;
-            if (!on) CursorToPick();
-            Sound(false);
-            Refresh();
+            return i >= 0 && i < m_boxes.Count && m_boxes[i].root != null ? m_boxes[i].root.transform.position : Vector3.zero;
         }
 
-        /// <summary>Move the cursor; returns true if it moved.</summary>
-        public bool Step(int dir)
-        {
-            int to = Mathf.Clamp(Cursor + dir, 0, m_entries.Count - 1);
-            if (to == Cursor) return false;
-            Cursor = to;
-            Sound(false);
-            Refresh();
-            return true;
-        }
-
-        /// <summary>Put the cursor on box <paramref name="i"/> (pointer hover).</summary>
-        public void Point(int i)
-        {
-            if (i < 0 || i >= m_entries.Count || i == Cursor) return;
-            Cursor = i;
-            Sound(false);
-            Refresh();
-        }
-
-        /// <summary>The cursor goes back to the blob in effect for this form.</summary>
-        public void CursorToPick() { Cursor = Mathf.Max(0, PickIndex()); }
-
-        /// <summary>The box index at a world point, or -1.</summary>
-        public int HitTest(Vector2 world)
-        {
-            if (m_root == null || !m_root.activeInHierarchy || !Shown) return -1;
-            for (int i = 0; i < m_boxes.Count && i < m_entries.Count; i++)
-                if (m_boxes[i].root != null && m_boxes[i].root.activeSelf && m_boxes[i].WorldRect().Contains(world)) return i;
-            return -1;
-        }
-
-        /// <summary>A locked box was confirmed: the row shakes.</summary>
+        /// <summary>A locked blob was confirmed: the boxes shake.</summary>
         public void Deny() { m_shake = 0.24f; }
 
-        public void Sound(bool action)
-        {
-            try { var s = action ? m_sndAction : m_sndMove; if (s != null) s.Play(); } catch { }
-        }
-
-        /// <summary>Called every frame by the picker while the row shows.</summary>
+        /// <summary>Called every frame by the picker while the boxes show.</summary>
         public void Tick()
         {
             if (m_root == null || m_shake <= 0f) return;
             m_shake -= Time.unscaledDeltaTime;
             float k = m_shake > 0f ? Mathf.Sign(Mathf.Sin(m_shake * 90f)) : 0f;
             m_root.transform.localPosition = m_centre + new Vector3(k, 0f, 0f);
-        }
-
-        // ------------------------------------------------------------------ the text panel
-        /// <summary>The name line for the cursor's box.</summary>
-        public string Name()
-        {
-            var d = AtCursor;
-            return d != null ? d.name.ToUpperInvariant() : "";
-        }
-
-        /// <summary>The text line for the cursor's box: what it does, or how to earn it.</summary>
-        public string Text()
-        {
-            var d = AtCursor;
-            if (d == null) return "";
-            if (!GhostBlobs.IsOpen(d))
-            {
-                var c = Unlocks.Find(d.unlock);
-                return c == null ? "Locked" : c.text + "  " + Unlocks.ProgressShort(c.id);
-            }
-            return GhostControls.Personalise(d.summary, GhostControls.Name(m_pid));
         }
 
         // ------------------------------------------------------------------ drawing
@@ -191,25 +107,30 @@ namespace CrawlFurther.Content.Heroes
             foreach (var s in mons) if (s != null) { sum += s.transform.parent.position; n++; }
             m_centre = m_panel.transform.InverseTransformPoint(sum / n);
             m_centre.z = m_panel.transform.InverseTransformPoint(mons[0].transform.parent.position).z;
-            m_root = new GameObject("ModGhostBlobRow");
+            m_root = new GameObject("ModGhostBlobBoxes");
             m_root.layer = m_panel.gameObject.layer;
             m_root.transform.SetParent(m_panel.transform, false);
             m_root.transform.localPosition = m_centre;
+            // the step's title, a copy of the panel's own label (fonts that translation mods swap come along)
+            var tw = m_panel.transform.Find("TextWorships");
+            var template = tw != null ? tw.gameObject : R.Get<TextMesh>(m_panel, "m_name").gameObject;
+            m_label = SlotArt.Text(template, m_root.transform, "Title", new Vector3(0f, 11.5f, -0.5f), SlotArt.Dim, TextAnchor.MiddleCenter);
+            if (m_label != null) m_label.text = "BLOB";
             return true;
         }
 
-        /// <summary>The starter boxes (and a gold idol's fourth) go while the row is up.</summary>
+        /// <summary>The starter boxes (and a gold idol's fourth) go while the blob boxes show.</summary>
         void HidePlates()
         {
             var mons = R.Get<exSprite[]>(m_panel, "m_monsters");
             if (mons != null)
-                foreach (var s in mons) if (s != null) Hide(s.transform.parent.gameObject);
+                foreach (var s in mons) if (s != null) HideObj(s.transform.parent.gameObject);
             var plates = mons != null && mons.Length > 0 && mons[0] != null ? mons[0].transform.parent.parent : null;
             var four = plates != null ? plates.Find("ModMonster4") : null;   // the gold idol's fourth box (GodSlots)
-            if (four != null) Hide(four.gameObject);
+            if (four != null) HideObj(four.gameObject);
         }
 
-        void Hide(GameObject g)
+        void HideObj(GameObject g)
         {
             if (g == null || !g.activeSelf) return;
             g.SetActive(false);
@@ -231,20 +152,22 @@ namespace CrawlFurther.Content.Heroes
                 bool on = i < m_entries.Count;
                 m_boxes[i].root.SetActive(on);
                 if (on) m_boxes[i].root.transform.localPosition = new Vector3((i - (m_entries.Count - 1) * 0.5f) * Pitch, 0f, 0f);
+                if (!on) m_boxes[i].SetMonster(null, false);
             }
         }
 
-        /// <summary>Redraw every box: pictures, outlines, frames.</summary>
-        public void Refresh()
+        /// <summary>Redraw every box: <paramref name="selected"/> is the highlighted one, <paramref name="current"/> the blob
+        /// the form would spawn now.</summary>
+        public void Refresh(int selected, int current)
         {
             if (m_root == null) return;
             var pd = Player;
-            int pick = PickIndex();
+            var metal = m_form != null && m_form.tier == SlotTier.Gold ? "Gold" : "Silver";
             for (int i = 0; i < m_entries.Count && i < m_boxes.Count; i++)
             {
                 var b = m_boxes[i];
                 var d = m_entries[i];
-                bool cur = Focused && i == Cursor;
+                bool sel = i == selected;
                 if (!GhostBlobs.IsOpen(d))
                 {
                     var c = Dark(d);
@@ -255,13 +178,12 @@ namespace CrawlFurther.Content.Heroes
                 {
                     var prefab = GhostBlobs.Prefab(d, pd);
                     var p = prefab != null ? prefab.GetComponent<Player>() : null;
-                    // one size for the still picture and the run, so the hovered box does not jump
+                    // one size for the still picture and the run, so the highlighted box does not jump
                     if (FitTo(i, p != null ? Fit(R.Get<exSpriteAnimClip>(p, "m_portraitAnim") ?? p.GetIdleAnim(), p.GetRunAnim()) : 1f))
                         b.SetMonster(null, false);   // set the picture up again at its new size
-                    b.SetMonster(p, cur);
+                    b.SetMonster(p, sel);
                 }
-                var metal = m_form != null && m_form.tier == SlotTier.Gold ? "Gold" : "Silver";
-                b.SetFrame(cur ? SlotArt.Clip("EdCell", metal) : i == pick ? SlotArt.Clip("EdCell", "Slot") : null);
+                b.SetFrame(sel ? SlotArt.Clip("EdCell", metal) : i == current ? SlotArt.Clip("EdCell", "Slot") : null);
             }
         }
 
@@ -328,14 +250,6 @@ namespace CrawlFurther.Content.Heroes
             }
             sizes[index] = size;
             return size;
-        }
-
-        /// <summary>The box of the blob in effect for this form (the pick, else the form's default).</summary>
-        int PickIndex()
-        {
-            var d = GhostBlobs.ChoiceFor(Player, m_form);
-            int i = m_entries.IndexOf(d);
-            return i >= 0 ? i : 0;
         }
 
         /// <summary>A locked blob: its Portrait frame as a dark outline (counted as mod art, so it keeps its one gem).</summary>

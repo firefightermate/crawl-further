@@ -3,6 +3,14 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## Unreleased
+
+### Repository
+- The blob choice is its own page of the origin picker, after the ghost form, instead of a row on the ghost page.
+  It is a copy of the god list like the origin and form pages, one entry per blob laid over a row of starter
+  boxes, with each entry's mouse hotspot set to its column. Every player's input reaches it the way it reaches
+  the god list. The old row (`GhostBlobRow`) is gone.
+
 ## 1.2.0
 
 ### Library (CrawlFurther.Core)

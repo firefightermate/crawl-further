@@ -244,8 +244,9 @@ pixel font (digits and the letters D, O, G, E).
 
 A ghost spawns a blob with Back. Every form can use the regular blob (the game's own). A form can also have a blob of
 its own that it earns: the Gleaner's Mote, the Poltergeist's Spitter and the Binder's Gel each open with a challenge
-played as that form. Once open, a form's own blob is its default and the regular one stays a pick. Forms with more than
-one blob to choose from show them in a row on the ghost page of the origin picker, under the forms. From
+played as that form. Once open, a form's own blob is its default and the regular one stays a pick. When a player
+confirms a form with an open blob besides the regular one, the origin picker opens a blob page after the form page,
+with every blob the form can choose, open or locked. A form with no choice skips it. From
 `src/CrawlFurther/Ghosts/GhostPack.cs`:
 
 ```csharp

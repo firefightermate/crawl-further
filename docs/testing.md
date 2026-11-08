@@ -59,7 +59,7 @@ search box. Entries are grouped under small headings (tiers, Crawl or Mods).
 | God, then Monster (by tier) | Pick any god, vanilla or mod, then any monster of its tree | The game's debug body swap (its Tab + M key): spawn the new body where you stand, drop the old one, `InitAsPlayer` |
 | Hero origin | Sets the acting player's origin | `HeroClasses.Apply`. Stats and the starting weapon apply while the player is not the hero |
 | Ghost form (Crawl: Further) | Choose a ghost form and become that ghost | Sets the form as the picker does, then Become a ghost. The silver and gold forms need Open everything |
-| Ghost blob (Crawl: Further) | Choose the blob your ghost spawns with Back, and become a ghost | Sets the pick for your current form as the blob row of the ghost page does, then Become a ghost. Form default clears it. A blob the form cannot pick is refused: the Gleaner, Poltergeist and Binder pick the regular blob or their own, silver and gold any, the rest none. A locked blob needs Open everything |
+| Ghost blob (Crawl: Further) | Choose the blob your ghost spawns with Back, and become a ghost | Sets the pick for your current form as the blob page of the origin picker does, then Become a ghost. Form default clears it. A blob the form cannot pick is refused: the Gleaner, Poltergeist and Binder pick the regular blob or their own, silver and gold any, the rest none. A locked blob needs Open everything |
 | Silver ascended final (Crawl: Further) | Become any final in its silver ascended form | The body swap, then the silver ghost's own ascension |
 
 ### Spawn
