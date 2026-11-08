@@ -3,6 +3,34 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## 1.3.0
+
+### Library (CrawlFurther.Core)
+- `Game.ChaosMode`: the chaos game mode. `Active` is true in a game started from the main menu's Chaos entry
+  (added under Play by `ChaosMenuEntry`) and for the rest of a game once it is continued. Never in the tutorial,
+  vault challenges or attract mode. `Enabled` switches it off.
+- `Game.ChaosSpells`: in chaos the hero holds two spells. The game's own spell slot is the first (Special); the
+  second is kept with its own live instance and charge and cast with the ghost button, by exchanging the two in
+  the game's slot for the cast. Buying a spell with one held fills the second slot; with two held, the game's
+  prompt asks which to drop (a bot drops the cheaper). Bots swap in whichever spell is ready. `First`, `Second`
+  and `Ratio` read what a player holds.
+- `ChaosSpellHud`: a second special bar (blue) on the player HUD, both spell names in the hero stats panel, and
+  the shop's "Replaces" line for spells rewritten for two slots.
+- `Ghosts.ControlDiagrams`: the join screen's controls pictures (AtlasMenuConnect `controller_diagrams_04` to
+  `_09`) repainted at run time with the ghost button, from paint steps in `art/core/ControlDiagrams.json`
+  (written by `tools/sprites/control_diagrams.py`). The game's art is never copied into the mod. The redrawn
+  picture plays as a clip of its own only for a player whose ghost button is the one drawn
+  (`GhostControls.IsPictured`); anyone else keeps the game's picture and the text line under it.
+- `Game.ContinueGame` now runs in Online Crawl games: the host's prompt is mirrored to every client and any
+  player can answer it. A client never runs it.
+- Self-test section 1460 checks the fields and methods chaos needs.
+- Test mode: Run > Chaos in this game switches chaos on or off for the game being played. "Open everything"
+  also marks every vault entry found, so all challenges can be played.
+
+### Repository
+- `tools/validate.py`: a `control-pictures` check (the paint steps parse, cover every picture the join screen
+  plays, and ship in the package).
+
 ## 1.2.1
 
 ### Library (CrawlFurther.Core)

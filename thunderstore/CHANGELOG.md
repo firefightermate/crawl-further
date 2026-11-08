@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.3.0
+
+- Crawl Chaos, a new game mode that will grow with each update. Start it from Chaos on the main menu, under
+  Play. Continuing a won game also turns it on for the rest of that game.
+- In chaos the hero holds two spells. Special casts the first and the ghost button casts the second, and each
+  charges on its own. A blue bar under the special bar shows the second spell's charge, and the hero stats
+  panel names both. Buying a spell while holding one makes it the second. Buying one while holding two asks
+  which to drop, and the shop's text says so before you buy. Bots use whichever spell is ready.
+- The join screen's controls pictures are redrawn with the ghost button: the pad's X (the square on a
+  PlayStation pad), the keyboard's C and the mouse's middle button are picked out in blue like Attack and
+  Special, with a line to a new Ghost row. A player who changed their ghost button keeps the old picture with
+  the button named under it.
+- Continue now works in Online Crawl games. Every player sees the prompt and anyone can answer it.
+
 ## 1.2.1
 
 - Keep playing after a win. When the hero beats the boss, pick Continue or End game. Continue gives the game two

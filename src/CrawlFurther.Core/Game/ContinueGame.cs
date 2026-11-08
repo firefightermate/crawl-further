@@ -24,8 +24,8 @@ namespace CrawlFurther.Game
     /// the win scene. A hero killed on the last allowed try ends with SaveAndQuit(false) and the boss's escape scene.
     /// SystemMenu.GetBossAttemptsAllowed (3 in the game) against SystemPlayers.GetTotalBossAttempts decides the last try.
     ///
-    /// Nothing changes in the tutorial, a vault challenge, attract mode, a game with no human player, or an Online Crawl
-    /// game (only the host could answer the prompt, and the clients would end their games). Mods can react with <see cref="GameEvents.GameContinued"/>.
+    /// Nothing changes in the tutorial, a vault challenge, attract mode or a game with no human player. In an Online Crawl
+    /// game the host's prompt is mirrored to every client like the rest of its screen, and any player can answer it. Mods can react with <see cref="GameEvents.GameContinued"/>.
     /// </summary>
     public static class ContinueGame
     {
@@ -69,7 +69,9 @@ namespace CrawlFurther.Game
             if (!Enabled) return false;
             try
             {
-                if (CompatOnline.IsHost || CompatOnline.IsClient) return false;   // not yet: the host's prompt would leave the clients behind
+                // Online Crawl: only the host runs the game and every client sees its screen, so the prompt shows for
+                // all players and any of them can answer it (a remote player's pad is a pad on the host)
+                if (CompatOnline.IsClient) return false;
                 if (SystemGame.GetIsTutorialMatch() || SystemTutorial.GetActive()) return false;
                 if (SystemMenu.GetChallengeMode() || SystemMenu.GetAttractMode()) return false;
                 for (int i = 0; i < SystemPlayers.GetMaxPlayers(); i++)
@@ -123,6 +125,7 @@ namespace CrawlFurther.Game
         static void AddTries()
         {
             Continues++;
+            ChaosMode.OnContinue();
             SystemMenu.SetBossAttemptsAllowed(SystemMenu.GetBossAttemptsAllowed() + ExtraBossAttempts);
             FurtherCore.Log.LogInfo("Game continued (" + Continues + "): " + SystemPlayers.GetTotalBossAttempts() + " of "
                                     + SystemMenu.GetBossAttemptsAllowed() + " boss tries used");

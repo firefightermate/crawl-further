@@ -1,4 +1,4 @@
-CRAWL: FURTHER 1.2.1
+CRAWL: FURTHER 1.3.0
 ====================
 
 Crawl: Further (formerly "Crawl Mod") is a big content mod for Crawl. Nine new gods with 189 monsters between
@@ -9,17 +9,25 @@ violet gem on its picture (portraits, shop pictures, vault cells and the evoluti
 Every mod monster, item, weapon, object, god, origin and ghost form has a vault entry, and everything has its
 own drawn art.
 
-Launch Crawl normally. The top-left banner shows "Crawl: Further 1.2.1" and "self-test OK" when everything
+Launch Crawl normally. The top-left banner shows "Crawl: Further 1.3.0" and "self-test OK" when everything
 loaded. If anything failed, BepInEx\plugins\CrawlFurther\CrawlMod_selftest.txt lists what and why.
 The mod is two DLLs in BepInEx\plugins\CrawlFurther: CrawlFurther.Core.dll (the library) and CrawlFurther.dll.
 Delete an old BepInEx\plugins\CrawlMod folder when you update. The config files keep their old names, so
 updating from any earlier version keeps your settings and saves. New settings files start with CrawlFurther.
 The mod's two bosses are switched off in this version (see BOSSES).
 
+NEW IN 1.3.0
+------------
+  - Crawl Chaos: a new Chaos entry on the main menu, under Play. Continuing a won game also turns it on. In
+    chaos the hero holds two spells: Special casts the first, the ghost button the second (see CHAOS).
+  - The join screen's controls pictures show the ghost button: the pad's X, the keyboard's C and the mouse's
+    middle button in blue, with a Ghost row under Special.
+  - Continue works in Online Crawl games: every player sees the prompt and anyone can answer it.
+
 NEW IN 1.2.1
 ------------
   - Keep playing after a win: Continue gives two more tries at the boss, and anyone can win again. Turn it off
-    with ContinueAfterWin in com.firefightermate.crawlfurther.cfg. Online Crawl games end as before for now.
+    with ContinueAfterWin in com.firefightermate.crawlfurther.cfg.
   - New art for every hero: close-up origin portraits in the style of the game's god portraits, matching
     silver and gold hero portraits and icons, and headwear redrawn to fit the hero's head in game.
   - Mod monsters are rebalanced against the game's own, in normal games and in vault challenges. Starters
@@ -215,8 +223,9 @@ Violet pips are mod choices:
                ectoplasm when the hero kills your thrall.
   GHOST BUTTON   defaults: keyboard 1 C, keyboard 2 B, keyboard 3 M, keyboard 4 full stop, mouse middle
                click, controller X. Change it in the game's controls settings (GHOST BUTTON row). The join
-               screen's controls picture names it under the picture. In a Brute, Titan or King Blob it uses
-               the blob's special; Back only leaves the blob.
+               screen's controls picture shows it in blue (a changed one is named under the picture
+               instead). As the hero in a chaos game it casts your second spell (see CHAOS). In a Brute,
+               Titan or King Blob it uses the blob's special; Back only leaves the blob.
 3. Blob (a third page, after you confirm a ghost form that has a choice). The blob your ghost spawns with
   Back, shown in boxes where the god page shows its starters. Left and right (or the mouse) to pick, confirm
   to finish, back to return to the forms. It starts on the blob you had last. Forms with no choice skip it.
@@ -403,6 +412,15 @@ OBJECTS (new in 0.10.0)
   Secrets: the Lever Trio, the Cracked Wall, the Mysterious Keyhole, the Sculptor's Altar (a ghost pays 3
   ectoplasm for a secret statue, 1 in 20 is the legendary), the Watching Portrait and the very rare Golden
   Duck all hide something. The vault's SECRETS page has a riddle for each.
+
+CHAOS
+  A game mode that grows with each update. Start it from Chaos on the main menu (under Play), or continue a
+  won game: a continued game is a chaos game until it ends. Not in the tutorial or vault challenges.
+  Two spells: the hero holds two. Special casts the first, the ghost button the second, and each charges on
+  its own. The second spell's charge shows in a blue bar under the special bar, and the hero stats panel
+  names both. Buying a spell with one held makes it the second. Buying one with two held asks which to drop
+  (the shop's text says so before you buy). Bots use whichever spell is ready and drop the cheaper one.
+  Turn chaos off with Chaos under [Game] in com.firefightermate.crawlfurther.cfg.
 
 TEST MODE
   For checking things without playing a whole run. Off by default: set TestMode = true under [Testing]

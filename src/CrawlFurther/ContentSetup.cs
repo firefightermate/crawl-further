@@ -59,6 +59,8 @@ namespace CrawlFurther.Content
             TierRules.T3Challenge = 1.2f;
             Game.ContinueGame.Enabled = Plugin.I.Config.Bind("Game", "ContinueAfterWin", true,
                 "When the hero beats the boss, offer to keep playing with two more tries at the boss.").Value;
+            Game.ChaosMode.Enabled = Plugin.I.Config.Bind("Game", "Chaos", true,
+                "Chaos: a Chaos entry on the main menu, and continued games play as chaos games (the hero holds two spells).").Value;
             ShopPedestal.AddSheet(PedestalSheet);
             // the vanilla choices in the mod's picker lists are drawn as mod sheets: no gem on them
             foreach (var id in new[] { "HeroWanderer", "HeroWanderer_P1", "HeroWanderer_P2", "HeroWanderer_P3", "HeroWanderer_P4", "GhostWisp" })

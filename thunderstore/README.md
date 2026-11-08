@@ -48,6 +48,8 @@ Every mod monster's melee turns toward where it aims, so it hits up and down as 
 
 **Menus and music.** A "Further" wordmark under the CRAWL logo, flame markers and embers on the main menu, picture grids in the vault, and four instrumental tracks that rotate in with the game's own music.
 
+**Keep playing and Chaos.** After a win, Continue gives the game two more tries at the boss. A continued game, or one started from Chaos on the main menu, is a chaos game: the hero holds two spells, one on Special and one on the ghost button.
+
 **Bosses.** The mod's two bosses are switched off in this version. They never spawn.
 
 ## Works with other mods
@@ -81,7 +83,7 @@ Updating from 0.9.x or older: the plugin folder is now `CrawlFurther`, so delete
 
 ## Controls and settings
 
-- Ghost button (Binder fuse, gold ghost jump-out): **C** on the keyboard, **middle click** with the mouse or **X** on a controller. Rebind it in the controls settings.
+- Ghost button (Binder fuse, gold ghost jump-out, the hero's second spell in chaos): **C** on the keyboard, **middle click** with the mouse or **X** on a controller. Rebind it in the controls settings.
 - Pause > Tips: **Left** / **Right** jumps between topics on the mod pages.
 - Vault grids: **mouse wheel** or **Page Up** / **Page Down** scrolls.
 

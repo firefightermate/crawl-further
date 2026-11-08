@@ -3,7 +3,7 @@
 The game's pictures (AtlasMenuConnect, controller_diagrams_01 to _09) name A (attack) and B (special) with a coloured
 button on the device, a line and a row. This adds the ghost button the same way: the device's ghost control picked
 out in blue (the pad's X, the keyboard's C, the mouse's middle button; a pink square on the PlayStation picture), a
-line, and a fourth row "X' Ghost" under Special.
+line, and a row "X' Ghost" under Special.
 
 The game's art is never copied into the mod. This script writes a list of paint steps (art/core/ControlDiagrams.json)
 that ControlDiagrams.cs runs at run time on the game's own pictures: copy a block of the picture with a palette swap
