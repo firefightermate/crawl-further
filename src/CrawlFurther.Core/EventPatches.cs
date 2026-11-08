@@ -10,7 +10,7 @@ namespace CrawlFurther
     [HarmonyPatch(typeof(SystemGame), "OnStartGame")]
     static class Patch_EventRunStart
     {
-        static void Postfix() { GameEvents.RaiseRunStart(); }
+        static void Postfix() { Game.ContinueGame.Reset(); GameEvents.RaiseRunStart(); }
     }
 
     [HarmonyPatch(typeof(SystemPlayers), "OnLevelStart")]

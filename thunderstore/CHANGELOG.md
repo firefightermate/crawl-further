@@ -2,6 +2,10 @@
 
 ## 1.2.1
 
+- Keep playing after a win. When the hero beats the boss, pick Continue or End game. Continue gives the game two
+  more tries at the boss and brings the winner back to the dungeon through the portal, and anyone can win again.
+  If a continued game runs out of tries, you are asked again, and ending then gives the win to the last player who
+  beat the boss. Online Crawl games end as before for now.
 - New art for every hero. The origin portraits are close-up faces painted like the game's own god portraits, in
   all four player colours. The silver and gold heroes' portraits, editor icons and slot pictures match them.
 - The headwear heroes wear in game is redrawn at the size of the hero's head: helms, hoods, hats, hair and face

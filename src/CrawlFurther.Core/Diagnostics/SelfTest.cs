@@ -70,6 +70,7 @@ namespace CrawlFurther.Diagnostics
             AddSection(1300, "vault grid", () => VaultGrid.SelfCheck(Bad));
             AddSection(1310, "vault challenges", () => LibraryEntries.ChallengeSelfCheck(Bad, Note));
             AddSection(1400, "ghost button controls", () => GhostControls.SelfCheck(Bad));
+            AddSection(1500, "continue after a win", () => Game.ContinueGame.SelfCheck(Bad, Note));
             AddSection(2000, "online (Crawl Online compatibility)", () => CompatOnline.SelfCheck(Bad, Note));
             AddSection(2050, "CrawlAPI compatibility", () => CompatCrawlApi.SelfCheck(Bad, Note));
             AddSection(2060, "boss mods (CrawlCustomBosses and others)", () => CompatBosses.SelfCheck(Bad, Note));

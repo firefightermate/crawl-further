@@ -18,6 +18,8 @@ The mod's two bosses are switched off in this version (see BOSSES).
 
 NEW IN 1.2.1
 ------------
+  - Keep playing after a win: Continue gives two more tries at the boss, and anyone can win again. Turn it off
+    with ContinueAfterWin in com.firefightermate.crawlfurther.cfg. Online Crawl games end as before for now.
   - New art for every hero: close-up origin portraits in the style of the game's god portraits, matching
     silver and gold hero portraits and icons, and headwear redrawn to fit the hero's head in game.
   - Monster challenges ask for less: hero level 3 for starters, 5 for tier 2 and 7 for finals (it was 4, 7

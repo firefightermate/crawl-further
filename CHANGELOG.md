@@ -6,6 +6,14 @@ Changes to Crawl Further Core and to the repository. What changed in the game fo
 ## 1.2.1
 
 ### Library (CrawlFurther.Core)
+- `Game.ContinueGame`: when the hero beats the boss, the game's own prompt offers to continue (`ExtraBossAttempts`
+  more tries, 2 by default) or end. Continue brings the winner back through the portal the way a failed try does.
+  A continued game that runs out of tries asks again, and ending then records the last winner's win. Off in the
+  tutorial, vault challenges and Online Crawl games. `Enabled` switches it off.
+- `GameEvents.GameContinued(int)`: raised once a continued run is back under way, with the number of continues so
+  far, for mods that change the game after a continue.
+- A win counts toward `Unlocks.StatWins` once per player per game, however often the game is continued.
+- Test mode: Run > Beat the boss now ends the boss fight as a win, to reach the prompt quickly.
 - `Challenges.GoalByCost` is 3, 4, 5 and 7 at costs 0, 1, 2.5 and 4 (it was 4, 5, 7 and 10, the game's average
   goals). The game's goals are passed by very few players. The new ones are the hero level a player of moderate
   skill reaches in half of all runs of five tries, from a model of the challenge.

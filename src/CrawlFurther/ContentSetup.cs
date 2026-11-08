@@ -51,6 +51,8 @@ namespace CrawlFurther.Content
             // starters: the game's own hit harder and have 4 or 5 health; ours were well behind both (1.2.1)
             TierRules.StarterDamage = 1.3f;
             TierRules.StarterMinHealth = 4f;
+            Game.ContinueGame.Enabled = Plugin.I.Config.Bind("Game", "ContinueAfterWin", true,
+                "When the hero beats the boss, offer to keep playing with two more tries at the boss.").Value;
             ShopPedestal.AddSheet(PedestalSheet);
             // the vanilla choices in the mod's picker lists are drawn as mod sheets: no gem on them
             foreach (var id in new[] { "HeroWanderer", "HeroWanderer_P1", "HeroWanderer_P2", "HeroWanderer_P3", "HeroWanderer_P4", "GhostWisp" })
