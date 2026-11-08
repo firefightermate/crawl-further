@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.2.0
 
 - A blob's special is on the ghost button (C, middle click or X), not on Back. Using the Brute's Bounce, the
   Titan's Engulf or the King's Rain no longer throws you out of the blob. Back only leaves it.
@@ -8,9 +8,6 @@
   and blob special.
 - Blob tips, vault lines, the blob page and the ghost pause page say which button uses the special.
 - Test mode: Become > Blob (special ready) puts you in any blob with its special charged.
-
-## 1.2.0
-
 - Minions and blobs in the vault say "No challenge available" where other monsters show their challenge.
 - Pick your blob after confirming your ghost form. The ghost page is back to how it was, with no row under the
   forms. Confirm a form that has a blob to choose and a blob page opens: pick with left and right or the mouse,

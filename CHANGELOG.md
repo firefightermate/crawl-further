@@ -3,39 +3,13 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
-## Unreleased
+## 1.2.0
 
 ### Library (CrawlFurther.Core)
 - The join screen's controls picture (`MenuJoinPlayer`, state `InputDiagram`) gets a line under it naming the
   player's ghost button (`GhostControls.Name`), in a copy of the god page's label text.
-
-### Repository
-- Ghost blobs carry `BlobSpecialInput`: a player in one starts its special with the ghost button, and
-  `Player.HandleAlternateInput` is skipped there, so Back only lets the player out (`PropFodder` releases on Back
-  up, and the game starts a special on Back down). The gold ghost's jump-out and the mouse player's middle click
-  pause give way to it in a blob with a special.
-
-## 1.2.0
-
-### Library (CrawlFurther.Core)
 - A mod monster's vault page without a challenge shows `LibraryEntries.NoChallengeText` ("No challenge
   available") where the challenge lines go, in the same text.
-
-### Repository
-- The origin picker's blob page copied the god list after the picker had switched that list off, so its
-  MenuTextMenu never ran and took no input. Every copy of the god list is now switched on when it is made. The
-  blob page logs `ModBlobList: ...` when it is built and `Blob step: open / confirm / back / locked blob` as it is
-  used.
-- The blob choice is its own page of the origin picker, after the ghost form, instead of a row on the ghost page.
-  It is a copy of the god list like the origin and form pages, one entry per blob laid over a row of starter
-  boxes, with each entry's mouse hotspot set to its column. Every player's input reaches it the way it reaches
-  the god list. The old row (`GhostBlobRow`) is gone.
-- Text that could be cut or overlap now fits: monster tips are laid out from the drawn text (the OnGUI fallback
-  stacked the title over a body taller than it allowed for), the god select's paragraphs keep to four lines
-  (`PanelText`), long vault titles and the new-slot banner's lines shrink to fit, and the load banner and test panel
-  wrap. `tools/validate.py` has a new `textfit` check for tips, god select texts, banner lines and pause subtitles.
-
-### Library (CrawlFurther.Core)
 - Mod monsters have the game's own vault challenge: its button, level, HUD, scoring and save, hooked in through
   their vault entries. A monster a player can become (reached from a god's starters, or a secret monster and its
   evolutions) gets the goal for its evolution cost from `Challenges.GoalByCost` (4, 5, 7, 10 at costs 0, 1, 2.5
@@ -53,6 +27,24 @@ Changes to Crawl Further Core and to the repository. What changed in the game fo
 - Self-test: a "vault challenges" section (every built mod monster has its vault entry, found by prefab and by save
   key, with a goal exactly when it should), and Crawl: Further's "monster challenges" (189 god monsters and 15
   secret monsters have one, the ghost blobs none).
+
+### Repository
+- Ghost blobs carry `BlobSpecialInput`: a player in one starts its special with the ghost button, and
+  `Player.HandleAlternateInput` is skipped there, so Back only lets the player out (`PropFodder` releases on Back
+  up, and the game starts a special on Back down). The gold ghost's jump-out and the mouse player's middle click
+  pause give way to it in a blob with a special.
+- The origin picker's blob page copied the god list after the picker had switched that list off, so its
+  MenuTextMenu never ran and took no input. Every copy of the god list is now switched on when it is made. The
+  blob page logs `ModBlobList: ...` when it is built and `Blob step: open / confirm / back / locked blob` as it is
+  used.
+- The blob choice is its own page of the origin picker, after the ghost form, instead of a row on the ghost page.
+  It is a copy of the god list like the origin and form pages, one entry per blob laid over a row of starter
+  boxes, with each entry's mouse hotspot set to its column. Every player's input reaches it the way it reaches
+  the god list. The old row (`GhostBlobRow`) is gone.
+- Text that could be cut or overlap now fits: monster tips are laid out from the drawn text (the OnGUI fallback
+  stacked the title over a body taller than it allowed for), the god select's paragraphs keep to four lines
+  (`PanelText`), long vault titles and the new-slot banner's lines shrink to fit, and the load banner and test panel
+  wrap. `tools/validate.py` has a new `textfit` check for tips, god select texts, banner lines and pause subtitles.
 
 ## 1.1.0
 
