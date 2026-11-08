@@ -26,6 +26,10 @@ Checks (each prints OK or FAIL with the problems underneath):
   vaultfit      every vault page text (monster lines, FURTHER pages, objects, items, weapons, secrets hidden and found,
                 category summaries) fits its box without the "..." cut, laid out exactly like UI/TextFit.cs; a monster
                 line leaves its page's last row above the buttons to the challenge line
+  textfit       text the mod lays out in boxes it can't grow (modelled with the fonts' own pixel widths and the boxes'
+                sizes from the code and the game's scenes): every HUD monster tip at full size in a two-player column and
+                readable in a four-player one, the god-select panel's texts within the four lines the game's own take,
+                the unlock banner's lines inside the banner, the pause pages' subtitles beside their tab and counter
   previews      every monster/fx sheet's _preview.png is at least as new as its png (previews are not committed:
                 missing ones are a warning)
   package       the files tools/package.sh ships contain every sheet the code loads
@@ -957,6 +961,9 @@ def fit_lines(text, left, top, L):
     return lines, max_lines, width
 
 
+TITLE_MIN_SCALE = 0.8    # the smallest a shrunk vault title or banner line may be drawn
+
+
 @check("vaultfit")
 def c_vaultfit(fails, warns):
     import merge_tips
@@ -983,13 +990,236 @@ def c_vaultfit(fails, warns):
         for i, l in enumerate(lines[:max_lines]):
             if merge_tips.width(l) > width(i):
                 fails.append("%s: line %d is wider than the box (one long word?): %r" % (label, i + 1, l))
-        # the title is never cut, but past RightOpen it runs toward the screen edge
-        if name and not summary and merge_tips.width(name.upper(), merge_tips.SMALL) > L["RightOpen"] - L["TextLeft"]:
-            warns.append("%s: the title %s runs past x %g" % (label, name.upper(), L["RightOpen"]))
+        # a title wider than the page is drawn smaller to end by RightOpen (VaultGrid.ShowPage); not too much smaller
+        tw = merge_tips.width(name.upper(), merge_tips.SMALL) if name and not summary else 0
+        if tw and (L["RightOpen"] - L["TextLeft"]) / tw < TITLE_MIN_SCALE:
+            fails.append("%s: the title %s is %d px, drawn at %.2f of its size to fit the page (keep it above %.2f)"
+                         % (label, name.upper(), tw, (L["RightOpen"] - L["TextLeft"]) / tw, TITLE_MIN_SCALE))
     if n < 200:
         fails.append("only %d vault texts found: the extraction no longer matches the code" % n)
     return n
 
+
+
+# --------------------------------------------------------------------------------------------------------- text fit
+import merge_tips   # the HUD fonts' width tables and the pause pages' layout (tools/merge_tips.py)
+
+# CrawlMedium advance widths (font px), chars 32..126 (the unlock banner's title)
+MEDIUM = [2, 3, 4, 6, 8, 7, 8, 2, 3, 3, 6, 7, 3, 4, 2, 4, 7, 4, 7, 7, 7, 7, 7, 7, 7, 6, 2, 2, 4, 5, 4, 7, 7, 7, 7, 5, 7, 5,
+          5, 7, 7, 3, 6, 6, 5, 8, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 6, 7, 6, 3, 4, 3, 4, 6, 2, 7, 7, 5, 7, 7, 6, 7, 7, 3, 4, 7,
+          3, 8, 7, 7, 7, 7, 5, 7, 5, 7, 7, 8, 6, 7, 7, 0, 0, 0, 0]
+FONT_LINE = 14.09375     # every Crawl pixel font: lineHeight (ascent + descent + gap) at its 16 px size
+SMALL_GLYPH = 6.0        # CrawlSmall's capitals are 6 px tall: one line of HUD tip text is that high
+GHOST_BUTTON = "middle click"   # the longest name one player's ghost button gets (GhostControls.Personalise)
+TIP_MIN_COMPACT = 0.55   # a four-player tip is drawn smaller to fit its column (a 60-character line: about 0.6), never below this
+PANEL_LINES = 4          # the god select's text and flavour: the game's own longest take four lines
+PANEL_WRAP, PANEL_SCALE = 35.0, 0.8   # their GUIText wrap width (world units) and CrawlTextBodyThin's size there
+BANNER_ROOM = 112.0      # UnlockToast.TextRoom
+
+
+def personalise(s):
+    i = s.lower().find("ghost button")
+    if i < 0 or s[i + 12:].lstrip().startswith("("):
+        return s
+    return s[:i + 12] + " (" + GHOST_BUTTON + ")" + s[i + 12:]
+
+
+def cs_args(s, i):
+    """The raw argument texts of the call whose "(" is just before i, up to its ")" (strings and nesting respected)."""
+    args, depth, start, n = [], 0, i, len(s)
+    while i < n:
+        c = s[i]
+        if c == '"':
+            i += 1
+            while i < n and s[i] != '"':
+                i += 2 if s[i] == "\\" else 1
+        elif c in "([{":
+            depth += 1
+        elif c in ")]}":
+            if depth == 0:
+                args.append(s[start:i])
+                return args
+            depth -= 1
+        elif c == "," and depth == 0:
+            args.append(s[start:i])
+            start = i + 1
+        i += 1
+    return args
+
+
+def monster_tips():
+    """(where, key, name, attack, special, passive) for every T(...) row of the tip tables (vanilla and generated)."""
+    out = []
+    for rel in ("MonsterTipsData.cs", "MonsterTipsGenerated.cs"):
+        f = os.path.join(CONTENT_SRC, "Tips", rel)
+        s = CODE.get(f, "")
+        consts = dict(cs_consts(s))
+        consts.setdefault("None", "none")
+        for m in re.finditer(r'\bT\(', s):
+            args = cs_args(s, m.end())
+            vals = [cs_expr(a.strip(), 0, consts) for a in args]
+            if len(vals) < 4 or any(v is None for v in vals):
+                continue
+            out.append((where(f, m.start()), vals[0], vals[1], vals[2], vals[3], vals[4] if len(vals) > 4 else None))
+    return out
+
+
+def tip_layout():
+    """TipView's numbers: body line height (share of the screen height, normal / compact), the HUD columns' left edges
+    and the panel width they assume."""
+    src = SRC[os.path.join(CORE_SRC, "UI", "TipView.cs")]
+    num = lambda k: float(re.search(r'\b%s\s*=\s*([\d.]+)f' % k, src).group(1))
+    rows = [[float(x) for x in re.findall(r'([\d.]+)f', r)] for r in re.findall(r'new\[\]\s*\{([^}]*)\}', src.split("Offsets", 1)[1])[:4]]
+    return num("LineHeight"), num("CompactLineHeight"), rows, num("PanelGuess")
+
+
+def tip_scale(title, lines, col, line_share, aspect=16 / 9.0):
+    """TipView.Place at fit 1: the share of its size a tip is drawn at in a column `col` wide (share of the screen
+    width). TipView.Measure: the block is the widest line plus 0.35 of a title height each side, its line height the
+    body's height over its lines."""
+    w = lambda t: merge_tips.width(t.upper(), merge_tips.SMALL)
+    n = len(lines)
+    line_h = ((n - 1) * FONT_LINE + SMALL_GLYPH) / n
+    block = max([w(title)] + [w(l) for l in lines]) + 2 * 0.35 * SMALL_GLYPH
+    return min(1.0, col * 0.94 * aspect / (block / line_h * line_share))
+
+
+def gui_wrap(text, width, scale):
+    """The game's TextWrapper (GUIText.SetWrapWidth): a word goes on while the run's summed glyph bounds (advance - 1 px
+    each, a space counts 4 px) stay within `width`; tags take no room."""
+    def run(t):
+        out, tag = 0.0, False
+        for c in t:
+            tag = tag or c == "<"
+            if not tag:
+                a = merge_tips.THIN[ord(c) - 32] if 32 <= ord(c) < 127 else 4
+                out += 4 if c == " " else max(0, a - 1)
+            if c == ">":
+                tag = False
+        return out * scale
+    lines = []
+    for para in text.replace("\r", "").split("\n"):
+        words = para.split(" ")
+        cur = ""
+        for j, wd in enumerate(words):
+            trial = wd if j == 0 else cur + " " + wd
+            if run(trial) > width:
+                lines.append(cur)
+                cur = wd
+            else:
+                cur = trial
+        lines.append(cur)
+    return lines
+
+
+def panel_texts():
+    """(where, what, text, wrap width) for every text the mod puts in the god select's paragraphs, composed as shown."""
+    out = []
+    gods = []
+    for f, pos, body in objects("GodDef"):
+        c = cs_consts(SRC[f])
+        name, text, flav = field(body, "name"), cs_field(body, "text", c), cs_field(body, "flavour", c)
+        gods.append(name)
+        out += [(where(f, pos), "god %s text" % name, text), (where(f, pos), "god %s flavour" % name, flav)]
+        out.append((where(f, pos), "silver idol perk of %s" % name, "Perk of %s: %s" % (name, " ".join((text or "").split()))))
+        out.append((where(f, pos), "gold idol with %s" % name, "Any 4 starters, only %s's perk" % name))
+    for cls in ("OriginDef", "GhostFormEntry"):
+        for f, pos, body in objects(cls):
+            c = cs_consts(SRC[f])
+            n = field(body, "name")
+            out.append((where(f, pos), "%s %s summary" % (cls, n), cs_field(body, "summary", c)))
+            out.append((where(f, pos), "%s %s flavour" % (cls, n), cs_field(body, "flavour", c)))
+    for f, s in CODE.items():
+        for m in re.finditer(r'\bBlob\(\s*"(\w+)"\s*,\s*"([^"]*)"\s*,\s*"([^"]*)"', s):
+            out.append((where(f, m.start()), "blob %s" % m.group(2), m.group(3)))
+        for m in re.finditer(r'GhostBlobDef\s*\{[^}]*?\bname\s*=\s*"([^"]*)"[^}]*?\bsummary\s*=\s*"([^"]*)"', s):
+            out.append((where(f, m.start()), "blob %s" % m.group(1), m.group(2)))
+    for at, title, text, target, slot in unlock_defs():
+        out.append((at, "locked %s" % slot, "%s  %d / %d" % (text, target, target)))
+    out = [(a, k, t, PANEL_WRAP) for a, k, t in out]
+    # the silver / gold editors' paragraph rows (InfoRow, wrap 46): a weapon's or spell's description as a sentence
+    for cls in ("ItemDef", "WeaponDef"):
+        for f, pos, body in objects(cls):
+            d, i = cs_field(body, "description", cs_consts(SRC[f])), field(body, "id") or ""
+            if d and (cls == "WeaponDef" or i.startswith("Spell")):
+                d = " ".join(d.split())
+                out.append((where(f, pos), "hero editor pick %s" % field(body, "name"), d if d.endswith(".") else d + ".", 46.0))
+    return [(a, k, personalise(t), w) for a, k, t, w in out if t]
+
+
+def unlock_defs():
+    """(where, title, text, target, slot) of the unlock challenges (SlotChallenges / BlobChallenges Add calls)."""
+    out = []
+    pat = re.compile(r'\bAdd\(\s*(?:"\w+"\s*,\s*SlotTier\.\w+|\w+)\s*,\s*"([A-Z ]+)"\s*,\s*"([^"]+)"\s*,\s*[\w.]+\s*,\s*(\d+)\s*,\s*"([^"]+)"\s*\)')
+    for f, s in CODE.items():
+        if f.endswith(("SlotChallenges.cs", "BlobChallenges.cs")):
+            for m in pat.finditer(s):
+                out.append((where(f, m.start()), m.group(1), m.group(2), int(m.group(3)), m.group(4)))
+    return out
+
+
+@check("textfit")
+def c_textfit(fails, warns):
+    n = 0
+    # HUD monster tips (TipView): two players' columns at full size, four players' (compact, no passive) readable
+    lh, lh_compact, rows, panel = tip_layout()
+    col2 = (rows[1][0] + panel / 2 + rows[1][1] + panel / 2) / 2 - 0.01          # P1's column: to half way to P2
+    centres4 = [x + panel / 2 for x in rows[3]]
+    col4 = min((centres4[i + 1] - centres4[i - 1]) / 2 for i in (1, 2))           # the inner columns are the narrowest
+    tips = monster_tips()
+    if len(tips) < 300:
+        fails.append("only %d monster tips found: the extraction no longer matches MonsterTipsData" % len(tips))
+    for at, key, name, attack, special, passive in tips:
+        n += 1
+        body = ["Attack: " + attack, "Special: " + special] + (["Passive: " + passive.split("\n")[0]] + passive.split("\n")[1:] if passive else [])
+        body = [personalise(l) for l in body]
+        title = "P2 - " + name
+        for l in body:
+            if len(l) > merge_tips.MAX_LINE + (len(GHOST_BUTTON) + 3 if GHOST_BUTTON in l else 0):
+                fails.append("%s: tip %s line is %d chars (max %d): %r" % (at, key, len(l), merge_tips.MAX_LINE, l))
+        k = tip_scale(title, body, col2, lh)
+        if k < 0.999:
+            fails.append("%s: tip %s is too wide for a two-player column (drawn at %.2f of its size): %r"
+                         % (at, key, k, max(body, key=len)))
+        k = tip_scale(title, body[:2], col4, lh_compact)
+        if k < TIP_MIN_COMPACT:
+            fails.append("%s: tip %s is drawn at %.2f of its size in a four-player column (min %.2f): shorten %r"
+                         % (at, key, k, TIP_MIN_COMPACT, max(body[:2], key=len)))
+    # the god select's paragraphs (PanelText shrinks a longer one, but English never needs it)
+    for at, what, text, wrap in panel_texts():
+        n += 1
+        lines = gui_wrap(text, wrap, PANEL_SCALE)
+        if len(lines) > PANEL_LINES:
+            fails.append("%s: %s takes %d lines on the god select (the game's own take %d): %r"
+                         % (at, what, len(lines), PANEL_LINES, lines))
+    # the unlock banner (UnlockToast): both lines inside the banner at the size the borrowed font style may have
+    banner = [(at, slot + " UNLOCKED", MEDIUM) for at, _, _, _, slot in unlock_defs()]
+    banner += [(at, text, merge_tips.THIN) for at, _, text, _, _ in unlock_defs()]
+    banner.append((os.path.join(CORE_SRC, "UI", "Secrets.cs"), "VAULT SECRET UNLOCKED", MEDIUM))
+    for f, pos, body in objects("SecretDef"):
+        nm = cs_field(body, "name", cs_consts(SRC[f]))
+        if nm:
+            banner.append((where(f, pos), nm, merge_tips.THIN))
+    for at, text, table in banner:
+        n += 1
+        w = merge_tips.width(text, table)
+        if w and BANNER_ROOM / w < TITLE_MIN_SCALE:
+            fails.append("%s: unlock banner line %r is %d px; the banner holds %d (it would be drawn at %.2f)"
+                         % (at, text, w, BANNER_ROOM, BANNER_ROOM / w))
+    # pause pages: a subtitle sits right of the tab and must end before the page counter (PauseTips.BuildPage)
+    pages = json.load(open(os.path.join(ROOT, "data", "tips", "tips_pages.json")))
+    left, tab_w, right = -96.0, 43.0, 94.0
+    subs = [(t["header"].upper(), t.get("subtitle") or "", len(merge_tips.paginate([merge_tips.markup(p) for p in t["text"] if p.strip()])))
+            for t in pages.get("topics", [])]
+    gods = sorted({t.get("god") for t in pages.get("topics", []) if t.get("god")})
+    subs += [(hdr, "the monster you are now (%s)" % g, 2) for g in gods for hdr in ("YOU", "P4")]
+    for hdr, sub, npages in subs:
+        n += 1
+        start = left + max(tab_w, merge_tips.width(hdr, merge_tips.SMALL) + 8) + 4
+        limit = right - (merge_tips.width("%d/%d" % (npages, npages)) + 3 if npages > 1 else 0)
+        if start + merge_tips.width(sub) > limit:
+            fails.append("pause page %s: the subtitle %r runs into the page counter" % (hdr, sub))
+    return n
 
 
 @check("previews")

@@ -30,7 +30,7 @@ namespace CrawlFurther.Content
         {
             I = this;
             Log = Logger;
-            useGUILayout = false;   // OnGUI only draws two labels: skip IMGUI's per-frame layout pass for the whole game
+            useGUILayout = false;   // OnGUI only draws a few labels: skip IMGUI's per-frame layout pass for the whole game
             ModDir = Path.GetDirectoryName(Info.Location);
             // Do NOT touch any game type here. On Unity 5.4, loading Assembly-CSharp before the engine has
             // registered its scripts breaks every MonoBehaviour in the game ("referenced script is missing").
@@ -95,19 +95,43 @@ namespace CrawlFurther.Content
             Log.LogInfo(s_note);
         }
 
+        GUIStyle m_lineStyle;
+        readonly GUIContent m_line = new GUIContent();
+
+        /// <summary>The load banner, the boss note and the test-mode line, top left, each under the one before: a line
+        /// that wraps (a long status, a narrow window, a translated font) pushes the next one down instead of under it.</summary>
         void OnGUI()
         {
-            if (s_noteTime > 0f)
+            bool note = s_noteTime > 0f, banner = m_bannerTimer > 0f;
+            if (!note && !banner) return;
+            if (m_lineStyle == null) m_lineStyle = new GUIStyle(GUI.skin.label) { wordWrap = true, clipping = TextClipping.Overflow };
+            float y = 6f, w = Mathf.Min(900f, Screen.width - 16f);
+            if (banner)
+            {
+                GUI.color = new Color(1f, 0.85f, 0.4f, Mathf.Clamp01(m_bannerTimer));
+                y = Line(NAME + " " + VERSION + " loaded: " + (s_started ? StatusText() : "starting") + (s_started && AnyModBoss() ? "  (F10: force a mod boss)" : ""), y, w);
+            }
+            if (note)
             {
                 s_noteTime -= Time.unscaledDeltaTime;
                 GUI.color = new Color(0.8f, 0.9f, 1f, Mathf.Clamp01(s_noteTime));
-                GUI.Label(new Rect(8, 28, 900, 24), "(" + NAME + ") " + s_note);
+                y = Line("(" + NAME + ") " + s_note, y, w);
             }
-            if (m_bannerTimer <= 0f) return;
-            GUI.color = new Color(1f, 0.85f, 0.4f, Mathf.Clamp01(m_bannerTimer));
-            GUI.Label(new Rect(8, 6, 900, 24), NAME + " " + VERSION + " loaded: " + (s_started ? StatusText() : "starting") + (s_started && AnyModBoss() ? "  (F10: force a mod boss)" : ""));
-            var test = s_started ? TestBanner() : null;
-            if (test != null) GUI.Label(new Rect(8, 48, 900, 24), test);
+            var test = banner && s_started ? TestBanner() : null;
+            if (test != null)
+            {
+                GUI.color = new Color(1f, 0.85f, 0.4f, Mathf.Clamp01(m_bannerTimer));
+                Line(test, y, w);
+            }
+        }
+
+        /// <summary>One wrapped line at <paramref name="y"/>; returns where the next one starts.</summary>
+        float Line(string text, float y, float w)
+        {
+            m_line.text = text;
+            float h = Mathf.Max(22f, m_lineStyle.CalcHeight(m_line, w));
+            GUI.Label(new Rect(8f, y, w, h), m_line, m_lineStyle);
+            return y + h;
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]

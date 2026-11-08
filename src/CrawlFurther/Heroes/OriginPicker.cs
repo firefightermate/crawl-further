@@ -272,6 +272,7 @@ namespace CrawlFurther.Content.Heroes
                 SlotArt.FitName(R.Get<TextMesh>(m_menu, "m_name"), g.name);
                 if (text != null) text.SetText(gOpen ? GhostControls.Personalise(g.summary, GhostControls.Name(PlayerId)) : LockedText("Ghost", gt));
                 if (flav != null) flav.SetText(g.flavour);
+                PanelText.Fit(text); PanelText.Fit(flav);
                 int gi = m_ghostIndex;
                 m_portraitFn = () => { var f = GhostPack.Forms[gi]; return SlotCompat.GhostPortrait(f, PlayerId) ?? Portrait("ghost_" + f.name, f.portraitArt); };
                 PlayPortrait(portrait);
@@ -284,6 +285,7 @@ namespace CrawlFurther.Content.Heroes
             SlotArt.FitName(R.Get<TextMesh>(m_menu, "m_name"), def.name);
             if (text != null) text.SetText(open ? def.summary : LockedText("Hero", def.tier));
             if (flav != null) flav.SetText(def.flavour);
+            PanelText.Fit(text); PanelText.Fit(flav);
             int hi = m_index;
             m_portraitFn = () => { var d = HeroClasses.All[hi]; return HeroClasses.PortraitClip(d, PlayerId) ?? Portrait(d.id, d.portraitArt); };   // this player's colour set
             PlayPortrait(portrait);

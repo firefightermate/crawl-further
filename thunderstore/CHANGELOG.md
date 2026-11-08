@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.2.0
 
 - Pick your blob after confirming your ghost form. The ghost page is back to how it was, with no row under the
   forms. Confirm a form that has a blob to choose and a blob page opens: pick with left and right or the mouse,
@@ -8,9 +8,9 @@
   on their own panel. Forms with no choice skip it.
 - The blob page starts on the blob you had last for that form, or its default. A locked blob shows its challenge
   and progress, and shakes when confirmed.
-
-## 1.2.0
-
+- Fixed text that could be cut off or drawn over other text: a long monster tip no longer covers its own name, and
+  long names and lines on the god select, in the vault, on the new-slot and secret banners and on the load banner
+  now fit.
 - Every god monster and secret monster has a challenge in the vault, like the game's own monsters: select it in
   MONSTERS and press Challenge. Play it against a bot hero who comes back stronger each time you kill him.
   Starters ask for hero level 4, tier 2 for level 7, finals for level 10.

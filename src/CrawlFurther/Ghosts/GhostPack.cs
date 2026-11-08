@@ -26,7 +26,7 @@ namespace CrawlFurther.Content.Ghosts
                 summary = "Ectoplasm flies to you, worth less. Earns Motes",
                 flavour = "Every scrap of the dead\nends up in its sack." },
             new GhostFormEntry { form = GhostForm.Binder, name = "BINDER", portraitArt = "GhostBinder", bodyArt = "FormBinder",
-                summary = "Earn Gels, then fuse them with the ghost button",
+                summary = "Earn Gels. The ghost button fuses them",
                 flavour = "Two make a brute.\nThree make a titan." },
             new GhostFormEntry { form = GhostForm.Poltergeist, name = "POLTERGEIST", portraitArt = "GhostPoltergeist", bodyArt = "FormPoltergeist",
                 summary = "Attack throws a weak hex bolt. Earns Spitters",
@@ -54,7 +54,7 @@ namespace CrawlFurther.Content.Ghosts
                 summary = "Your own look. Eight silver orbs upgrade a body",
                 flavour = "Every death leaves silver.\nEight lift you higher." },
             new GhostFormEntry { form = GhostForm.Gold, tier = SlotTier.Gold, name = "GOLD SPECTRE", portraitArt = "GhostGold",
-                summary = "Your own look. The ghost button leaves a thrall",
+                summary = "Your own look. Ghost button leaves a thrall",
                 flavour = "Leave every body behind.\nIt keeps fighting for you." },
         };
 
@@ -642,7 +642,7 @@ namespace CrawlFurther.Content.Ghosts
             GhostBlobs.Regular = regular;
             Blob("Mote", "Mote Blob", "Quick and fragile. They come in pairs", Mote, BlobChallenges.Mote, GhostForm.Gleaner);
             Blob("Spitter", "Spitter Blob", "Spits goo along the floor that slows", Spitter, BlobChallenges.Spitter, GhostForm.Poltergeist);
-            Blob("Gel", "Gel Blob", "Fuses into bigger blobs with the ghost button", Gel, BlobChallenges.Gel, GhostForm.Binder);
+            Blob("Gel", "Gel Blob", "Fuses into bigger blobs: ghost button", Gel, BlobChallenges.Gel, GhostForm.Binder);
             GhostBlobs.OwnOf = def =>
             {
                 var e = def as GhostFormEntry;

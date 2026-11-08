@@ -31,7 +31,9 @@ gods, monsters, items, objects, ghost forms or origins, or holds text a player r
 ## Text a player sees
 
 Plain words and real numbers ("0.6 damage", "for 3 s"). Monster tip lines stay within 60 characters with their
-label, vault lines within 90 and three rows of the vault page (`tools/validate.py` measures them). No `[word]` (the game's text drops it), and none of `% { | } ~` in the text of secrets,
+label, vault lines within 90 and three rows of the vault page, and the god select's texts (a god's text and flavour, an
+origin's or ghost form's summary and flavour) within the four lines the game's own take there (`tools/validate.py`
+measures them). No `[word]` (the game's text drops it), and none of `% { | } ~` in the text of secrets,
 challenges or room objects. `tools/validate.py` and `tools/merge_tips.py` check most of this.
 
 ## Before a pull request

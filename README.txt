@@ -26,6 +26,8 @@ NEW IN 1.2.0
   - A monster's vault page shows its challenge under its line. A few long lines are a little shorter so it fits.
   - Mod challenges never count toward Steam achievements, and playing one earns none.
   - Test mode: Run > Monster challenge starts any monster's challenge from the menus. Scores are not saved.
+  - Pick your blob on its own page after confirming your ghost form. Forms with no choice skip it.
+  - Long tips, names and banner lines no longer get cut off or drawn over other text.
 
 NEW IN 1.1.0
 ------------

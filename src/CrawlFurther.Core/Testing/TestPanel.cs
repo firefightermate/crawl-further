@@ -15,6 +15,8 @@ namespace CrawlFurther.Testing
         const float BaseHeight = 1080f;
         const float Width = 1180f, Height = 700f;
         const float ControlsWidth = 360f, ListWidth = 250f, ListHeight = 470f, RowHeight = 30f;
+        /// <summary>The font size of a list row whose label is too long for the row at the normal 16.</summary>
+        const int SmallFont = 12;
         const float RepauseDelay = 0.4f;
         const int WindowId = 0x7E57;
 
@@ -31,6 +33,7 @@ namespace CrawlFurther.Testing
         readonly Dictionary<TestNumber, string> m_numberText = new Dictionary<TestNumber, string>();
 
         GUIStyle m_window, m_label, m_head, m_group, m_dim, m_note, m_button, m_lit, m_toggle, m_field;
+        GUIStyle m_groupSmall, m_buttonSmall, m_litSmall;
 
         /// <summary>
         /// SystemTime.PauseGame disables every behaviour in the scene except those on layers 17 and 23 (the game's own
@@ -132,7 +135,10 @@ namespace CrawlFurther.Testing
                 if (msg == null || Event.current.type != EventType.Repaint) return;
                 Styles();
                 GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1f));
-                GUI.Label(new Rect(16f, 80f, 1000f, 30f), msg, m_note);
+                // wrapped to the screen: a long message takes more lines, never runs off the edge
+                float mw = Mathf.Min(1000f, Screen.width / scale - 32f);
+                m_msg.text = msg;
+                GUI.Label(new Rect(16f, 80f, mw, m_note.CalcHeight(m_msg, mw)), m_msg, m_note);
                 GUI.matrix = Matrix4x4.identity;
                 return;
             }
@@ -295,12 +301,23 @@ namespace CrawlFurther.Testing
             {
                 var row = rows[i];
                 var r = new Rect(0f, i * RowHeight, view.width, RowHeight - 2f);
-                if (row.Item == null) { GUI.Label(r, row.Label, m_group); continue; }
+                if (row.Item == null) { GUI.Label(r, row.Label, Fit(row.Label, m_group, m_groupSmall, r.width)); continue; }
                 var item = row.Item;
-                if (GUI.Button(r, item.Label, l.IsSelected(item) ? m_lit : m_button)) Queue(item.Label, () => l.Pick(item));
+                bool lit = l.IsSelected(item);
+                if (GUI.Button(r, item.Label, Fit(item.Label, lit ? m_lit : m_button, lit ? m_litSmall : m_buttonSmall, r.width))) Queue(item.Label, () => l.Pick(item));
             }
             GUI.EndScrollView();
             GUILayout.EndVertical();
+        }
+
+        readonly GUIContent m_msg = new GUIContent(), m_fit = new GUIContent();
+
+        /// <summary>A list row's style: its own, or the smaller one when the label is wider than the row (rows are one
+        /// line high, so a long name would be cut).</summary>
+        GUIStyle Fit(string label, GUIStyle normal, GUIStyle small, float width)
+        {
+            m_fit.text = label;
+            return normal.CalcSize(m_fit).x <= width ? normal : small;
         }
 
         /// <summary>Sizes are for 1080p; GUI.matrix scales them with the screen.</summary>
@@ -314,15 +331,19 @@ namespace CrawlFurther.Testing
             m_head = new GUIStyle(m_label) { fontStyle = FontStyle.Bold, fontSize = 17 };
             m_group = new GUIStyle(m_label) { fontStyle = FontStyle.Bold, fontSize = 15 };
             m_group.normal.textColor = new Color(1f, 0.85f, 0.45f);
+            m_group.wordWrap = false;
+            m_groupSmall = new GUIStyle(m_group) { fontSize = SmallFont };
             m_dim = new GUIStyle(m_label);
             m_dim.normal.textColor = new Color(0.7f, 0.7f, 0.7f);
-            m_note = new GUIStyle(m_label) { fontStyle = FontStyle.Bold, wordWrap = false };
+            m_note = new GUIStyle(m_label) { fontStyle = FontStyle.Bold };
             m_note.normal.textColor = new Color(0.55f, 0.9f, 1f);
             m_button = new GUIStyle(skin.button) { fontSize = 16, alignment = TextAnchor.MiddleLeft, wordWrap = false };
             m_button.padding = new RectOffset(8, 8, 4, 4);
             m_lit = new GUIStyle(m_button) { fontStyle = FontStyle.Bold };
             m_lit.normal.textColor = m_lit.hover.textColor = new Color(1f, 0.85f, 0.3f);
             m_lit.normal.background = m_button.active.background;
+            m_buttonSmall = new GUIStyle(m_button) { fontSize = SmallFont };
+            m_litSmall = new GUIStyle(m_lit) { fontSize = SmallFont };
             m_toggle = new GUIStyle(skin.toggle) { fontSize = 16 };
             m_field = new GUIStyle(skin.textField) { fontSize = 16 };
         }

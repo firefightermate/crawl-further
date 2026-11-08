@@ -3,15 +3,17 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
-## Unreleased
+## 1.2.0
 
 ### Repository
 - The blob choice is its own page of the origin picker, after the ghost form, instead of a row on the ghost page.
   It is a copy of the god list like the origin and form pages, one entry per blob laid over a row of starter
   boxes, with each entry's mouse hotspot set to its column. Every player's input reaches it the way it reaches
   the god list. The old row (`GhostBlobRow`) is gone.
-
-## 1.2.0
+- Text that could be cut or overlap now fits: monster tips are laid out from the drawn text (the OnGUI fallback
+  stacked the title over a body taller than it allowed for), the god select's paragraphs keep to four lines
+  (`PanelText`), long vault titles and the new-slot banner's lines shrink to fit, and the load banner and test panel
+  wrap. `tools/validate.py` has a new `textfit` check for tips, god select texts, banner lines and pause subtitles.
 
 ### Library (CrawlFurther.Core)
 - Mod monsters have the game's own vault challenge: its button, level, HUD, scoring and save, hooked in through

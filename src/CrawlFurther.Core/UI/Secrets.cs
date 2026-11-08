@@ -116,8 +116,8 @@ namespace CrawlFurther.UI
                     var g = GroupOf(e.group);
                     Unlocks.Announce.Enqueue(new UnlockDef
                     {
-                        id = "Secret" + id, title = "SECRET", slot = "SECRET", tier = g != null ? g.banner : SlotTier.Gold,
-                        text = e.name + ": a new page in the vault's secrets",
+                        id = "Secret" + id, title = "SECRET", slot = "VAULT SECRET", tier = g != null ? g.banner : SlotTier.Gold,
+                        text = e.name,
                     });
                 }
                 catch { }
