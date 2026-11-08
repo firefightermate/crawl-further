@@ -1,13 +1,8 @@
 # Changelog
 
-## Unreleased
-
-- The blob page after the ghost form now works. In 1.2.0 it showed but ignored every press except back. Left and
-  right, the mouse and confirm all work on it now, for every player.
-- Minions and blobs in the vault say "No challenge available" where other monsters show their challenge.
-
 ## 1.2.0
 
+- Minions and blobs in the vault say "No challenge available" where other monsters show their challenge.
 - Pick your blob after confirming your ghost form. The ghost page is back to how it was, with no row under the
   forms. Confirm a form that has a blob to choose and a blob page opens: pick with left and right or the mouse,
   confirm to finish, or go back to the forms. It works with pads, keys, the mouse and Online Crawl, for each player
