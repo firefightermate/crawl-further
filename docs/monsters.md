@@ -22,6 +22,7 @@ come from `examples/ExampleGod/GlimmerPack.cs` and `GlimmerFx.cs`.
 | `aliases` | Without a kit: maps the base's attack slots (`"Attack0"`, `"Attack1"`, `"Special"`) to animations with other names |
 | `customize` | The last step, for anything else: `(GameObject prefab, Player player)` |
 | `traits` | Plates, regeneration, stealth, a lifetime, behaviours of your own ([below](#traits-and-behaviours)) |
+| `challenge` | Its vault challenge: the goal, or none ([ui.md](ui.md#monster-challenges)). Without one, a monster a player can become gets the goal for its evolution cost |
 
 `MonsterFactory.Build(def)` makes the monster and returns its prefab's `Player`, or null with an error in the log.
 `DeityFactory.Register` builds a god's `monsters` for you. Built monsters are in `MonsterFactory.Built`, by id.
@@ -37,7 +38,7 @@ come from `examples/ExampleGod/GlimmerPack.cs` and `GlimmerFx.cs`.
 4. Applies health, speed and cost. Unless `keepEvolutions` is set, the base's evolutions are cleared.
 5. Runs `kit`, then scales its offsets by `ArtScale`, applies the tier rule and the def's own tuning
    (`damageMult`, `specialChargeTime`, `attackCooldownMult`), then runs `customize`.
-6. Registers `traits` under the prefab name.
+6. Registers `traits` and `challenge` under the prefab name.
 
 Without a kit, the base's attacks keep their own timing and events and play the animations of the same name on
 your sheet: `Attack0`, `Attack1`, ..., `Special` (or the names in `aliases`). That is the quickest way to reskin a

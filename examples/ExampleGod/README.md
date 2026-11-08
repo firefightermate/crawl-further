@@ -6,7 +6,7 @@ A small mod built only on Crawl Further Core. It adds Glimmer, a god with three 
 | File | What it shows |
 | --- | --- |
 | `ExampleGodPlugin.cs` | The BepInEx plugin: register with Core in `Awake`, set up and queue the content pack once the game has booted |
-| `GlimmerPack.cs` | The god (`GodDef`), its three monsters (`MonsterDef`) and their kits, tips, pause page and vault lines |
+| `GlimmerPack.cs` | The god (`GodDef`), its three monsters (`MonsterDef`) and their kits, a vault challenge goal, tips, pause page and vault lines |
 | `GlimmerFx.cs` | Effect templates: melee hitboxes, two projectiles and the god's perk |
 | `GlimmerGlow.cs` | A `MonsterBehaviour` that receives a clip event |
 | `GlimmerItems.cs` | A shop spell copied from a vanilla one (`ItemDef`) |

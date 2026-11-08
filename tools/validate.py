@@ -24,7 +24,8 @@ Checks (each prints OK or FAIL with the problems underneath):
   marks         one violet mark per entry: gems placed only through UI/ModMark.cs, one call site per context, no gem
                 painted into any art
   vaultfit      every vault page text (monster lines, FURTHER pages, objects, items, weapons, secrets hidden and found,
-                category summaries) fits its box without the "..." cut, laid out exactly like UI/TextFit.cs
+                category summaries) fits its box without the "..." cut, laid out exactly like UI/TextFit.cs; a monster
+                line leaves its page's last row above the buttons to the challenge line
   previews      every monster/fx sheet's _preview.png is at least as new as its png (previews are not committed:
                 missing ones are a warning)
   package       the files tools/package.sh ships contain every sheet the code loads
@@ -927,7 +928,7 @@ def vault_layout():
     src = SRC[os.path.join(CORE_SRC, "UI", "VaultGrid.cs")]
     num = lambda k: float(re.search(r'\b%s\s*=\s*(-?[\d.]+)f' % k, src).group(1))
     L = {k: num(k) for k in ("TextLeft", "DescTop", "RightOpen", "RightBesideBack", "BackRowTop", "ScreenBottom",
-                             "SummaryLeft", "SummaryTop", "SummaryLowest")}
+                             "SummaryLeft", "SummaryTop", "SummaryLowest", "ButtonRowTop")}
     L["lineH"] = 14.09375 * 0.5     # the font's lineHeight (ascent 682 + descent 128 + gap 92 of 1024, at 16 px) x 0.5
     return L
 
@@ -961,6 +962,11 @@ def c_vaultfit(fails, warns):
     import merge_tips
     L = vault_layout()
     n = 0
+    challenge_rows = int((L["DescTop"] - L["ButtonRowTop"]) // L["lineH"])
+    # the game's own challenge lines (MenuLibrary's strings, English) take one full-width row each
+    for t in ("Challenge not yet attempted", "Last attempt: LEVEL 30", "Best attempt: LEVEL 30", "-PASSED-", "CHALLENGE"):
+        if merge_tips.width(t) > L["RightOpen"] - L["TextLeft"]:
+            fails.append("the game's challenge line %r is wider than a vault row" % t)
     for at, kind, name, text in vault_texts():
         n += 1
         summary = kind == "summary"
@@ -970,6 +976,10 @@ def c_vaultfit(fails, warns):
         label = "%s: %s%s" % (at, kind, " " + name if name else "")
         if len(lines) > max_lines:
             fails.append("%s takes %d lines, the vault shows %d (cut with ...): %r" % (label, len(lines), max_lines, text))
+        elif kind == "monster" and len(lines) > challenge_rows - 1:
+            # a monster with a challenge shares the rows above the button row with at least one challenge line
+            fails.append("%s takes %d lines; a monster page keeps %d of its %d rows for the line and one for the "
+                         "challenge (VaultGrid.ShowChallengePage): %r" % (label, len(lines), challenge_rows - 1, challenge_rows, text))
         for i, l in enumerate(lines[:max_lines]):
             if merge_tips.width(l) > width(i):
                 fails.append("%s: line %d is wider than the box (one long word?): %r" % (label, i + 1, l))

@@ -17,6 +17,7 @@ namespace CrawlFurther.Testing
         const string Vanilla = "Crawl", Modded = "Mods";
 
         static Boss s_boss;
+        static bool s_challengePad;
 
         internal static void Register()
         {
@@ -120,6 +121,12 @@ namespace CrawlFurther.Testing
             TestMode.AddAction(Run, "Go to the shop", () => TestGame.GoToStore());
             TestMode.AddAction(Run, "Go to the portal room", () => TestGame.GoToPortal());
             TestMode.AddAction(Run, "Reload this floor", () => TestGame.ReloadLevel());
+            TestMode.AddChoice(Run, "Challenge controls", new[] { "Keyboard", "Pad 1" }, () => s_challengePad ? 1 : 0, i => s_challengePad = i == 1);
+            TestMode.AddList(Run, "Monster challenge (from the menus)", ChallengeList, item =>
+            {
+                TestGame.StartChallenge((GameObject)item.Value, s_challengePad);
+                TestMode.Say("Challenge: " + item.Label + " (the score is not saved in test mode)");
+            });
             TestMode.AddList(Run, "God of the player acting", GodList, item =>
             {
                 var pd = Target();
@@ -213,6 +220,20 @@ namespace CrawlFurther.Testing
             var built = new HashSet<GameObject>();
             foreach (var p in MonsterFactory.Built.Values) if (p != null) built.Add(p.gameObject);
             foreach (var go in TestGame.AllMonsters())
+            {
+                bool mod = built.Contains(go);
+                (mod ? mods : vanilla).Add(new TestItem(TestNames.Of(go), go, mod ? Modded : Vanilla));
+            }
+            return Sorted(vanilla, mods);
+        }
+
+        static IEnumerable<TestItem> ChallengeList()
+        {
+            var vanilla = new List<TestItem>();
+            var mods = new List<TestItem>();
+            var built = new HashSet<GameObject>();
+            foreach (var p in MonsterFactory.Built.Values) if (p != null) built.Add(p.gameObject);
+            foreach (var go in TestGame.ChallengeMonsters())
             {
                 bool mod = built.Contains(go);
                 (mod ? mods : vanilla).Add(new TestItem(TestNames.Of(go), go, mod ? Modded : Vanilla));

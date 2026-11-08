@@ -114,7 +114,7 @@
    "Echoes inside your glitter hit at full damage",
    "Your basic hits echo a beat later"
   ],
-  "vault": "Its wings are panes of leaded glass. Inside its glitter, every echo lands whole"
+  "vault": "Wings of leaded glass. Inside its glitter, every echo lands whole"
  },
  "ModHourglass": {
   "name": "Hourglass",
@@ -144,7 +144,7 @@
    "Your Surge echoes along its path a beat later",
    "Your basic hits echo a beat later"
   ],
-  "vault": "A mirror heart in a whirl of glass moths. Where it rushes, its ghost rushes again"
+  "vault": "A mirror heart in a whirl of glass moths. Its ghost repeats every rush"
  },
  "ModPendulum": {
   "name": "The Pendulum",
@@ -164,7 +164,7 @@
    "Your hits are held, then fall as one column",
    "Your basic hits echo a beat later"
   ],
-  "vault": "The hourglass broke and its sand stood up. What it strikes in its glass falls later"
+  "vault": "The hourglass broke and its sand stood up. Hits inside its glass land later"
  },
  "ModSundered": {
   "name": "The Sundered",
@@ -174,7 +174,7 @@
    "Your pale half rushes back to you through him",
    "Your basic hits echo a beat later"
   ],
-  "vault": "Torn in two. The pale half follows a second behind, then rushes home through you"
+  "vault": "Torn in two. The pale half trails behind, then rushes home through you"
  },
  "ModBristleback": {
   "name": "Bristleback",

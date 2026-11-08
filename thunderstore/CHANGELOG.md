@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+- Every god monster and secret monster has a challenge in the vault, like the game's own monsters: select it in
+  MONSTERS and press Challenge. Play it against a bot hero who comes back stronger each time you kill him.
+  Starters ask for hero level 4, tier 2 for level 7, finals for level 10.
+- A passed challenge gets the game's tick on its vault cell. The violet gem on mod monster cells now sits in the
+  bottom-left corner, clear of the tick.
+- Minions and blobs have no challenge, as the game's own have none.
+- A monster's vault page shows its challenge under its line. A few long lines are a little shorter so it fits.
+- Mod challenges never count toward Steam achievements, and playing one earns none.
+- Test mode: Run > Monster challenge starts any monster's challenge from the menus. Scores are not saved.
+
 ## 1.1.0
 
 - The Gleaner, Poltergeist and Binder each earn a blob of their own: the Mote, the Spitter and the Gel. Until then

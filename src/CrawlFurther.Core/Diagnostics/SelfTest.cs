@@ -31,7 +31,7 @@ namespace CrawlFurther.Diagnostics
 
         /// <summary>
         /// Add a section. Sections run by <paramref name="order"/> (ties in the order they were added). Core's own use
-        /// 100 (monsters), 200 (menu pictures), 1200 (branding), 1300 (vault grid), 1400 (ghost button controls),
+        /// 100 (monsters), 200 (menu pictures), 1200 (branding), 1300 (vault grid), 1310 (vault challenges), 1400 (ghost button controls),
         /// 2000 (online), 2050 (CrawlAPI), 2060 (boss mods), 2100 (Harmony patch classes) and, while test mode is on, 2200 (test mode). A section that throws is reported as a problem and the
         /// others still run. Add sections from your start callback or your packs.
         /// </summary>
@@ -68,6 +68,7 @@ namespace CrawlFurther.Diagnostics
             AddSection(200, "menu pictures", MonsterChecks.CheckPictures);
             AddSection(1200, "branding", () => Branding.SelfCheck(Bad));
             AddSection(1300, "vault grid", () => VaultGrid.SelfCheck(Bad));
+            AddSection(1310, "vault challenges", () => LibraryEntries.ChallengeSelfCheck(Bad, Note));
             AddSection(1400, "ghost button controls", () => GhostControls.SelfCheck(Bad));
             AddSection(2000, "online (Crawl Online compatibility)", () => CompatOnline.SelfCheck(Bad, Note));
             AddSection(2050, "CrawlAPI compatibility", () => CompatCrawlApi.SelfCheck(Bad, Note));

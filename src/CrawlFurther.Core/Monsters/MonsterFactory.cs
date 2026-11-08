@@ -152,6 +152,7 @@ namespace CrawlFurther.Monsters
             // (a customize that strips components, or a base prefab without one, would leave its moves silent)
             if (go.GetComponent<AudioCueSource>() == null) go.AddComponent<AudioCueSource>();
             if (def.traits != null) MonsterTraits.Register(def.PrefabName, def.traits);
+            if (def.challenge != null) Challenges.Register(def.PrefabName, def.challenge);
             Built[def.id] = p;
             FurtherCore.Log.LogInfo("Built monster " + def.PrefabName + " from " + def.basePrefab);
             return p;

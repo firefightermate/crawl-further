@@ -50,6 +50,9 @@ namespace CrawlFurther.Monsters
         public Action<GameObject, Player> customize;
         /// <summary>Plates, regeneration, stealth, lifetime and extra behaviours (optional; see <see cref="MonsterTraits"/>).</summary>
         public MonsterTraits traits;
+        /// <summary>Its vault challenge (optional, see <see cref="ChallengeDef"/>). Without one, a monster a player can
+        /// become gets a challenge with the goal for its evolution cost, and any other monster gets none.</summary>
+        public ChallengeDef challenge;
 
         /// <summary>"Mod" + id: the prefab's name, and the key for tips, statues and traits.</summary>
         public string PrefabName { get { return "Mod" + id; } }

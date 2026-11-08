@@ -99,7 +99,7 @@
       "Each hit grows your lance. Each hit taken trims it",
       "Death drops a seed that ripens into a poison pod"
     ],
-    "vault": "Its thorn lance grows with every wound it deals, and is cut back by every blow it takes"
+    "vault": "Its thorn lance grows with each wound it deals and shrinks when it is hit"
   },
   "ModSylPuffball": {
     "name": "Puffball Brute",
@@ -211,6 +211,6 @@
     "passive": [
       "You stagger on a moment, then burst into seeds"
     ],
-    "vault": "A corpse the cordyceps would not let die. It staggers on, then bursts into seeds"
+    "vault": "A corpse the cordyceps won't let die. It staggers on, then bursts into seeds"
   }
 }

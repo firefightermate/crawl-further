@@ -383,6 +383,35 @@ namespace CrawlFurther.Testing
             return list;
         }
 
+        /// <summary>
+        /// Start the vault challenge of <paramref name="prefab"/> (vanilla or mod) from the menus, as the vault's
+        /// Challenge button does (SystemMenu.StartChallengeMode), played with the keyboard or the first pad. The vault's
+        /// "found" rule is skipped, and the score is not saved while test mode is on.
+        /// </summary>
+        public static void StartChallenge(GameObject prefab, bool pad)
+        {
+            if (Singleton<SystemLevel>.HasInstance() || !Singleton<SystemMenu>.HasInstance())
+                throw new TestModeException("Quit to the menus first: a challenge starts from there");
+            if (SystemMenu.GetChallengeMode()) throw new TestModeException("A challenge is already starting");
+            var p = prefab != null ? prefab.GetComponent<Player>() : null;
+            if (p == null) throw new TestModeException("That is not a monster");
+            var e = Singleton<SystemLibrary>.HasInstance() ? SystemLibrary.GetMonsterEntry(prefab) : null;
+            if (e == null) throw new TestModeException("That monster has no vault entry, so no challenge");
+            if (UI.LibraryEntries.NoChallenge(e)) throw new TestModeException("That monster has no challenge (minions and blobs have none)");
+            Singleton<SystemPlayers>.Get.UnassignAll();
+            SystemMenu.StartChallengeMode(p, pad ? eController.Controller1 : eController.Keyboard1);
+        }
+
+        /// <summary>Every monster with a vault challenge: the game's own, then mod monsters that have one.</summary>
+        public static List<GameObject> ChallengeMonsters()
+        {
+            var list = new List<GameObject>();
+            if (!Singleton<SystemLibrary>.HasInstance()) return list;
+            foreach (var e in SystemLibrary.GetMonsters())
+                if (e != null && e.m_prefab != null && e.m_prefab.GetComponent<Player>() != null && !UI.LibraryEntries.NoChallenge(e)) list.Add(e.m_prefab);
+            return list;
+        }
+
         /// <summary>Every monster prefab the game and the mods know: the vault's monster list plus every built mod monster.</summary>
         public static List<GameObject> AllMonsters()
         {
