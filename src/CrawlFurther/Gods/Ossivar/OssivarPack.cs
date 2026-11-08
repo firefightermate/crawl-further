@@ -501,7 +501,7 @@ namespace CrawlFurther.Content.Gods.Ossivar
         {
             name = "Ossivar",
             text = "Bones crawl home: block a hit",
-            flavour = "The Marrow King keeps every bone.\nThey crawl back to him.",
+            flavour = "Every bone is his.\nThey crawl back to him.",
             winText = "THE OSSUARY IS SEALED",
             portraitArt = "DeityOssivar",
             startingMonsters = new[] { "Rattlebones", "MarrowHound", "CairnCrow" },

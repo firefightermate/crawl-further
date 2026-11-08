@@ -7,6 +7,7 @@ using UnityEngine;
 namespace CrawlFurther.UI
 {
     using CrawlFurther.Art;
+    using CrawlFurther.Gods;
     using CrawlFurther.Monsters;
     using CrawlFurther.Util;
 
@@ -388,8 +389,9 @@ namespace CrawlFurther.UI
 
         // ------------------------------------------------------------------ the entry's name above its description
         // Item layout (MenuLibrary local units; one font pixel each). The rule is at y -8, the big picture at x -52, and the
-        // BACK button's row (its key glyph from x 42) spans y -52 to -61. The name sits under the rule, the description
-        // hangs from under the name and may use x up to 68 while above the BACK row, up to 40 beside it.
+        // BACK button's row (its key glyph from x 42) spans y -52 to -61; the page's frame ends near x 75. The name sits
+        // under the rule (shrunk to end by x 68), the description hangs from under the name and may use x up to 68 while
+        // above the BACK row, up to 40 beside it.
         const float TextLeft = -32f, TitleY = -14.5f, DescTop = -20f;
         const float RightOpen = 68f, RightBesideBack = 40f, BackRowTop = -51f, ScreenBottom = -68f;
         // A monster page with a challenge also shows the game's "Challenge" label on the button row (its button glyph
@@ -447,6 +449,8 @@ namespace CrawlFurther.UI
             if (tm != null) tm.anchor = TextAnchor.MiddleLeft;
             title.gameObject.SetActive(true);
             title.SetText((name ?? string.Empty).ToUpperInvariant());
+            // a long name is drawn smaller rather than run over the vault's frame (measured in its own font)
+            if (tm != null) SlotArt.FitName(tm, tm.text, RightOpen - TextLeft);
             if (text == null)
             {
                 if (!desc.gameObject.activeSelf) return;   // no text: vanilla shows the category summary instead
@@ -530,7 +534,7 @@ namespace CrawlFurther.UI
             {
                 title.transform.localPosition = s_titlePos;
                 var tm = title.GetComponent<TextMesh>();
-                if (tm != null) tm.anchor = s_titleAnchor;
+                if (tm != null) { tm.anchor = s_titleAnchor; SlotArt.ResetName(tm); }
             }
             if (desc != null)
             {

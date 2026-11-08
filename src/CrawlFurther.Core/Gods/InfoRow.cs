@@ -7,7 +7,7 @@ namespace CrawlFurther.Gods
     public class InfoRow : EdRow
     {
         public Func<string> line1, line2;
-        public bool paragraph;            // line1 as a wrapping paragraph (up to four lines below y)
+        public bool paragraph;            // line1 as a wrapping paragraph (up to four lines below y, PanelText keeps it there)
         public float wrap = 44f;
         TextMesh m_a, m_b;
         GUIText m_p;
@@ -25,7 +25,7 @@ namespace CrawlFurther.Gods
 
         public override void Refresh(bool focused)
         {
-            if (m_p != null) { m_p.SetText(line1 != null ? line1() : ""); return; }
+            if (m_p != null) { m_p.SetText(line1 != null ? line1() : ""); PanelText.Fit(m_p); return; }
             Fit(m_a, line1 != null ? line1() : "");
             Fit(m_b, line2 != null ? line2() : "");
         }

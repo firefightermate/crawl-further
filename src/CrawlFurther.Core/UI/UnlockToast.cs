@@ -21,6 +21,8 @@ namespace CrawlFurther.UI
         float m_t;
         Camera m_cam;
         const float Hold = 3.6f, Slide = 0.18f;
+        /// <summary>The banner's inside (128 px with its frame and end caps), one unit per pixel.</summary>
+        const float TextRoom = 112f;
 
         public static void Ensure()
         {
@@ -147,6 +149,9 @@ namespace CrawlFurther.UI
                     m_text.text = cur.slot + " UNLOCKED";
                     m_sub = MakeText(small, "Sub", -4.8f, new Color(0.83f, 0.75f, 0.61f));
                     m_sub.text = cur.text;
+                    // both lines stay inside the banner's frame, whatever size the borrowed font style has
+                    SlotArt.ShrinkToWidth(m_text, TextRoom);
+                    SlotArt.ShrinkToWidth(m_sub, TextRoom);
                 }
                 Place(0f);
                 return true;

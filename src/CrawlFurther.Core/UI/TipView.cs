@@ -17,8 +17,10 @@ namespace CrawlFurther.UI
     /// One tip per player at a time: a new monster tip replaces that player's tip, other tips wait in a short queue
     /// (two at most) and are dropped when stale (8 s old or another room). With 3 or 4 HUD panels the tips are compact:
     /// smaller, two body lines at most, 5 s. A tip fades to a third while the hero (or its own player) is behind it.
+    /// The block is laid out from what was actually drawn (the title always above the whole body, however many lines a
+    /// translation makes of it) and shrinks to stay inside its column and on screen.
     /// Nothing is allocated per frame; the objects are made once and reused. Falls back to OnGUI only if the HUD text
-    /// can't be found.
+    /// can't be found, and moves back to the HUD text as soon as it can be.
     /// </summary>
     public class TipView : MonoBehaviour
     {
@@ -53,6 +55,14 @@ namespace CrawlFurther.UI
             public Color colour;
             public string titleText, bodyText;
             public readonly List<Pending> queue = new List<Pending>(3);
+            // the OnGUI fallback's layout: font size and the wrapped heights at that size, for one column width and screen
+            public int guiFs;
+            public float guiW, guiTitleH, guiBodyH;
+            public int guiScreenH;
+            // the text the block was measured from, checked twice a second (a translation mod may rewrite it later)
+            public string drawnTitle, drawnBody;
+            public float recheckAt;
+            public readonly GUIContent guiTitle = new GUIContent(), guiBody = new GUIContent();
         }
 
         public const int Players = 4;
@@ -84,6 +94,8 @@ namespace CrawlFurther.UI
         float m_nextResolve, m_nextHud, m_nextGameCam;
         bool m_useGui;
         GUIStyle m_style, m_shadowStyle;
+        /// <summary>The OnGUI fallback never draws smaller than this (px); its normal size is a share of the screen height.</summary>
+        const int GuiMinFont = 9;
 
         // the HUD layout (viewport units), measured twice a second while a tip shows
         readonly float[] m_cx = new float[Players], m_x0 = new float[Players], m_x1 = new float[Players];
@@ -165,6 +177,7 @@ namespace CrawlFurther.UI
             s.active = true;
             s.wait = 0f;
             s.dirty = true;   // the text meshes are (re)filled in LateUpdate, once the HUD style and camera are known
+            s.guiFs = 0;      // the OnGUI fallback lays the new text out again
             m_nextResolve = 0f;
             m_nextHud = 0f;
         }
@@ -294,7 +307,13 @@ namespace CrawlFurther.UI
                 if (cam != null) m_cam = cam;
             }
             catch (Exception e) { FurtherCore.Log.LogWarning("Monster tips: HUD lookup failed: " + e.Message); }
+            bool wasGui = m_useGui;
             m_useGui = m_font == null || m_layer < 0;
+            if (wasGui && !m_useGui)
+            {
+                // the HUD text turned up while the fallback was drawing: the tips on screen move to it
+                foreach (var s in m_slots) if (s != null && s.active) { s.dirty = true; s.wait = 0f; }
+            }
             return !m_useGui && m_cam != null;
         }
 
@@ -523,8 +542,9 @@ namespace CrawlFurther.UI
                 dirty |= s.dirty;
             }
             if (!any) return;
-            // first tip, or a new scene: find the HUD style / its GUI camera (throttled to once a second)
-            if (m_cam == null || dirty) Resolve();
+            // first tip, a new scene, or the fallback still drawing: find the HUD style / its GUI camera (throttled to
+            // once a second)
+            if (m_cam == null || dirty || m_useGui) Resolve();
             if (Time.unscaledTime >= m_nextHud) { m_nextHud = Time.unscaledTime + 0.5f; MeasureHud(); }
         }
 
@@ -548,6 +568,11 @@ namespace CrawlFurther.UI
                 if (!s.active || s.dirty) { SetVisible(s, false); continue; }
                 SetVisible(s, camOk && !paused);
                 if (!camOk) continue;
+                if (s.measure == 0 && Time.unscaledTime >= s.recheckAt)
+                {
+                    s.recheckAt = Time.unscaledTime + 0.5f;
+                    if (s.body.text != s.drawnBody || s.title.text != s.drawnTitle) s.measure = 2;   // laid out again below
+                }
                 if (s.measure > 0 && s.appliedFrame != Time.frameCount) Measure(s);
                 if (s.measure > 0) { SetAlpha(s, 0f); continue; }
                 if (!haveView)
@@ -574,6 +599,9 @@ namespace CrawlFurther.UI
             float lineTarget = view.y * (s.compact ? CompactLineHeight : LineHeight);
             float fit = s.lineH0 > 0f ? lineTarget / s.lineH0 : 1f;
             if (s.w0 * fit > colW && s.w0 > 0f) fit = colW / s.w0;
+            // a long body (a translation's extra lines) never pushes the title off the screen
+            float roomH = (m_hudBottom ? 1f - m_hudEdge : m_hudEdge) - 2f * Margin;
+            if (s.h0 * fit > roomH * view.y && s.h0 > 0f) fit = roomH * view.y / s.h0;
             if (Mathf.Abs(fit - s.fit) > 0.0005f)
             {
                 s.fit = fit;
@@ -611,6 +639,9 @@ namespace CrawlFurther.UI
             var bb = s.rBody.bounds.size;
             if ((bt.x <= 0f || bb.x <= 0f) && s.measure > 0) return;   // not built yet: try next frame
             s.measure = 0;
+            s.drawnTitle = s.title.text;
+            s.drawnBody = s.body.text;
+            s.recheckAt = Time.unscaledTime + 0.5f;
             var ls = s.root.transform.lossyScale;
             float sx = Mathf.Max(0.0001f, Mathf.Abs(ls.x)), sy = Mathf.Max(0.0001f, Mathf.Abs(ls.y));
             // sizes at scale 1 (local units)
@@ -620,7 +651,7 @@ namespace CrawlFurther.UI
             float gap = titleH * 0.15f;
             s.w0 = (Mathf.Max(titleW, bodyW) + pad * 2f) * m_scale.x;
             s.h0 = (titleH + gap + bodyH + pad * 2f + bar) * m_scale.y;
-            s.lineH0 = bodyH / Mathf.Max(1, s.lines) * m_scale.y;
+            s.lineH0 = bodyH / LineCount(s.drawnBody) * m_scale.y;   // the drawn text: a translation mod may have rewrapped it
             s.fit = -1f;
             float px = Mathf.Max(titleH / 9f, 0.0001f);   // one font pixel (a pixel font line is ~9 px tall)
             float y0 = -(pad + bar);                        // the text starts under the accent bar
@@ -643,6 +674,13 @@ namespace CrawlFurther.UI
             }
         }
 
+        static int LineCount(string text)
+        {
+            int n = 1;
+            if (text != null) for (int i = 0; i < text.Length; i++) if (text[i] == '\n') n++;
+            return n;
+        }
+
         // ---- fallback when the HUD text can't be found (only then): each tip over its player's column
         void OnGUI()
         {
@@ -652,13 +690,12 @@ namespace CrawlFurther.UI
             if (!any || Paused()) return;
             if (m_style == null)
             {
-                m_style = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.LowerCenter, wordWrap = true, richText = false };
+                // laid out to measured heights (below), so nothing is ever clipped or drawn over the title
+                m_style = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.UpperCenter, wordWrap = true, richText = false, clipping = TextClipping.Overflow };
                 m_shadowStyle = new GUIStyle(m_style);
                 m_shadowStyle.normal.textColor = Color.black;
             }
             int fs = Mathf.Max(11, Screen.height / (m_columns >= 3 ? 60 : 50));
-            m_style.fontSize = fs; m_shadowStyle.fontSize = fs;
-            float lh = fs * 1.35f;
             var old = GUI.color;
             for (int i = 0; i < Players; i++)
             {
@@ -667,15 +704,40 @@ namespace CrawlFurther.UI
                 float a = AlphaAt(s.t, s.show);
                 float cx = (m_cx[i] >= 0f ? m_cx[i] : 0.5f) * Screen.width;
                 float w = ((m_cx[i] >= 0f ? m_x1[i] - m_x0[i] : 0.9f) * 0.94f) * Screen.width;
-                float bottom = Screen.height * (1f - HudTopGuess - Margin);
-                float bodyH = lh * s.lines;
-                DrawLine(new Rect(cx - w * 0.5f, bottom - bodyH, w, bodyH), s.bodyText, BodyColour, a);
-                DrawLine(new Rect(cx - w * 0.5f, bottom - bodyH - lh, w, lh), s.titleText, s.colour, a);
+                float room = Screen.height * ((m_hudBottom ? 1f - m_hudEdge : m_hudEdge) - 2f * Margin);
+                LayoutGui(s, fs, w, room);
+                m_style.fontSize = s.guiFs; m_shadowStyle.fontSize = s.guiFs;
+                // the title sits on top of the whole body; the block stands on the HUD row (or hangs under a top row)
+                float top = m_hudBottom ? Screen.height * (1f - m_hudEdge - Margin) - s.guiBodyH - s.guiTitleH
+                                        : Screen.height * (1f - m_hudEdge + Margin);
+                top = Mathf.Max(0f, top);
+                DrawLine(new Rect(cx - w * 0.5f, top, w, s.guiTitleH), s.guiTitle, s.colour, a);
+                DrawLine(new Rect(cx - w * 0.5f, top + s.guiTitleH, w, s.guiBodyH), s.guiBody, BodyColour, a);
             }
             GUI.color = old;
         }
 
-        void DrawLine(Rect r, string text, Color c, float a)
+        /// <summary>The fallback's font size and wrapped heights for a column <paramref name="w"/> px wide: the normal
+        /// size, smaller only when the wrapped block would be taller than <paramref name="room"/>. Worked out again only
+        /// when the text, the column or the screen changes.</summary>
+        void LayoutGui(Slot s, int fs, float w, float room)
+        {
+            if (s.guiFs > 0 && Mathf.Abs(s.guiW - w) < 0.5f && s.guiScreenH == Screen.height) return;
+            s.guiW = w;
+            s.guiScreenH = Screen.height;
+            s.guiTitle.text = s.titleText;
+            s.guiBody.text = s.bodyText;
+            for (int size = fs; ; size--)
+            {
+                m_style.fontSize = size;
+                s.guiFs = size;
+                s.guiTitleH = m_style.CalcHeight(s.guiTitle, w);
+                s.guiBodyH = m_style.CalcHeight(s.guiBody, w);
+                if (s.guiTitleH + s.guiBodyH <= room || size <= GuiMinFont) break;
+            }
+        }
+
+        void DrawLine(Rect r, GUIContent text, Color c, float a)
         {
             GUI.color = new Color(1f, 1f, 1f, a);
             m_shadowStyle.normal.textColor = new Color(0f, 0f, 0f, 0.85f);

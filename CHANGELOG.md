@@ -3,6 +3,13 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## Unreleased
+
+- Text that could be cut or overlap now fits: monster tips are laid out from the drawn text (the OnGUI fallback
+  stacked the title over a body taller than it allowed for), the god select's paragraphs keep to four lines
+  (`PanelText`), long vault titles and the new-slot banner's lines shrink to fit, and the load banner and test panel
+  wrap. `tools/validate.py` has a new `textfit` check for tips, god select texts, banner lines and pause subtitles.
+
 ## 1.2.0
 
 ### Library (CrawlFurther.Core)

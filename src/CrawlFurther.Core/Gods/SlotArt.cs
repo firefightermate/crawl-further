@@ -169,22 +169,38 @@ namespace CrawlFurther.Gods
             float baseSize;
             if (!s_nameSize.TryGetValue(tm, out baseSize)) s_nameSize[tm] = baseSize = tm.characterSize;
             tm.text = s ?? "";
+            float w = TextWidth(tm, tm.text, baseSize);
+            if (w <= 0f) w = tm.text.Length * 5.5f * baseSize;   // CrawlMedium is about 5.5 px a letter
+            tm.characterSize = w > maxWidth ? baseSize * maxWidth / w : baseSize;
+        }
+
+        /// <summary>The width of <paramref name="s"/> in <paramref name="tm"/>'s local units at character size
+        /// <paramref name="size"/>, from its font's own advances (0 if the font can't say).</summary>
+        public static float TextWidth(TextMesh tm, string s, float size)
+        {
             float w = 0f;
             try
             {
                 var f = tm.font;
-                int size = tm.fontSize > 0 ? tm.fontSize : f.fontSize;
-                f.RequestCharactersInTexture(tm.text, size, tm.fontStyle);
-                foreach (char c in tm.text)
+                int px = tm.fontSize > 0 ? tm.fontSize : f.fontSize;
+                f.RequestCharactersInTexture(s, px, tm.fontStyle);
+                foreach (char c in s)
                 {
                     CharacterInfo ci;
-                    if (f.GetCharacterInfo(c, out ci, size, tm.fontStyle)) w += ci.advance;
+                    if (f.GetCharacterInfo(c, out ci, px, tm.fontStyle)) w += ci.advance;
                 }
-                w *= baseSize * 0.1f;
+                w *= size * 0.1f;
             }
             catch { w = 0f; }
-            if (w <= 0f) w = tm.text.Length * 5.5f * baseSize;   // CrawlMedium is about 5.5 px a letter
-            tm.characterSize = w > maxWidth ? baseSize * maxWidth / w : baseSize;
+            return w;
+        }
+
+        /// <summary>Shrink a one-line text that is wider than <paramref name="maxWidth"/> (local units) until it fits.</summary>
+        public static void ShrinkToWidth(TextMesh tm, float maxWidth)
+        {
+            if (tm == null || string.IsNullOrEmpty(tm.text)) return;
+            float w = TextWidth(tm, tm.text, tm.characterSize);
+            if (w > maxWidth) tm.characterSize *= maxWidth / w;
         }
 
         /// <summary>Put a name line shrunk by <see cref="FitName"/> back to its own size.</summary>

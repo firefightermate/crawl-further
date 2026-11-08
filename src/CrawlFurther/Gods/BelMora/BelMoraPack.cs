@@ -544,7 +544,7 @@ namespace CrawlFurther.Content.Gods.BelMora
         {
             name = "Bel'Mora",
             text = "Tides leave brine: slows hero",
-            flavour = "The bell went down with the town.\nIt still rings at high tide.",
+            flavour = "The bell sank with the town.\nIt rings at high tide.",
             winText = "THE BELL FALLS SILENT",
             portraitArt = "DeityBelMora",
             startingMonsters = new[] { "BellUrchin", "Lurefish", "BarnacleCrab" },

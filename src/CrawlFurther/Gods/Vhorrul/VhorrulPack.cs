@@ -523,7 +523,7 @@ namespace CrawlFurther.Content.Gods.Vhorrul
         {
             name = "Vhorrul",
             text = "Dead burn as pyres, then wax",
-            flavour = "The Tallow Saint burns the dead\nand keeps the wax.",
+            flavour = "The Tallow Saint burns\nthe dead and keeps the wax.",
             winText = "THE CANDLES GUTTER OUT",
             portraitArt = "DeityVhorrul",
             startingMonsters = new[] { "Wickling", "TallowGrub", "AshMoth" },

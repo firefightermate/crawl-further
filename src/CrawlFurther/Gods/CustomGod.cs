@@ -890,6 +890,7 @@ namespace CrawlFurther.Content.Gods
             {
                 if (text != null) text.SetText(c.text + "  " + Unlocks.ProgressShort(c.id));
                 if (flav != null) flav.SetText("");
+                PanelText.Fit(text);
                 for (int i = 0; i < 4; i++) { var s = Img(mons, i); if (s != null) s.gameObject.SetActive(false); }
                 return;
             }
@@ -897,6 +898,7 @@ namespace CrawlFurther.Content.Gods
             if (text != null) text.SetText("Any " + CustomGod.Slots(t) + " starters, only " + CustomGod.GodName(rec.PerkGod) + "'s perk");
             var d = CustomGod.DeityFor(PlayerId, t);
             if (flav != null) flav.SetText(d.GetTextFlavour());
+            PanelText.Fit(text); PanelText.Fit(flav);
             for (int i = 0; i < 4; i++)
             {
                 var s = Img(mons, i);

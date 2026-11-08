@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Fixed text that could be cut off or drawn over other text: a long monster tip no longer covers its own name, and
+  long names and lines on the god select, in the vault, on the new-slot and secret banners and on the load banner
+  now fit.
+
 ## 1.2.0
 
 - Every god monster and secret monster has a challenge in the vault, like the game's own monsters: select it in
