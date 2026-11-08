@@ -3,6 +3,18 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## Unreleased
+
+### Library (CrawlFurther.Core)
+- A mod monster's vault page without a challenge shows `LibraryEntries.NoChallengeText` ("No challenge
+  available") where the challenge lines go, in the same text.
+
+### Repository
+- The origin picker's blob page copied the god list after the picker had switched that list off, so its
+  MenuTextMenu never ran and took no input. Every copy of the god list is now switched on when it is made. The
+  blob page logs `ModBlobList: ...` when it is built and `Blob step: open / confirm / back / locked blob` as it is
+  used.
+
 ## 1.2.0
 
 ### Repository
