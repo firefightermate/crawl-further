@@ -197,9 +197,10 @@ Violet pips are mod choices:
                ectoplasm when the hero kills your thrall.
   GHOST BUTTON   defaults: keyboard 1 C, keyboard 2 B, keyboard 3 M, keyboard 4 full stop, mouse middle
                click, controller X. Change it in the game's controls settings (GHOST BUTTON row).
-3. Blob (the second row of the ghost page, where the god page shows its starters). The blob your ghost
-  spawns with Back. Move down from the forms to reach it (or point at it), left and right to pick, confirm
-  to finish. Only forms with a choice show the row. Locked blobs show as a dark outline with their challenge.
+3. Blob (a third page, after you confirm a ghost form that has a choice). The blob your ghost spawns with
+  Back, shown in boxes where the god page shows its starters. Left and right (or the mouse) to pick, confirm
+  to finish, back to return to the forms. It starts on the blob you had last. Forms with no choice skip it.
+  Locked blobs show as a dark outline with their challenge and progress, and can't be confirmed.
   Gleaner      the regular blob, or its Motes (quick, fragile, in pairs). Earn them: gather 250 ectoplasm as
                the Gleaner
   Poltergeist  the regular blob, or its Spitters (slowing goo). Earn them: hit the hero with 40 hex bolts

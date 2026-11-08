@@ -6,7 +6,6 @@ using UnityEngine;
 namespace CrawlFurther.Content.Heroes
 {
     using CrawlFurther.Art;
-    using CrawlFurther.Compat;
     using CrawlFurther.Ghosts;
     using CrawlFurther.Gods;
     using CrawlFurther.Heroes;
@@ -70,9 +69,10 @@ namespace CrawlFurther.Content.Heroes
     /// Origin and ghost pages. Each is its own icon grid built like the god list (same item prefab, spacing and
     /// columns, scrolling when it outgrows three rows), shown in the god list's place. The panel's portrait, name
     /// and text show the highlighted entry. Confirm moves origin -> ghost -> done, back steps out.
-    /// The ghost page has a second row where the starter boxes sit: the blob the form spawns, for a form with a choice
-    /// (GhostBlobRow). Down from the last row of forms (or the pointer) moves into it, left / right picks, Up or Back moves
-    /// out, and confirm on either row confirms the form with the picked blob.
+    /// A ghost form with a blob to choose (GhostBlobs: the Gleaner, Poltergeist and Binder once they earn theirs, silver
+    /// and gold always) adds a third page after it, the blob step: the same kind of list, one entry per blob, laid over a
+    /// row of starter boxes that show the blobs (GhostBlobBoxes). Every page is a vanilla MenuTextMenu, so each player's
+    /// pad, keys, mouse or Online Crawl input drives it exactly as it drives the god list.
     /// </summary>
     public class OriginPicker : MonoBehaviour
     {
@@ -81,13 +81,14 @@ namespace CrawlFurther.Content.Heroes
         int m_index;
         int m_openFrame;
         int m_prevChoice;
-        int m_stage;           // 0 = hero origin, 1 = ghost form
+        int m_stage;           // 0 = hero origin, 1 = ghost form, 2 = blob
         int m_ghostIndex, m_prevGhost;
-        Dictionary<string, string> m_prevBlobs;
-        GhostBlobRow m_blobRow;
-        bool m_blobByPointer;     // the row has the focus because a pointer is over it
         bool m_trialsWasActive;
-        MenuTextMenu m_originList, m_ghostList;
+        MenuTextMenu m_originList, m_ghostList, m_blobList;
+        GhostBlobBoxes m_blobBoxes;
+        readonly List<GhostBlobDef> m_blobEntries = new List<GhostBlobDef>();
+        GhostFormEntry m_blobForm;
+        Dictionary<string, string> m_prevBlobs;
         public bool IsOpen { get; private set; }
         /// <summary>Frame on which the picker was last cancelled (the Back press must not also leave god select).</summary>
         public int CancelFrame { get; private set; }
@@ -96,7 +97,7 @@ namespace CrawlFurther.Content.Heroes
         void OnDestroy()
         {
             Live.Remove(this);
-            if (m_blobRow != null) m_blobRow.Destroy();
+            if (m_blobBoxes != null) m_blobBoxes.Destroy();
         }
 
         int m_pid = -1;
@@ -128,8 +129,8 @@ namespace CrawlFurther.Content.Heroes
             m_ghostIndex = GhostPack.Chosen.TryGetValue(PlayerId, out prev) ? prev : 0;
             m_prevGhost = m_ghostIndex;
             m_prevBlobs = GhostBlobs.PicksOf(PlayerId);
-            if (m_blobRow != null) m_blobRow.Destroy();
-            m_blobRow = new GhostBlobRow(menu, PlayerId);
+            if (m_blobBoxes != null) m_blobBoxes.Destroy();
+            m_blobBoxes = new GhostBlobBoxes(menu, PlayerId);
             foreach (var s in R.Get<exSprite[]>(menu, "m_monsters")) if (s != null) s.gameObject.SetActive(false);
             GodSlots.HideExtras(menu);
             R.Get<GameObject>(menu, "m_arrowL").SetActive(false);
@@ -170,6 +171,27 @@ namespace CrawlFurther.Content.Heroes
         MenuTextMenu BuildList(string name, int count, Func<int, exSpriteAnimClip> icon, int selected)
         {
             var god = R.Get<MenuTextMenu>(m_menu, "m_menu");
+            var m = CloneGodList(name);
+            int cols = Mathf.Max(1, R.Get<int>(god, "m_columns"));
+            R.Set(m, "m_maxItems", Mathf.CeilToInt(count / (float)cols) > 3 ? 2 : 0);
+            m.gameObject.SetActive(true);
+            var prefab = R.Get<MenuItemImage>(m_menu, "m_prefabMenuItem");
+            for (int i = 0; i < count; i++)
+            {
+                var item = m.AddItem(new MenuTextMenuItemData { m_enabled = true, m_prefabMenuItem = prefab, m_message = "MsgModPick" }) as MenuItemImage;
+                if (item != null) item.SetAnim(icon(i));
+            }
+            m.SetSelectedItem(Mathf.Clamp(selected, 0, count - 1));
+            var items = R.Get<List<MenuTextMenuItem>>(m, "m_items");
+            Plugin.Log.LogInfo(name + ": " + items.Count + " pips at " + m.transform.position + (items.Count > 0 ? ", first at " + items[0].transform.position : "")
+                               + " (god list at " + god.transform.position + ")");
+            return m;
+        }
+
+        /// <summary>An empty, inactive copy of the god list (its own player, owner and settings; no items yet).</summary>
+        MenuTextMenu CloneGodList(string name)
+        {
+            var god = R.Get<MenuTextMenu>(m_menu, "m_menu");
             bool wasActive = god.gameObject.activeSelf;
             god.gameObject.SetActive(false);            // clone inactive so nothing runs before it is set up
             var go = UnityEngine.Object.Instantiate(god.gameObject);
@@ -187,21 +209,8 @@ namespace CrawlFurther.Content.Heroes
             R.Set(m, "m_initialised", true);             // skip the god list's serialized items on Start
             R.Set(m, "m_scrollOffset", 0);
             R.Set(m, "m_selectedItem", -1);
-            int cols = Mathf.Max(1, R.Get<int>(god, "m_columns"));
-            R.Set(m, "m_maxItems", Mathf.CeilToInt(count / (float)cols) > 3 ? 2 : 0);
             m.SetOwner(gameObject);
             m.SetPlayerId(PlayerId);
-            go.SetActive(true);
-            var prefab = R.Get<MenuItemImage>(m_menu, "m_prefabMenuItem");
-            for (int i = 0; i < count; i++)
-            {
-                var item = m.AddItem(new MenuTextMenuItemData { m_enabled = true, m_prefabMenuItem = prefab, m_message = "MsgModPick" }) as MenuItemImage;
-                if (item != null) item.SetAnim(icon(i));
-            }
-            m.SetSelectedItem(Mathf.Clamp(selected, 0, count - 1));
-            var items = R.Get<List<MenuTextMenuItem>>(m, "m_items");
-            Plugin.Log.LogInfo(name + ": " + items.Count + " pips at " + go.transform.position + (items.Count > 0 ? ", first at " + items[0].transform.position : "")
-                               + " (god list at " + god.transform.position + ")");
             return m;
         }
 
@@ -219,11 +228,17 @@ namespace CrawlFurther.Content.Heroes
                 m_originList.enabled = true;
                 m_originList.SetSelectedItem(m_index);
                 if (m_ghostList != null) m_ghostList.gameObject.SetActive(false);
-                LeaveBlobs(false);
-                if (m_blobRow != null) m_blobRow.Hide();
+                CloseBlobStep();
+            }
+            else if (m_stage == 2)
+            {
+                if (m_ghostList != null) m_ghostList.gameObject.SetActive(false);
+                if (m_originList != null) m_originList.gameObject.SetActive(false);
+                if (!BuildBlobStep()) { m_stage = 1; Confirm(); return; }   // no starter boxes to stand in for: take the default
             }
             else
             {
+                CloseBlobStep();
                 if (m_ghostList == null)
                     m_ghostList = BuildList("ModGhostList", GhostPack.Forms.Count, i =>
                     {
@@ -234,7 +249,6 @@ namespace CrawlFurther.Content.Heroes
                 m_ghostList.gameObject.SetActive(true);
                 m_ghostList.enabled = true;
                 m_ghostList.SetSelectedItem(m_ghostIndex);
-                m_ghostList.SetActive(m_blobRow == null || !m_blobRow.Focused);
                 if (m_originList != null) m_originList.gameObject.SetActive(false);
             }
             Show();
@@ -245,27 +259,18 @@ namespace CrawlFurther.Content.Heroes
             var text = R.Get<GUIText>(m_menu, "m_text");
             var flav = R.Get<GUIText>(m_menu, "m_textFlavour");
             var portrait = R.Get<exSpriteAnimation>(m_menu, "m_portrait");
+            if (m_stage == 2)
+            {
+                ShowBlob(text, flav);
+                return;
+            }
             if (m_stage == 1)
             {
                 var g = GhostPack.Forms[m_ghostIndex];
                 var gt = SlotCompat.GhostTier(g);
                 bool gOpen = gt == SlotTier.Normal || Unlocks.IsUnlocked(Unlocks.IdFor("Ghost", gt));
-                if (m_blobRow != null)
-                {
-                    m_blobRow.Show(g);
-                    if (!m_blobRow.Focused && m_ghostList != null) m_ghostList.SetActive(true);   // a form with no row never keeps the list asleep
-                }
-                if (m_blobRow != null && m_blobRow.Focused)
-                {
-                    // the row describes the blob under its cursor; the portrait stays the form's
-                    SlotArt.FitName(R.Get<TextMesh>(m_menu, "m_name"), m_blobRow.Name());
-                    if (text != null) text.SetText(m_blobRow.Text());
-                }
-                else
-                {
-                    SlotArt.FitName(R.Get<TextMesh>(m_menu, "m_name"), g.name);
-                    if (text != null) text.SetText(gOpen ? GhostControls.Personalise(g.summary, GhostControls.Name(PlayerId)) : LockedText("Ghost", gt));
-                }
+                SlotArt.FitName(R.Get<TextMesh>(m_menu, "m_name"), g.name);
+                if (text != null) text.SetText(gOpen ? GhostControls.Personalise(g.summary, GhostControls.Name(PlayerId)) : LockedText("Ghost", gt));
                 if (flav != null) flav.SetText(g.flavour);
                 int gi = m_ghostIndex;
                 m_portraitFn = () => { var f = GhostPack.Forms[gi]; return SlotCompat.GhostPortrait(f, PlayerId) ?? Portrait("ghost_" + f.name, f.portraitArt); };
@@ -332,116 +337,32 @@ namespace CrawlFurther.Content.Heroes
             if (!IsOpen || m_menu == null) return;
             if (m_editing) return;
             CheckPortrait();
-            var list = m_stage == 0 ? m_originList : m_ghostList;
-            int before = m_ghostIndex;
+            var list = m_stage == 0 ? m_originList : m_stage == 1 ? m_ghostList : m_blobList;
             if (list != null)
             {
                 int sel = list.GetSelectedId();
                 if (m_stage == 0 && sel >= 0 && sel != m_index) { m_index = sel; Show(); }
                 if (m_stage == 1 && sel >= 0 && sel != m_ghostIndex) { m_ghostIndex = sel; Show(); }
+                if (m_stage == 2 && sel >= 0 && sel != m_blobIndex) { m_blobIndex = sel; Show(); }
             }
-            if (m_stage == 1 && m_blobRow != null) m_blobRow.Tick();
+            if (m_stage == 2 && m_blobBoxes != null) m_blobBoxes.Tick();
             if (Time.frameCount <= m_openFrame + 1) return;      // ignore the press that opened us
-            if (m_stage == 1 && BlobInput(before)) return;
             if (SystemInput.InputDown(eInput.Alt, PlayerId))
             {
-                if (m_stage == 1)
+                if (m_stage == 2)
+                {
+                    // back to the forms, the confirmed one still highlighted; the pick is left as it was
+                    m_stage = 1; CancelFrame = Time.frameCount; m_openFrame = Time.frameCount;
+                    ShowStage();
+                }
+                else if (m_stage == 1)
                 {
                     m_stage = 0; CancelFrame = Time.frameCount; m_openFrame = Time.frameCount;
                     GhostPack.Chosen[PlayerId] = m_prevGhost; m_ghostIndex = m_prevGhost;
-                    RestoreBlob();
                     ShowStage();
                 }
                 else Cancel();
             }
-        }
-
-        // ------------------------------------------------------------------ the blob row
-        /// <summary>
-        /// The ghost page's blob row: a pointer over it (the mouse player's, or an online player's) gives it the focus;
-        /// otherwise Down from the last row of forms does, and Up or Back give it back. Left / right move the cursor, an
-        /// open blob is picked as the cursor lands on it, and confirm confirms the form with it. True when the row used
-        /// this frame's input.
-        /// </summary>
-        bool BlobInput(int formBefore)
-        {
-            if (m_blobRow == null || !m_blobRow.Shown || m_ghostList == null) return false;
-            var pd = SystemPlayers.GetPlayer(PlayerId);
-            if (pd == null) return false;
-            Vector2 at = Vector2.zero;
-            bool mouse = pd.ControllerId == eController.Mouse;
-            bool pointer = mouse || CompatOnline.RemoteMenuMouse(PlayerId, out at);
-            if (mouse) at = SystemInput.GetMousePos();
-            int hit = pointer ? m_blobRow.HitTest(at) : -1;
-            if (hit >= 0)
-            {
-                // Back (a right click) still steps back to the origin page
-                if (SystemInput.InputDown(eInput.Alt, PlayerId)) { LeaveBlobs(false); return false; }
-                if (!m_blobRow.Focused) { EnterBlobs(); m_blobByPointer = true; }
-                if (hit != m_blobRow.Cursor) { m_blobRow.Point(hit); BlobCursorMoved(); }
-                bool click = mouse ? Input.GetMouseButtonDown(0) : SystemInput.InputDown(eInput.Action, PlayerId);
-                if (click) ConfirmBlob();
-                return true;
-            }
-            if (m_blobRow.Focused && m_blobByPointer && pointer) { LeaveBlobs(true); return false; }
-            if (!m_blobRow.Focused)
-            {
-                // Down on the last row of forms (the list did not move this frame) steps into the row
-                if (!mouse && SystemInput.InputDown(eInput.Down, PlayerId) && m_ghostIndex == formBefore && OnLastFormRow())
-                {
-                    EnterBlobs();
-                    return true;
-                }
-                return false;
-            }
-            if (mouse) return false;
-            if (SystemInput.InputDown(eInput.Alt, PlayerId) || SystemInput.InputDown(eInput.Up, PlayerId)) { LeaveBlobs(true); return true; }
-            if (SystemInput.InputDown(eInput.Left, PlayerId)) { if (m_blobRow.Step(-1)) BlobCursorMoved(); }
-            else if (SystemInput.InputDown(eInput.Right, PlayerId)) { if (m_blobRow.Step(1)) BlobCursorMoved(); }
-            else if (SystemInput.InputDown(eInput.Action, PlayerId) || SystemInput.InputDown(eInput.Start, PlayerId)) ConfirmBlob();
-            return true;
-        }
-
-        bool OnLastFormRow()
-        {
-            int cols = Mathf.Max(1, R.Get<int>(m_ghostList, "m_columns"));
-            return m_ghostIndex / cols == (GhostPack.Forms.Count - 1) / cols;
-        }
-
-        void EnterBlobs()
-        {
-            m_blobByPointer = false;
-            m_blobRow.SetFocus(true);
-            if (m_ghostList != null) m_ghostList.SetActive(false);   // the forms list keeps its pick but takes no input
-            Show();
-        }
-
-        void LeaveBlobs(bool redraw)
-        {
-            m_blobByPointer = false;
-            if (m_blobRow == null || !m_blobRow.Focused) return;
-            m_blobRow.SetFocus(false);
-            if (m_ghostList != null) m_ghostList.SetActive(true);
-            if (redraw) Show();
-        }
-
-        /// <summary>An open blob is picked for the form as soon as the cursor lands on it (like a form); a locked one is
-        /// only looked at.</summary>
-        void BlobCursorMoved()
-        {
-            if (m_blobRow.CursorOpen)
-            {
-                GhostBlobs.SetPick(PlayerId, m_blobRow.Form, m_blobRow.AtCursor);
-                m_blobRow.Refresh();
-            }
-            Show();
-        }
-
-        void ConfirmBlob()
-        {
-            if (!m_blobRow.CursorOpen) { m_blobRow.Deny(); return; }
-            m_blobRow.Sound(true);
-            PickGhost();
         }
 
         /// <summary>Sent by the icon lists when an entry is confirmed.</summary>
@@ -457,17 +378,134 @@ namespace CrawlFurther.Content.Heroes
                 if (t != SlotTier.Normal && SlotEditors.Hero != null) OpenEditor(SlotEditors.Hero, t, next);
                 else next();
             }
-            else PickGhost();
+            else if (m_stage == 1)
+            {
+                if (m_ghostList != null) m_ghostIndex = Mathf.Max(0, m_ghostList.GetSelectedId());
+                var t = SlotCompat.GhostTier(GhostPack.Forms[m_ghostIndex]);
+                if (t != SlotTier.Normal && !Unlocks.IsUnlocked(Unlocks.IdFor("Ghost", t))) { SlotLock.Deny(m_menu); return; }
+                if (t != SlotTier.Normal && SlotEditors.Ghost != null) OpenEditor(SlotEditors.Ghost, t, AfterForm);
+                else AfterForm();
+            }
+            else
+            {
+                if (m_blobList != null) m_blobIndex = Mathf.Max(0, m_blobList.GetSelectedId());
+                var d = m_blobIndex < m_blobEntries.Count ? m_blobEntries[m_blobIndex] : null;
+                if (d == null || !GhostBlobs.IsOpen(d)) { if (m_blobBoxes != null) m_blobBoxes.Deny(); return; }
+                GhostBlobs.SetPick(PlayerId, m_blobForm, d);
+                Confirm();
+            }
         }
 
-        /// <summary>Confirm the highlighted form (with the blob picked for it): a silver / gold slot opens its editor first.</summary>
-        void PickGhost()
+        /// <summary>Sent by a locked blob's entry (the game's locked item, as for a locked god): the boxes shake.</summary>
+        void MsgModBlobLocked()
         {
-            if (m_ghostList != null) m_ghostIndex = Mathf.Max(0, m_ghostList.GetSelectedId());
-            var t = SlotCompat.GhostTier(GhostPack.Forms[m_ghostIndex]);
-            if (t != SlotTier.Normal && !Unlocks.IsUnlocked(Unlocks.IdFor("Ghost", t))) { SlotLock.Deny(m_menu); return; }
-            if (t != SlotTier.Normal && SlotEditors.Ghost != null) OpenEditor(SlotEditors.Ghost, t, Confirm);
-            else Confirm();
+            if (!IsOpen || m_stage != 2 || Time.frameCount <= m_openFrame + 1) return;
+            if (m_blobBoxes != null) m_blobBoxes.Deny();
+        }
+
+        // ------------------------------------------------------------------ the blob step
+        int m_blobIndex;
+
+        /// <summary>The form is confirmed: the blob step when it has a choice, else done.</summary>
+        void AfterForm()
+        {
+            var pd = SystemPlayers.GetPlayer(PlayerId);
+            var form = GhostPack.Forms[m_ghostIndex];
+            if (pd == null || pd.IsBot || !HasBlobChoice(form)) { Confirm(); return; }
+            m_blobForm = form;
+            m_stage = 2;
+            m_openFrame = Time.frameCount;
+            ShowStage();
+        }
+
+        /// <summary>A form has a blob step when one of its blobs besides the regular one is open (a locked own blob
+        /// is no choice yet; silver and gold always have the King).</summary>
+        static bool HasBlobChoice(GhostFormDef form)
+        {
+            foreach (var d in GhostBlobs.ChoicesFor(form))
+                if (d != GhostBlobs.Regular && GhostBlobs.IsOpen(d)) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// The blob step's list: a copy of the god list with one entry per blob, in a single row whose entries sit right
+        /// over the blob boxes, a column per box; each entry's mouse hotspot is its column (entry and box). Open blobs
+        /// get the plain pip (the box owns the mod mark), locked ones the game's locked item. It starts on the blob the
+        /// form spawns now: the player's last pick for it, else its default.
+        /// </summary>
+        bool BuildBlobStep()
+        {
+            m_blobEntries.Clear();
+            m_blobEntries.AddRange(GhostBlobs.ChoicesFor(m_blobForm));
+            int n = m_blobEntries.Count;
+            if (n < 2 || m_blobBoxes == null || !m_blobBoxes.Show(m_blobForm, m_blobEntries)) return false;
+            DestroyBlobList();
+            var m = CloneGodList("ModBlobList");
+            Vector3 first = m_blobBoxes.WorldCentre(0), last = m_blobBoxes.WorldCentre(n - 1);
+            var top = m_blobBoxes.WorldRect(0).yMax;
+            var god = R.Get<MenuTextMenu>(m_menu, "m_menu");
+            m.transform.position = new Vector3((first.x + last.x) * 0.5f, top + 2.5f, god.transform.position.z);
+            R.Set(m, "m_columns", n);
+            R.Set(m, "m_columnSpacing", (last.x - first.x) / (n - 1));
+            R.Set(m, "m_maxItems", 0);
+            m.gameObject.SetActive(true);
+            var open = R.Get<MenuItemImage>(m_menu, "m_prefabMenuItem");
+            var locked = R.Get<MenuItemImage>(m_menu, "m_prefabMenuItemLocked") ?? open;
+            var pip = ModIcons.VanillaPip(m_menu);
+            var lockedPip = R.Get<exSpriteAnimClip>(m_menu, "m_deityPortraitLocked") ?? pip;
+            for (int i = 0; i < n; i++)
+            {
+                bool isOpen = GhostBlobs.IsOpen(m_blobEntries[i]);
+                var item = m.AddItem(new MenuTextMenuItemData
+                {
+                    m_enabled = true, m_prefabMenuItem = isOpen ? open : locked, m_message = isOpen ? "MsgModPick" : "MsgModBlobLocked",
+                }) as MenuItemImage;
+                if (item == null) continue;
+                item.SetAnim(isOpen ? pip : lockedPip);
+                // the mouse finds the entry anywhere in its column: from its box up to just over the entry itself
+                var box = m_blobBoxes.WorldRect(i);
+                Vector2 at = item.transform.position;
+                R.Set(item, "m_mouseRect", Rect.MinMaxRect(box.xMin - at.x, box.yMin - at.y, box.xMax - at.x, 2f));
+            }
+            var now = GhostBlobs.ChoiceFor(SystemPlayers.GetPlayer(PlayerId), m_blobForm);
+            m_blobIndex = Mathf.Max(0, m_blobEntries.IndexOf(now));
+            m.SetSelectedItem(m_blobIndex);
+            m_blobList = m;
+            return true;
+        }
+
+        void ShowBlob(GUIText text, GUIText flav)
+        {
+            var d = m_blobIndex < m_blobEntries.Count ? m_blobEntries[m_blobIndex] : null;
+            if (d == null) return;
+            SlotArt.FitName(R.Get<TextMesh>(m_menu, "m_name"), d.name.ToUpperInvariant());
+            string line;
+            if (GhostBlobs.IsOpen(d)) line = GhostControls.Personalise(d.summary, GhostControls.Name(PlayerId));
+            else
+            {
+                var c = Unlocks.Find(d.unlock);
+                line = c == null ? "Locked" : c.text + "  " + Unlocks.ProgressShort(c.id);
+            }
+            if (text != null) text.SetText(line);
+            if (flav != null) flav.SetText(m_blobForm != null ? m_blobForm.flavour : "");
+            SlotLock.Show(m_menu, false);
+            var now = GhostBlobs.ChoiceFor(SystemPlayers.GetPlayer(PlayerId), m_blobForm);
+            if (m_blobBoxes != null) m_blobBoxes.Refresh(m_blobIndex, m_blobEntries.IndexOf(now));
+        }
+
+        /// <summary>Leave the blob step: its list goes and the starter boxes come back.</summary>
+        void CloseBlobStep()
+        {
+            DestroyBlobList();
+            if (m_blobBoxes != null) m_blobBoxes.Hide();
+        }
+
+        void DestroyBlobList()
+        {
+            if (m_blobList == null) return;
+            m_blobList.gameObject.SetActive(false);
+            UnityEngine.Object.Destroy(m_blobList.gameObject);
+            m_blobList = null;
         }
 
         /// <summary>A silver / gold slot's editor, opened over this page; the page comes back when it closes.</summary>
@@ -477,8 +515,7 @@ namespace CrawlFurther.Content.Heroes
             if (ed == null) { then(); return; }
             var list = m_stage == 0 ? m_originList : m_ghostList;
             if (list != null) { list.enabled = false; list.gameObject.SetActive(false); }
-            LeaveBlobs(false);
-            if (m_blobRow != null) m_blobRow.Hide();
+            CloseBlobStep();
             m_editing = true;
             ed.Open(m_menu, PlayerId, t,
                 () => { m_editing = false; if (!IsOpen) return; m_openFrame = Time.frameCount; ShowStageAfterEditor(); then(); },
@@ -501,9 +538,8 @@ namespace CrawlFurther.Content.Heroes
         void HideLists()
         {
             if (m_originList != null) m_originList.gameObject.SetActive(false);
-            if (m_ghostList != null) { m_ghostList.SetActive(true); m_ghostList.gameObject.SetActive(false); }
-            m_blobByPointer = false;
-            if (m_blobRow != null) m_blobRow.Hide();
+            if (m_ghostList != null) m_ghostList.gameObject.SetActive(false);
+            CloseBlobStep();
         }
 
         void Close()
@@ -545,13 +581,8 @@ namespace CrawlFurther.Content.Heroes
             CancelFrame = Time.frameCount;
             HeroClasses.Chosen[PlayerId] = m_prevChoice;
             GhostPack.Chosen[PlayerId] = m_prevGhost;
-            RestoreBlob();
-            Close();
-        }
-
-        void RestoreBlob()
-        {
             GhostBlobs.RestorePicks(PlayerId, m_prevBlobs);
+            Close();
         }
 
         void OnDisable()
@@ -568,7 +599,7 @@ namespace CrawlFurther.Content.Heroes
             SlotArt.ResetName(R.Get<TextMesh>(m_menu, "m_name"));
             HeroClasses.Chosen[PlayerId] = m_prevChoice;
             GhostPack.Chosen[PlayerId] = m_prevGhost;
-            RestoreBlob();
+            GhostBlobs.RestorePicks(PlayerId, m_prevBlobs);
             HideLists();
             if (m_menu != null) { SetGodListsVisible(true); R.Set(m_menu, "m_deity", null); }
         }

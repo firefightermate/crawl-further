@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Pick your blob after confirming your ghost form. The ghost page is back to how it was, with no row under the
+  forms. Confirm a form that has a blob to choose and a blob page opens: pick with left and right or the mouse,
+  confirm to finish, or go back to the forms. It works with pads, keys, the mouse and Online Crawl, for each player
+  on their own panel. Forms with no choice skip it.
+- The blob page starts on the blob you had last for that form, or its default. A locked blob shows its challenge
+  and progress, and shakes when confirmed.
+
 ## 1.2.0
 
 - Every god monster and secret monster has a challenge in the vault, like the game's own monsters: select it in
