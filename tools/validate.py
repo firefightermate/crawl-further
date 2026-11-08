@@ -1528,6 +1528,16 @@ def c_text(fails, warns):
             if bad or "(MOD)" in v:
                 fails.append("%s:%d: %s = \"%s\" has %s" % (os.path.basename(f), src.count("\n", 0, m.start()) + 1,
                                                            m.group(1), v[:60], "".join(bad) or "(MOD)"))
+    # secrets: riddle, rarity and text limits (SecretDef; the self-test checks the same at run time)
+    for f, pos, body in objects("SecretDef"):
+        if f.startswith(CORE_SRC):
+            continue
+        consts = cs_consts(SRC[f])
+        for key, most in (("riddle", 75), ("rarity", 30), ("text", 120)):
+            v = cs_field(body, key, consts)
+            n += 1
+            if v is not None and len(v) > most:
+                fails.append("%s: secret %s is %d characters (keep it to %d): %s" % (where(f, pos), key, len(v), most, v[:40]))
     return n
 
 

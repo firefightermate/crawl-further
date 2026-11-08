@@ -3,6 +3,45 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## 1.2.1
+
+### Library (CrawlFurther.Core)
+- `Game.ContinueGame`: when the hero beats the boss, the game's own prompt offers to continue (`ExtraBossAttempts`
+  more tries, 2 by default) or end. Continue brings the winner back through the portal the way a failed try does.
+  A continued game that runs out of tries asks again, and ending then records the last winner's win. Off in the
+  tutorial, vault challenges and Online Crawl games. `Enabled` switches it off.
+- `GameEvents.GameContinued(int)`: raised once a continued run is back under way, with the number of continues so
+  far, for mods that change the game after a continue.
+- A win counts toward `Unlocks.StatWins` once per player per game, however often the game is continued.
+- Test mode: Run > Beat the boss now ends the boss fight as a win, to reach the prompt quickly.
+- `TierRules.StarterDamage` and `TierRules.StarterMinHealth`: a hit multiplier and a health floor for starting
+  monsters (evolve cost exactly 0, `TierRules.IsStarter`). Minions and blobs keep their base's cost and are not
+  starters.
+- `TierRules.StarterHealth`, `T2Health` and `T3Health`: max health multipliers by tier (`TierRules.Health`).
+- `TierRules.StarterChallenge`, `T2Challenge` and `T3Challenge`: strength inside a vault challenge only, above
+  or below 1. Health and hits on the hero each get the square root (`ChallengeBoost`,
+  `MonsterFactory.ChallengeStrength`).
+- All of these default to no change. Crawl: Further sets them so each tier matches the game's own monsters in
+  normal games, and players pass its challenges about as often as the game's own (`ContentSetup`).
+- `ClipBuilder.HandOff()` marks a clip that ends by handing the body to a behaviour (a charge, a carry, a dig) which
+  gives control back itself. `ClipBuilder.HandsOff(clip)` tells the self-test, which no longer reports such a clip
+  as never returning control.
+- The self-test accepts a prefab sprite on the first frame of its sheet's own Idle when a kit swaps the body's idle
+  clip for a stance (the menus keep the sheet's Idle).
+
+### Repository
+- `tools/challenge_sim.py`: a model of the vault challenge, fitted to Steam's global achievement rates, behind the
+  1.2.1 monster strengths. It prints the fit and, per tier, normal-game strength against the game's own and the
+  share of players passing a challenge, ours against the game's.
+- `tools/sprites/bust_painter.py`: the portrait painter (cushion-lit fills, five clean tones a surface, the game's
+  god-portrait look). `tools/sprites/origin_portraits.py` redraws the origin portraits with it, close up, and
+  `tools/sprites/hero_bust_layers.py` paints the custom hero's portrait layers the same way for `hero_custom.py`.
+- `tools/sprites/hero_gear.py` and `hero_custom.py`: the in-game headwear and face pieces are redrawn at the
+  vanilla head's scale, edged in each material's own dark tone.
+- `tools/sprites/zhekra_v2_t1.py` draws `ZhkRoyalGrub` (the Royal Grub's own sheet). `vhorrul_v2_t3a.py` gives the
+  Fuse Scorpion four death poses.
+- `tools/validate.py` (text) checks the length limit of every secret line, as the self-test does.
+
 ## 1.2.0
 
 ### Library (CrawlFurther.Core)

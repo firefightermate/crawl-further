@@ -414,7 +414,7 @@ namespace CrawlFurther.Content.Gods.Ossivar
             var st = new ClipBuilder(sh, "Stab", "ModOssRocStab").Once().AimLock(1)
                 .EvF(2, "AnimMove", 170f).Ev(2, "AnimAttack", stab).EvO(2, "AnimSound", v).Ev(4, "AnimMoveStop").Ev(-1, "AnimRun").Build();
             var gr = new ClipBuilder(sh, "Grab", "ModOssRocGrab").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop")
-                .Ev(2, "OssGrab").EvO(2, "AnimSound", v).Ev(-1, "OssCarry").Build();
+                .Ev(2, "OssGrab").EvO(2, "AnimSound", v).Ev(-1, "OssCarry").HandOff().Build();
             RocAirlift.CarryClip = Loop(sh, "Carry", "ModOssRocCarry");
             RocAirlift.DropClip = new ClipBuilder(sh, "Drop", "ModOssRocDrop").Once().Ev(-1, "AnimRun").Build();
             atk.Clear();

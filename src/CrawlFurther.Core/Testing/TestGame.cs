@@ -277,6 +277,16 @@ namespace CrawlFurther.Testing
             enc.Start(SystemLevel.GetCurrentRoom(), null, boss);
         }
 
+        /// <summary>The boss falls now, as if the hero had killed it: the game's win, then the continue prompt
+        /// (<see cref="Game.ContinueGame"/>). Only inside the boss room.</summary>
+        public static void BeatBoss()
+        {
+            var enc = s_bossEncounter.GetValue(Level()) as BossEncounter;
+            if (enc == null || !enc.GetActive()) throw new TestModeException("No boss fight is on (Go to the boss now first)");
+            if (!enc.GetInBossRoom()) throw new TestModeException("Step through the portal into the boss room first");
+            AccessTools.Method(typeof(BossEncounter), "OnBossKilled").Invoke(enc, null);
+        }
+
         /// <summary>Open the room's doors and take out the monsters in it (the game's own Open Doors).</summary>
         public static void OpenDoors() { s_openDoors.Invoke(Level(), null); }
 

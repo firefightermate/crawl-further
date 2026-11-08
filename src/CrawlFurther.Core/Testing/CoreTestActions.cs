@@ -116,6 +116,11 @@ namespace CrawlFurther.Testing
                 TestGame.GoToBoss(s_boss);
                 TestMode.Say("Boss portal: " + (s_boss != null ? BossName(s_boss) : "the game's pick"));
             });
+            TestMode.AddAction(Run, "Beat the boss now (game end, continue prompt)", () =>
+            {
+                TestGame.BeatBoss();
+                TestMode.Say("The boss falls: " + SystemPlayers.GetTotalBossAttempts() + " of " + SystemMenu.GetBossAttemptsAllowed() + " boss tries used");
+            });
             TestMode.AddAction(Run, "Open the doors", () => TestGame.OpenDoors());
             TestMode.AddAction(Run, "Next room", () => TestGame.NextRoom());
             TestMode.AddAction(Run, "Go to the shop", () => TestGame.GoToStore());

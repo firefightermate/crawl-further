@@ -230,11 +230,11 @@ namespace CrawlFurther.Content.Secrets
         public static readonly List<MonsterDef> Monsters = new List<MonsterDef>
         {
             // unique finals: no parent, evolve no further (evolveTo stays empty), tier-3 cost so they get the T3 multipliers
-            new MonsterDef { id = "SilverMoonwarden", art = "SilMoonwarden", basePrefab = "EnemyDarkGuardian", health = 11.5f, speedMult = 1.15f,
+            new MonsterDef { id = "SilverMoonwarden", art = "SilMoonwarden", basePrefab = "EnemyDarkGuardian", health = 13f, speedMult = 1.15f,
                              evolveCost = 4.5f, kit = WardenKit, customize = Silver },
-            new MonsterDef { id = "SilverCometStag", art = "SilCometStag", basePrefab = "EnemyEyelessBeast", health = 10.5f, speedMult = 1.1f,
+            new MonsterDef { id = "SilverCometStag", art = "SilCometStag", basePrefab = "EnemyEyelessBeast", health = 12.5f, speedMult = 1.1f,
                              evolveCost = 4.5f, kit = StagKit, customize = Silver },
-            new MonsterDef { id = "SilverAstrarch", art = "SilAstrarch", basePrefab = "EnemyPriestess", health = 12.5f, speedMult = 0.92f,
+            new MonsterDef { id = "SilverAstrarch", art = "SilAstrarch", basePrefab = "EnemyPriestess", health = 13.5f, speedMult = 0.92f,
                              evolveCost = 4.5f, kit = AstrarchKit, customize = Silver },
         };
 

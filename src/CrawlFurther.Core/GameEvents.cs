@@ -29,6 +29,10 @@ namespace CrawlFurther
         /// The argument is the hit; its m_amount is the damage dealt.</summary>
         public static event Action<DamageInfo> HeroDamaged;
 
+        /// <summary>The players chose to keep playing at the end of a game (<see cref="Game.ContinueGame"/>). The argument is
+        /// how many times this game has been continued (1 the first time). Runs once the run is back under way.</summary>
+        public static event Action<int> GameContinued;
+
         internal static void RaiseGameReady() { Raise(GameReady, nameof(GameReady)); }
         internal static void RaiseRunStart() { Raise(RunStart, nameof(RunStart)); }
         internal static void RaiseFloorStart() { Raise(FloorStart, nameof(FloorStart)); }
@@ -38,6 +42,7 @@ namespace CrawlFurther
         internal static void RaiseMonsterSpawned(Player p) { Raise(MonsterSpawned, p, nameof(MonsterSpawned)); }
         internal static bool HasHeroDamaged { get { return HeroDamaged != null; } }
         internal static void RaiseHeroDamaged(DamageInfo d) { Raise(HeroDamaged, d, nameof(HeroDamaged)); }
+        internal static void RaiseGameContinued(int n) { Raise(GameContinued, n, nameof(GameContinued)); }
 
         static void Raise(Action handlers, string name)
         {

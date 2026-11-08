@@ -1723,7 +1723,7 @@ namespace CrawlFurther.Content.Objects
             {
                 id = SecWell, group = "Objects", name = "The Well Spirit", iconSheet = "ObjBWishingWell",
                 riddle = "Pennies make wishes. A hundred pennies make a friend.",
-                rarity = "A hundred coins, over many runs",
+                rarity = "A hundred coins over many runs",
                 text = "A hundred coins in wishing wells raise the Well Spirit, who heals and pays.",
             });
             Secrets.Add(new SecretDef

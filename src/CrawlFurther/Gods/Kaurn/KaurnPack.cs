@@ -291,7 +291,7 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int br = Kit.AddEffect(p, KaurnFx.Breath, offsetX: 20f, offsetY: 23f);
             var b = Kit.Shot(sh, "Breath", "ModKrnWyvernBreath", 3, v, 0f, br).Ev(3, "KrnCharge").Build();
             var r = Special(sh, "Dive", "ModKrnWyvernDive").Ev(0, "AnimStartInvincibility").Ev(0, "KrnRidePlan").Ev(0, "KrnDischarge")
-                .EvO(0, "AnimSound", v).Ev(5, "KrnRideGo").Ev(5, "AnimStopInvincibility").Build();
+                .EvO(0, "AnimSound", v).Ev(5, "KrnRideGo").Ev(5, "AnimStopInvincibility").HandOff().Build();
             atk.Clear();
             // the beam reaches 2..60 px past the mouth (20 px ahead): x 22..80
             atk.Add(Kit.Attack(a0, b, 1.7f, rangeInner: 20f, rangeOuter: 72f, rangeRetreat: 18f));
@@ -331,7 +331,7 @@ namespace CrawlFurther.Content.Gods.Kaurn
             var st = new ClipBuilder(sh, "Paw", "ModKrnBullPaw").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(0, "AnimMoveStop").Ev(7, "AnimInputMultiplyStop").Ev(7, "AnimInputOff")
                 .Ev(1, "AnimAttack", stud).Ev(4, "AnimAttack", stud).Ev(7, "AnimAttack", stud).Ev(7, "KrnDischarge").EvO(7, "AnimSound", v)
-                .Ev(8, "KrnStampede").Build();
+                .Ev(8, "KrnStampede").HandOff().Build();
             atk.Clear();
             // horn box x 11..29 plus a 35 px/s step
             atk.Add(Kit.Attack(a0, gr, 1.6f, rangeInner: 6f, rangeOuter: 32f));

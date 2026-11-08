@@ -319,13 +319,13 @@ namespace CrawlFurther.Content.Secrets
                              evolveTo = new[] { "GoldWyrm", "GoldVault" }, kit = WardenKit, customize = Gild },
             new MonsterDef { id = "GoldRegent", art = "GoldRegent", basePrefab = "EnemyWitch", health = 5.5f, evolveCost = 2.5f,
                              evolveTo = new[] { "GoldSovereign", "GoldTreasurer" }, kit = RegentKit, customize = Gild },
-            new MonsterDef { id = "GoldWyrm", art = "GoldWyrm", basePrefab = "EnemyCapraDemon", health = 11.5f, speedMult = 0.9f, evolveCost = 4.5f,
+            new MonsterDef { id = "GoldWyrm", art = "GoldWyrm", basePrefab = "EnemyCapraDemon", health = 13f, speedMult = 0.9f, evolveCost = 4.5f,
                              kit = WyrmKit, customize = Gild },
-            new MonsterDef { id = "GoldVault", art = "GoldVault", basePrefab = "EnemyTroll", health = 12f, speedMult = 0.8f, evolveCost = 4.5f,
+            new MonsterDef { id = "GoldVault", art = "GoldVault", basePrefab = "EnemyTroll", health = 13.5f, speedMult = 0.8f, evolveCost = 4.5f,
                              kit = VaultKit, customize = Gild },
-            new MonsterDef { id = "GoldSovereign", art = "GoldSovereign", basePrefab = "EnemyPriestess", health = 11f, evolveCost = 4.5f,
+            new MonsterDef { id = "GoldSovereign", art = "GoldSovereign", basePrefab = "EnemyPriestess", health = 12.5f, evolveCost = 4.5f,
                              kit = SovereignKit, customize = Gild },
-            new MonsterDef { id = "GoldTreasurer", art = "GoldTreasurer", basePrefab = "EnemySkeletonPope", health = 10.5f, evolveCost = 4.5f,
+            new MonsterDef { id = "GoldTreasurer", art = "GoldTreasurer", basePrefab = "EnemySkeletonPope", health = 12.5f, evolveCost = 4.5f,
                              kit = TreasurerKit, customize = Books },
         };
 

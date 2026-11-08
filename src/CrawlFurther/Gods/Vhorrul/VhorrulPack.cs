@@ -72,8 +72,8 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             GrubGlide.Pop = new ClipBuilder(sh, "Rise", "ModGrubPop").Once().Durations(0.05f, 0.05f, 0.06f, 0.08f, 0.1f, 0.1f)
                 .EvF(0, "AnimShadowAlpha", 1f).Ev(0, "AnimCollideOn").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, spit, 1.6f, rangeInner: 45f, rangeOuter: 70f, retreatWhileAttacking: true));
-            Kit.SetSpecial(p, Kit.Attack(sp, melt, 0f, rangeInner: 0f, rangeOuter: 110f, rangeRetreat: 0f), 5.5f);
+            atk.Add(Kit.Attack(a0, spit, 1.3f, rangeInner: 45f, rangeOuter: 80f, retreatWhileAttacking: true));
+            Kit.SetSpecial(p, Kit.Attack(sp, melt, 0f, rangeInner: 0f, rangeOuter: 110f, rangeRetreat: 0f), 4.5f);
             Strike.Feet(p, n0, 6f);
         }
 
@@ -421,7 +421,7 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             int n0 = Strike.Mark(p);
             int wheel = Kit.AddEffect(p, VhorrulFx.WheelFire, attach: true, destroyOnAnimEnd: true, offsetX: 0.01f, offsetY: 15f);
             var globs = new List<int>();
-            foreach (var a in new[] { 35f, 145f, -35f, -145f }) globs.Add(Kit.AddEffect(p, VhorrulFx.WaxGlob, offsetX: 0.01f, offsetY: 1f, angle: a));
+            foreach (var a in new[] { 35f, 145f, -35f, -145f }) globs.Add(Kit.AddEffect(p, VhorrulFx.ChandelierGlob, offsetX: 0.01f, offsetY: 1f, angle: a));
             var w = new ClipBuilder(sh, "Wheel", "ModChandelierWheel").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop").Ev(2, "AnimAttack", wheel)
                 .EvO(2, "AnimSound", v);
             for (int i = 0; i < globs.Count; i++) w.Ev(5, "AnimAttack", globs[i], i * 0.01f);
@@ -465,7 +465,7 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             // ---- tier 1 (starters) ----
             new MonsterDef { id = "Wickling", basePrefab = "EnemyGiantRat_Fireball", health = 3.5f, speedMult = 1.05f, evolveCost = 0f,
                              evolveTo = new[] { "WaxenKnight", "Chandler" }, kit = WicklingKit, customize = PyreOnDeath },
-            new MonsterDef { id = "TallowGrub", basePrefab = "EnemyMushroom", health = 4.5f, speedMult = 0.9f, evolveCost = 0f,
+            new MonsterDef { id = "TallowGrub", basePrefab = "EnemyMushroom", health = 4.5f, evolveCost = 0f,
                              evolveTo = new[] { "VhWickworm", "VhTallowSow" }, kit = GrubKit, customize = PyreOnDeath },
             new MonsterDef { id = "AshMoth", basePrefab = "EnemyFlyingEye_Dodge", health = 3f, speedMult = 1.1f, evolveCost = 0f,
                              evolveTo = new[] { "MothMatron", "Candelabra" }, kit = AshMothKit, customize = PyreOnDeath },

@@ -28,9 +28,8 @@ namespace CrawlFurther.Monsters
         public const int MaxGoal = 30;
 
         /// <summary>
-        /// The goal by evolution cost: a monster takes the goal of the highest cost it reaches. The values are the
-        /// average goal of the game's own monsters at that cost (its tiers cost 0, 1, 2.5 and 4), rounded. Crawl:
-        /// Further's tiers cost 0, 2.5 and 4.5, so they get 4, 7 and 10. Change it before the vault opens.
+        /// The goal by evolution cost: a monster takes the goal of the highest cost it reaches. These are the averages of
+        /// the game's own goals at its costs 0, 1, 2.5 and 4. Change it before the vault opens.
         /// </summary>
         public static readonly List<KeyValuePair<float, int>> GoalByCost = new List<KeyValuePair<float, int>>
         {

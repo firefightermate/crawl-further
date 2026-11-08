@@ -611,11 +611,14 @@ def scorpion_sheet(outdir):
              Sc(sting=0.8, ph=4), Sc(sting=0.3, ph=5), Sc(ph=0)]
     knock = Sc(lean=-1.6, tail=-3.0, claw=0.8, claw2=0.8, ph=2)
     d0 = Sc(lean=-2.0, tail=-4.0, claw=1.0, claw2=1.0, ph=1, crouch=1.0)
-    d1 = Sc(crouch=2.4, claw=0.4, ph=3, dead=True, tail=-6.0)
+    # every death frame is its own pose: the recoil, the legs giving, the tail sagging, the wick smoking out
+    d1 = Sc(crouch=1.6, claw=0.7, claw2=0.6, lean=-1.0, tail=-5.0, ph=2, dead=True)
+    d2 = Sc(crouch=2.2, claw=0.5, claw2=0.3, lean=-0.4, tail=-5.6, ph=4, dead=True)
+    d3 = Sc(crouch=2.4, claw=0.4, ph=3, dead=True, tail=-6.0)
     anims = [("Idle", idle, [0.18, 0.15, 0.18, 0.15]), ("Run", run, [0.08] * 6),
              ("Snap", snap, [0.1, 0.1, 0.06, 0.05, 0.1, 0.12]),
              ("Sting", sting, [0.1, 0.12, 0.06, 0.06, 0.1, 0.1, 0.12])]
-    anims += tail_anims(idle[0], [d0, d1, d1, d1], [0.1, 0.12, 0.14, 0.4], knock)
+    anims += tail_anims(idle[0], [d0, d1, d2, d3], [0.1, 0.12, 0.14, 0.4], knock)
     return sheet("VhFuseScorpion", anims, outdir, scale=5)
 
 

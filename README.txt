@@ -1,4 +1,4 @@
-CRAWL: FURTHER 1.2.0
+CRAWL: FURTHER 1.2.1
 ====================
 
 Crawl: Further (formerly "Crawl Mod") is a big content mod for Crawl. Nine new gods with 189 monsters between
@@ -9,12 +9,28 @@ violet gem on its picture (portraits, shop pictures, vault cells and the evoluti
 Every mod monster, item, weapon, object, god, origin and ghost form has a vault entry, and everything has its
 own drawn art.
 
-Launch Crawl normally. The top-left banner shows "Crawl: Further 1.2.0" and "self-test OK" when everything
+Launch Crawl normally. The top-left banner shows "Crawl: Further 1.2.1" and "self-test OK" when everything
 loaded. If anything failed, BepInEx\plugins\CrawlFurther\CrawlMod_selftest.txt lists what and why.
 The mod is two DLLs in BepInEx\plugins\CrawlFurther: CrawlFurther.Core.dll (the library) and CrawlFurther.dll.
 Delete an old BepInEx\plugins\CrawlMod folder when you update. The config files keep their old names, so
 updating from any earlier version keeps your settings and saves. New settings files start with CrawlFurther.
 The mod's two bosses are switched off in this version (see BOSSES).
+
+NEW IN 1.2.1
+------------
+  - Keep playing after a win: Continue gives two more tries at the boss, and anyone can win again. Turn it off
+    with ContinueAfterWin in com.firefightermate.crawlfurther.cfg. Online Crawl games end as before for now.
+  - New art for every hero: close-up origin portraits in the style of the game's god portraits, matching
+    silver and gold hero portraits and icons, and headwear redrawn to fit the hero's head in game.
+  - Mod monsters are rebalanced against the game's own, in normal games and in vault challenges. Starters
+    were well behind and are stronger now.
+  - Tallow Grub is stronger: normal speed, a further and harder Wax Spit, a faster Melt that rises as soon
+    as the puddle is under the hero, and a harder burst.
+  - The secret monsters' finals have as much health as the gods' finals.
+  - The Royal Grub has its own art.
+  - Fixed: the Moth Matron's ember moths always flew right when not hunting a burning hero.
+  - Fixed: the Fuse Scorpion's death animation, a Wire Wyvern that could freeze, the self-test's false reports
+    and the Well Spirit's rarity line.
 
 NEW IN 1.2.0
 ------------

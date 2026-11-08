@@ -35,7 +35,8 @@ namespace CrawlFurther.UI
         {
             try
             {
-                if (won && __instance != null && __instance.IsHuman && __instance.IsHero && !UnlockHooks.Excluded()) Unlocks.Count(Unlocks.StatWins);
+                if (won && __instance != null && __instance.IsHuman && __instance.IsHero && !UnlockHooks.Excluded() && !Game.ContinueGame.WinCounted(__instance))
+                    Unlocks.Count(Unlocks.StatWins);
                 Unlocks.Save();
             }
             catch (Exception e) { UnlockHooks.Warn("wins", e); }

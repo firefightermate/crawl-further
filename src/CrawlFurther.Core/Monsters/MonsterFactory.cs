@@ -21,6 +21,9 @@ namespace CrawlFurther.Monsters
         /// <summary>Multiplier on hits against the hero, by prefab name: the tier rule times the def's own
         /// <see cref="MonsterDef.damageMult"/>. Every evolved monster has an entry.</summary>
         public static readonly Dictionary<string, float> DamageMult = new Dictionary<string, float>();
+        /// <summary>Strength adjustment in a vault challenge, by prefab name (<see cref="TierRules.Challenge"/>): health and
+        /// hits on the hero each get the square root. Only monsters with a boost have an entry.</summary>
+        public static readonly Dictionary<string, float> ChallengeStrength = new Dictionary<string, float>();
         /// <summary>The tier of every built monster (1 to 3, see <see cref="TierRules.Of"/>), by prefab name.</summary>
         public static readonly Dictionary<string, int> Tier = new Dictionary<string, int>();
 
@@ -121,6 +124,17 @@ namespace CrawlFurther.Monsters
                 var h = go.GetComponent<Health>();
                 if (h != null) R.Set(h, "m_healthMax", def.health);
             }
+            if (TierRules.IsStarter(def.evolveCost) && TierRules.StarterMinHealth > 0f)
+            {
+                var h = go.GetComponent<Health>();
+                if (h != null && R.Get<float>(h, "m_healthMax") < TierRules.StarterMinHealth) R.Set(h, "m_healthMax", TierRules.StarterMinHealth);
+            }
+            float healthMult = TierRules.Health(def.evolveCost);
+            if (Math.Abs(healthMult - 1f) > 0.001f)
+            {
+                var h = go.GetComponent<Health>();
+                if (h != null) R.Set(h, "m_healthMax", Mathf.Round(R.Get<float>(h, "m_healthMax") * healthMult * 2f) / 2f);
+            }
             if (Math.Abs(def.speedMult - 1f) > 0.001f)
             {
                 var mv = go.GetComponent<PlayerMovement>();
@@ -163,8 +177,10 @@ namespace CrawlFurther.Monsters
         {
             int tier = TierRules.Of(def.evolveCost);   // a def that keeps its base's cost (minions, blobs) stays tier 1
             Tier[def.PrefabName] = tier;
-            float dmg = TierRules.Damage(tier) * def.damageMult;
+            float dmg = (TierRules.IsStarter(def.evolveCost) ? TierRules.StarterDamage : TierRules.Damage(tier)) * def.damageMult;
             if (tier >= 2 || Math.Abs(dmg - 1f) > 0.001f) DamageMult[def.PrefabName] = dmg;
+            float challenge = TierRules.Challenge(def.evolveCost);
+            if (Math.Abs(challenge - 1f) > 0.001f) ChallengeStrength[def.PrefabName] = challenge;
             float ct = R.Get<float>(p, "m_specialAttackChargeTime");
             if (ct > 0f) R.Set(p, "m_specialAttackChargeTime", ct * TierRules.SpecialCharge(tier));
             if (def.specialChargeTime > 0f) R.Set(p, "m_specialAttackChargeTime", def.specialChargeTime);

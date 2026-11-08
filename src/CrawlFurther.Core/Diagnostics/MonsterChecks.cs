@@ -104,7 +104,7 @@ namespace CrawlFurther.Diagnostics
                         if (!string.IsNullOrEmpty(e.methodName) && !receivers.Contains(e.methodName))
                             Bad(who + " clip " + c.name + " sends '" + e.methodName + "', which nothing on the monster receives");
                     }
-                    if (!run) Bad(who + " clip " + c.name + " never returns control (no AnimRun)");
+                    if (!run && !ClipBuilder.HandsOff(c)) Bad(who + " clip " + c.name + " never returns control (no AnimRun)");
                     Note("    " + c.name + "  " + c.frameInfos.Count + " frames, " + c.length.ToString("0.00") + "s, cd " + a.m_cooldown);
                 }
                 Note("    portrait offset " + p.m_portraitOffset + " evolve " + p.m_portraitOffsetEvolve);
@@ -180,7 +180,11 @@ namespace CrawlFurther.Diagnostics
                     }
                 }
                 var idle = R.Get<exSpriteAnimClip>(p, "m_animationIdle");
-                if (idle != null && idle.frameInfos.Count > 0 && (spr.atlas != idle.frameInfos[0].atlas || spr.index != idle.frameInfos[0].index))
+                // a kit may swap the body's idle for a stance (the Sundered fights as its dark half alone) and keep the
+                // sheet's own Idle for the menus: either picture is right
+                var sheetIdle = sh.Anim("Idle");
+                bool sheetPicture = sheetIdle != null && sheetIdle.frames.Length > 0 && spr.atlas == sh.atlas && spr.index == sheetIdle.frames[0];
+                if (idle != null && idle.frameInfos.Count > 0 && !sheetPicture && (spr.atlas != idle.frameInfos[0].atlas || spr.index != idle.frameInfos[0].index))
                     Bad(who + ": the evolve hands draw the prefab sprite (" + spr.index + "), which is not its Idle frame " + idle.frameInfos[0].index);
                 var por = R.Get<exSpriteAnimClip>(p, "m_portraitAnim") ?? idle;
                 var run = R.Get<exSpriteAnimClip>(p, "m_animationRun");

@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.2.1
+
+- Keep playing after a win. When the hero beats the boss, pick Continue or End game. Continue gives the game two
+  more tries at the boss and brings the winner back to the dungeon through the portal, and anyone can win again.
+  If a continued game runs out of tries, you are asked again, and ending then gives the win to the last player who
+  beat the boss. Online Crawl games end as before for now.
+- New art for every hero. The origin portraits are close-up faces painted like the game's own god portraits, in
+  all four player colours. The silver and gold heroes' portraits, editor icons and slot pictures match them.
+- The headwear heroes wear in game is redrawn at the size of the hero's head: helms, hoods, hats, hair and face
+  pieces no longer sit on top like oversized blocks, for the origins and for every silver and gold hero choice.
+- Mod monsters are rebalanced against the game's own. In normal games, starters have at least 4 health and hit
+  45% harder (they were well behind the game's own starters), tier 2 monsters have 10% more health and hit 8%
+  harder, and finals are unchanged. In vault challenges, at the same goals (hero level 4, 7 and 10), they are set
+  so players pass them about as often as the game's own challenges: starters and tier 2 a little weaker there,
+  finals a little stronger.
+- Tallow Grub is stronger: it moves at normal speed, its Wax Spit flies further, hits harder and comes back
+  sooner, Melt charges faster, and the puddle rises the moment it is under the hero, for a player as for a bot.
+  The rising burst hits harder over a wider area.
+- The secret monsters had less health than every other final. The gold line's finals, the silver uniques and the
+  secret statue monsters now have as much as the gods' finals.
+- The Brood Mother's Royal Grub has its own art: gold plates and royal jelly running down its back.
+- Fixed: the Moth Matron's ember moths always flew to the right when no burning hero drew them in.
+- Fixed: the Fuse Scorpion's death held one pose for three frames. It now falls in four.
+- Fixed: a Wire Wyvern whose dive found nowhere to ride could stay frozen.
+- Fixed: the self-test reported problems that were not problems (monsters whose special hands the body to its own
+  behaviour, the Sundered's menu picture, the Royal Grub sharing the Acid Grub's art) and one that was: the Well
+  Spirit's rarity line was one letter too long.
+
 ## 1.2.0
 
 - A blob's special is on the ghost button (C, middle click or X), not on Back. Using the Brute's Bounce, the

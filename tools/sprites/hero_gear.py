@@ -194,129 +194,107 @@ def match(m, near=None):
 # tone, and its own dark ink ('k' and friends) on the silhouette, where the gear meets the floor behind the hero.
 #            0123456789ABCDE
 GEAR = {
-    # steel kettle helm: a lit dome, a riveted band, a flared brim, mail hanging at the nape
-    "Sellsword": dict(y0=3, rows=[
-        "......kkkk.....",
-        ".....k4433k....",
-        "....k443322k...",
-        "....k3r22r1k...",
-        "...kk111111kk..",
-        ".....kMm..k....",
-        ".....kmM.......",
-        "......km.......",
-        ".......k.......",
-    ], pal={"k": "1c1e26", "4": "e2e2ea", "3": "a8a8b4", "2": "767682", "1": "4c4c58", "r": "f2f2f8",
-            "m": "4a4a56", "M": "8c8c98"}),
-    # green hood with its tail hanging down the back: the crown and nape covered, the face open in its shadow
-    "Huntress": dict(y0=4, rows=[
-        "......kkkk.....",
-        ".....k-==-k....",
-        "....k-====+k...",
-        "...k-=+#..++k..",
-        "...k=+##.......",
-        "..k-=+#........",
-        "..k=++#........",
-        ".k=+kk.........",
-        ".k+k...........",
-        "..k............",
-    ], pal={"k": "142014", "-": "7c9050", "=": "56683c", "+": "3a4a2a", "#": "232e1c"}),
-    # violet cowl whose peak trails back, a cold glow where the eye is
-    "Hexblade": dict(y0=1, rows=[
-        "..kk...........",
-        "..kIk..........",
-        "...kIk.........",
-        "...kINkkkk.....",
-        "....kINNIIk....",
-        "....kINNInnk...",
-        "....kNnC..nk...",
-        "....kNnC..%....",
-        "....kNnC.......",
-        "....knnC.......",
-        ".....knk.......",
-        "......k........",
-    ], face="%", pal={"k": "100a18", "C": "24163a", "n": "45265c", "N": "6c408c", "I": "9a6cc0", "%": "ecc0ff"}),
-    # wild spiky hair (the penitent goes bare-headed) and a streak of blood down the cheek
-    "Flagellant": dict(y0=2, rows=[
-        "....k..k..k....",
-        "....kk.kk.kk.k.",
-        "...kHkkHhkhHkk.",
-        "..kHHhHHhhHhhk.",
-        "...khHhhdhhdk..",
-        "...kdhdk....k..",
-        "....kdd........",
-        "....kd...r.....",
-        ".........r.....",
-    ], face="r", pal={"k": "221416", "H": "a68654", "h": "86643a", "d": "5e4228", "r": "b02420"}),
-    # pilgrim's hat: a tall felt crown, a coloured band with a scallop-shell badge, a broad brim drooping at the ends
-    "Pilgrim": dict(y0=2, rows=[
+    # The vanilla hero's head is 3-4 px across (R = the back hair pixel at (7, 7), crown row y 6, face x 8-9, chin y 10):
+    # gear sits on it at the same scale, with no black ring. Edges ('k') are the darkest tone of the gear's own
+    # material, like the hero's outline. Face pieces (listed in "face") hide when the face is turned away.
+    # an iron nasal helm: a small lit dome, a band, the nasal bar in front of the face, mail hanging at the nape
+    "Sellsword": dict(y0=4, rows=[
+        "...............",
+        ".......kk......",
+        "......k432k....",
+        "......k3221k...",
+        "......k1111k...",
+        "......M...2....",
+        "......m........",
+    ], pal={"k": "2a2c36", "4": "e2e4ec", "3": "a8aab6", "2": "767884", "1": "4c4e5a", "M": "8c8c98", "m": "4a4a56"}),
+    # a green hood: the crown and the back of the head covered, its rim over the brow, the tail down the back
+    "Huntress": dict(y0=5, rows=[
         ".......kkk.....",
-        "......k6664k...",
-        ".....k666442k..",
-        ".....krrwrRRk..",
-        "..kk664444422kk",
-        ".k442222222211k",
-        "..kk........kk.",
-    ], pal={"k": "1c1c24", "6": "8a8a9a", "4": "5a5a6a", "2": "3e3e4a", "1": "2a2a34", "r": "b02a20", "R": "6e1412",
-            "w": "e8e0c8"}),
-    # black tricorn: both brim points turned up and edged in gold, a red plume curling off the back
-    "Gambler": dict(y0=0, rows=[
-        "..rr...........",
-        ".rRrr..........",
-        "..kRrr.kkkk....",
-        "...kRRk4332k...",
-        "..kGgk333221kGk",
-        "..kgGg222211gGk",
-        "...kkGggggggkk.",
-    ], pal={"k": "13110e", "4": "5c4e48", "3": "403430", "2": "2a2420", "1": "1e1a16", "g": "9c8a4a", "G": "e0c46a",
-            "r": "ff4a2c", "R": "a8281a"}),
-    # bristling ginger mane, a braided beard, a blue woad stripe across the eye
-    "Reaver": dict(y0=2, rows=[
-        ".....k..k.k....",
-        "....kEk.EkEk...",
-        "...kEEkEEOEEk..",
-        "..kEEOEEOOEOEk.",
-        "...kEOOOOOOOOk.",
-        "..kOOOzz....k..",
-        "...kOz.bBb.....",
-        "...kOz.zO......",
-        "....kzOOOk.....",
-        ".....kOzOk.....",
-        "......kzk......",
-        ".......k.......",
-    ], face="bBzO", pal={"k": "251b16", "E": "f09a4a", "O": "c06428", "z": "7c381c", "b": "3d6fb0", "B": "6a9ad8"}),
-    # charcoal hood with a lit crown, a teal cloth mask over nose and mouth, its knot trailing at the back
-    "Cutpurse": dict(y0=4, rows=[
-        ".......kkkk....",
-        "......k8664k...",
-        ".....k86644kk..",
-        "....k864#..4k..",
-        "....k64#.......",
-        "....k64#TTTk...",
-        "...kT44tTttk...",
-        "..kTk.kkkk.....",
-    ], face="Tt", pal={"k": "161c1e", "8": "8a847e", "6": "66605c", "4": "4a4544", "#": "2c2a2a", "T": "4e867e",
-                       "t": "2e5e58"}),
-    # chapel-de-fer: a low steel dome on a broad brim that droops at both ends, rivets round the brim
-    "Arbalist": dict(y0=3, rows=[
-        "......kkkk.....",
-        ".....k5543k....",
-        "....k443322k...",
-        "..kk44r322r21kk",
-        ".k32222222111k.",
-        "..kk.......kk..",
-    ], pal={"k": "1c1a20", "5": "eeeef4", "4": "b0b0ba", "3": "84848e", "2": "62626e", "1": "3a3a44", "r": "f2f2f8"}),
-    # white hair caught up in a bun with a gold pin, wisps at the nape, gold-rimmed spectacles
-    "Scholar": dict(y0=2, rows=[
+        "......k-==k....",
+        ".....k-=..=k...",
+        ".....k=+.......",
+        "....k=+#.......",
+        "....k++........",
+        "...k+k.........",
+    ], pal={"k": "1c2a1a", "-": "7c9050", "=": "56683c", "+": "3a4a2a", "#": "232e1c"}),
+    # a violet cowl, its peak trailing up and back, a cold glow where the eye is
+    "Hexblade": dict(y0=2, rows=[
+        "....k..........",
+        "....kNk........",
+        ".....kNkk......",
+        "......kNNIk....",
+        "......kNIINk...",
+        ".....kNn..Ik...",
+        ".....knC.%.....",
+        ".....knC.......",
+        "....knC........",
         "....kk.........",
-        "...kWQk.kkk....",
-        "...kQ:Pk4WWk...",
-        "....k:kWWWQ:k..",
-        "....kWWQQQ::k..",
-        "....k:W:.......",
-        ".....k:..gGg...",
-        "......:........",
-    ], face="gG", pal={"k": "4a4642", "W": "f2eee6", "4": "ffffff", "Q": "c6c2ba", ":": "8e8a84", "P": "d8b04a",
-                       "g": "b0903c", "G": "fff0b0"}),
+    ], face="%", pal={"k": "1a1024", "C": "24163a", "n": "45265c", "N": "6c408c", "I": "9a6cc0", "%": "ecc0ff"}),
+    # wild black hair standing up in tufts, a streak of blood down the cheek
+    "Flagellant": dict(y0=4, rows=[
+        "......d.d.d....",
+        ".....dHdHhd....",
+        "......hHhhhd...",
+        ".....dhd.......",
+        "......d..r.....",
+        ".........r.....",
+    ], face="r", pal={"d": "1e1414", "H": "5a4440", "h": "3c2c2a", "r": "a02420"}),
+    # a wide felt hat: a low crown, a coloured band, the brim drooping at both ends
+    "Pilgrim": dict(y0=3, rows=[
+        ".......kkk.....",
+        "......k664k....",
+        "......krrRk....",
+        "....k6644221k..",
+        ".....kk...kk...",
+    ], pal={"k": "221a16", "6": "7e6a56", "4": "5e5040", "2": "463a30", "1": "2e2620", "r": "b02a20", "R": "6e1412"}),
+    # a black tricorn edged in gold, both brim points turned up, a plume curling off the back
+    "Gambler": dict(y0=2, rows=[
+        "....rr.........",
+        "...rRr.........",
+        "....RkkkkG.....",
+        ".....k3321k....",
+        ".....G22211G...",
+        "......GggggG...",
+    ], pal={"k": "1a1614", "3": "5c4e48", "2": "403430", "1": "2a2420", "g": "8c7a42", "G": "d4b462",
+            "r": "d84a2c", "R": "8e2618"}),
+    # a ginger mane, a blue woad stripe across the eye, a braided beard
+    "Reaver": dict(y0=4, rows=[
+        "......E.E......",
+        ".....EEOEEz....",
+        "....zEOOOOz....",
+        "....zOOz.......",
+        "....zOz.bB.....",
+        ".....z.........",
+        ".......zOO.....",
+        "........Oz.....",
+    ], face="bBO", pal={"z": "5e2a14", "E": "e0904a", "O": "b05a24", "b": "3d6fb0", "B": "6a9ad8"}),
+    # a charcoal hood, a teal cloth mask over the nose and mouth, its knot at the back
+    "Cutpurse": dict(y0=5, rows=[
+        ".......kkk.....",
+        "......k866k....",
+        ".....k864..6...",
+        ".....k64.......",
+        ".....k4#.TT....",
+        "....Tt...T.....",
+    ], face="T", pal={"k": "1c1e20", "8": "8a847e", "6": "66605c", "4": "4a4544", "#": "2c2a2a", "T": "4e867e",
+                      "t": "2e5e58"}),
+    # a kettle hat: a low steel dome on a broad brim that droops at both ends
+    "Arbalist": dict(y0=4, rows=[
+        ".......kkk.....",
+        "......k5432k...",
+        "....k4322221k..",
+        ".....kk...kk...",
+    ], pal={"k": "26262e", "5": "eeeef4", "4": "b0b0ba", "3": "84848e", "2": "62626e", "1": "3a3a44"}),
+    # white hair caught up in a bun with a gold pin, gold-rimmed spectacles
+    "Scholar": dict(y0=3, rows=[
+        ".....kk........",
+        "....kWQkPk.....",
+        ".....kQWWk.....",
+        "......WWQQ:....",
+        ".....:W........",
+        "......:..gG....",
+    ], face="gG", pal={"k": "6a6660", "W": "e6e2da", "Q": "b6b2aa", ":": "8e8a84", "P": "d8b04a",
+                       "g": "a08038", "G": "f0e0a0"}),
 }
 
 

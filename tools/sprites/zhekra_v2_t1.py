@@ -8,7 +8,8 @@ from zhekra_v2_rigs import (Rig, Xf, chain, ik, lerp, segs, leg, gait6, legs6, a
 
 # ================================================================== ACID GRUB: a fat segmented grub, hooked mandibles
 def grub_body(r, n=5, fat=0.0, wave=0.0, ph=0.0, head=(0.0, 0.0), jaw=0.3, rear=0.0, drool=0, beads=True, bulge=-1,
-              squash=0.0, z=0.0, x0=None, sp=2.25, hsize=1.0, dead=False, mat="cream", head_mat="chit", hurt=False, plates=True):
+              squash=0.0, z=0.0, x0=None, sp=2.25, hsize=1.0, dead=False, mat="cream", head_mat="chit", hurt=False, plates=True,
+              plate_mat="chit"):
     """A grub lying along the floor, tail at the left, head reared at the right: one fat tapered tube with segment
     seams. n segments, fat adds girth, wave a peristaltic ripple (phase ph), rear lifts the front, bulge = index of a
     segment swollen with acid (it glows through the skin)."""
@@ -36,7 +37,7 @@ def grub_body(r, n=5, fat=0.0, wave=0.0, ph=0.0, head=(0.0, 0.0), jaw=0.3, rear=
     for i in range(n):
         x, y = (pts[i][0] + pts[i + 1][0]) / 2.0, (pts[i][1] + pts[i + 1][1]) / 2.0; R = (rad[i] + rad[i + 1]) / 2.0
         if plates and 0 < i < n - 1 and i % 2 == (n % 2):
-            r.ell(x - 0.2, y - R * 0.72, 1.4, 0.7, "chit", z + 0.04, bias=0.2)
+            r.ell(x - 0.2, y - R * 0.72, 1.4, 0.7, plate_mat, z + 0.04, bias=0.2)
         if beads and (i + int(ph * 1.6)) % 2 == 1 and 0 < i < n - 1:
             r.dot(x + 0.3, y - R * 0.15, "aglow", 3, z + 0.06)
         if i == bulge:
@@ -61,9 +62,21 @@ def grub_body(r, n=5, fat=0.0, wave=0.0, ph=0.0, head=(0.0, 0.0), jaw=0.3, rear=
     return pts, (hx, hy)
 
 
-def grub(n=5, fat=0.0, extra=None, dust_at=None, splat_at=None, glob=None, rear=0.0, **kw):
+def grub(n=5, fat=0.0, extra=None, dust_at=None, splat_at=None, glob=None, rear=0.0, royal=False, **kw):
     r = Rig()
+    if royal:
+        kw.setdefault("head_mat", "royal"); kw.setdefault("plate_mat", "royal")
     pts, hd = grub_body(r, n=n, fat=fat + 0.5, hsize=1.6, sp=2.0, rear=rear + 0.5, **kw)
+    if royal:
+        # the Royal Grub: fed on royal jelly, it wears gold plates and the jelly still beads and runs down its back
+        ph = kw.get("ph", 0.0)
+        for i in (1, 3):
+            (xa, ya), (xb, yb) = pts[i], pts[i + 1]
+            x, y = (xa + xb) / 2.0, (ya + yb) / 2.0
+            k = int(ph * 2 + i) % 3
+            r.ell(x + 0.4, y - 2.6, 1.0, 0.8, "jelly", z_jelly(i), flat=3)
+            if not kw.get("dead"):
+                drip(r, x + 0.8, y - 1.6, 1 + k % 2, z_jelly(i) + 0.01, ph=k, mat="jelly")
     if glob:
         gx, gy, k = glob
         r.ell(hd[0] + gx, hd[1] + gy, 1.4 - 0.2 * k, 1.1, "aglow", 2.0, flat=3)
@@ -75,10 +88,15 @@ def grub(n=5, fat=0.0, extra=None, dust_at=None, splat_at=None, glob=None, rear=
     return r.resolve()
 
 
-def grub_anims(k, suffix):
-    """The four moving anims of a grub that has grown k times (k extra segments, fatter)."""
+def z_jelly(i):
+    return 1.5 + i * 0.01
+
+
+def grub_anims(k, suffix, **style):
+    """The four moving anims of a grub that has grown k times (k extra segments, fatter). style: grub() options for
+    every frame (royal=True for the Brood Mother's Royal Grub)."""
     n, fat = 5 + k, 0.3 * k
-    G = lambda **kw: grub(n=n, fat=fat, **kw)
+    G = lambda **kw: grub(n=n, fat=fat, **dict(style, **kw))
     idle = [G(ph=i * 0.5, wave=0.25, head=(0, [0, -0.3, -0.5, -0.3][i]), jaw=[0.2, 0.3, 0.45, 0.3][i],
               drool=[1, 2, 2, 0][i]) for i in range(4)]
     run = [G(ph=i / 6.0 * math.tau, wave=0.7, squash=[0.0, 0.08, 0.16, 0.12, 0.05, 0.0][i], head=([0.5, 0.0, -0.4, -0.2, 0.2, 0.5][i], [0, 0.3, 0.5, 0.2, 0, -0.2][i]),
@@ -122,6 +140,23 @@ def grub_sheet(outdir):
     return sheet("ZhkGrub", anims, outdir, scale=7)
 
 
+def royal_grub_sheet(outdir):
+    """The Royal Grub, the Brood Mother's minion: an Acid Grub fed on royal jelly (gold plates, jelly running down its
+    back). It only bites, so it has no Spit and no Gorge stages."""
+    anims = [a for a in grub_anims(0, "", royal=True) if not a[0].startswith("Spit")]
+    idle0 = anims[0][1][0]
+    R = lambda **kw: grub(royal=True, **kw)
+    d0 = R(jaw=1.0, head=(-0.5, -1.5), rear=1.0, hurt=True)
+    d1 = R(jaw=0.8, head=(0.5, 0.5), squash=0.1, wave=0.6, ph=1.0, hurt=True)
+    d2 = R(jaw=0.5, head=(0.0, 1.5), squash=0.2, dead=True, splat_at=(0, -2, 1))
+    d3 = R(jaw=0.6, head=(0.0, 1.5), squash=0.25, dead=True, beads=False,
+           extra=lambda r, p, h: puddle(r, 0.0, 5.0, -1.0, mat="jelly"))
+    knock = R(rear=1.4, head=(-1.5, -2.0), jaw=0.9, squash=0.1, hurt=True)
+    anims += tail_anims(idle0, [d0, d1, d2, d3], [0.1, 0.12, 0.12, 0.4], knock)
+    return sheet("ZhkRoyalGrub", anims, outdir, scale=7)
+
+
+SYNC["ZhkRoyalGrub"] = {"Bite": [("LUNGE: jaws at (10, -3); box 12 x 12 at (12, -4)", 2), ("snap", 3)]}
 SYNC["ZhkGrub"] = {"Bite": [("LUNGE: jaws at (10, -3); box 12 x 12 at (12, -4)", 2), ("snap", 3)],
                    "Spit": [("SPIT: the glob leaves the mouth at (10, -7)", 3)]}
 NOTES["ZhkGrub"] = ("Gorge: Idle1/Run1/Bite1/Spit1 .. Idle3/Run3/Bite3/Spit3 are the grub after 1-3 feeds (one more segment and "
@@ -339,4 +374,4 @@ def beetle_sheet(outdir):
 SYNC["ZhkBeetle"] = {"Snap": [("SNAP + SHOVE: jaws at (12, -3); box 12 x 12 at (11, -3)", 2)],
                      "Resin": [("SPIT: the resin glob leaves the jaws at (10, -3), runs along the floor", 3)]}
 
-JOBS = [("ZhkGrub", grub_sheet), ("ZhkLarva", larva_sheet), ("ZhkDrone", drone_sheet), ("ZhkBeetle", beetle_sheet)]
+JOBS = [("ZhkGrub", grub_sheet), ("ZhkRoyalGrub", royal_grub_sheet), ("ZhkLarva", larva_sheet), ("ZhkDrone", drone_sheet), ("ZhkBeetle", beetle_sheet)]

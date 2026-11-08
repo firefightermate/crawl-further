@@ -49,10 +49,13 @@ namespace CrawlFurther.Monsters
             if (damage == null || damage.m_source == null || damage.m_amount <= 0f || !__instance.CanDamage(damage.m_source, hitFriendly))
                 return true;
             var attacker = damage.m_source.m_sourceOwnerPlayer;
-            float tierMult;
-            if (attacker != null && !damage.m_isDamageFromStatus && attacker != __instance.gameObject && __instance.gameObject == ModUtil.Hero()
-                && MonsterFactory.DamageMult.TryGetValue(ModUtil.PrefabName(attacker), out tierMult))
-                damage.m_amount *= tierMult;
+            if (attacker != null && !damage.m_isDamageFromStatus && attacker != __instance.gameObject && __instance.gameObject == ModUtil.Hero())
+            {
+                string prefab = ModUtil.PrefabName(attacker);
+                float tierMult, boost;
+                if (MonsterFactory.DamageMult.TryGetValue(prefab, out tierMult)) damage.m_amount *= tierMult;
+                if (ChallengeBoost.Active && MonsterFactory.ChallengeStrength.TryGetValue(prefab, out boost)) damage.m_amount *= Mathf.Sqrt(boost);
+            }
             if (Items.ItemRegistry.RunDamageHooks(__instance, damage, attacker))
             {
                 __result = false;
