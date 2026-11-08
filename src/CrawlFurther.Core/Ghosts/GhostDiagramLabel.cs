@@ -9,7 +9,9 @@ namespace CrawlFurther.Ghosts
 
     /// <summary>
     /// The join screen's controls picture (MenuJoinPlayer, state "InputDiagram": one picture each for keyboard, mouse and
-    /// pad, drawn into the art) gets one more line under it for the ghost button, which the picture cannot show:
+    /// pad) is swapped for the redrawn one with the ghost button (<see cref="ControlDiagrams"/>). A player whose ghost
+    /// button is not the one drawn (a changed key, a second keyboard, an online player) keeps the game's picture and
+    /// gets one more line under it for the ghost button:
     /// "Ghost power, blob special: C" with the player's own key, middle click or pad button (GhostControls.Name, so it
     /// follows a changed binding; an Online Crawl player's reads "C, middle click or X"). It is a copy of the god page's
     /// own label text (fonts a translation mod swaps come along), a child of the picture so it shows and hides with it,
@@ -32,7 +34,8 @@ namespace CrawlFurther.Ghosts
                 var line = diagram.transform.Find(Name);
                 bool show = states.GetStateName() == "InputDiagram" && !SystemInput.GetCabinetMode();
                 var pd = R.Get<PlayerData>(__instance, "m_data");
-                if (!show || pd == null || pd.IsBot)
+                // the redrawn picture shows the ghost button itself; the line stays for a button it does not show
+                if (!show || pd == null || pd.IsBot || ControlDiagrams.Apply(diagram, pd))
                 {
                     if (line != null) line.gameObject.SetActive(false);
                     return;
