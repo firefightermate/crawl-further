@@ -66,6 +66,15 @@ namespace CrawlFurther.UI
         public static bool IsSummoned(GameObject prefab) { return prefab != null && s_summoned.Contains(prefab); }
         /// <summary>A mod monster entry with a vault challenge.</summary>
         public static bool HasChallenge(SystemLibrary.LibraryEntry e) { return e != null && s_challenge.Contains(e); }
+        /// <summary>The line a mod monster page without a challenge shows where the challenge lines go.</summary>
+        public const string NoChallengeText = "No challenge available";
+
+        /// <summary>The page line of a mod monster without a challenge, placed like the game's challenge lines.</summary>
+        internal static List<KeyValuePair<int, string>> NoChallengeLines()
+        {
+            return new List<KeyValuePair<int, string>> { new KeyValuePair<int, string>(2, NoChallengeText) };
+        }
+
         /// <summary>A mod monster entry the game would offer a challenge for, but which has none (minions, blobs).</summary>
         public static bool NoChallenge(SystemLibrary.LibraryEntry e) { return IsMod(e) && e is SystemLibrary.LibraryEntryMonster && !s_challenge.Contains(e); }
 
@@ -1093,7 +1102,8 @@ namespace CrawlFurther.UI
     /// When the selection lands on a found mod monster, the page uses the item layout: its name under the rule, then
     /// its line, laid out to fit. A monster with a challenge keeps the game's "Challenge" label and gets the game's
     /// challenge lines under its line (<see cref="LibraryEntries.ChallengeLines"/>, as many as fit above the button
-    /// row). One without (minions, blobs) shows neither.
+    /// row). One without (minions, blobs) has no label and says so in the same place, in the same text
+    /// (<see cref="LibraryEntries.NoChallengeText"/>).
     /// </summary>
     [HarmonyPatch(typeof(MenuLibrary), "UpdateItem")]
     static class Patch_LibraryItemText
@@ -1122,8 +1132,8 @@ namespace CrawlFurther.UI
                 // the entry's text is "Name\nline": the name becomes the page title
                 string text = e.m_description ?? string.Empty;
                 if (!string.IsNullOrEmpty(e.m_name) && text.StartsWith(e.m_name + "\n", StringComparison.Ordinal)) text = text.Substring(e.m_name.Length + 1);
-                if (challenge) VaultGrid.ShowChallengePage(__instance, e.m_name, text, LibraryEntries.ChallengeLines(__instance, e));
-                else VaultGrid.ShowPage(__instance, e.m_name, text);
+                VaultGrid.ShowChallengePage(__instance, e.m_name, text,
+                                            challenge ? LibraryEntries.ChallengeLines(__instance, e) : LibraryEntries.NoChallengeLines());
             }
             catch (Exception ex) { FurtherCore.Log.LogWarning("Library item text: " + ex.Message); }
         }

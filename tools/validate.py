@@ -33,6 +33,7 @@ Checks (each prints OK or FAIL with the problems underneath):
   previews      every monster/fx sheet's _preview.png is at least as new as its png (previews are not committed:
                 missing ones are a warning)
   package       the files tools/package.sh ships contain every sheet the code loads
+  menulists     a pick list copied from a vanilla MenuTextMenu switches the copy's component on (else it ignores input)
 """
 import collections, glob, json, os, re, shutil, sys, tempfile
 
@@ -971,7 +972,8 @@ def c_vaultfit(fails, warns):
     n = 0
     challenge_rows = int((L["DescTop"] - L["ButtonRowTop"]) // L["lineH"])
     # the game's own challenge lines (MenuLibrary's strings, English) take one full-width row each
-    for t in ("Challenge not yet attempted", "Last attempt: LEVEL 30", "Best attempt: LEVEL 30", "-PASSED-", "CHALLENGE"):
+    for t in ("Challenge not yet attempted", "Last attempt: LEVEL 30", "Best attempt: LEVEL 30", "-PASSED-", "CHALLENGE",
+              "No challenge available"):
         if merge_tips.width(t) > L["RightOpen"] - L["TextLeft"]:
             fails.append("the game's challenge line %r is wider than a vault row" % t)
     for at, kind, name, text in vault_texts():
@@ -984,7 +986,8 @@ def c_vaultfit(fails, warns):
         if len(lines) > max_lines:
             fails.append("%s takes %d lines, the vault shows %d (cut with ...): %r" % (label, len(lines), max_lines, text))
         elif kind == "monster" and len(lines) > challenge_rows - 1:
-            # a monster with a challenge shares the rows above the button row with at least one challenge line
+            # a monster page shares the rows above the button row with at least one challenge line (or "No challenge
+            # available" for a minion or blob)
             fails.append("%s takes %d lines; a monster page keeps %d of its %d rows for the line and one for the "
                          "challenge (VaultGrid.ShowChallengePage): %r" % (label, len(lines), challenge_rows - 1, challenge_rows, text))
         for i, l in enumerate(lines[:max_lines]):
@@ -1544,6 +1547,29 @@ def c_patch_order(fails, warns):
                 n += 1
                 if name not in classes:
                     fails.append("PatchOrder lists %s, but no class has that name" % name)
+    return n
+
+
+@check("menulists")
+def c_menulists(fails, warns):
+    """A pick list made by copying a vanilla menu list (Object.Instantiate of a MenuTextMenu's GameObject) must switch
+    the copy's MenuTextMenu on. The copy takes the original's component state, and the origin picker switches the god
+    list off before it copies it: a copy left off draws but never runs MenuTextMenu.Update, so it ignores every press
+    (the 1.2.0 blob page)."""
+    n = 0
+    for f, raw in SRC.items():
+        t = strip_comments(raw)
+        for m in re.finditer(r"Instantiate\(\s*(\w+)\.gameObject\s*\)", t):
+            body_end = t.find("return ", m.end())
+            body = t[m.end():body_end if body_end > 0 else len(t)]
+            if "GetComponent<MenuTextMenu>" not in body:
+                continue
+            n += 1
+            if not re.search(r"\.enabled\s*=\s*true", body):
+                fails.append("%s:%d: a copied MenuTextMenu is never switched on (set .enabled = true where it is made)"
+                             % (os.path.basename(f), t.count("\n", 0, m.start()) + 1))
+    if n == 0:
+        warns.append("no copied menu lists found")
     return n
 
 

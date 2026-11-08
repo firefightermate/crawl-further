@@ -188,7 +188,12 @@ namespace CrawlFurther.Content.Heroes
             return m;
         }
 
-        /// <summary>An empty, inactive copy of the god list (its own player, owner and settings; no items yet).</summary>
+        /// <summary>
+        /// An empty, inactive copy of the god list (its own player, owner and settings; no items yet), its MenuTextMenu
+        /// switched on. The copy takes the god list's component state, and Open has already switched the god list off
+        /// (SetGodListsVisible): a copy left that way never runs MenuTextMenu.Update, the one place a list reads its
+        /// player's Left, Right, Action and mouse, so it would sit on screen and ignore every press.
+        /// </summary>
         MenuTextMenu CloneGodList(string name)
         {
             var god = R.Get<MenuTextMenu>(m_menu, "m_menu");
@@ -211,6 +216,8 @@ namespace CrawlFurther.Content.Heroes
             R.Set(m, "m_selectedItem", -1);
             m.SetOwner(gameObject);
             m.SetPlayerId(PlayerId);
+            m.enabled = true;
+            m.SetActive(true);
             return m;
         }
 
@@ -354,6 +361,7 @@ namespace CrawlFurther.Content.Heroes
                 if (m_stage == 2)
                 {
                     // back to the forms, the confirmed one still highlighted; the pick is left as it was
+                    Plugin.Log.LogInfo("Blob step: back for player " + (PlayerId + 1));
                     m_stage = 1; CancelFrame = Time.frameCount; m_openFrame = Time.frameCount;
                     ShowStage();
                 }
@@ -394,6 +402,7 @@ namespace CrawlFurther.Content.Heroes
                 var d = m_blobIndex < m_blobEntries.Count ? m_blobEntries[m_blobIndex] : null;
                 if (d == null || !GhostBlobs.IsOpen(d)) { if (m_blobBoxes != null) m_blobBoxes.Deny(); return; }
                 GhostBlobs.SetPick(PlayerId, m_blobForm, d);
+                Plugin.Log.LogInfo("Blob step: confirm for player " + (PlayerId + 1) + ": " + d.id + " (" + m_blobForm.id + ")");
                 Confirm();
             }
         }
@@ -402,6 +411,7 @@ namespace CrawlFurther.Content.Heroes
         void MsgModBlobLocked()
         {
             if (!IsOpen || m_stage != 2 || Time.frameCount <= m_openFrame + 1) return;
+            Plugin.Log.LogInfo("Blob step: locked blob for player " + (PlayerId + 1));
             if (m_blobBoxes != null) m_blobBoxes.Deny();
         }
 
@@ -414,6 +424,7 @@ namespace CrawlFurther.Content.Heroes
             var pd = SystemPlayers.GetPlayer(PlayerId);
             var form = GhostPack.Forms[m_ghostIndex];
             if (pd == null || pd.IsBot || !HasBlobChoice(form)) { Confirm(); return; }
+            Plugin.Log.LogInfo("Blob step: open for player " + (PlayerId + 1) + " (" + form.id + ")");
             m_blobForm = form;
             m_stage = 2;
             m_openFrame = Time.frameCount;
@@ -473,6 +484,8 @@ namespace CrawlFurther.Content.Heroes
             m_blobIndex = Mathf.Max(0, m_blobEntries.IndexOf(now));
             m.SetSelectedItem(m_blobIndex);
             m_blobList = m;
+            Plugin.Log.LogInfo("ModBlobList: " + n + " entries for player " + (PlayerId + 1) + " at " + m.transform.position + ", starting on "
+                               + m_blobEntries[m_blobIndex].id + (m.isActiveAndEnabled ? "" : " (NOT ACTIVE: it will take no input)"));
             return true;
         }
 
