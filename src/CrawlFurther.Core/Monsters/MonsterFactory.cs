@@ -21,9 +21,6 @@ namespace CrawlFurther.Monsters
         /// <summary>Multiplier on hits against the hero, by prefab name: the tier rule times the def's own
         /// <see cref="MonsterDef.damageMult"/>. Every evolved monster has an entry.</summary>
         public static readonly Dictionary<string, float> DamageMult = new Dictionary<string, float>();
-        /// <summary>Strength adjustment in a vault challenge, by prefab name (<see cref="TierRules.Challenge"/>): health and
-        /// hits on the hero each get the square root. Only monsters with a boost have an entry.</summary>
-        public static readonly Dictionary<string, float> ChallengeStrength = new Dictionary<string, float>();
         /// <summary>The tier of every built monster (1 to 3, see <see cref="TierRules.Of"/>), by prefab name.</summary>
         public static readonly Dictionary<string, int> Tier = new Dictionary<string, int>();
 
@@ -179,8 +176,6 @@ namespace CrawlFurther.Monsters
             Tier[def.PrefabName] = tier;
             float dmg = (TierRules.IsStarter(def.evolveCost) ? TierRules.StarterDamage : TierRules.Damage(tier)) * def.damageMult;
             if (tier >= 2 || Math.Abs(dmg - 1f) > 0.001f) DamageMult[def.PrefabName] = dmg;
-            float challenge = TierRules.Challenge(def.evolveCost);
-            if (Math.Abs(challenge - 1f) > 0.001f) ChallengeStrength[def.PrefabName] = challenge;
             float ct = R.Get<float>(p, "m_specialAttackChargeTime");
             if (ct > 0f) R.Set(p, "m_specialAttackChargeTime", ct * TierRules.SpecialCharge(tier));
             if (def.specialChargeTime > 0f) R.Set(p, "m_specialAttackChargeTime", def.specialChargeTime);

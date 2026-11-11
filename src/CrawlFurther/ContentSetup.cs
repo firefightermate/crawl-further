@@ -49,14 +49,11 @@ namespace CrawlFurther.Content
             });
             ModMusic.AddFolder(System.IO.Path.Combine(Plugin.ModDir, "music"));
             // 1.2.1 (tools/challenge_sim.py): in normal games each tier matches the game's own monsters of that tier;
-            // in vault challenges players pass ours about as often as the game's own (Steam's global rates)
+            // a monster is the same in a vault challenge as in a normal game (no challenge-only strength)
             TierRules.StarterMinHealth = 4f;
             TierRules.StarterDamage = 1.45f;     // starters were well behind the game's own
             TierRules.T2Health = 1.1f;
             TierRules.T2Damage = 1.08f;
-            TierRules.StarterChallenge = 0.75f;
-            TierRules.T2Challenge = 0.85f;
-            TierRules.T3Challenge = 1.2f;
             Game.ContinueGame.Enabled = Plugin.I.Config.Bind("Game", "ContinueAfterWin", true,
                 "When the hero beats the boss, offer to keep playing with two more tries at the boss.").Value;
             Game.ChaosMode.Enabled = Plugin.I.Config.Bind("Game", "Chaos", true,

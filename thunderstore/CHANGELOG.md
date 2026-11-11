@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.1
+
+- Mod monsters are now exactly the same in vault challenges as in normal games. They had a different strength inside challenges, which made a challenge a poor way to practise with a monster or judge it.
+- The Poltergeist's hex bolt can no longer hit the hero from on top of him, and does nothing in the shop.
+
 ## 1.3.0
 
 - Crawl Chaos, a new game mode that will grow with each update. Start it from Chaos on the main menu, under
