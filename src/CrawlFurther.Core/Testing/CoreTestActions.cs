@@ -184,10 +184,11 @@ namespace CrawlFurther.Testing
 
         static void AddUnlocks()
         {
-            TestMode.AddToggle(Unlocks, "Open everything for this session (nothing is saved)", () => TestCheats.UnlockAll, v =>
+            TestMode.AddToggle(Unlocks, "Open everything (on at every start; nothing goes in your save)", () => TestCheats.UnlockAll, v =>
             {
                 TestCheats.UnlockAll = v;
-                TestMode.Say(v ? "Everything is open until the game closes or this is switched off: gods, heroes, slots, blobs, secrets and every vault entry (so every monster challenge)" : "Back to your real unlocks");
+                TestMode.OpenEverything = v;
+                TestMode.Say(v ? "Everything is open, now and at every start in test mode: gods, heroes, slots, blobs, secrets and every vault entry (so every monster challenge). Menus already open show it once you go back into them" : "Back to your real unlocks, now and at every start");
             });
             TestMode.AddAction(Unlocks, "The game's open-everything item (writes your save)", () =>
             {

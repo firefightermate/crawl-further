@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.2
+
+- Every mod monster now has its own vault challenge goal, like the game's own monsters. Stronger monsters ask for a higher hero level and weaker ones a lower one, inside the range the game uses for that tier.
+- Mod monsters are a little stronger than the game's own of the same tier, in normal games and challenges alike.
+
 ## 1.3.1
 
 - Mod monsters are now exactly the same in vault challenges as in normal games. They had a different strength inside challenges, which made a challenge a poor way to practise with a monster or judge it.
