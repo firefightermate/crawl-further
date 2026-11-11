@@ -1,4 +1,4 @@
-CRAWL: FURTHER 1.3.0
+CRAWL: FURTHER 1.3.1
 ====================
 
 Crawl: Further (formerly "Crawl Mod") is a big content mod for Crawl. Nine new gods with 189 monsters between
@@ -9,12 +9,18 @@ violet gem on its picture (portraits, shop pictures, vault cells and the evoluti
 Every mod monster, item, weapon, object, god, origin and ghost form has a vault entry, and everything has its
 own drawn art.
 
-Launch Crawl normally. The top-left banner shows "Crawl: Further 1.3.0" and "self-test OK" when everything
+Launch Crawl normally. The top-left banner shows "Crawl: Further 1.3.1" and "self-test OK" when everything
 loaded. If anything failed, BepInEx\plugins\CrawlFurther\CrawlMod_selftest.txt lists what and why.
 The mod is two DLLs in BepInEx\plugins\CrawlFurther: CrawlFurther.Core.dll (the library) and CrawlFurther.dll.
 Delete an old BepInEx\plugins\CrawlMod folder when you update. The config files keep their old names, so
 updating from any earlier version keeps your settings and saves. New settings files start with CrawlFurther.
 The mod's two bosses are switched off in this version (see BOSSES).
+
+NEW IN 1.3.1
+------------
+  - Mod monsters are exactly the same in vault challenges as in normal games, so a challenge shows how a
+    monster really plays.
+  - The Poltergeist's hex bolt can't hit the hero from on top of him, and does nothing in the shop.
 
 NEW IN 1.3.0
 ------------
@@ -199,7 +205,8 @@ Violet pips are mod choices:
   Binder       your fodder is a Gel. Press the ghost button (see GHOST BUTTON below) with your Gels
                within about 90 px of you to fuse them: 2 Gels make a Brute, 3 make a Titan. Only Gels
                fuse, so a Brute or a Titan stays as it is. A dying Titan leaves a Gel behind
-  Poltergeist  attack to throw a weak hex bolt at the hero. Your fodder is a Spitter
+  Poltergeist  attack to throw a weak hex bolt at the hero (not from on top of him, not in the shop).
+               Your fodder is a Spitter
   Banshee      attack wails for 3 ectoplasm, slowing a hero within 40 px. Your Keener fodder can slow
   Sexton       back digs up to 3 graves; a Revenant claws out when the hero comes within 52 px, or after 10 s
   Kindler      your fodder is Fusebelly bombs; attack lights the nearest one within 140 px

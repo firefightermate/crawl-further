@@ -3,6 +3,21 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## 1.3.1
+
+### Library (CrawlFurther.Core)
+- Removed the vault challenge's strength adjustment: `ChallengeBoost`, `MonsterFactory.ChallengeStrength`,
+  `TierRules.StarterChallenge`, `T2Challenge`, `T3Challenge` and `TierRules.Challenge`. A mod monster is the same
+  in a challenge as in a normal game.
+
+### Content
+- `PoltergeistLimits`: the Poltergeist can't start its throw within 32 px of the hero or while the hero is in the
+  shop (a postfix on `Attacks.CanAttack`), and a hex bolt that reaches the hero in either case does nothing (a
+  damage hook).
+
+### Repository
+- `tools/challenge_sim.py` models the same strength in challenges as in normal games.
+
 ## 1.3.0
 
 ### Library (CrawlFurther.Core)

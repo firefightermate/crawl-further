@@ -448,6 +448,7 @@ namespace CrawlFurther.Content.Ghosts
             if (Titan != null && gelSpawner != null) { Kit.AddDeathSpawn(Titan, gelSpawner); Strike.DeathAtFeet(Titan); }
             Strike.KeepAllScales();
             RegisterBlobs();
+            PoltergeistLimits.Register();
 
             Plugin.Log.LogInfo("Ghost forms ready: " + built.Count + " blob monsters");
             try { GhostV11.Register(); } catch (Exception e) { Plugin.Log.LogError("Ghost forms (Banshee to Miser) failed: " + e); }

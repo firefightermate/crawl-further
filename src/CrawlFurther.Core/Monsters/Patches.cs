@@ -52,9 +52,8 @@ namespace CrawlFurther.Monsters
             if (attacker != null && !damage.m_isDamageFromStatus && attacker != __instance.gameObject && __instance.gameObject == ModUtil.Hero())
             {
                 string prefab = ModUtil.PrefabName(attacker);
-                float tierMult, boost;
+                float tierMult;
                 if (MonsterFactory.DamageMult.TryGetValue(prefab, out tierMult)) damage.m_amount *= tierMult;
-                if (ChallengeBoost.Active && MonsterFactory.ChallengeStrength.TryGetValue(prefab, out boost)) damage.m_amount *= Mathf.Sqrt(boost);
             }
             if (Items.ItemRegistry.RunDamageHooks(__instance, damage, attacker))
             {

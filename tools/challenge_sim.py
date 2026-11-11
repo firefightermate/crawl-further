@@ -4,9 +4,9 @@
     python3 tools/challenge_sim.py --fit    # refit the player population to Steam's numbers (slow)
 
 The aim (firefightermate, 2026-11-08): mod monsters closely match the base game's. In normal games their strength
-matches the game's own monsters of the same tier. In vault challenges, at the game's own goals (hero level 4, 7
-and 10), players pass them about as often as they pass the game's own challenges of that tier, judged against the
-real pass rates on Steam.
+matches the game's own monsters of the same tier. A monster is the same in a vault challenge as in a normal game
+(2026-11-11: the challenge is where players practise with a monster and judge it), so the challenge pass rates this
+prints are a check on the goals (hero level 4, 7 and 10), not something tuned per challenge.
 
 The challenge, as the game runs it (SystemLevelChallengeHelper):
   - one room, the player's monster against a bot hero (difficulty 1). He starts at hero level 1 with Vitality,
@@ -52,10 +52,10 @@ TIERS = [
 ]
 VANILLA = {0: 3.12, 2.5: 5.59, 4: 10.36}   # the game's own tier medians, same measure
 
-# 1.2.1 (ContentSetup). In every game: starters at least 4 health (x1.14 on the median) and hits x1.45, tier 2
-# health x1.1 and hits x1.08, finals unchanged. Inside a challenge only: strength x0.75 / x0.85 / x1.2.
+# ContentSetup: starters at least 4 health (x1.14 on the median) and hits x1.45, tier 2 health x1.1 and hits x1.08,
+# finals unchanged. The same in challenges (no challenge-only strength since 1.3.1).
 EVERYWHERE = {0: 1.14 * 1.45, 2.5: 1.1 * 1.08, 4: 1.0}
-CHALLENGE = {0: 0.75, 2.5: 0.85, 4: 1.2}
+CHALLENGE = {0: 1.0, 2.5: 1.0, 4: 1.0}
 
 # the game's own challenges: (evolve cost, goal) for all 61
 GAME_CHALLENGES = [(0, 3), (0, 4), (0, 4), (0, 4), (0, 4), (0, 5), (0, 5), (0, 5), (1, 2), (1, 3), (1, 4), (1, 4),
