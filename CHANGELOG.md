@@ -3,6 +3,22 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## 1.3.3
+
+### Content
+- Carrion Saint (`SaintFlock`): Murder looses `Flock` (5) crows one after another from its shoulders in a fan aimed at
+  the hero; `CrowWall` lives 1.1 s and seeks (`OssCrowSeekFx.turn`, now a field: 70 for a sent crow, 45 for Murder).
+- Jelly Siren (`JellyTrail`): the lash reaches `LashReach` (75 px), drawn as tentacles flung out and drawn back
+  (`BelLashOut`), with the hitbox to match; Jet Pulse stretches the trail to `TrailSurge` (140 px) for `Surge` s, then
+  it shrinks back.
+- Slime Hag (`HagKnot`): a landed bite wraps the hero (new sheet `FxBelHagKnot`: Wrap, Hold, Tear), roots him, and
+  tears for a second bite if he is still within 40 px.
+- Finals: `TierRules.T3Health` and `T3Damage` 1.2 after playtests; `challenge_goals.py` divides the buff back out
+  (`PLAYTEST`), so goals are unchanged.
+
+### Repository
+- `tools/concepts/chaos_biomes.py`: concept room mock-ups for the chaos biomes (not shipped).
+
 ## 1.3.2
 
 ### Content

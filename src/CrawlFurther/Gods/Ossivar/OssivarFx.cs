@@ -238,7 +238,10 @@ namespace CrawlFurther.Content.Gods.Ossivar
             // ---- Carrion Saint: its perched crows are its shots
             CrowShot = Thrown("ModOssCrowShot", "FxOssCrow", 8, 7, 140f, 1.2f, 0.9f, 0.4f);
             Add<OssCrowSeekFx>(CrowShot);
-            CrowWall = Thrown("ModOssCrowWall", "FxOssCrow", 8, 7, 160f, 0.5f, 0.7f, 0.4f);
+            // Murder's crows: a fan from its shoulders that bends in a little, about 180 px
+            CrowWall = Thrown("ModOssCrowWall", "FxOssCrow", 8, 7, 160f, 1.1f, 0.7f, 0.4f);
+            Add<OssCrowSeekFx>(CrowWall);
+            if (CrowWall != null) CrowWall.GetComponent<OssCrowSeekFx>().turn = 45f;
 
             // ---- The Ossuary
             OssuarySlam = FxKit.TimedHit("ModOssuarySlam", "TrollGroundPoundBigShockwave", "FxSpikeRing", "Play", 0, 3, 1.3f, 1.4f,

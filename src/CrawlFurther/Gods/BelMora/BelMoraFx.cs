@@ -27,7 +27,7 @@ namespace CrawlFurther.Content.Gods.BelMora
         public static GameObject CastBellFly, BellShadow, CastBellLand, BellStand, BellPunch, LiftToll, CaptainGaff, GrappleKick,
                                  GrappleHook, RopeLink, KelpHand, CrownLash, ThornShot, ThornPatch, CrownArm, ArmDie, ArmGrow,
                                  BroodSpine, EggSpine, BroodEgg, EggMark, EggPop, TridentThrust, CoralShard, JellyLash, TrailSeg, TrailSting,
-                                 JetRing, GulperScoop, GulperChew, HagRasp, HagTear, HagGlob, SlimeSplash, KrakenSlam, Tentacle,
+                                 JetRing, GulperScoop, GulperChew, HagRasp, HagTear, HagGlob, HagWrap, HagHold, HagSnap, SlimeSplash, KrakenSlam, Tentacle,
                                  KrakenSwat, BelltowerCrush, BelltowerRing, PoolRing, ColossusSlam, GardenPulse, Bud, ChampionUpper,
                                  Haymaker;
         // indicators
@@ -273,7 +273,9 @@ namespace CrawlFurther.Content.Gods.BelMora
                                           bleed, 0.2f, rotate: false);
             if (CoralShard != null) FxFactory.SetContacts(CoralShard, destroyOnHit: true, spawnOnHit: Splash);
             // ---- Jelly Siren: the lash, her trailing tentacles and the sting rings of her jets
-            JellyLash = Melee("ModJellyLash", 1.2f, 0.5f, 18f, 12f, goo, 0.5f, 0.14f);
+            // the lash reaches about 75 px ahead along the tentacles JellyTrail flings out (was 31 px, the body's reach)
+            JellyLash = Melee("ModJellyLash", 1.2f, 0.5f, 18f, 12f, goo, 0.5f, 0.16f);
+            Strike.HitBox(JellyLash, JellyTrail.LashReach - 12f, 12f, (JellyTrail.LashReach - 12f) / 2f, 0f);
             TrailSeg = Loop("ModBelTrailSeg", "FxBelTentacleTrail", "Glow");
             if (TrailSeg != null) { FxFactory.SetEffect(TrailSeg, destroyOnAnimEnd: false, canFlip: false, freeRotate: true); Strike.ArtAt(TrailSeg, "FxBelTentacleTrail", 7, 4); }
             TrailSting = FxKit.BodyHit("ModJellyTrailSting", 0.5f, 0f, 0.2f, 0.1f, goo, 1f);
@@ -286,8 +288,14 @@ namespace CrawlFurther.Content.Gods.BelMora
             Strike.HitBox(GulperChew, 10f, 10f);
             // ---- Slime Hag: the rasp, the tear and the slime spew
             HagRasp = Melee("ModHagRasp", 1.3f, 0.6f, 16f, 12f, bleed, 0.4f);
-            HagTear = FxKit.BodyHit("ModHagTear", 0.7f, 0f, 0.3f, 0.1f, bleed, 1f);
-            Strike.HitBox(HagTear, 12f, 12f);
+            HagTear = FxKit.BodyHit("ModHagTear", 0.9f, 0f, 0.5f, 0.1f, bleed, 1f);
+            Strike.HitBox(HagTear, 16f, 16f);
+            // the knot round the hero: Wrap, Hold (looped until the tear), Tear
+            HagWrap = At(FxKit.Visual("ModHagWrap", "FxBelHagKnot", "Wrap"), "FxBelHagKnot", 18, 28);
+            HagHold = At(Loop("ModHagHold", "FxBelHagKnot", "Hold"), "FxBelHagKnot", 18, 28);
+            HagSnap = At(FxKit.Visual("ModHagSnap", "FxBelHagKnot", "Tear"), "FxBelHagKnot", 18, 28);
+            foreach (var k in new[] { HagWrap, HagSnap })
+                if (k != null) FxFactory.SetEffect(k, destroyOnAnimEnd: true, canFlip: false, freeRotate: false);
             SlimeSplash = At(FxKit.Visual("ModBelSlimeSplash", "FxBelSting", "Play"), "FxBelSting", 11, 13);
             HagGlob = FxKit.Projectile("ModHagGlob", "webBall", "FxBelSlimeGlob", "Fly", 150f, 0.7f, 0.8f, 0.2f);
             if (HagGlob != null) FxFactory.SetContacts(HagGlob, destroyOnHit: true);
