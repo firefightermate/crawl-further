@@ -48,12 +48,12 @@ namespace CrawlFurther.Content
                 wordmark = "BrandFurther", spark = "BrandSpark", menuPip = "BrandPip", menuMote = "BrandMote",
             });
             ModMusic.AddFolder(System.IO.Path.Combine(Plugin.ModDir, "music"));
-            // 1.2.1 (tools/challenge_sim.py): in normal games each tier matches the game's own monsters of that tier;
-            // a monster is the same in a vault challenge as in a normal game (no challenge-only strength)
+            // tools/challenge_sim.py: each tier's median monster is a little stronger than the game's own of that tier
+            // (about x1.08); a monster is the same in a vault challenge as in a normal game
             TierRules.StarterMinHealth = 4f;
-            TierRules.StarterDamage = 1.45f;     // starters were well behind the game's own
-            TierRules.T2Health = 1.1f;
-            TierRules.T2Damage = 1.08f;
+            TierRules.StarterDamage = 1.62f;     // with the floor: each tier a little stronger than the game's own (about x1.08)
+            TierRules.T2Health = 1.14f;
+            TierRules.T2Damage = 1.13f;
             Game.ContinueGame.Enabled = Plugin.I.Config.Bind("Game", "ContinueAfterWin", true,
                 "When the hero beats the boss, offer to keep playing with two more tries at the boss.").Value;
             Game.ChaosMode.Enabled = Plugin.I.Config.Bind("Game", "Chaos", true,
@@ -71,6 +71,9 @@ namespace CrawlFurther.Content
             FurtherVault.Register();
             SlotChallenges.Register();
             BlobChallenges.Register();
+            // each monster's own challenge goal (tools/challenge_goals.py); a def's own challenge still wins
+            foreach (var kv in Monsters.ChallengeGoalsGenerated.Goals)
+                if (Challenges.Of("Mod" + kv.Key) == null) Challenges.Register("Mod" + kv.Key, new ChallengeDef { goal = kv.Value });
 
             // monsters and heroes in play
             MonsterEvents.PlayerAwake += HeroItemHooks.PlayerAwake;

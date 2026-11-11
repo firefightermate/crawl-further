@@ -1,4 +1,4 @@
-CRAWL: FURTHER 1.3.1
+CRAWL: FURTHER 1.3.2
 ====================
 
 Crawl: Further (formerly "Crawl Mod") is a big content mod for Crawl. Nine new gods with 189 monsters between
@@ -9,12 +9,20 @@ violet gem on its picture (portraits, shop pictures, vault cells and the evoluti
 Every mod monster, item, weapon, object, god, origin and ghost form has a vault entry, and everything has its
 own drawn art.
 
-Launch Crawl normally. The top-left banner shows "Crawl: Further 1.3.1" and "self-test OK" when everything
+Launch Crawl normally. The top-left banner shows "Crawl: Further 1.3.2" and "self-test OK" when everything
 loaded. If anything failed, BepInEx\plugins\CrawlFurther\CrawlMod_selftest.txt lists what and why.
 The mod is two DLLs in BepInEx\plugins\CrawlFurther: CrawlFurther.Core.dll (the library) and CrawlFurther.dll.
 Delete an old BepInEx\plugins\CrawlMod folder when you update. The config files keep their old names, so
 updating from any earlier version keeps your settings and saves. New settings files start with CrawlFurther.
 The mod's two bosses are switched off in this version (see BOSSES).
+
+NEW IN 1.3.2
+------------
+  - Every mod monster has its own challenge goal, like the game's own: stronger monsters ask for a higher hero
+    level, weaker ones a lower one, inside the range the game uses for that tier.
+  - Mod monsters are a little stronger than the game's own of the same tier, in every game.
+  - Test mode opens everything from the start (gods, heroes, slots, blobs, secrets, every vault entry and
+    challenge), and the test panel's switch is remembered.
 
 NEW IN 1.3.1
 ------------

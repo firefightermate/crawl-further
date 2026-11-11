@@ -3,6 +3,24 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## 1.3.2
+
+### Content
+- `ChallengeGoalsGenerated`: each mod monster's vault challenge goal, registered as its `ChallengeDef` unless its
+  def sets one. `Challenges.GoalByCost` stays as the fallback.
+- Tier numbers: starters' hits x1.62 (was 1.45), tier 2 health x1.14 and hits x1.13 (were 1.1 and 1.08). Each tier's
+  median monster is about 1.08 of the game's own.
+
+### Library (CrawlFurther.Core)
+- Test mode: `[Testing] OpenEverything` in `CrawlMod.Debug.cfg` (on by default) opens everything from the start of
+  the game, so menus built at boot show it. The test panel's switch saves to it.
+
+### Repository
+- `tools/challenge_goals.py` sets the goals: each monster's simulated score with the in-game tier numbers, half way
+  from its tier's goal, inside the game's own range for the tier. Checked against the game's 59 monster challenges,
+  the model gets each tier's average right but not the order within a tier, hence the half step.
+- `tools/challenge_model/` (`modx.py`, `vanilla.py`, `power.py`): the monsters' combat numbers the model reads.
+
 ## 1.3.1
 
 ### Library (CrawlFurther.Core)

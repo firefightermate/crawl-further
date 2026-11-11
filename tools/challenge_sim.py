@@ -52,9 +52,10 @@ TIERS = [
 ]
 VANILLA = {0: 3.12, 2.5: 5.59, 4: 10.36}   # the game's own tier medians, same measure
 
-# ContentSetup: starters at least 4 health (x1.14 on the median) and hits x1.45, tier 2 health x1.1 and hits x1.08,
-# finals unchanged. The same in challenges (no challenge-only strength since 1.3.1).
-EVERYWHERE = {0: 1.14 * 1.45, 2.5: 1.1 * 1.08, 4: 1.0}
+# ContentSetup: starters at least 4 health (x1.14 on the median) and hits x1.62, tier 2 health x1.14 and hits x1.13,
+# finals unchanged: each tier about x1.08 of the game's own (asked 2026-11-11: "a littleeeee stronger than base game").
+# The same in challenges (no challenge-only strength since 1.3.1). Each monster's goal: tools/challenge_goals.py.
+EVERYWHERE = {0: 1.14 * 1.62, 2.5: 1.14 * 1.13, 4: 1.0}
 CHALLENGE = {0: 1.0, 2.5: 1.0, 4: 1.0}
 
 # the game's own challenges: (evolve cost, goal) for all 61

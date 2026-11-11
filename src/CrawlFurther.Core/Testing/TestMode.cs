@@ -184,6 +184,15 @@ namespace CrawlFurther.Testing
             return s;
         }
 
+        static BepInEx.Configuration.ConfigEntry<bool> s_open;
+
+        /// <summary>Open everything while test mode is on (CrawlMod.Debug.cfg [Testing] OpenEverything). Setting it saves.</summary>
+        internal static bool OpenEverything
+        {
+            get { Read(); return s_open == null || s_open.Value; }
+            set { Read(); if (s_open != null) s_open.Value = value; }
+        }
+
         static void Read()
         {
             if (s_read) return;
@@ -195,6 +204,10 @@ namespace CrawlFurther.Testing
                     "Test mode: a panel for trying gods, monsters, items and bosses without playing whole runs, and the " +
                     "game's own debug menu (Tab + `). Off in online matches. Leave off for normal play.");
                 s_key = cfg.Bind("Testing", "PanelKey", KeyCode.F2, "The key that opens and closes the test panel.");
+                s_open = cfg.Bind("Testing", "OpenEverything", true,
+                    "While test mode is on: every god, hero, slot, blob, secret and vault entry (so every monster challenge) " +
+                    "reads as open from the moment the game starts. Nothing is written to the save. The test panel's " +
+                    "Unlocks page switches it and keeps the choice here.");
             }
             catch (Exception e) { FurtherCore.Log.LogWarning("Test mode config: " + e.Message); }
         }
@@ -208,7 +221,8 @@ namespace CrawlFurther.Testing
             TestPanel.Create();
             CoreTestActions.Register();
             SelfTest.AddSection(2200, "test mode", TestChecks.Run);
-            FurtherCore.Log.LogInfo("Test mode is on: " + PanelKey + " opens the test panel");
+            TestCheats.UnlockAll = OpenEverything;
+            FurtherCore.Log.LogInfo("Test mode is on: " + PanelKey + " opens the test panel" + (TestCheats.UnlockAll ? "; everything is open" : ""));
         }
     }
 }
