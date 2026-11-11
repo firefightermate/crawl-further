@@ -9,36 +9,48 @@ namespace CrawlFurther.Content.Gods.BelMora
 
     /// <summary>
     /// Jelly Siren. Trailing Tentacles: her tentacles trail <see cref="Trail"/> px behind her along the path she took;
-    /// crossing them stings (slows), at most once every <see cref="Gap"/> s. Jet Pulse: three pulses, each jets her
-    /// <see cref="Jet"/> px round the hero in an arc and sheds a sting ring where she stops. Tell: glowing lines behind
-    /// her that fade at the far end.
+    /// crossing them stings (slows), at most once every <see cref="Gap"/> s. Tentacle Lash (her basic): she flings the
+    /// tentacles <see cref="LashReach"/> px at the hero and draws them back. Jet Pulse: three pulses, each jets her
+    /// <see cref="Jet"/> px round the hero in an arc and sheds a sting ring where she stops; while it lasts and
+    /// <see cref="Surge"/> s after, the trail grows to <see cref="TrailSurge"/> px, so the jets leave a stinging arc
+    /// round the hero that then shrinks back. Tell: glowing lines behind her that fade at the far end.
     /// </summary>
     public class JellyTrail : BelBehaviour
     {
         public const float Trail = 40f, Gap = 0.6f, Touch = 5f, Jet = 30f, JetTime = 0.12f, Height = 4f;
+        /// <summary>The lash's reach (px), the trail's length while Jet Pulse surges (px), how long the surge holds after the
+        /// last pulse (s) and how fast the trail shrinks back afterwards (px/s).</summary>
+        public const float LashReach = 75f, TrailSurge = 140f, Surge = 2.5f, Shrink = 30f;
+        const float LashOut = 0.08f, LashBack = 0.2f;
+
+        readonly BelLine m_lash = new BelLine();
+        float m_surge, m_len = Trail;
 
         readonly List<Vector2> m_path = new List<Vector2>();
         readonly BelLine[] m_segs = { new BelLine(), new BelLine(), new BelLine(), new BelLine() };
         float m_gap;
         int m_turn = 1;
 
-        protected override void OnEnable() { base.OnEnable(); m_path.Clear(); m_gap = 0f; }
-        protected override void OnDisable() { base.OnDisable(); foreach (var s in m_segs) s.Clear(); }
+        protected override void OnEnable() { base.OnEnable(); m_path.Clear(); m_gap = 0f; m_surge = 0f; m_len = Trail; }
+        protected override void OnDisable() { base.OnDisable(); foreach (var s in m_segs) s.Clear(); m_lash.Clear(); }
 
         void Update()
         {
-            if (!Alive) { foreach (var s in m_segs) s.Clear(); return; }
+            if (!Alive) { foreach (var s in m_segs) s.Clear(); m_lash.Clear(); return; }
             if (m_gap > 0f) m_gap -= Time.deltaTime;
+            // Jet Pulse surge: the trail holds long, then shrinks back to its usual length
+            if (m_surge > 0f) { m_surge -= Time.deltaTime; m_len = TrailSurge; }
+            else m_len = Mathf.Max(Trail, m_len - Shrink * Time.deltaTime);
             Vector2 me = Me + new Vector2(0f, Height);
             if (m_path.Count == 0 || (m_path[m_path.Count - 1] - me).sqrMagnitude > 9f) m_path.Add(me);
-            // keep only the last 40 px of path
+            // keep only the last m_len px of path
             float len = 0f;
             int keep = m_path.Count - 1;
             for (int i = m_path.Count - 1; i > 0; i--)
             {
                 len += (m_path[i] - m_path[i - 1]).magnitude;
                 keep = i - 1;
-                if (len >= Trail) break;
+                if (len >= m_len) break;
             }
             if (keep > 0) m_path.RemoveRange(0, keep);
             Draw();
@@ -78,7 +90,36 @@ namespace CrawlFurther.Content.Gods.BelMora
         public void BelJet()
         {
             if (!Alive || !gameObject.activeInHierarchy) return;
+            m_surge = Surge;
+            m_len = TrailSurge;
             StartCoroutine(JetRun());
+        }
+
+        /// <summary>Clip event (Lash frame 3): the tentacles fling out toward the hero and draw back (the hit is the lash
+        /// effect, as long as this).</summary>
+        public void BelLashOut()
+        {
+            if (!Alive || !gameObject.activeInHierarchy || BelMoraFx.TrailSeg == null) return;
+            StartCoroutine(LashRun());
+        }
+
+        IEnumerator LashRun()
+        {
+            Vector2 dir = ToHero();
+            if (dir.sqrMagnitude < 0.01f) dir = Face;
+            dir.Normalize();
+            float t = 0f;
+            while (t < LashOut + LashBack && Alive)
+            {
+                t += Time.deltaTime;
+                float k = t < LashOut ? t / LashOut : 1f - (t - LashOut) / LashBack;
+                Vector2 hand = Me + new Vector2(Face.x >= 0f ? 6f : -6f, 7f);
+                // a slight whip: the middle sags against the throw, more on the way back
+                m_lash.Lay(BelMoraFx.TrailSeg, hand, hand + dir * (12f + (LashReach - 12f) * Mathf.Clamp01(k)), 7f, rotate: true,
+                           sag: t < LashOut ? 1.5f : 3f);
+                yield return null;
+            }
+            m_lash.Clear();
         }
 
         IEnumerator JetRun()

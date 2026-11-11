@@ -1,4 +1,4 @@
-CRAWL: FURTHER 1.3.2
+CRAWL: FURTHER 1.3.3
 ====================
 
 Crawl: Further (formerly "Crawl Mod") is a big content mod for Crawl. Nine new gods with 189 monsters between
@@ -9,12 +9,22 @@ violet gem on its picture (portraits, shop pictures, vault cells and the evoluti
 Every mod monster, item, weapon, object, god, origin and ghost form has a vault entry, and everything has its
 own drawn art.
 
-Launch Crawl normally. The top-left banner shows "Crawl: Further 1.3.2" and "self-test OK" when everything
+Launch Crawl normally. The top-left banner shows "Crawl: Further 1.3.3" and "self-test OK" when everything
 loaded. If anything failed, BepInEx\plugins\CrawlFurther\CrawlMod_selftest.txt lists what and why.
 The mod is two DLLs in BepInEx\plugins\CrawlFurther: CrawlFurther.Core.dll (the library) and CrawlFurther.dll.
 Delete an old BepInEx\plugins\CrawlMod folder when you update. The config files keep their old names, so
 updating from any earlier version keeps your settings and saves. New settings files start with CrawlFurther.
 The mod's two bosses are switched off in this version (see BOSSES).
+
+NEW IN 1.3.3
+------------
+  - Carrion Saint: Murder looses the whole flock, five crows that burst from its shoulders in a fan and bend
+    toward the hero.
+  - Jelly Siren: her lash reaches much further, and Jet Pulse stretches her stinging trail into a long arc
+    round the hero that lingers before it shrinks back.
+  - Slime Hag: a bite that lands now really ties the hero in her knot, holding him until it snaps and bites
+    again.
+  - Finals are tougher and hit harder.
 
 NEW IN 1.3.2
 ------------

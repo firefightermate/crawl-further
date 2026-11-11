@@ -164,7 +164,7 @@
   "ModOssCarrionSaint": {
     "name": "Carrion Saint",
     "attack": "Send a perched crow at the hero",
-    "special": "Murder: every perched crow flies as a wall",
+    "special": "Murder: the whole flock bursts out at the hero",
     "passive": [
       "Your perched crows are your shots. Bones bring more",
       "Up to four perch, and lost ones come back"

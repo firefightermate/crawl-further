@@ -35,7 +35,11 @@ OUT = os.path.join(ROOT, "src", "CrawlFurther", "Monsters", "ChallengeGoalsGener
 # The in-game tier numbers (ContentSetup / TierRules): starters at least 4 health and hits x1.62, tier 2 health x1.14
 # and hits x1.13, finals unchanged. With them each tier's median is about 1.08 of the game's own tier.
 STARTER_MIN_HEALTH, STARTER_DAMAGE = 4.0, 1.62
-TIER = {0: (1.0, STARTER_DAMAGE), 2.5: (1.14, 1.13), 4: (1.0, 1.0)}
+TIER = {0: (1.0, STARTER_DAMAGE), 2.5: (1.14, 1.13), 4: (1.2, 1.2)}
+# Playtest correction: the model rated our finals level with the game's own, but firefightermate found them well behind
+# (2026-11-11: "I can easily cruise to level 5 on the base game tier 3 monsters"), so the kits overstate them. Finals got
+# health and hits x1.2 in game; for goals that buff only makes up the shortfall, so it is divided back out here.
+PLAYTEST = {0: 1.0, 2.5: 1.0, 4: 1.0 / 1.44}
 
 # The game's own goals by cost (all 61 challenges): average, lowest and highest
 def game_goals(cost):
@@ -56,7 +60,7 @@ def strength(x, m):
     hp = x["hp"]
     if key == 0:
         hp = max(hp, STARTER_MIN_HEALTH)
-    return hp * hm * (x["basic"] + x["sp"]) * dm
+    return hp * hm * (x["basic"] + x["sp"]) * dm * PLAYTEST[key]
 
 
 def expert_score(power, windup, seed):

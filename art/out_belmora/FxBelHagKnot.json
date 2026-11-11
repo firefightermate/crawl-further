@@ -1,0 +1,1 @@
+{"cellW": 36, "cellH": 32, "cols": 8, "anims": [{"name": "Wrap", "frames": [0, 1, 2, 3, 4], "durations": [0.05, 0.05, 0.05, 0.05, 0.05]}, {"name": "Hold", "frames": [5, 6], "durations": [0.12, 0.12]}, {"name": "Tear", "frames": [7, 8, 9, 10, 11], "durations": [0.05, 0.05, 0.06, 0.07, 0.08]}]}

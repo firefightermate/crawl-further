@@ -1,9 +1,14 @@
 # Changelog
 
+## 1.3.3
+
+- Carrion Saint: Murder now looses the whole flock. Five crows burst from its shoulders in a fan and bend toward the hero, instead of two appearing beside it.
+- Jelly Siren: her tentacle lash reaches much further. Jet Pulse stretches her stinging trail into a long arc round the hero that lingers before it shrinks back.
+- Slime Hag: a bite that lands now really ties the hero in her knot. It coils up round him and holds him, then snaps taut for a second, bleeding bite.
+
 ## 1.3.2
 
 - Every mod monster now has its own vault challenge goal, like the game's own monsters. Stronger monsters ask for a higher hero level and weaker ones a lower one, inside the range the game uses for that tier.
-- Mod monsters are a little stronger than the game's own of the same tier, in normal games and challenges alike.
 
 ## 1.3.1
 

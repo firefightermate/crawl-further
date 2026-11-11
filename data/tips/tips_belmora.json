@@ -131,8 +131,8 @@
  },
  "ModJellySiren": {
   "name": "Jelly Siren",
-  "attack": "Tentacle lash ahead; may slow",
-  "special": "Jet Pulse: circle the hero, leaving sting rings",
+  "attack": "Long tentacle lash; may slow",
+  "special": "Jet Pulse: circle the hero; the trail grows long",
   "passive": [
    "Your long tentacles trail behind: they sting",
    "You heal in brine"
@@ -154,7 +154,7 @@
   "attack": "Rasping bite that ties you in a knot",
   "special": "Spew slime that slows the hero's shots",
   "passive": [
-   "A bite that lands twists into a second bite",
+   "A bite that lands wraps you up, then tears free",
    "You heal in brine"
   ],
   "vault": "An eyeless hagfish tied in a knot. Its slime gums up your weapons"

@@ -339,10 +339,10 @@ namespace CrawlFurther.Content.Gods.BelMora
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int lash = Kit.AddEffect(p, BelMoraFx.JellyLash, attach: true, destroyOnAnimEnd: true, offsetX: 13f, offsetY: 7f);
-            var ls = Kit.Melee(sh, "Lash", "ModJellyLash", v, 3, lash, 30f).Build();
+            var ls = Kit.Melee(sh, "Lash", "ModJellyLash", v, 3, lash, 30f).Ev(3, "BelLashOut").Build();
             var jt = Still(sh, "Jet", "ModJellyJet").Ev(1, "BelJet").Ev(5, "BelJet").Ev(9, "BelJet").EvO(1, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, ls, 1.4f, rangeInner: 10f, rangeOuter: 26f));
+            atk.Add(Kit.Attack(a0, ls, 1.4f, rangeInner: 14f, rangeOuter: 70f));
             Kit.SetSpecial(p, Kit.Attack(sp, jt, 0f, rangeInner: 10f, rangeOuter: 60f, rangeRetreat: 0f), 6.5f);
             Kit.Order(p, Attacks.eAttackOrderType.InOrder);
             Strike.Feet(p, n0, 12f);

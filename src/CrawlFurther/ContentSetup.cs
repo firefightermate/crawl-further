@@ -54,6 +54,9 @@ namespace CrawlFurther.Content
             TierRules.StarterDamage = 1.62f;     // with the floor: each tier a little stronger than the game's own (about x1.08)
             TierRules.T2Health = 1.14f;
             TierRules.T2Damage = 1.13f;
+            // finals: the model rated them level with the game's, but playtests (2026-11-11) found them well behind
+            TierRules.T3Health = 1.2f;
+            TierRules.T3Damage = 1.2f;
             Game.ContinueGame.Enabled = Plugin.I.Config.Bind("Game", "ContinueAfterWin", true,
                 "When the hero beats the boss, offer to keep playing with two more tries at the boss.").Value;
             Game.ChaosMode.Enabled = Plugin.I.Config.Bind("Game", "Chaos", true,

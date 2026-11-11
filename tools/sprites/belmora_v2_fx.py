@@ -596,6 +596,79 @@ def fx_slime_coat(out):
     fx("FxBelSlimeCoat", (24, 26), (12, 24), anims, out)
 
 
+def fx_hag_knot(out):
+    """FxBelHagKnot (36 x 32, origin (18, 28) at the hero's feet): the Slime Hag ties herself round the hero. Wrap 5 (a
+    slimed hagfish body coils up round him from the right, two and a half turns), Hold 2 (the knot squeezes, slime
+    drips), Tear 5 (the knot snaps taut and bursts outwards in slime). The code plays it on the hero; the back half of
+    each turn is drawn darker and thinner, so it reads as passing behind him."""
+    def helix(r, turns, rx, ry, squeeze=0.0, burst=0.0, lift=0.0, broken=0):
+        n = int(turns * 18)
+        pts = []
+        for i in range(n + 1):
+            t = i / 18.0
+            a = t * math.tau
+            y = -3.0 - t * 5.2 - lift
+            k = 1.0 - squeeze * 0.18 + burst
+            pts.append((rx * k * math.cos(a), y + ry * k * math.sin(a), math.sin(a)))
+        # back runs first (behind), then front runs
+        for front in (False, True):
+            run = []
+            for i, (x, y, sn) in enumerate(pts):
+                on = (sn > -0.15) == front
+                if broken and (i // 4) % broken == 1: on = False
+                if on: run.append((x, y))
+                elif len(run) > 1:
+                    seg(r, run, front); run = []
+                else: run = []
+            if len(run) > 1: seg(r, run, front)
+
+    def seg(r, run, front):
+        rad = [1.7 if front else 1.0] * len(run)
+        r.tube(run, rad, "hag", 1.0 if front else 0.2, bias=0.3)
+        for j, (x, y) in enumerate(run):
+            if front and j % 3 == 1: r.dot(x, y - 1, "slime", 4, 1.05)        # wet highlight on top
+            if not front and j % 2 == 0: r.dot(x, y, "hag", 1, 0.25)
+
+    wrap, hold, tear = [], [], []
+    for i in range(5):
+        r = R()
+        turns = 0.6 + i * 0.5
+        helix(r, turns, 9.0 + (4 - i) * 0.8, 3.6)
+        # the head leads the coil, mouth open on the last loop
+        a = turns * math.tau
+        hx, hy = 9.0 * math.cos(a), -3.0 - turns * 5.2 + 3.6 * math.sin(a)
+        r.ell(hx, hy, 2.4, 1.8, "hag", 1.2, bias=0.3)
+        r.dot(hx + 1.5, hy, "slime", 3, 1.3)
+        # the tail still trailing in from the right on the first frames
+        if i < 3:
+            r.tube([(9, -3), (13, -2), (17 - i, -1)], [1.6, 1.3, 0.9], "hag", 0.9, bias=0.3)
+        if i > 2: drips(r, [(-6, -4), (4, -9)], k=i, z=1.4, mat="slime")
+        wrap.append(done(r))
+    for i in range(2):
+        r = R()
+        helix(r, 2.6, 8.4, 3.4, squeeze=1.0 if i else 0.4)
+        for j, x in enumerate((-8, -2, 5, 9)):
+            yy = -4 - j * 3 + (i * 2 + j) % 3
+            r.dot(x, yy, "slime", 3, 1.4); r.dot(x, yy + 1, "slime", 2, 1.4)
+        r.ell(0, -1, 10, 1.2, "slime", 0.1, flat=1)
+        hold.append(done(r))
+    for i in range(5):
+        r = R()
+        if i < 3:
+            helix(r, 2.6, 8.4, 3.4, burst=0.25 * i, broken=0 if i == 0 else 3 - i + 1)
+        n = 10
+        for j in range(n):
+            a = j / n * math.tau + i * 0.3
+            d = 6 + i * 3.2
+            x, y = d * math.cos(a), -9 + d * 0.55 * math.sin(a)
+            if i >= 1: r.dot(x, y, "slime", 4 - min(3, i - 1), 1.5)
+            if i >= 2: r.dot(x * 0.8, y * 0.8 + 1, "slime", 2, 1.4)
+        if i >= 3: r.ell(0, -1, 7 + i * 2, 1.5, "slime", 0.1, flat=1)
+        tear.append(done(r))
+    fx("FxBelHagKnot", (36, 32), (18, 28), [("Wrap", wrap, [0.05] * 5), ("Hold", hold, [0.12, 0.12]),
+                                              ("Tear", tear, [0.05, 0.05, 0.06, 0.07, 0.08])], out)
+
+
 def fx_bud(out):
     """FxBelBud (24 x 18, origin (12, 14)): an anemone bud the Colossus flicks: Root 4 (lands and roots), Sting 4
     (loop: open, stinging), Wilt 3."""
@@ -705,7 +778,7 @@ JOBS = [("FxBrine", fx_brine), ("FxBelTide", fx_tide), ("FxBelTideCrest", fx_tid
         ("FxBelSpineEgg", fx_spine_egg), ("FxBelThornPatch", fx_thorn_patch), ("FxTentacle", fx_tentacle),
         ("FxBelCastBell", fx_cast_bell), ("FxBelChain", fx_chain_rope), ("FxBelAnchorBite", fx_anchor_bite),
         ("FxBelGrapple", fx_grapple), ("FxBelArm", fx_crown_arm), ("FxBelBroodEgg", fx_brood_egg), ("FxBelLane", fx_lane),
-        ("FxBelTentacleTrail", fx_tentacle_trail), ("FxBelSlimeCoat", fx_slime_coat), ("FxBelBud", fx_bud),
+        ("FxBelTentacleTrail", fx_tentacle_trail), ("FxBelSlimeCoat", fx_slime_coat), ("FxBelHagKnot", fx_hag_knot), ("FxBelBud", fx_bud),
         ("FxBelRoundBell", fx_round_bell), ("FxBelKelpHand", fx_kelp_hand), ("DeityBelMora", portrait_bel),
         ("DeityGoldIdolBelMora", portrait_idol)]
 NOTES = {
