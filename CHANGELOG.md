@@ -3,6 +3,22 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## 1.3.4
+
+### Content
+- `MonsterBalanceGenerated`: a strength factor for each monster whose kit puts it far from its challenge goal, written
+  by `tools/challenge_goals.py`. The check's player is half an expert in `challenge_sim.py` (with him the game's own
+  monsters reach 50-69% of their goals); every mod monster now reaches 54-72% (was 33-102%). 31 monsters changed,
+  from x0.54 (Waxen Knight) to x1.83 (Bramble Knight). Goals are unchanged.
+
+### Library (CrawlFurther.Core)
+- `TierRules.StrengthOf` / `TierRules.Strength(id)`: a per-monster strength factor on top of the tier's numbers;
+  `MonsterFactory` puts its square root on health and on hits.
+
+### Repository
+- `tools/concepts/ingame.py` and `ingame_biomes.py`: chaos biome rooms mocked up from the game's own rooms, props, prop
+  lists, spawn rules and lights, from a local asset dump (not shipped).
+
 ## 1.3.3
 
 ### Content

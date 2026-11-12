@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.4
+
+- Every mod monster was checked against its own challenge goal, and the ones that were far off now play closer to the rest.
+- Stronger: Bramble Knight, Pollen Monarch, Spark Beetle, Brood Drone, Bell Urchin, Forge Colossus.
+- Weaker: Waxen Knight, Hive Soldier, Nasute, Bone Lancer, Barghest, Leyden Golem, Glassmoth, Gravetusk, Marrow Hound, Anvil Smith, Tallow Colossus.
+- A few others got a slight nudge.
+
 ## 1.3.3
 
 - Carrion Saint: Murder now looses the whole flock. Five crows burst from its shoulders in a fan and bend toward the hero, instead of two appearing beside it.
