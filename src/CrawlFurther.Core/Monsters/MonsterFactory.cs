@@ -126,7 +126,7 @@ namespace CrawlFurther.Monsters
                 var h = go.GetComponent<Health>();
                 if (h != null && R.Get<float>(h, "m_healthMax") < TierRules.StarterMinHealth) R.Set(h, "m_healthMax", TierRules.StarterMinHealth);
             }
-            float healthMult = TierRules.Health(def.evolveCost);
+            float healthMult = TierRules.Health(def.evolveCost) * (float)Math.Sqrt(TierRules.Strength(def.id));
             if (Math.Abs(healthMult - 1f) > 0.001f)
             {
                 var h = go.GetComponent<Health>();
@@ -174,7 +174,8 @@ namespace CrawlFurther.Monsters
         {
             int tier = TierRules.Of(def.evolveCost);   // a def that keeps its base's cost (minions, blobs) stays tier 1
             Tier[def.PrefabName] = tier;
-            float dmg = (TierRules.IsStarter(def.evolveCost) ? TierRules.StarterDamage : TierRules.Damage(tier)) * def.damageMult;
+            float dmg = (TierRules.IsStarter(def.evolveCost) ? TierRules.StarterDamage : TierRules.Damage(tier)) * def.damageMult
+                        * (float)Math.Sqrt(TierRules.Strength(def.id));
             if (tier >= 2 || Math.Abs(dmg - 1f) > 0.001f) DamageMult[def.PrefabName] = dmg;
             float ct = R.Get<float>(p, "m_specialAttackChargeTime");
             if (ct > 0f) R.Set(p, "m_specialAttackChargeTime", ct * TierRules.SpecialCharge(tier));

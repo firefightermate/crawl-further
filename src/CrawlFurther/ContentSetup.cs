@@ -57,6 +57,8 @@ namespace CrawlFurther.Content
             // finals: the model rated them level with the game's, but playtests (2026-11-11) found them well behind
             TierRules.T3Health = 1.2f;
             TierRules.T3Damage = 1.2f;
+            // each monster against its own challenge goal (tools/challenge_goals.py): a solid player reaches 50-75% of it
+            TierRules.StrengthOf = id => { float k; return Monsters.MonsterBalanceGenerated.Strength.TryGetValue(id, out k) ? k : 1f; };
             Game.ContinueGame.Enabled = Plugin.I.Config.Bind("Game", "ContinueAfterWin", true,
                 "When the hero beats the boss, offer to keep playing with two more tries at the boss.").Value;
             Game.ChaosMode.Enabled = Plugin.I.Config.Bind("Game", "Chaos", true,

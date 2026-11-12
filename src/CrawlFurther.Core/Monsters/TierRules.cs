@@ -30,6 +30,18 @@ namespace CrawlFurther.Monsters
         /// <summary>Multiplier on a tier 3 monster's max health.</summary>
         public static float T3Health = 1f;
 
+        /// <summary>A monster's own strength factor by def id (1 when it has none), on top of its tier's numbers: its
+        /// health and its hits each take the square root, so the factor is what health x damage changes by.</summary>
+        public static Func<string, float> StrengthOf;
+
+        /// <summary><see cref="StrengthOf"/> for a def id, 1 when none is set.</summary>
+        public static float Strength(string id)
+        {
+            if (StrengthOf == null || id == null) return 1f;
+            float k = StrengthOf(id);
+            return k > 0f ? k : 1f;
+        }
+
         /// <summary>A def's evolution cost is a starting monster's: exactly 0.</summary>
         public static bool IsStarter(float evolveCost) { return Math.Abs(evolveCost) < 0.001f; }
 
