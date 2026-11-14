@@ -3,6 +3,37 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## 1.4.3
+
+The release that ships 1.4.0 to 1.4.2 (built but never uploaded) and what follows to players. The player notes cover
+everything since 1.3.0.
+
+### Core
+- `Game.ChaosRooms`: chaos floors draw from room groups (`Environment.GetRoomGroup`, `GetRoomGroupStarting`) that
+  hold, beside each room, a big copy weighted 4 to 1. The copy is the game's prefab cloned without Awake
+  (`MonsterFactory.ClonePrefab`) and grown on one seam per axis: up to 1.6 x wider and 1.35 x deeper, at most
+  320 x 160. Seams avoid doors and set pieces and sit in the widest run of plain floor. The gap takes strips of the
+  room's own floor and back wall from near the seam, each the best match for the edge before it, and only strips that
+  look like the floor at the seam (`Unlike`, a smoothed column difference). The pictures are read from the atlas on the
+  GPU (`SpriteUtil.CopyTexture`), rebuilt and put back with their lower left corner kept. Walls crossing a seam get
+  longer. Doors, set pieces, the outline (`CollisionShape2D` points and meshes) and the camera frame move out, and wall
+  bricks, column bases and stray boards in a copied strip are copied. Props, traps and spawner caps scale with the area
+  (`ChaosRoomTag`), enemy spawners by half the extra area. `[Game] ChaosBigRooms` turns it off. Self-test section 1470.
+- `Game.ChaosBalance`: in chaos the starting monsters are moved one evolution in (one the player has opened first), hero XP
+  x1.5, wrath (Vitae) x1.5, gold x1.2 (pickups, trades and favour paid out as gold).
+
+### Content
+- Jinx, Kaurn, Ossivar, Vhorrul and Ysveld tier 2 and 3 basics, and the gold, silver and statue secret monsters'
+  basics, rebuilt as three-step combos like 1.4.2's. Unchanged: Jinx House of Cards and Grand Jester, Kaurn Lode
+  Hound, Ossivar Charnel Rider, Vhorrul Waxen Knight, Moth Matron, Reliquary and Chandelier, Ysveld Widow Matron, Loom
+  Widow, Glasswing, Winter Bride, Rime Colossus and Geode, and the Sixfold Idol. Quirks that pick their basics
+  (`PicksBasics`) keep their override and the rest clear it.
+- Three finishers that put an event past their clip's last frame are kept inside it (Barghest, Renderer, Candle Wyrm).
+
+### Repository
+- `tools/chaos/room_stretch.py`: the big rooms drawn from the asset dump the way `ChaosRooms` builds them, before and
+  after (`build/chaos_rooms/`). `tools/chaos/sheet.py` puts several on one sheet.
+
 ## 1.4.2
 
 A test build (not uploaded).

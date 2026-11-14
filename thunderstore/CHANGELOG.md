@@ -1,72 +1,23 @@
 # Changelog
 
-## 1.4.2
+## 1.4.3
 
-- Tier 2 and 3 basic attacks of Sylvene, Umbrael, Bel'Mora and Zhekra monsters are now combos. Press attack again
-  within a beat to chain the next step, and the third step is a finisher with something of its own. Most are listed
-  below.
-- Sylvene: the Spore Husk's third smash shakes seeds out of the floor. The Bloom Witch ends on three lances that bloom
-  into spores, and the Bramble Knight drives a line of thorns into the floor. The Strangler Vine's third bite coils
-  round the hero and holds him. The Gall Wasp fires its needles in volleys of three. The Bloatfly heaves a glob that
-  bursts into five. The Briar Behemoth's bush whips round after its third hook. The Puffball Brute's third slam sends a
-  second ring rolling on ahead, and the Cordyceps Saint ends on a volley of spines. The Rot Mother's roots race at the
-  hero, and the Nightshade throws a handful of berries. The Pollen Monarch ends on a pollen gust, and the Sower's
-  harvest bursts every ripe pod near the hero. The Carrion Lily's bites breathe rot, and the Briar Wyrm flings thorns
-  behind it. The Blight Bellows throws two bladders round the hero, and the Carrion Queen's third stab heals her.
-- Umbrael: the Twinned lunge through with both bodies, and the Mirror Witch fans three bolts round the room. The
-  Gloamcoil leaves darkness where its lunge starts and ends. The Glassmoth sweeps five scales across, and the Hourglass
-  fires three shards down one line. The Glass Seraph and the Argus Moth throw scales or feathers all round them. The
-  Bristleback sprays five caltrops, and the Unblinking's beam rakes across. The Glass Widow lunges and stabs twice, and
-  the Undertow drags the hero in before its third bite. The Glitterswarm bites three times as it surges, and the
-  Pendulum's blade goes round twice. The Sand Wraith's third fist drops a sand column on the hero's spot.
-- Bel'Mora: the Bell Diver's third slam leaves brine. The Spinewalker strides in spearing the floor further and further
-  ahead, and the Salt Siren ends on a wave. The Brine Lamprey darts and bites twice. The Bell Hermit and the Belltower
-  Hermit ring out peals, and the Anemone Boxer ends on a flurry and a sting. The Drowned Captain ends with his boot,
-  the Brood Urchin sprays five spines, and the Tide Matriarch calls a wave. The Jelly Siren lashes with three
-  tentacles at once, and the Gulper Eel lunges and scoops twice. The Slime Hag lunges and spits slime, and the Abyss
-  Kraken's arms crash down ahead and to both sides. The Anemone Colossus plants a bud, and the Reef Champion rushes in
-  with two more uppercuts.
-- Zhekra: the Hive Hornet fires five stingers down one line, and the Blood Siphon's third stab feeds. The Nasute sprays
-  five specks of glue, and the Brood Mother's rain pours twice. The Acid Mantis snaps its blades in an X, and the Pit
-  Antlion bursts out clamping twice. The Amber Hive cracks out a swarm, and the Hunting Wasp skewers twice. The Blood
-  Gorger bores three times. The Botfly Matron rams twice in one charge, the Chitin Colossus leaves resin where it
-  lands, and the Sun Scarab's ball rolls through the hero.
+Everything since 1.3.0.
 
-## 1.4.1
-
-- Tier 2 and 3 monsters hit a much bigger area. Many of their swings, bites and slams were smaller than the game's own
-  monsters of the same rank. None of them is smaller now, and the biggest monsters hit the widest.
-- Ground slams now reach as far up and down the floor as they look. Their rounded hit shapes used to come up short of
-  the ring.
-- More ground rings now hit everywhere their art shows: Bell Toll, the Leyden Golem's ring, the Forge Colossus's quake,
-  the Ossuary's slam, the Carrion Vulture's dive and the Pyre Warden's censer, which now throws a bigger ember ring.
-- Puffball Brute: its slam throws a new, much wider spore ring. Bounce now bumps the hero on the way through and lands in
-  a bigger ring that hits harder.
-- Cordyceps Saint: Infest replaces Infect. Three spore spines fan out at the hero. Each one that lands seeds stalks in
-  him that drag him toward the Saint, then burst in poison while a shambler walks off him. Kin nearby are still
-  infected and fight on after death.
-- Sand Wraith: the hourglass over the hero now counts down. Its sand drains with the real timer and the column falls the
-  moment the top bulb is empty. Its eye lights up once it holds a hit, and the column falls even when it holds nothing.
-- The mod's pages in Pause > Tips, including the page for the monster you are playing, now use the font of the live
-  monster tips, which is easier to read.
-
-## 1.4.0
-
-- Every mod monster now has its own vault challenge goal, like the game's own monsters. Stronger monsters ask for a
-  higher hero level and weaker ones a lower one, inside the range the game uses for that tier.
-- Mod monsters are now exactly the same in vault challenges as in normal games. They had a different strength inside
-  challenges, which made a challenge a poor way to practise with a monster or judge it.
-- Every mod monster was checked against its own goal, and the ones that were far off now play closer to the rest.
-- Stronger: Bramble Knight, Pollen Monarch, Spark Beetle, Brood Drone, Bell Urchin, Forge Colossus.
-- Weaker: Waxen Knight, Hive Soldier, Nasute, Bone Lancer, Barghest, Leyden Golem, Glassmoth, Gravetusk, Marrow Hound,
-  Anvil Smith, Tallow Colossus. A few others got a slight nudge.
-- Carrion Saint: Murder now looses the whole flock. Five crows burst from its shoulders in a fan and bend toward the
-  hero, instead of two appearing beside it.
-- Jelly Siren: her tentacle lash reaches much further. Jet Pulse stretches her stinging trail into a long arc round the
-  hero that lingers before it shrinks back.
-- Slime Hag: a bite that lands now really ties the hero in her knot. It coils up round him and holds him, then snaps
-  taut for a second, bleeding bite.
-- The Poltergeist's hex bolt can no longer hit the hero from on top of him, and does nothing in the shop.
+- Chaos floors are built mostly from big rooms: wider, deeper copies of the game's own rooms, grown out of their own
+  floor and walls, with more enemies and props to fill them. Every room still fits on one screen.
+- A chaos game starts every monster player on tier 2 monsters. The hero levels faster, monster players earn wrath
+  faster, and gold comes in a little quicker.
+- Tier 2 and 3 monsters attack in combos. Press attack again within a beat to chain the next swing, bite or shot, and
+  the third step is a finisher with a trick of its own. Sylvene, Umbrael, Bel'Mora, Zhekra, Jinx, Kaurn, Ossivar,
+  Vhorrul, Ysveld and the secret monsters all got them.
+- Tier 2 and 3 monsters hit a bigger area, never smaller than the game's own monsters of the same rank, and ground
+  slams reach as far as their art shows.
+- Puffball Brute, Cordyceps Saint, Sand Wraith, Carrion Saint, Jelly Siren and Slime Hag got reworked moves.
+- Every mod monster has its own vault challenge goal and plays the same in a challenge as in a normal game. Monsters
+  that were far from their goal were retuned.
+- The Poltergeist's hex bolt can't hit the hero from on top of him or in the shop.
+- The mod's pages in Pause > Tips use the font of the live monster tips.
 
 ## 1.3.0
 
