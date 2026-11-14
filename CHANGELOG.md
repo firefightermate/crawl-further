@@ -3,6 +3,23 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## 1.4.2
+
+A test build (not uploaded).
+
+### Content
+- Sylvene, Umbrael, Bel'Mora and Zhekra: tier 2 and 3 basics rebuilt as three-step combos (`Attacks.eAttackOrderType.Combo`,
+  reset 0.55 to 0.65 s; steps 0.35 to 0.5 s apart, finishers 1.6 to 2.4 s). Finishers reuse each god's own effects
+  (seeds, brine, peals, waves, darkness pools, sand columns) and a few new templates (`LanceBloom`, `NeedlePlain`,
+  `BileLob`/`BileSpray`, `Constrict`, `QueenSiphon`). Unchanged: Briar Champion, Nailshade, Hollow King, Eclipse Wyrm,
+  Sundered, Drowned Bell, Crown of Thorns, and the Zhekra quirks that pick their basics (Spitter, Soldier, Scarab,
+  Bloater, Mortar, Stag, Grub).
+- `BelBehaviour`/`ZhkBehaviour`: the game never clears `Attacks.SetNextAttackOverride`, and every quirk set basic 0 on
+  enable. Only quirks that pick their basics (`PicksBasics`) keep an override now; the rest clear it (-1).
+
+### Repository
+- `tools/primary_audit.py`: what each tier 2/3 basic fires, whether it moves, and its own events.
+
 ## 1.4.1
 
 A test build (not uploaded).
