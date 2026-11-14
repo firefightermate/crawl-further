@@ -1,25 +1,21 @@
 # Changelog
 
-## 1.3.4
+## 1.4.0
 
-- Every mod monster was checked against its own challenge goal, and the ones that were far off now play closer to the rest.
+- Every mod monster now has its own vault challenge goal, like the game's own monsters. Stronger monsters ask for a
+  higher hero level and weaker ones a lower one, inside the range the game uses for that tier.
+- Mod monsters are now exactly the same in vault challenges as in normal games. They had a different strength inside
+  challenges, which made a challenge a poor way to practise with a monster or judge it.
+- Every mod monster was checked against its own goal, and the ones that were far off now play closer to the rest.
 - Stronger: Bramble Knight, Pollen Monarch, Spark Beetle, Brood Drone, Bell Urchin, Forge Colossus.
-- Weaker: Waxen Knight, Hive Soldier, Nasute, Bone Lancer, Barghest, Leyden Golem, Glassmoth, Gravetusk, Marrow Hound, Anvil Smith, Tallow Colossus.
-- A few others got a slight nudge.
-
-## 1.3.3
-
-- Carrion Saint: Murder now looses the whole flock. Five crows burst from its shoulders in a fan and bend toward the hero, instead of two appearing beside it.
-- Jelly Siren: her tentacle lash reaches much further. Jet Pulse stretches her stinging trail into a long arc round the hero that lingers before it shrinks back.
-- Slime Hag: a bite that lands now really ties the hero in her knot. It coils up round him and holds him, then snaps taut for a second, bleeding bite.
-
-## 1.3.2
-
-- Every mod monster now has its own vault challenge goal, like the game's own monsters. Stronger monsters ask for a higher hero level and weaker ones a lower one, inside the range the game uses for that tier.
-
-## 1.3.1
-
-- Mod monsters are now exactly the same in vault challenges as in normal games. They had a different strength inside challenges, which made a challenge a poor way to practise with a monster or judge it.
+- Weaker: Waxen Knight, Hive Soldier, Nasute, Bone Lancer, Barghest, Leyden Golem, Glassmoth, Gravetusk, Marrow Hound,
+  Anvil Smith, Tallow Colossus. A few others got a slight nudge.
+- Carrion Saint: Murder now looses the whole flock. Five crows burst from its shoulders in a fan and bend toward the
+  hero, instead of two appearing beside it.
+- Jelly Siren: her tentacle lash reaches much further. Jet Pulse stretches her stinging trail into a long arc round the
+  hero that lingers before it shrinks back.
+- Slime Hag: a bite that lands now really ties the hero in her knot. It coils up round him and holds him, then snaps
+  taut for a second, bleeding bite.
 - The Poltergeist's hex bolt can no longer hit the hero from on top of him, and does nothing in the shop.
 
 ## 1.3.0

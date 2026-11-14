@@ -1,4 +1,4 @@
-CRAWL: FURTHER 1.3.4
+CRAWL: FURTHER 1.4.0
 ====================
 
 Crawl: Further (formerly "Crawl Mod") is a big content mod for Crawl. Nine new gods with 189 monsters between
@@ -9,43 +9,32 @@ violet gem on its picture (portraits, shop pictures, vault cells and the evoluti
 Every mod monster, item, weapon, object, god, origin and ghost form has a vault entry, and everything has its
 own drawn art.
 
-Launch Crawl normally. The top-left banner shows "Crawl: Further 1.3.4" and "self-test OK" when everything
+Launch Crawl normally. The top-left banner shows "Crawl: Further 1.4.0" and "self-test OK" when everything
 loaded. If anything failed, BepInEx\plugins\CrawlFurther\CrawlMod_selftest.txt lists what and why.
 The mod is two DLLs in BepInEx\plugins\CrawlFurther: CrawlFurther.Core.dll (the library) and CrawlFurther.dll.
 Delete an old BepInEx\plugins\CrawlMod folder when you update. The config files keep their old names, so
 updating from any earlier version keeps your settings and saves. New settings files start with CrawlFurther.
 The mod's two bosses are switched off in this version (see BOSSES).
 
-NEW IN 1.3.4
+NEW IN 1.4.0
 ------------
+  - Every mod monster has its own challenge goal, like the game's own: stronger monsters ask for a higher hero
+    level, weaker ones a lower one, inside the range the game uses for that tier.
+  - Mod monsters are exactly the same in vault challenges as in normal games, so a challenge shows how a
+    monster really plays.
   - Mod monsters checked one by one against their challenge goals. The ones that were far off now play
     closer to the rest: Bramble Knight, Pollen Monarch, Spark Beetle, Brood Drone, Bell Urchin and Forge
     Colossus are stronger; Waxen Knight, Hive Soldier, Nasute, Bone Lancer, Barghest, Leyden Golem, Glassmoth,
     Gravetusk, Marrow Hound, Anvil Smith and Tallow Colossus are weaker. A few others got a slight nudge.
-
-NEW IN 1.3.3
-------------
   - Carrion Saint: Murder looses the whole flock, five crows that burst from its shoulders in a fan and bend
     toward the hero.
   - Jelly Siren: her lash reaches much further, and Jet Pulse stretches her stinging trail into a long arc
     round the hero that lingers before it shrinks back.
   - Slime Hag: a bite that lands now really ties the hero in her knot, holding him until it snaps and bites
     again.
-  - Finals are tougher and hit harder.
-
-NEW IN 1.3.2
-------------
-  - Every mod monster has its own challenge goal, like the game's own: stronger monsters ask for a higher hero
-    level, weaker ones a lower one, inside the range the game uses for that tier.
-  - Mod monsters are a little stronger than the game's own of the same tier, in every game.
+  - The Poltergeist's hex bolt can't hit the hero from on top of him, and does nothing in the shop.
   - Test mode opens everything from the start (gods, heroes, slots, blobs, secrets, every vault entry and
     challenge), and the test panel's switch is remembered.
-
-NEW IN 1.3.1
-------------
-  - Mod monsters are exactly the same in vault challenges as in normal games, so a challenge shows how a
-    monster really plays.
-  - The Poltergeist's hex bolt can't hit the hero from on top of him, and does nothing in the shop.
 
 NEW IN 1.3.0
 ------------

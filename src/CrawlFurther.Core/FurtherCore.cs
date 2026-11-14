@@ -21,7 +21,7 @@ namespace CrawlFurther
         /// <summary>Core's display name.</summary>
         public const string NAME = "Crawl Further Core";
         /// <summary>Core's version.</summary>
-        public const string VERSION = "1.3.4";
+        public const string VERSION = "1.4.0";
 
         internal static ManualLogSource Log;
         /// <summary>The folder this DLL was loaded from (BepInEx/plugins/CrawlFurther).</summary>
