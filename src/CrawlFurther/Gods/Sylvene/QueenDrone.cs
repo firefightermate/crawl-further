@@ -22,6 +22,14 @@ namespace CrawlFurther.Content.Gods.Sylvene
 
         protected override void OnEnable() { base.OnEnable(); m_clock = 0f; m_warned = false; }
 
+        /// <summary>The Siphon (her third stab) drinks: a hit heals her <see cref="Drink"/>.</summary>
+        public const float Drink = 1f;
+
+        protected override void OnHitHero(DamageInfo d)
+        {
+            if (Dealt(d).StartsWith("ModSylQueenSiphon") && Monster != null) { Monster.Heal(Drink); CrawlFurther.Monsters.ModInd.Heal(gameObject); }
+        }
+
         void Update()
         {
             if (!Alive) return;

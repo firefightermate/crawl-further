@@ -22,7 +22,7 @@ namespace CrawlFurther.Content.Gods.Sylvene
         public static GameObject HuskClub, ShakeRing, BelchCloud, PollenLance, ThornSwipeA, ThornSwipeB, SweepPatch, OvergrowPatch,
                                  StranglerBite, LassoLash, PodSling, SeedSling, GallNeedle, WaspDash, BileDrop, BileHit, BilePuddle;
         // tier 3
-        public static GameObject BehemothGore, BehemothRam, Bush, BushSwing, BushSwingBig, LanceTrim, PuffRing, PuffLand, PuffRoll, PuffWall, SporeSpine, StalkBurst,
+        public static GameObject BehemothGore, BehemothRam, Bush, BushSwing, BushSwingBig, LanceTrim, PuffRing, PuffLand, PuffRoll, PuffWall, SporeSpine, StalkBurst, LanceBloom, NeedlePlain, BileLob, BileSpray, Constrict, QueenSiphon,
                                  Spine, ShamblerBurst, RootEruption, SproutRise, Wisp, Berry, BerrySmall, BerrySplit, BerryPop, Shimmer,
                                  PollenDart, PollenCloud, SeedShot, StrafeNeedle, FurrowVine, LilyBite, RotCloud, WyrmFront, WyrmBack,
                                  Thorn, Bladder, GasPuff, GasTile, BladderBurst, QueenStab, QueenDive, DroneRing;
@@ -89,6 +89,11 @@ namespace CrawlFurther.Content.Gods.Sylvene
             PollenLance = FxKit.Projectile("ModPollenLance", "DFX_skelMageNewProjectile", "FxPollen", "Fly", 280f, 0.8f, 0.9f, 0.4f, poison, 0.25f,
                                            destroyOnHit: false);
             if (PollenLance != null) FxFactory.SetDamage(PollenLance, 0.9f, rate: 0.3f, knockback: 0.4f, status: poison, statusChance: 0.25f, collisionAtStart: true);
+            // the Bouquet (the third lance): a lance that blooms into a spore puff where it ends
+            LanceBloom = FxKit.Projectile("ModPollenLanceBloom", "DFX_skelMageNewProjectile", "FxPollen", "Fly", 280f, 0.55f, 0.9f, 0.4f, poison, 0.25f,
+                                          destroyOnHit: false);
+            if (LanceBloom != null) FxFactory.SetDamage(LanceBloom, 0.9f, rate: 0.3f, knockback: 0.4f, status: poison, statusChance: 0.25f, collisionAtStart: true);
+            Plants(LanceBloom, SporePuff, false);
             GraftInd = ModStatus.Indicator("ModSylGraftInd", "FxSylGraftPod", "Loop", 1f, OverlayAt.Head);
 
             // ---- Bramble Knight: two sweeps, the second plants a thorn patch at its tip; Overgrow bursts four patches
@@ -103,6 +108,9 @@ namespace CrawlFurther.Content.Gods.Sylvene
             // ---- Strangler Vine: a bite; a lasso that slings a pod (or a seed) at the hero, or lashes him
             StranglerBite = AimedMelee.Rotating(FxKit.BodyHit("ModSylStranglerBite", 1.0f, 0f, 0.5f, 0.12f, poison, 0.25f));
             Strike.HitBox(StranglerBite, 14f, 12f);
+            // the third bite coils round him and holds him a moment
+            Constrict = AimedMelee.Rotating(FxKit.BodyHit("ModSylConstrict", 1.3f, 0f, 0.2f, 0.12f, ModStatus.Root, 1f));
+            Strike.HitBox(Constrict, 20f, 18f);
             LassoLash = FxKit.Projectile("ModSylLasso", "DFX_skelMageNewProjectile", "FxSylLasso", "Fly", 220f, 0.28f, 1.0f, 0.5f);
             Strike.Collider(LassoLash, 10f, 8f);
             PodSling = FxKit.Projectile("ModSylPodSling", "DFX_skelMageNewProjectile", "FxSylPodSling", "Fly", 190f, 0.6f, 0.4f, 0.2f, rotate: false);
@@ -116,12 +124,25 @@ namespace CrawlFurther.Content.Gods.Sylvene
             GallNeedle = FxKit.Projectile("ModGallNeedle", "DFX_skelMageNewProjectile", "FxGallNeedle", "Fly", 230f, 0.5f, 0.8f, 0.3f, poison, 0.3f);
             Strike.Collider(GallNeedle, 10f, 6f);
             Plants(GallNeedle, SeedFast, false);
+            // the volley's outer needles: the same needle, planting nothing (the middle one sows)
+            NeedlePlain = FxKit.Projectile("ModGallNeedlePlain", "DFX_skelMageNewProjectile", "FxGallNeedle", "Fly", 230f, 0.5f, 0.6f, 0.3f, poison, 0.3f);
+            Strike.Collider(NeedlePlain, 10f, 6f);
             WaspDash = AimedMelee.Rotating(FxKit.BodyHit("ModWaspDash", 0.9f, 0.3f, 0.6f, 0.4f, poison, 0.25f));
             Strike.HitBox(WaspDash, 16f, 12f);
 
             // ---- Bloatfly: a cone of bile gobs; a stream straight down that leaves spoiling puddles
             BileDrop = FxKit.Projectile("ModSylBileDrop", "DFX_skelMageNewProjectile", "FxSylBileDrop", "Fly", 190f, 0.32f, 0.8f, 0.2f, poison, 0.4f);
             Strike.Collider(BileDrop, 7f, 7f);
+            // the Heave (the third retch): one fat glob that bursts into five gobs where it lands
+            BileSpray = FxKit.Emitter("ModSylBileSpray", BileDrop, 5);
+            BileLob = FxKit.Projectile("ModSylBileLob", "DFX_skelMageNewProjectile", "FxSylBileDrop", "Fly", 150f, 0.5f, 1.2f, 0.6f, poison, 0.6f);
+            if (BileLob != null)
+            {
+                BileLob.transform.localScale = new Vector3(2f, 2f, 1f);
+                Strike.Collider(BileLob, 7f, 7f);
+                FxFactory.SetEffect(BileLob, destroyOnAnimEnd: false, destroyAfter: 0.5f, spawnOnDestroy: BileSpray, freeRotate: true);
+                FxFactory.SetContacts(BileLob, destroyOnHit: true, spawnOnHit: BileSpray);
+            }
             BileHit = FxKit.TimedHit("ModSylBileHit", "skydropExplode", "FxSylBileSplash", "Play", 0, 3, 0.35f, 0.1f, poison, 0.6f, canFlip: false);
             Strike.Ground(BileHit, "FxSylBileSplash", 13, 10, 14f, 8f);
             BilePuddle = FxKit.Visual("ModSylBilePuddle", "FxSylBilePuddle", "Life", loop: true, lifetime: BilePuddleFx.Life);
@@ -266,6 +287,8 @@ namespace CrawlFurther.Content.Gods.Sylvene
             // ---- Carrion Queen: the stab, the steered dive, the drone ring (dazes through code: see QueenDrone)
             QueenStab = AimedMelee.Rotating(FxKit.BodyHit("ModSylQueenStab", 1.2f, 0f, 0.5f, 0.12f, poison, 0.4f));
             Strike.HitBox(QueenStab, 16f, 12f);
+            QueenSiphon = AimedMelee.Rotating(FxKit.BodyHit("ModSylQueenSiphon", 1.4f, 0f, 0.6f, 0.12f, poison, 0.6f));
+            Strike.HitBox(QueenSiphon, 18f, 14f);
             QueenDive = AimedMelee.Rotating(FxKit.BodyHit("ModSylQueenDive", 1.4f, 0.5f, 0.8f, 0.4f, poison, 0.6f));
             Strike.HitBox(QueenDive, 18f, 14f);
             DroneRing = FxKit.Visual("ModSylDroneRing", "FxSylDroneRing", "Play");

@@ -65,6 +65,14 @@ namespace CrawlFurther.Content.Gods.Sylvene
             m_lastSpeed = Mathf.Lerp(m_lastSpeed, speed, 0.5f);
         }
 
+        /// <summary>Clip event (the Bush Whip, the third hook): the bush swings round after the tusks.</summary>
+        public void ModSylBushWhip()
+        {
+            if (!Alive || m_bush == null || m_swinging) return;
+            StopAllCoroutines();
+            StartCoroutine(Swing(SylveneFx.BushSwing));
+        }
+
         /// <summary>Clip event: the Charge skids to a stop and the bush swings in after it, harder.</summary>
         public void ModSylBushSlam()
         {

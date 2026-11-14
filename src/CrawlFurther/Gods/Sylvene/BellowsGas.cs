@@ -26,6 +26,21 @@ namespace CrawlFurther.Content.Gods.Sylvene
             if (b != null) b.Throw(HeroPos, Own);
         }
 
+        /// <summary>Clip event (the third lob): two bladders at once, landing either side of the hero's spot.</summary>
+        public void ModSylLobPair()
+        {
+            if (!Alive || SylveneFx.Bladder == null) return;
+            Vector2 from = ModUtil.SafePoint(Me, Me + new Vector2(Mouth.x * Side, Mouth.y), 3f);
+            var to = HeroPos - from;
+            var side = to.sqrMagnitude > 1f ? new Vector2(-to.y, to.x).normalized : Vector2.up;
+            foreach (float s in new[] { -1f, 1f })
+            {
+                var go = SystemPool.Spawn(SylveneFx.Bladder, from);
+                var b = go != null ? go.GetComponent<BladderFx>() : null;
+                if (b != null) b.Throw(HeroPos + side * (16f * s), Own);
+            }
+        }
+
         /// <summary>Clip event (each pump): a lane of gas along its facing.</summary>
         public void ModSylLane()
         {

@@ -99,12 +99,19 @@ namespace CrawlFurther.Content.Gods.Sylvene
             int ring = Kit.AddEffect(p, SylveneFx.ShakeRing, offsetX: 17f, offsetY: 0.01f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
             var belch = new List<int>();
             foreach (var a in new[] { -24f, 0.01f, 24f }) belch.Add(Kit.AddEffect(p, SylveneFx.BelchCloud, offsetX: 9f, offsetY: 14f, angle: a));
-            var sm = Kit.Melee(sh, "Smash", "ModHuskSmash", v, 3, club, 20f).Ev(3, "AnimAttack", puff).Ev(3, "AnimAttack", ring).Ev(3, "ModSylShake").Build();
+            // Combo: two club smashes that each burst a spore puff, then the Groundbreaker: the floor rings, ripe pods
+            // shake loose and two seeds jump out of the cracks ahead
+            var sm1 = Kit.Melee(sh, "Smash", "ModHuskSmash", v, 3, club, 30f).Ev(3, "AnimAttack", puff).Build();
+            var sm2 = Kit.Melee(sh, "Smash", "ModHuskSmash2", null, 3, club, 40f).Ev(3, "AnimAttack", puff).Build();
+            var sm3 = Kit.Melee(sh, "Smash", "ModHuskGroundbreaker", v, 3, club, 50f).Speed(0.85f).Ev(3, "AnimAttack", puff).Ev(3, "AnimAttack", ring)
+                .Ev(3, "ModSylShake").Ev(4, "ModSylHuskSow").Build();
             var bl = Kit.Shot(sh, "Belch", "ModHuskBelch", 3, v, 0.03f, belch.ToArray()).Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sm, 1.5f, rangeInner: 10f, rangeOuter: 24f));
+            atk.Add(Kit.Attack(a0, sm1, 0.35f, rangeInner: 10f, rangeOuter: 26f));
+            atk.Add(Kit.Attack(a0, sm2, 0.35f, rangeInner: 10f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, sm3, 1.6f, rangeInner: 10f, rangeOuter: 30f));
             Kit.SetSpecial(p, Kit.Attack(sp, bl, 0f, rangeInner: 10f, rangeOuter: 45f, rangeRetreat: 0f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 12f);
         }
 
@@ -114,12 +121,19 @@ namespace CrawlFurther.Content.Gods.Sylvene
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int lance = Kit.AddEffect(p, SylveneFx.PollenLance, offsetX: 9f, offsetY: 15f);   // palm (9, -15)
+            var bouquet = new List<int>();
+            foreach (var a in new[] { -13f, 0.01f, 13f }) bouquet.Add(Kit.AddEffect(p, SylveneFx.LanceBloom, offsetX: 9f, offsetY: 15f, angle: a));
+            // Combo: two lances, then the Bouquet: three lances in a fan that each bloom into a spore puff where they end
             var ln = Kit.Shot(sh, "Lance", "ModBloomLance", 2, v, 0f, lance).Build();
+            var ln2 = Kit.Shot(sh, "Lance", "ModBloomLance2", 2, null, 0f, lance).Speed(1.15f).Build();
+            var bq = Kit.Shot(sh, "Lance", "ModBloomBouquet", 2, v, 0.04f, bouquet.ToArray()).Speed(0.85f).Build();
             var gr = Special(sh, "Graft", "ModBloomGraft").Ev(4, "ModSylGraft").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, ln, 1.4f, rangeInner: 50f, rangeOuter: 120f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, ln, 0.4f, rangeInner: 50f, rangeOuter: 120f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, ln2, 0.4f, rangeInner: 50f, rangeOuter: 120f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, bq, 1.8f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 40f));
             Kit.SetSpecial(p, Kit.Attack(sp, gr, 0f, rangeInner: 0f, rangeOuter: 160f, rangeRetreat: 30f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 15f);
         }
 
@@ -135,14 +149,21 @@ namespace CrawlFurther.Content.Gods.Sylvene
             var patches = new List<int>();
             foreach (var o in new[] { new Vector2(-16f, 6f), new Vector2(-16f, -8f), new Vector2(17f, 6f), new Vector2(17f, -8f) })
                 patches.Add(Kit.AddEffect(p, SylveneFx.OvergrowPatch, offsetX: o.x, offsetY: o.y, spawnPoint: DamageEffectData.eSpawnPoint.Position));
-            var sw = Kit.Melee(sh, "Sweep", "ModBrambleSweep", v, 2, s1, 50f, 4, s2, 30f).Ev(4, "AnimAttack", tip).Build();
+            int l1 = Kit.AddEffect(p, SylveneFx.SweepPatch, offsetX: 34f, offsetY: 0.01f);
+            int l2 = Kit.AddEffect(p, SylveneFx.SweepPatch, offsetX: 48f, offsetY: 0.01f);
+            // Combo: the two-cut sweep, then the Briar Drive: a long lunge through both cuts that drives a line of three
+            // thorn patches into the floor ahead
+            var sw = Kit.Melee(sh, "Sweep", "ModBrambleSweep", v, 2, s1, 50f, 4, s2, 30f).Build();
+            var dr = Kit.Melee(sh, "Sweep", "ModBrambleDrive", v, 2, s1, 110f, 4, s2, 60f).Speed(0.9f)
+                .Ev(4, "AnimAttack", tip).Ev(4, "AnimAttack", l1, 0.07f).Ev(4, "AnimAttack", l2, 0.14f).Build();
             var og = Special(sh, "Overgrow", "ModBrambleOvergrow").EvO(3, "AnimSound", v);
             for (int i = 0; i < patches.Count; i++) og.Ev(4, "AnimAttack", patches[i], i * 0.05f);
             og.Ev(-1, "AnimRun");
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sw, 1.3f, rangeInner: 10f, rangeOuter: 24f));
+            atk.Add(Kit.Attack(a0, sw, 0.4f, rangeInner: 10f, rangeOuter: 26f));
+            atk.Add(Kit.Attack(a0, dr, 1.6f, rangeInner: 14f, rangeOuter: 40f));
             Kit.SetSpecial(p, Kit.Attack(sp, og.Build(), 0f, rangeInner: 0f, rangeOuter: 30f, rangeRetreat: 0f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 10f);
         }
 
@@ -152,16 +173,22 @@ namespace CrawlFurther.Content.Gods.Sylvene
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int bite = Kit.AddEffect(p, SylveneFx.StranglerBite, attach: true, destroyOnAnimEnd: true, offsetX: 20f, offsetY: 6f);   // jaws (24, -6)
+            int coil = Kit.AddEffect(p, SylveneFx.Constrict, attach: true, destroyOnAnimEnd: true, offsetX: 20f, offsetY: 6f);
+            // Combo: two bites, then the Constrict: a long lunge whose coils hold the hero where he stands
             var bt = Kit.Melee(sh, "Bite", "ModSylStranglerBite", v, 3, bite, 30f).Build();
+            var bt2 = Kit.Melee(sh, "Bite", "ModSylStranglerBite2", null, 3, bite, 40f).Speed(1.15f).Build();
+            var cn = Kit.Melee(sh, "Bite", "ModSylStranglerConstrict", v, 3, coil, 75f).Speed(0.85f).Build();
             var la = Special(sh, "Lasso", "ModSylStranglerLasso").EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(3, "ModSylCatch")
                 .EvO(7, "AnimSound", v).Ev(7, "ModSylSling").Ev(-1, "AnimInputMultiplyStop").Ev(-1, "AnimRun").Build();
             var ls = Special(sh, "Lash", "ModSylStranglerLash").EvF(0, "AnimInputMultiplyFreeFace", 0f)
                 .EvO(3, "AnimSound", v).Ev(3, "ModSylLash").Ev(-1, "AnimInputMultiplyStop").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, bt, 1.3f, rangeInner: 10f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, bt, 0.35f, rangeInner: 10f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, bt2, 0.35f, rangeInner: 10f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, cn, 1.6f, rangeInner: 12f, rangeOuter: 42f));
             // a pod slung at 190 px/s: up to 110 px; the lash reaches about 60
             Kit.SetSpecial(p, Kit.Attack(sp, ls, 0f, rangeInner: 20f, rangeOuter: 60f, rangeRetreat: 0f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 12f);
             StranglerSling.LassoClip = la;
             StranglerSling.LashClip = ls;
@@ -173,16 +200,19 @@ namespace CrawlFurther.Content.Gods.Sylvene
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int needle = Kit.AddEffect(p, SylveneFx.GallNeedle, offsetX: 9f, offsetY: 5f);   // the needle's tip (9, -5)
+            int nl = Kit.AddEffect(p, SylveneFx.NeedlePlain, offsetX: 9f, offsetY: 5f, angle: -9f);
+            int nr = Kit.AddEffect(p, SylveneFx.NeedlePlain, offsetX: 9f, offsetY: 5f, angle: 9f);
             int dash = Kit.AddEffect(p, SylveneFx.WaspDash, attach: true, destroyOnAnimEnd: true, offsetX: 2f, offsetY: 10f);
             int s1 = Kit.AddEffect(p, SylveneFx.SeedFast, offsetX: -4f, offsetY: 0.01f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
             int s2 = Kit.AddEffect(p, SylveneFx.SeedFast, offsetX: -4f, offsetY: 0.01f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
-            var nd = Kit.Shot(sh, "Needle", "ModWaspNeedle", 2, v, 0f, needle).Build();
+            // a volley: three needles a beat apart, the middle one sowing a fast seed where it lands
+            var nd = Kit.Shot(sh, "Needle", "ModWaspNeedle", 2, v, 0.07f, nl, needle, nr).Build();
             var dt = new ClipBuilder(sh, "Dart", "ModWaspDart").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(1, "AnimInputMultiplyStop").Ev(1, "AnimInputOff")
                 .EvF(2, "AnimMoveStick", 220f).Ev(2, "AnimAttack", dash).Ev(2, "AnimAttack", s1).EvO(2, "AnimSound", v)
                 .Ev(4, "AnimAttack", s2).Ev(5, "AnimMoveStop").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, nd, 1.3f, rangeInner: 40f, rangeOuter: 90f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, nd, 1.4f, rangeInner: 40f, rangeOuter: 90f, rangeRetreat: 35f));
             // 220 px/s for 0.18 s: about 40 px of dart, through a hero up to 45 px away
             Kit.SetSpecial(p, Kit.Attack(sp, dt, 0f, rangeInner: 12f, rangeOuter: 45f, rangeRetreat: 0f), 6f);
             Kit.Order(p, Attacks.eAttackOrderType.InOrder);
@@ -196,16 +226,22 @@ namespace CrawlFurther.Content.Gods.Sylvene
             int n0 = Strike.Mark(p);
             var gobs = new List<int>();
             foreach (var a in new[] { -16f, 0.01f, 16f }) gobs.Add(Kit.AddEffect(p, SylveneFx.BileDrop, offsetX: 10f, offsetY: 14f, angle: a));
+            int heave = Kit.AddEffect(p, SylveneFx.BileLob, offsetX: 10f, offsetY: 14f);
+            // Combo: two retches, then the Heave: one fat glob that bursts into five gobs where it lands
             var rt = Kit.Shot(sh, "Retch", "ModSylBloatRetch", 2, v, 0f, gobs.ToArray()).Build();
+            var rt2 = Kit.Shot(sh, "Retch", "ModSylBloatRetch2", 2, null, 0f, gobs.ToArray()).Speed(1.15f).Build();
+            var hv = Kit.Shot(sh, "Retch", "ModSylBloatHeave", 3, v, 0f, heave).Speed(0.8f).Build();
             var rain = Special(sh, "Rain", "ModSylBloatRain").Ev(0, "ModSylRainRise").EvO(2, "AnimSound", v)
                 .Ev(2, "AnimInputOn").EvF(2, "AnimInputMultiply", 0.5f);
             for (int f = 2; f <= 7; f++) rain.Ev(f, "ModSylRain");
             rain.Ev(8, "AnimInputMultiplyStop").Ev(8, "AnimInputOff").Ev(-1, "AnimRun");
             atk.Clear();
             // 190 px/s for 0.32 s: about 60 px
-            atk.Add(Kit.Attack(a0, rt, 1.4f, rangeInner: 18f, rangeOuter: 55f, rangeRetreat: 15f));
+            atk.Add(Kit.Attack(a0, rt, 0.45f, rangeInner: 18f, rangeOuter: 55f, rangeRetreat: 15f));
+            atk.Add(Kit.Attack(a0, rt2, 0.45f, rangeInner: 18f, rangeOuter: 55f, rangeRetreat: 15f));
+            atk.Add(Kit.Attack(a0, hv, 1.8f, rangeInner: 30f, rangeOuter: 75f, rangeRetreat: 20f));
             Kit.SetSpecial(p, Kit.Attack(sp, rain.Build(), 0f, rangeInner: 0f, rangeOuter: 50f, rangeRetreat: 0f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 14f);
         }
 
@@ -217,16 +253,21 @@ namespace CrawlFurther.Content.Gods.Sylvene
             int n0 = Strike.Mark(p);
             int gore = Kit.AddEffect(p, SylveneFx.BehemothGore, attach: true, offsetX: 10f, offsetY: 12f);   // tusks sweep x 18..26
             int ram = Kit.AddEffect(p, SylveneFx.BehemothRam, attach: true, destroyOnAnimEnd: true, offsetX: 12f, offsetY: 9f);
+            // Combo: two tusk hooks, then the Bush Whip: a third hook and the bush it drags swings round after it
             var hk = Kit.Melee(sh, "Hook", "ModBehemothHook", v, 2, gore, 40f).Build();
+            var hk2 = Kit.Melee(sh, "Hook", "ModBehemothHook2", null, 2, gore, 50f).Speed(1.1f).Build();
+            var hk3 = Kit.Melee(sh, "Hook", "ModBehemothBushWhip", v, 2, gore, 60f).Ev(4, "ModSylBushWhip").Build();
             var ch = new ClipBuilder(sh, "Charge", "ModBehemothCharge").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop").Ev(2, "AnimInputOff")
                 .EvF(3, "AnimMoveStick", 240f).Ev(3, "AnimAttack", ram).EvO(3, "AnimSound", v)
                 .Ev(8, "AnimMoveStop").Ev(8, "ModSylBushSlam").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, hk, 1.6f, rangeInner: 12f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, hk, 0.4f, rangeInner: 12f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, hk2, 0.4f, rangeInner: 12f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, hk3, 1.9f, rangeInner: 12f, rangeOuter: 36f));
             // 240 px/s with drag over 0.3 s: about 70 px
             Kit.SetSpecial(p, Kit.Attack(sp, ch, 0f, rangeInner: 25f, rangeOuter: 75f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 12f);
         }
 
@@ -267,16 +308,22 @@ namespace CrawlFurther.Content.Gods.Sylvene
             int ring = Kit.AddEffect(p, SylveneFx.PuffRing, offsetX: 16f, offsetY: 0.01f, spawnPoint: DamageEffectData.eSpawnPoint.Position);   // fists land at (13, -1)
             int land = Kit.AddEffect(p, SylveneFx.PuffLand, offsetX: 0.01f, offsetY: 0.01f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
             int roll = Kit.AddEffect(p, SylveneFx.PuffRoll, attach: true, destroyOnAnimEnd: true, offsetX: 0.01f, offsetY: 0.01f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
+            int ring2 = Kit.AddEffect(p, SylveneFx.PuffRing, offsetX: 48f, offsetY: 0.01f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
+            // Combo: two slams, then the Aftershock: the slam's ring rolls on and a second ring bursts up further ahead
             var sl = Kit.Melee(sh, "Slam", "ModSylPuffSlam", v, 2, ring, 15f).Build();
+            var sl2 = Kit.Melee(sh, "Slam", "ModSylPuffSlam2", null, 2, ring, 25f).Speed(1.1f).Build();
+            var sl3 = Kit.Melee(sh, "Slam", "ModSylPuffAftershock", v, 2, ring, 30f).Speed(0.85f).Ev(2, "AnimAttack", ring2, 0.18f).Build();
             var bn = new ClipBuilder(sh, "Bounce", "ModSylPuffBounce").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(0, "AnimMoveStop").Ev(2, "AnimInputMultiplyStop")
                 .Ev(2, "AnimStartInvincibility").EvF(2, "AnimMoveStick", 230f).EvO(2, "AnimSound", v).Ev(2, "AnimAttack", roll)
                 .Ev(6, "AnimMoveStop").Ev(6, "AnimStopInvincibility").Ev(6, "AnimAttack", land).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sl, 1.6f, rangeInner: 8f, rangeOuter: 40f));
+            atk.Add(Kit.Attack(a0, sl, 0.45f, rangeInner: 8f, rangeOuter: 40f));
+            atk.Add(Kit.Attack(a0, sl2, 0.45f, rangeInner: 8f, rangeOuter: 40f));
+            atk.Add(Kit.Attack(a0, sl3, 1.9f, rangeInner: 8f, rangeOuter: 70f));
             // 230 px/s through the 0.3 s in the air: about 50 px
             Kit.SetSpecial(p, Kit.Attack(sp, bn, 0f, rangeInner: 20f, rangeOuter: 55f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 12f);
             PuffballRebound.SquashClip = Once(sh, "WallSquash", "ModSylPuffSquash");
         }
@@ -291,15 +338,22 @@ namespace CrawlFurther.Content.Gods.Sylvene
             int s0 = Kit.AddEffect(p, SylveneFx.SporeSpine, offsetX: -2f, offsetY: 30f, angle: -16f);
             int s1 = Kit.AddEffect(p, SylveneFx.SporeSpine, offsetX: -2f, offsetY: 30f);
             int s2 = Kit.AddEffect(p, SylveneFx.SporeSpine, offsetX: -2f, offsetY: 30f, angle: 16f);
+            int vl = Kit.AddEffect(p, SylveneFx.Spine, offsetX: 11f, offsetY: 22f, angle: -10f);
+            int vr = Kit.AddEffect(p, SylveneFx.Spine, offsetX: 11f, offsetY: 22f, angle: 10f);
+            // Combo: two flicks, then a volley of three spines a beat apart
             var fl = Kit.Shot(sh, "Flick", "ModSylCordFlick", 2, v, 0f, spine).Build();
+            var fl2 = Kit.Shot(sh, "Flick", "ModSylCordFlick2", 2, null, 0f, spine).Speed(1.15f).Build();
+            var vo = Kit.Shot(sh, "Flick", "ModSylCordVolley", 2, v, 0.08f, vl, spine, vr).Speed(0.85f).Build();
             var inf = new ClipBuilder(sh, "Infect", "ModSylCordInfect").Once().Ev(0, "AnimMoveStop").EvF(0, "AnimInputMultiplyFreeFace", 0f)
                 .Ev(3, "AnimInputMultiplyStop").Ev(3, "AnimInputOff")
                 .Ev(4, "AnimAttack", s0).Ev(4, "AnimAttack", s1).Ev(4, "AnimAttack", s2)
                 .Ev(4, "ModSylInfect").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, fl, 1.5f, rangeInner: 45f, rangeOuter: 120f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, fl, 0.4f, rangeInner: 45f, rangeOuter: 120f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, fl2, 0.4f, rangeInner: 45f, rangeOuter: 120f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, vo, 1.9f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 40f));
             Kit.SetSpecial(p, Kit.Attack(sp, inf, 0f, rangeInner: 30f, rangeOuter: 110f, rangeRetreat: 20f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 22f);
         }
 
@@ -319,13 +373,22 @@ namespace CrawlFurther.Content.Gods.Sylvene
             }
             // the second eruption follows the first by 0.4 s (Erupt frames 2 and 4)
             var er = new ClipBuilder(sh, "Erupt", "ModRotMotherErupt").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop").Ev(2, "AnimAttack", e1).EvO(2, "AnimSound", v).Ev(4, "AnimAttack", e2).Ev(-1, "AnimRun").Build();
+            // Combo: two eruptions under the hero, then the Root Run: roots race from her to him, leaving a seed where they
+            // stop, and erupt under him twice more as they arrive
+            int run = Kit.AddEffect(p, SylveneFx.TaprootRunner, offsetX: 10f, offsetY: 0.01f);
+            var er2 = new ClipBuilder(sh, "Erupt", "ModRotMotherErupt2").Once().Speed(1.15f).Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop").Ev(2, "AnimAttack", e1).Ev(4, "AnimAttack", e2).Ev(-1, "AnimRun").Build();
+            var rr = new ClipBuilder(sh, "Erupt", "ModRotMotherRootRun").Once().Ev(0, "AnimMoveStop").EvF(0, "AnimInputMultiplyFreeFace", 0f)
+                .Ev(2, "AnimInputMultiplyStop").Ev(2, "AnimInputOff").Ev(2, "AnimAttack", run).EvO(2, "AnimSound", v)
+                .Ev(4, "AnimAttack", e1, 0.25f).Ev(4, "AnimAttack", e2, 0.45f).Ev(-1, "AnimRun").Build();
             var so = Special(sh, "Sprouting", "ModRotMotherSprouting").EvO(4, "AnimSound", v);
             for (int i = 0; i < rise.Count; i++) so.Ev(4, "AnimAttack", rise[i], (i / 2) * 0.06f);
             so.Ev(-1, "AnimRun");
             atk.Clear();
-            atk.Add(Kit.Attack(a0, er, 2.0f, rangeInner: 40f, rangeOuter: 150f, rangeRetreat: 30f));
+            atk.Add(Kit.Attack(a0, er, 0.5f, rangeInner: 40f, rangeOuter: 150f, rangeRetreat: 30f));
+            atk.Add(Kit.Attack(a0, er2, 0.5f, rangeInner: 40f, rangeOuter: 150f, rangeRetreat: 30f));
+            atk.Add(Kit.Attack(a0, rr, 2.4f, rangeInner: 30f, rangeOuter: 100f, rangeRetreat: 30f));
             Kit.SetSpecial(p, Kit.Attack(sp, so.Build(), 0f, rangeInner: 0f, rangeOuter: 160f, rangeRetreat: 30f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.65f);
             Strike.Feet(p, n0, 16f);   // eruptions and sprouts spawn on the hero (ClosestEnemy): unaffected
             MotherFeed.FeedClip = Once(sh, "Feed", "ModRotMotherFeed");
         }
@@ -336,12 +399,19 @@ namespace CrawlFurther.Content.Gods.Sylvene
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int berry = Kit.AddEffect(p, SylveneFx.Berry, offsetX: 11f, offsetY: 25f);   // fingers (11, -25)
+            int bl = Kit.AddEffect(p, SylveneFx.Berry, offsetX: 11f, offsetY: 25f, angle: -16f);
+            int br = Kit.AddEffect(p, SylveneFx.Berry, offsetX: 11f, offsetY: 25f, angle: 16f);
+            // Combo: two berries, then a Handful: three in a fan, nine seeds of poison when they split
             var ts = Kit.Shot(sh, "Toss", "ModSylShadeToss", 3, v, 0f, berry).Build();
+            var ts2 = Kit.Shot(sh, "Toss", "ModSylShadeToss2", 3, null, 0f, berry).Speed(1.15f).Build();
+            var hf = Kit.Shot(sh, "Toss", "ModSylShadeHandful", 3, v, 0.05f, bl, berry, br).Speed(0.85f).Build();
             var gd = Special(sh, "Garden", "ModSylShadeGarden").Ev(4, "ModSylShade").EvO(4, "AnimSound", v).Ev(5, "ModSylPlantTwo").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, ts, 1.5f, rangeInner: 45f, rangeOuter: 110f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, ts, 0.45f, rangeInner: 45f, rangeOuter: 110f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, ts2, 0.45f, rangeInner: 45f, rangeOuter: 110f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, hf, 2.0f, rangeInner: 40f, rangeOuter: 100f, rangeRetreat: 40f));
             Kit.SetSpecial(p, Kit.Attack(sp, gd, 0f, rangeInner: 0f, rangeOuter: 120f, rangeRetreat: 30f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 24f);
         }
 
@@ -356,18 +426,26 @@ namespace CrawlFurther.Content.Gods.Sylvene
             var darts = new List<int>();
             foreach (var a in new[] { -14f, 0.01f, 14f }) darts.Add(Kit.AddEffect(p, SylveneFx.PollenDart, offsetX: 12f, offsetY: 24f, angle: a));
             int cloud = Kit.AddEffect(p, SylveneFx.PollenCloud, offsetX: 30f, offsetY: 0.01f);
+            var wide = new List<int>();
+            foreach (var a in new[] { -28f, -14f, 0.01f, 14f, 28f }) wide.Add(Kit.AddEffect(p, SylveneFx.PollenDart, offsetX: 12f, offsetY: 24f, angle: a));
+            int gust = Kit.AddEffect(p, SylveneFx.PollenCloud, offsetX: 30f, offsetY: 0.01f);
+            // Combo: a clap of three darts, a wider clap of five, then the Gust: three darts and a pollen cloud ahead
             var cl = Kit.Shot(sh, "Clap", "ModMonarchClap", 2, v, 0f, darts.ToArray()).Build();
+            var cl2 = Kit.Shot(sh, "Clap", "ModMonarchClap2", 2, v, 0f, wide.ToArray()).Build();
+            var cl3 = Kit.Shot(sh, "Clap", "ModMonarchGust", 2, v, 0f, darts.ToArray()).Speed(0.85f).Ev(3, "AnimAttack", gust).Build();
             var st = Special(sh, "Storm", "ModMonarchStorm").EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(3, "AnimInputMultiplyStop")
                 .Ev(3, "AnimAttack", cloud).EvO(3, "AnimSound", v).Ev(4, "ModSylStormSeeds").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            var clap = Kit.Attack(a0, cl, 1.8f, rangeInner: 45f, rangeOuter: 110f, rangeRetreat: 40f);
+            var clap = Kit.Attack(a0, cl, 0.45f, rangeInner: 45f, rangeOuter: 110f, rangeRetreat: 40f);
+            var clap2 = Kit.Attack(a0, cl2, 0.45f, rangeInner: 40f, rangeOuter: 100f, rangeRetreat: 40f);
+            var clap3 = Kit.Attack(a0, cl3, 2.2f, rangeInner: 20f, rangeOuter: 70f, rangeRetreat: 30f);
             var storm = Kit.Attack(sp, st, 0f, rangeInner: 0f, rangeOuter: 52f, rangeRetreat: 0f);
             var soft = flap != null ? flap.GetComponent<AudioCue>() : null;
-            clap.m_sound = soft;
+            clap.m_sound = soft; clap2.m_sound = soft; clap3.m_sound = soft;
             storm.m_sound = soft;
-            atk.Add(clap);
+            atk.Add(clap); atk.Add(clap2); atk.Add(clap3);
             Kit.SetSpecial(p, storm, 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.65f);
             Strike.Feet(p, n0, 24f);
         }
 
@@ -377,14 +455,19 @@ namespace CrawlFurther.Content.Gods.Sylvene
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int shot = Kit.AddEffect(p, SylveneFx.SeedShot, offsetX: 14f, offsetY: 14f);   // jaws (14, -14)
+            // Combo: two seed shots, then the Harvest: one more seed, and every ripe pod near the hero shakes loose
             var sh1 = Kit.Shot(sh, "Shot", "ModSylSowerShot", 2, v, 0f, shot).Build();
+            var sh2 = Kit.Shot(sh, "Shot", "ModSylSowerShot2", 2, null, 0f, shot).Speed(1.15f).Build();
+            var hv = Kit.Shot(sh, "Shot", "ModSylSowerHarvest", 2, v, 0f, shot).Speed(0.85f).Ev(3, "ModSylHarvest").Build();
             var sf = new ClipBuilder(sh, "Strafe", "ModSylSowerStrafe").Once().Ev(0, "AnimMoveStop").EvF(0, "AnimInputMultiply", 0.4f)
                 .Ev(0, "ModSylStrafe").EvO(1, "AnimSound", v).Ev(-1, "AnimInputMultiplyStop").Ev(-1, "AnimRun").Build();
             atk.Clear();
             // 240 px/s for 0.45 s: about 110 px
-            atk.Add(Kit.Attack(a0, sh1, 1.4f, rangeInner: 40f, rangeOuter: 100f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, sh1, 0.4f, rangeInner: 40f, rangeOuter: 100f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, sh2, 0.4f, rangeInner: 40f, rangeOuter: 100f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, hv, 1.9f, rangeInner: 40f, rangeOuter: 100f, rangeRetreat: 35f));
             Kit.SetSpecial(p, Kit.Attack(sp, sf, 0f, rangeInner: 30f, rangeOuter: 90f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 14f);
         }
 
@@ -398,14 +481,22 @@ namespace CrawlFurther.Content.Gods.Sylvene
             int far = Kit.AddEffect(p, SylveneFx.LilyBite, attach: true, destroyOnAnimEnd: true, offsetX: 34f, offsetY: 10f);    // bite (38, -10)
             var rot = new List<int>();
             foreach (var a in new[] { -60f, -30f, 0.01f, 30f, 60f }) rot.Add(Kit.AddEffect(p, SylveneFx.RotCloud, offsetX: 12f, offsetY: 24f, angle: a));
-            var ln = Kit.Melee(sh, "Lunge", "ModLilyLunge", v, 3, near, 0f).Build();
-            var lf = Kit.Melee(sh, "LungeFar", "ModLilyLungeFar", v, 3, far, 0f).Build();
+            int breath = Kit.AddEffect(p, SylveneFx.RotCloud, offsetX: 22f, offsetY: 12f);
+            var fan = new List<int>();
+            foreach (var a in new[] { -22f, 22f }) fan.Add(Kit.AddEffect(p, SylveneFx.RotCloud, offsetX: 34f, offsetY: 12f, angle: a));
+            // Combo: a near bite and a far bite that each breathe out a puff of rot, then the Rot Kiss: the far bite with
+            // three puffs fanned from it
+            var ln = Kit.Melee(sh, "Lunge", "ModLilyLunge", v, 3, near, 0f).Ev(3, "AnimAttack", breath).Build();
+            var lf = Kit.Melee(sh, "LungeFar", "ModLilyLungeFar", v, 3, far, 0f).Ev(3, "AnimAttack", breath).Build();
+            var lk = Kit.Melee(sh, "LungeFar", "ModLilyRotKiss", v, 3, far, 0f).Speed(0.85f).Ev(3, "AnimAttack", breath)
+                .Ev(3, "AnimAttack", fan[0], 0.05f).Ev(3, "AnimAttack", fan[1], 0.05f).Build();
             var bl = Kit.Shot(sh, "Bloom", "ModLilyBloom", 4, v, 0.02f, rot.ToArray()).Ev(0, "AnimMoveStop").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, ln, 1.6f, rangeInner: 12f, rangeOuter: 28f));
-            atk.Add(Kit.Attack(a0, lf, 1.6f, rangeInner: 12f, rangeOuter: 44f));
+            atk.Add(Kit.Attack(a0, ln, 0.45f, rangeInner: 12f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, lf, 0.45f, rangeInner: 12f, rangeOuter: 46f));
+            atk.Add(Kit.Attack(a0, lk, 2.0f, rangeInner: 12f, rangeOuter: 50f));
             Kit.SetSpecial(p, Kit.Attack(sp, bl, 0f, rangeInner: 0f, rangeOuter: 50f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 24f);
             LilyPlanted.PlantedIdle = Looped(sh, "IdlePlanted", "ModLilyIdlePlanted");
             LilyPlanted.PlantClip = Once(sh, "Plant", "ModLilyPlant");
@@ -418,13 +509,21 @@ namespace CrawlFurther.Content.Gods.Sylvene
             int n0 = Strike.Mark(p);
             int front = Kit.AddEffect(p, SylveneFx.WyrmFront, attach: true, destroyOnAnimEnd: true, offsetX: 19f, offsetY: 6f);   // mace (21, -6)
             int back = Kit.AddEffect(p, SylveneFx.WyrmBack, attach: true, destroyOnAnimEnd: true, offsetX: -21f, offsetY: 6f);   // mace (-23, -6)
+            var flail = new List<int>();
+            foreach (var a in new[] { 155f, 180f, 205f }) flail.Add(Kit.AddEffect(p, SylveneFx.Thorn, offsetX: -21f, offsetY: 8f, angle: a));
+            // Combo: the mace in front and behind, twice, then the Flail: the back swing flings three thorns behind it
             var mc = Kit.Melee(sh, "Mace", "ModSylWyrmMace", v, 3, front, 10f, 6, back, 0f).Build();
+            var mc2 = Kit.Melee(sh, "Mace", "ModSylWyrmMace2", null, 3, front, 20f, 6, back, 0f).Speed(1.1f).Build();
+            var fl = Kit.Melee(sh, "Mace", "ModSylWyrmFlail", v, 3, front, 20f, 6, back, 0f).Speed(0.9f)
+                .Ev(6, "AnimAttack", flail[0]).Ev(6, "AnimAttack", flail[1]).Ev(6, "AnimAttack", flail[2]).Build();
             var sp1 = Special(sh, "Spiral", "ModSylWyrmSpiral").Ev(2, "ModSylSpiral").EvO(2, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, mc, 1.7f, rangeInner: 8f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, mc, 0.45f, rangeInner: 8f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, mc2, 0.45f, rangeInner: 8f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, fl, 2.0f, rangeInner: 8f, rangeOuter: 30f));
             // thorns fly 130 px/s for 0.9 s
             Kit.SetSpecial(p, Kit.Attack(sp, sp1, 0f, rangeInner: 0f, rangeOuter: 80f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 10f);
         }
 
@@ -435,14 +534,21 @@ namespace CrawlFurther.Content.Gods.Sylvene
             int n0 = Strike.Mark(p);
             var lb = new ClipBuilder(sh, "Lob", "ModSylBellowsLob").Once().EvF(0, "AnimInputMultiplyFreeFace", 0f)
                 .Ev(2, "AnimInputMultiplyStop").Ev(2, "AnimInputOff").Ev(2, "ModSylLob").EvO(2, "AnimSound", v).Ev(-1, "AnimRun").Build();
+            // Combo: two bladders, then a pair at once that straddle the hero's spot
+            var lb2 = new ClipBuilder(sh, "Lob", "ModSylBellowsLob2").Once().Speed(1.1f).EvF(0, "AnimInputMultiplyFreeFace", 0f)
+                .Ev(2, "AnimInputMultiplyStop").Ev(2, "AnimInputOff").Ev(2, "ModSylLob").Ev(-1, "AnimRun").Build();
+            var lp = new ClipBuilder(sh, "Lob", "ModSylBellowsLobPair").Once().Speed(0.85f).EvF(0, "AnimInputMultiplyFreeFace", 0f)
+                .Ev(2, "AnimInputMultiplyStop").Ev(2, "AnimInputOff").Ev(2, "ModSylLobPair").EvO(2, "AnimSound", v).Ev(-1, "AnimRun").Build();
             var pm = new ClipBuilder(sh, "Pump", "ModSylBellowsPump").Once().Ev(0, "AnimMoveStop").EvF(0, "AnimInputMultiplyFreeFace", 0f);
             foreach (int f in new[] { 0, 3, 6 }) pm.Ev(f, "ModSylLane");
             pm.EvO(0, "AnimSound", v).Ev(-1, "AnimInputMultiplyStop").Ev(-1, "AnimRun");
             atk.Clear();
             // four hops of up to 22 px
-            atk.Add(Kit.Attack(a0, lb, 1.7f, rangeInner: 40f, rangeOuter: 90f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, lb, 0.5f, rangeInner: 40f, rangeOuter: 90f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, lb2, 0.5f, rangeInner: 40f, rangeOuter: 90f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, lp, 2.2f, rangeInner: 40f, rangeOuter: 90f, rangeRetreat: 35f));
             Kit.SetSpecial(p, Kit.Attack(sp, pm.Build(), 0f, rangeInner: 0f, rangeOuter: 65f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.65f);
             Strike.Feet(p, n0, 18f);
         }
 
@@ -453,14 +559,20 @@ namespace CrawlFurther.Content.Gods.Sylvene
             int n0 = Strike.Mark(p);
             int stab = Kit.AddEffect(p, SylveneFx.QueenStab, attach: true, destroyOnAnimEnd: true, offsetX: 15f, offsetY: 24f);   // tip (22, -26)
             int dive = Kit.AddEffect(p, SylveneFx.QueenDive, attach: true, destroyOnAnimEnd: true, offsetX: 14f, offsetY: 14f);
+            int siphon = Kit.AddEffect(p, SylveneFx.QueenSiphon, attach: true, destroyOnAnimEnd: true, offsetX: 15f, offsetY: 24f);
+            // Combo: two stabs, then the Siphon: a long lunging stab that drinks from the hero (she heals on a hit)
             var sb = Kit.Melee(sh, "Stab", "ModSylQueenStab", v, 2, stab, 20f).Build();
+            var sb2 = Kit.Melee(sh, "Stab", "ModSylQueenStab2", null, 2, stab, 30f).Speed(1.15f).Build();
+            var si = Kit.Melee(sh, "Stab", "ModSylQueenSiphonStab", v, 2, siphon, 70f).Speed(0.85f).Build();
             var dv = Special(sh, "Dive", "ModSylQueenDive").Ev(1, "AnimInputOn").EvF(2, "AnimMoveStick", 260f).Ev(2, "AnimAttack", dive)
                 .EvO(2, "AnimSound", v).Ev(6, "AnimMoveStop").Ev(6, "AnimInputOff").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sb, 1.4f, rangeInner: 10f, rangeOuter: 26f));
+            atk.Add(Kit.Attack(a0, sb, 0.35f, rangeInner: 10f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, sb2, 0.35f, rangeInner: 10f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, si, 1.8f, rangeInner: 12f, rangeOuter: 44f));
             // 260 px/s through four 0.08 s frames, steered: about 70 px
             Kit.SetSpecial(p, Kit.Attack(sp, dv, 0f, rangeInner: 20f, rangeOuter: 75f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 20f);
             QueenDrone.BlurIdle = Looped(sh, "IdleBlur", "ModSylQueenIdleBlur");
             QueenDrone.BlurRun = Looped(sh, "RunBlur", "ModSylQueenRunBlur");

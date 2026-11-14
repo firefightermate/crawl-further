@@ -69,6 +69,26 @@ namespace CrawlFurther.Content.Gods.Umbrael
             return true;
         }
 
+        /// <summary>The Sandfall (its third fist) drops a column this heavy on his spot, after the column's shadow.</summary>
+        public const float SandfallHit = 0.9f;
+
+        /// <summary>Clip event (the Sandfall): mark his spot with the column's shadow, then drop the sand on it.</summary>
+        public void ModUmbSandfall()
+        {
+            if (!Alive || ModUtil.Hero() == null) return;
+            StartCoroutine(Sandfall(ModUtil.Hero().transform.position));
+        }
+
+        IEnumerator Sandfall(Vector2 at)
+        {
+            if (UmbraelFx.SandShadow != null) SystemPool.Spawn(UmbraelFx.SandShadow, at);
+            yield return new WaitForSeconds(Shadow);
+            if (UmbraelFx.SandColumn == null) yield break;
+            var col = FxFactory.SpawnOwned(UmbraelFx.SandColumn, at, Own);
+            var de = col != null ? col.GetComponent<DamageEffect>() : null;
+            if (de != null) R.Set(de, "m_damage", SandfallHit);
+        }
+
         IEnumerator Release()
         {
             yield return new WaitForSeconds(Held - Shadow);

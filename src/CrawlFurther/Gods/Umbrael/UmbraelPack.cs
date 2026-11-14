@@ -114,13 +114,18 @@ namespace CrawlFurther.Content.Gods.Umbrael
             int front = Kit.AddEffect(p, UmbraelFx.TwinCut, attach: true, offsetX: 8f, offsetY: 12f, like: like);
             int back = Kit.AddEffect(p, UmbraelFx.TwinCut, attach: true, offsetX: -8f, offsetY: 12f, like: like, angle: 180f);
             int swapCut = Kit.AddEffect(p, UmbraelFx.TwinSwapCut, attach: true, offsetX: 8f, offsetY: 12f, like: like);
+            // Combo: the front and back cuts twice, then the Cross: a long lunge, both bodies cut and the swap cut follows
             var cut = Kit.Melee(sh, "Cut", "ModTwinnedCut", v, 2, front, 60f, 4, back, 0f).Build();
+            var cut2 = Kit.Melee(sh, "Cut", "ModTwinnedCut2", null, 2, front, 70f, 4, back, 0f).Speed(1.1f).Build();
+            var cross = Kit.Melee(sh, "Cut", "ModTwinnedCross", v, 2, front, 120f, 4, back, 0f, 5, swapCut, 40f).Speed(0.9f).Build();
             var swap = Special(sh, "Swap", "ModTwinnedSwap").Ev(3, "ModUmbTwinSwap").EvO(3, "AnimSound", v)
                 .EvF(6, "AnimMoveStick", 50f).Ev(6, "AnimAttack", swapCut).Ev(7, "AnimMoveStop").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, cut, 1.2f, rangeInner: 10f, rangeOuter: 26f));
+            atk.Add(Kit.Attack(a0, cut, 0.35f, rangeInner: 10f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, cut2, 0.35f, rangeInner: 10f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, cross, 1.7f, rangeInner: 12f, rangeOuter: 44f));
             Kit.SetSpecial(p, Kit.Attack(sp, swap, 0f, rangeInner: 40f, rangeOuter: 150f, rangeRetreat: 0f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 12f);
         }
 
@@ -166,12 +171,19 @@ namespace CrawlFurther.Content.Gods.Umbrael
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int bolt = Kit.AddEffect(p, UmbraelFx.ReflectBolt, offsetX: 11f, offsetY: 16f);   // out of the glass at (9..13, -16)
+            int bl = Kit.AddEffect(p, UmbraelFx.ReflectBolt, offsetX: 11f, offsetY: 16f, angle: -18f);
+            int br = Kit.AddEffect(p, UmbraelFx.ReflectBolt, offsetX: 11f, offsetY: 16f, angle: 18f);
+            // Combo: two bolts, then the Hall of Mirrors: three bolts fanned out to bank round the room
             var rf = Kit.Shot(sh, "Reflect", "ModWitchReflect", 3, v, 0f, bolt).Build();
+            var rf2 = Kit.Shot(sh, "Reflect", "ModWitchReflect2", 3, null, 0f, bolt).Speed(1.15f).Build();
+            var hall = Kit.Shot(sh, "Reflect", "ModWitchHall", 3, v, 0.04f, bl, bolt, br).Speed(0.85f).Build();
             var mr = Special(sh, "Mirror", "ModWitchMirror").Ev(3, "ModUmbStandingMirror").EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, rf, 1.4f, rangeInner: 55f, rangeOuter: 120f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, rf, 0.4f, rangeInner: 55f, rangeOuter: 120f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, rf2, 0.4f, rangeInner: 55f, rangeOuter: 120f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, hall, 1.9f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 40f));
             Kit.SetSpecial(p, Kit.Attack(sp, mr, 0f, rangeInner: 30f, rangeOuter: 120f, rangeRetreat: 20f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 16f);
         }
 
@@ -183,16 +195,21 @@ namespace CrawlFurther.Content.Gods.Umbrael
             int bite = Kit.AddEffect(p, UmbraelFx.CoilBite, attach: true, destroyOnAnimEnd: true, offsetX: 14f, offsetY: 10f);   // jaws at (13, -10)
             int body = Kit.AddEffect(p, UmbraelFx.CoilSlither, attach: true, destroyOnAnimEnd: true, offsetX: 4f, offsetY: 4f);
             int pool = Kit.AddEffect(p, UmbraelFx.GloamPool, offsetX: -6f, offsetY: 0.01f);
+            // Combo: two rearing strikes, then the Dusk Strike: a long lunge that leaves darkness where it starts and ends
             var st = Kit.Melee(sh, "Strike", "ModGloamcoilStrike", v, 3, bite, 70f).Build();
+            var st2 = Kit.Melee(sh, "Strike", "ModGloamcoilStrike2", null, 3, bite, 80f).Speed(1.1f).Build();
+            var dusk = Kit.Melee(sh, "Strike", "ModGloamcoilDusk", v, 3, bite, 130f).Speed(0.9f).Ev(1, "AnimAttack", pool).Ev(5, "AnimAttack", pool).Build();
             var sl = new ClipBuilder(sh, "Slither", "ModGloamcoilSlither").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(1, "AnimInputMultiplyStop").Ev(1, "AnimInputOff")
                 .EvF(2, "AnimMove", 230f).Ev(2, "AnimAttack", body).Ev(2, "AnimAttack", pool).EvO(2, "AnimSound", v)
                 .Ev(4, "AnimAttack", pool).Ev(6, "AnimMoveStop").Ev(6, "AnimAttack", pool).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, st, 1.2f, rangeInner: 12f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, st, 0.35f, rangeInner: 12f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, st2, 0.35f, rangeInner: 12f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, dusk, 1.7f, rangeInner: 14f, rangeOuter: 46f));
             // 230 px/s for the 0.32 s dash = ~74 px
             Kit.SetSpecial(p, Kit.Attack(sp, sl, 0f, rangeInner: 25f, rangeOuter: 85f, rangeRetreat: 0f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 9f);
         }
 
@@ -204,12 +221,19 @@ namespace CrawlFurther.Content.Gods.Umbrael
             int sa = Kit.AddEffect(p, UmbraelFx.MothScale, offsetX: 8f, offsetY: 12f, angle: 9f);   // forewings at (8, -12)
             int sb = Kit.AddEffect(p, UmbraelFx.MothScale, offsetX: 8f, offsetY: 12f, angle: -9f);
             int dust = Kit.AddEffect(p, UmbraelFx.Glitter, offsetX: 10f, offsetY: 4f);
+            var shower = new List<int>();
+            foreach (var a in new[] { -30f, -15f, 0.01f, 15f, 30f }) shower.Add(Kit.AddEffect(p, UmbraelFx.MothScale, offsetX: 8f, offsetY: 12f, angle: a));
+            // Combo: two V's of scales, then the Shower: five scales swept across in a row, one a beat after another
             var sc = Kit.Shot(sh, "Scales", "ModGlassmothScales", 2, v, 0f, sa, sb).Build();
+            var sc2 = Kit.Shot(sh, "Scales", "ModGlassmothScales2", 2, null, 0f, sa, sb).Speed(1.15f).Build();
+            var sw = Kit.Shot(sh, "Scales", "ModGlassmothShower", 2, v, 0.05f, shower.ToArray()).Speed(0.85f).Build();
             var du = Kit.Shot(sh, "Dust", "ModGlassmothDust", 3, v, 0f, dust).Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sc, 1.2f, rangeInner: 40f, rangeOuter: 95f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, sc, 0.4f, rangeInner: 40f, rangeOuter: 95f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, sc2, 0.4f, rangeInner: 40f, rangeOuter: 95f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, sw, 1.8f, rangeInner: 35f, rangeOuter: 90f, rangeRetreat: 35f));
             Kit.SetSpecial(p, Kit.Attack(sp, du, 0f, rangeInner: 20f, rangeOuter: 90f, rangeRetreat: 20f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 12f);
         }
 
@@ -219,12 +243,17 @@ namespace CrawlFurther.Content.Gods.Umbrael
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int shard = Kit.AddEffect(p, UmbraelFx.SandShard, offsetX: 5f, offsetY: 16f);   // the eye in the waist
+            // Combo: two shards, then the Stream: three shards down one line, a beat apart
             var sd = Kit.Shot(sh, "Shard", "ModHourglassShard", 2, v, 0f, shard).Build();
+            var sd2 = Kit.Shot(sh, "Shard", "ModHourglassShard2", 2, null, 0f, shard).Speed(1.15f).Build();
+            var stream = Kit.Shot(sh, "Shard", "ModHourglassStream", 2, v, 0.09f, shard, shard, shard).Speed(0.85f).Build();
             var rw = Special(sh, "Rewind", "ModHourglassRewind").Ev(1, "ModUmbRewindMark").EvO(1, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sd, 1.3f, rangeInner: 45f, rangeOuter: 100f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, sd, 0.4f, rangeInner: 45f, rangeOuter: 100f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, sd2, 0.4f, rangeInner: 45f, rangeOuter: 100f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, stream, 1.8f, rangeInner: 45f, rangeOuter: 100f, rangeRetreat: 35f));
             Kit.SetSpecial(p, Kit.Attack(sp, rw, 0f, rangeInner: 0f, rangeOuter: 140f, rangeRetreat: 0f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 16f);
             HourglassRewind.SnapClip = Once(sh, "Snap", "ModHourglassSnap");
         }
@@ -284,12 +313,19 @@ namespace CrawlFurther.Content.Gods.Umbrael
             foreach (var a in new[] { -14f, 0.01f, 14f }) fan.Add(Kit.AddEffect(p, UmbraelFx.Feather, offsetX: 12f, offsetY: 20f, angle: a));
             var prism = new List<int>();
             foreach (var a in new[] { -30f, -15f, 0.01f, 15f, 30f }) prism.Add(Kit.AddEffect(p, UmbraelFx.PrismFeather, offsetX: 12f, offsetY: 20f, angle: a));
+            var halo = new List<int>();
+            for (int i = 0; i < 8; i++) halo.Add(Kit.AddEffect(p, UmbraelFx.Feather, offsetX: 0f, offsetY: 20f, angle: i * 45f + 0.01f));
+            // Combo: two fans of three, then the Halo: eight feathers burst out all round her
             var ft = Kit.Shot(sh, "Feathers", "ModSeraphFeathers", 3, v, 0f, fan.ToArray()).Build();
+            var ft2 = Kit.Shot(sh, "Feathers", "ModSeraphFeathers2", 3, null, 0f, fan.ToArray()).Speed(1.15f).Build();
+            var ha = Kit.Shot(sh, "Feathers", "ModSeraphHalo", 3, v, 0f, halo.ToArray()).Speed(0.85f).Build();
             var pr = Kit.Shot(sh, "Prism", "ModSeraphPrism", 5, v, 0.03f, prism.ToArray()).Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, ft, 1.5f, rangeInner: 50f, rangeOuter: 110f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, ft, 0.45f, rangeInner: 50f, rangeOuter: 110f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, ft2, 0.45f, rangeInner: 50f, rangeOuter: 110f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, ha, 2.0f, rangeInner: 0f, rangeOuter: 70f, rangeRetreat: 20f));
             Kit.SetSpecial(p, Kit.Attack(sp, pr, 0f, rangeInner: 30f, rangeOuter: 130f, rangeRetreat: 20f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 20f);
         }
 
@@ -303,14 +339,21 @@ namespace CrawlFurther.Content.Gods.Umbrael
             foreach (var a in new[] { -22f, 0.01f, 22f }) lob.Add(Kit.AddEffect(p, UmbraelFx.Quill, offsetX: 2f, offsetY: 3f, angle: a));
             var shake = new List<int>();
             foreach (var a in new[] { 70f, 110f, 150f, -70f, -110f, -150f }) shake.Add(Kit.AddEffect(p, UmbraelFx.ShakeNail, offsetX: 0f, offsetY: 10f, angle: a));
+            var wide = new List<int>();
+            foreach (var a in new[] { -40f, -20f, 0.01f, 20f, 40f }) wide.Add(Kit.AddEffect(p, UmbraelFx.Quill, offsetX: 2f, offsetY: 3f, angle: a));
+            // Combo: two lobs of three caltrops, then a spray of five that carpets the floor ahead
             var lb = Kit.Shot(sh, "Lob", "ModBristleLob", 3, v, 0.05f, lob.ToArray()).Build();
+            var lb2 = Kit.Shot(sh, "Lob", "ModBristleLob2", 3, null, 0.05f, lob.ToArray()).Speed(1.1f).Build();
+            var lb3 = Kit.Shot(sh, "Lob", "ModBristleSpray", 3, v, 0.04f, wide.ToArray()).Speed(0.85f).Build();
             var sk = Special(sh, "Shake", "ModBristleShake");
             for (int i = 0; i < shake.Count; i++) sk.Ev(3, "AnimAttack", shake[i], i * 0.03f);
             sk.EvO(3, "AnimSound", v).Ev(-1, "AnimRun");
             atk.Clear();
-            atk.Add(Kit.Attack(a0, lb, 1.5f, rangeInner: 25f, rangeOuter: 70f, rangeRetreat: 15f));
+            atk.Add(Kit.Attack(a0, lb, 0.45f, rangeInner: 25f, rangeOuter: 70f, rangeRetreat: 15f));
+            atk.Add(Kit.Attack(a0, lb2, 0.45f, rangeInner: 25f, rangeOuter: 70f, rangeRetreat: 15f));
+            atk.Add(Kit.Attack(a0, lb3, 2.0f, rangeInner: 20f, rangeOuter: 65f, rangeRetreat: 15f));
             Kit.SetSpecial(p, Kit.Attack(sp, sk.Build(), 0f, rangeInner: 0f, rangeOuter: 45f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 10f);
         }
 
@@ -320,12 +363,19 @@ namespace CrawlFurther.Content.Gods.Umbrael
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int beam = Kit.AddEffect(p, UmbraelFx.GazeBeam, attach: true, offsetX: 9f, offsetY: 18f);   // the iris at (9, -18), 50 px of beam
+            int bL = Kit.AddEffect(p, UmbraelFx.GazeBeam, attach: true, offsetX: 9f, offsetY: 18f, angle: -26f);
+            int bR = Kit.AddEffect(p, UmbraelFx.GazeBeam, attach: true, offsetX: 9f, offsetY: 18f, angle: 26f);
+            // Combo: two gazes, then the Sweep: the beam rakes across from one side to the other
             var gz = Kit.Shot(sh, "Gaze", "ModEyeGaze", 3, v, 0f, beam).Build();
+            var gz2 = Kit.Shot(sh, "Gaze", "ModEyeGaze2", 3, null, 0f, beam).Speed(1.1f).Build();
+            var swp = Kit.Shot(sh, "Gaze", "ModEyeSweep", 3, v, 0.12f, bL, beam, bR).Speed(0.8f).Build();
             var bo = Special(sh, "Blackout", "ModEyeBlackout").EvO(1, "AnimSound", v).Ev(4, "ModUmbLightsOut").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, gz, 1.5f, rangeInner: 20f, rangeOuter: 55f, rangeRetreat: 15f));
+            atk.Add(Kit.Attack(a0, gz, 0.45f, rangeInner: 20f, rangeOuter: 55f, rangeRetreat: 15f));
+            atk.Add(Kit.Attack(a0, gz2, 0.45f, rangeInner: 20f, rangeOuter: 55f, rangeRetreat: 15f));
+            atk.Add(Kit.Attack(a0, swp, 2.0f, rangeInner: 15f, rangeOuter: 55f, rangeRetreat: 15f));
             Kit.SetSpecial(p, Kit.Attack(sp, bo, 0f, rangeInner: 0f, rangeOuter: 80f, rangeRetreat: 0f), 7.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 18f);
             UnblinkingEye.ShutClip = Looped(sh, "Shut", "ModEyeShut");
             UnblinkingEye.CrackClip = Once(sh, "Crack", "ModEyeCrack");
@@ -337,12 +387,17 @@ namespace CrawlFurther.Content.Gods.Umbrael
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int fang = Kit.AddEffect(p, UmbraelFx.WidowFang, attach: true, offsetX: 12f, offsetY: 7f);   // the legs stab to (18, -2)
+            // Combo: two stabs, then the Frenzy: a lunge and a second stab on its heels
             var fg = Kit.Melee(sh, "Fang", "ModWidowFang", v, 3, fang, 50f).Build();
+            var fg2 = Kit.Melee(sh, "Fang", "ModWidowFang2", null, 3, fang, 60f).Speed(1.1f).Build();
+            var fz = Kit.Melee(sh, "Fang", "ModWidowFrenzy", v, 3, fang, 110f, 5, fang, 40f).Speed(0.9f).Build();
             var wb = Special(sh, "Web", "ModWidowWeb").Ev(3, "ModUmbGlazeWeb").EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, fg, 1.3f, rangeInner: 12f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, fg, 0.35f, rangeInner: 12f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, fg2, 0.35f, rangeInner: 12f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, fz, 1.7f, rangeInner: 14f, rangeOuter: 44f));
             Kit.SetSpecial(p, Kit.Attack(sp, wb, 0f, rangeInner: 20f, rangeOuter: 120f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 8f);
         }
 
@@ -373,12 +428,17 @@ namespace CrawlFurther.Content.Gods.Umbrael
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int bite = Kit.AddEffect(p, UmbraelFx.VenomBite, attach: true, offsetX: 13f, offsetY: 13f);   // the jaws close at (19, -13)
+            // Combo: two venom bites, then the Riptide: the current drags the hero in before a long lunging bite
             var vb = Kit.Melee(sh, "Venom", "ModUndertowVenom", v, 3, bite, 60f).Build();
+            var vb2 = Kit.Melee(sh, "Venom", "ModUndertowVenom2", null, 3, bite, 70f).Speed(1.1f).Build();
+            var rip = Kit.Melee(sh, "Venom", "ModUndertowRiptide", v, 3, bite, 110f).Speed(0.85f).Ev(1, "ModUmbRiptide").Build();
             var dv = Special(sh, "Dive", "ModUndertowDive").EvO(2, "AnimSound", v).Ev(6, "ModUmbLurk").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, vb, 1.4f, rangeInner: 12f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, vb, 0.4f, rangeInner: 12f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, vb2, 0.4f, rangeInner: 12f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, rip, 1.8f, rangeInner: 14f, rangeOuter: 60f));
             Kit.SetSpecial(p, Kit.Attack(sp, dv, 0f, rangeInner: 0f, rangeOuter: 120f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 13f);
             UndertowLurk.LurkClip = Looped(sh, "Lurk", "ModUndertowLurk");
             UndertowLurk.BiteClip = Once(sh, "LurkBite", "ModUndertowLurkBite");
@@ -397,7 +457,12 @@ namespace CrawlFurther.Content.Gods.Umbrael
                 waves.Add(new[] { Kit.AddEffect(p, UmbraelFx.ArgusScale, offsetX: 8f, offsetY: 18f, angle: -w),
                                   Kit.AddEffect(p, UmbraelFx.ArgusScale, offsetX: 8f, offsetY: 18f, angle: 0.01f),
                                   Kit.AddEffect(p, UmbraelFx.ArgusScale, offsetX: 8f, offsetY: 18f, angle: w) });
+            var wheel = new List<int>();
+            for (int i = 0; i < 8; i++) wheel.Add(Kit.AddEffect(p, UmbraelFx.ArgusScale, offsetX: 0f, offsetY: 18f, angle: i * 45f + 22.5f));
+            // Combo: two volleys of three, then the Wheel: every eye on its wings opens and eight scales fly out all round
             var vo = Kit.Shot(sh, "Volley", "ModArgusVolley", 2, v, 0f, vol.ToArray()).Build();
+            var vo2 = Kit.Shot(sh, "Volley", "ModArgusVolley2", 2, null, 0f, vol.ToArray()).Speed(1.15f).Build();
+            var wh = Kit.Shot(sh, "Volley", "ModArgusWheel", 2, v, 0f, wheel.ToArray()).Speed(0.85f).Build();
             // three down-strokes 0.3 s apart (frames 1, 4, 7)
             var st = new ClipBuilder(sh, "Storm", "ModArgusStorm").Once().EvF(0, "AnimInputMultiplyFreeFace", 0f)
                 .Ev(1, "AnimInputMultiplyStop").Ev(1, "AnimInputOff").Ev(0, "AnimMoveStop");
@@ -405,9 +470,11 @@ namespace CrawlFurther.Content.Gods.Umbrael
                 foreach (var e in waves[w]) st.Ev(1 + w * 3, "AnimAttack", e);
             st.EvO(1, "AnimSound", v).Ev(-1, "AnimRun");
             atk.Clear();
-            atk.Add(Kit.Attack(a0, vo, 1.4f, rangeInner: 50f, rangeOuter: 110f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, vo, 0.4f, rangeInner: 50f, rangeOuter: 110f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, vo2, 0.4f, rangeInner: 50f, rangeOuter: 110f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, wh, 2.0f, rangeInner: 0f, rangeOuter: 70f, rangeRetreat: 20f));
             Kit.SetSpecial(p, Kit.Attack(sp, st.Build(), 0f, rangeInner: 30f, rangeOuter: 120f, rangeRetreat: 20f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 18f);
             ArgusEyes.CatchClip = Once(sh, "Catch", "ModArgusCatch");
         }
@@ -419,17 +486,22 @@ namespace CrawlFurther.Content.Gods.Umbrael
             int n0 = Strike.Mark(p);
             int bite = Kit.AddEffect(p, UmbraelFx.SwarmBite, attach: true, offsetX: 6f, offsetY: 16f);
             int sb = Kit.AddEffect(p, UmbraelFx.SurgeBite, attach: true, destroyOnAnimEnd: true, offsetX: 4f, offsetY: 6f);
+            // Combo: two surging bites, then the Engulf: a long surge and the swarm bites three times as it closes round him
             var bt = Kit.Melee(sh, "Bite", "ModSwarmBite", v, 2, bite, 60f).Build();
+            var bt2 = Kit.Melee(sh, "Bite", "ModSwarmBite2", null, 2, bite, 70f).Speed(1.1f).Build();
+            var en = Kit.Melee(sh, "Bite", "ModSwarmEngulf", v, 2, bite, 120f).Speed(0.85f).Ev(3, "AnimAttack", sb).Ev(4, "AnimAttack", sb).Ev(5, "AnimAttack", sb).Build();
             // the rush steers with the stick (AnimMoveStick) through frames 2-5
             var sg = new ClipBuilder(sh, "Surge", "ModSwarmSurge").Once().EvF(0, "AnimInputMultiplyFreeFace", 0f)
                 .Ev(2, "AnimInputMultiplyStop").Ev(2, "ModUmbSurgeStart").EvF(2, "AnimMoveStick", 260f).EvO(2, "AnimSound", v)
                 .Ev(2, "AnimAttack", sb).Ev(3, "AnimAttack", sb).Ev(4, "AnimAttack", sb)
                 .Ev(6, "AnimMoveStop").Ev(6, "ModUmbSurgeEnd").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, bt, 1.3f, rangeInner: 12f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, bt, 0.4f, rangeInner: 12f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, bt2, 0.4f, rangeInner: 12f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, en, 1.9f, rangeInner: 14f, rangeOuter: 50f));
             // 260 px/s for the 0.24 s rush = ~62 px
             Kit.SetSpecial(p, Kit.Attack(sp, sg, 0f, rangeInner: 10f, rangeOuter: 50f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 18f);
         }
 
@@ -440,12 +512,19 @@ namespace CrawlFurther.Content.Gods.Umbrael
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int spin = Kit.AddEffect(p, UmbraelFx.PendulumSpin, offsetX: 0f, offsetY: 11f);   // round the pivot under the case
+            // Combo: two heavy swings, then the Strike of the Hour: the blade goes round twice, stepping in between
             var sw = Kit.Melee(sh, "Swing", "ModPendulumSwing", v, 2, spin, 0f).Build();
+            var sw2 = Kit.Melee(sh, "Swing", "ModPendulumSwing2", null, 2, spin, 30f).Speed(1.1f).Build();
+            var hour = new ClipBuilder(sh, "Swing", "ModPendulumHour").Once().Repeat(2).EvF(0, "AnimInputMultiplyFreeFace", 0f)
+                .Ev(1, "AnimInputMultiplyStop").Ev(1, "AnimInputOff").EvO(2, "AnimSound", v).Ev(2, "AnimAttack", spin)
+                .EvF(7, "AnimMoveStick", 90f).Ev(8, "AnimMoveStop").EvO(9, "AnimSound", v).Ev(9, "AnimAttack", spin).Ev(-1, "AnimRun").Build();
             var stp = Special(sh, "Stop", "ModPendulumStop").Ev(1, "ModUmbStopClock").EvO(1, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sw, 1.5f, rangeInner: 0f, rangeOuter: 20f));
+            atk.Add(Kit.Attack(a0, sw, 0.45f, rangeInner: 0f, rangeOuter: 22f));
+            atk.Add(Kit.Attack(a0, sw2, 0.45f, rangeInner: 0f, rangeOuter: 24f));
+            atk.Add(Kit.Attack(a0, hour, 2.0f, rangeInner: 0f, rangeOuter: 30f));
             Kit.SetSpecial(p, Kit.Attack(sp, stp, 0f, rangeInner: 0f, rangeOuter: 36f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 14f);
         }
 
@@ -455,12 +534,18 @@ namespace CrawlFurther.Content.Gods.Umbrael
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int ball = Kit.AddEffect(p, UmbraelFx.SandBall, offsetX: 13f, offsetY: 18f);   // the hand at (12, -16)
+            // Combo: two fists of sand, then the Sandfall: a third fist, and a column of sand drops on the hero's spot after
+            // its shadow
             var fi = Kit.Shot(sh, "Fist", "ModWraithFist", 2, v, 0f, ball).Build();
+            var fi2 = Kit.Shot(sh, "Fist", "ModWraithFist2", 2, null, 0f, ball).Speed(1.15f).Build();
+            var sf = Kit.Shot(sh, "Fist", "ModWraithSandfall", 2, v, 0f, ball).Speed(0.85f).Ev(3, "ModUmbSandfall").Build();
             var to = Special(sh, "TimeOut", "ModWraithTimeOut").EvO(2, "AnimSound", v).Ev(4, "ModUmbTimeOut").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, fi, 1.4f, rangeInner: 35f, rangeOuter: 100f, rangeRetreat: 30f));
+            atk.Add(Kit.Attack(a0, fi, 0.4f, rangeInner: 35f, rangeOuter: 100f, rangeRetreat: 30f));
+            atk.Add(Kit.Attack(a0, fi2, 0.4f, rangeInner: 35f, rangeOuter: 100f, rangeRetreat: 30f));
+            atk.Add(Kit.Attack(a0, sf, 2.0f, rangeInner: 35f, rangeOuter: 110f, rangeRetreat: 30f));
             Kit.SetSpecial(p, Kit.Attack(sp, to, 0f, rangeInner: 20f, rangeOuter: 120f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 18f);
         }
 
