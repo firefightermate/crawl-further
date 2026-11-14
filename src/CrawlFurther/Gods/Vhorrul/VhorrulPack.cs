@@ -320,7 +320,7 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             var l = Kit.Melee(sh, "Ladle", "ModVhRendererLadle", v, 3, fan, 0f).Build();
             // Combo: two ladle flings, then the Ladle and Swing: the fling and the ladle swung back through him
             var l2 = Kit.Melee(sh, "Ladle", "ModVhRendererLadle2", null, 3, fan, 20f).Speed(1.1f).Build();
-            var l3 = Kit.Melee(sh, "Ladle", "ModVhRendererLadleSwing", v, 3, fan, 30f, 5, swing, 40f).Speed(0.9f).Build();
+            var l3 = Kit.Melee(sh, "Ladle", "ModVhRendererLadleSwing", v, 3, fan, 30f, 4, swing, 40f).Speed(0.9f).Build();
             // Tip 4 (wave out on f3) + Ride 4 x2 (0.64 s at the wave's 115 px/s: about 70 px) + Swing 5 (hit on f2)
             var boil = new ClipBuilder(sh, "Tip", "ModVhRendererBoil").Once().Then("Ride", 2).Then("Swing")
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop").Ev(2, "AnimInputOff")
@@ -368,7 +368,7 @@ namespace CrawlFurther.Content.Gods.Vhorrul
                 .Ev(2, "AnimInputOff").Ev(3, "AnimAttack", strike).EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             // Combo: two strikes, then the Wick: a lunging strike and a second one on its heels
             var s2 = Kit.Melee(sh, "Strike", "ModVhWyrmStrike2", null, 3, strike, 40f).Speed(1.1f).Build();
-            var s3 = Kit.Melee(sh, "Strike", "ModVhWyrmWick", v, 3, strike, 110f, 5, strike, 40f).Speed(0.9f).Build();
+            var s3 = Kit.Melee(sh, "Strike", "ModVhWyrmWick", v, 2, strike, 110f, 4, strike, 40f).Speed(0.9f).Build();
             var c = new ClipBuilder(sh, "Coil", "ModVhWyrmCoil").Once().Ev(0, "AnimInputOff").Ev(0, "VhCoil").EvO(0, "AnimSound", v).Ev(-1, "AnimRun").Build();
             WyrmCoil.CoilLoop = new ClipBuilder(sh, "Coil", "ModVhWyrmCoilLoop").Loop().Build();
             WyrmCoil.WyrmSwim = new ClipBuilder(sh, "Swim", "ModVhWyrmSwim").Loop().Build(); WyrmCoil.WyrmSwimRun = new ClipBuilder(sh, "SwimRun", "ModVhWyrmSwimRun").Loop().Build();

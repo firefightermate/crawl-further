@@ -9,6 +9,8 @@ namespace CrawlFurther.Content.Gods.Ysveld
     /// </summary>
     public class BrideWidowed : YsveldBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         public const float Reach = 100f, Time_ = 5f;
         public static exSpriteAnimClip WidowIdle, WidowRun, WidowSweep;
         float m_left;

@@ -94,11 +94,16 @@ namespace CrawlFurther.Content.Gods.Ysveld
             int thread = Kit.AddEffect(p, YsveldFx.Thread, offsetX: 6f, offsetY: 12f);       // spinnerets (6, -19), flown at the node
             Strike.Feet(p, from, 12f);
             var fg = Kit.Melee(sh, "Fangs", "ModYsvWeaverFangs", v, 3, fangs, 60f).Build();
+            // Combo: two frost bites, then the Bind: a lunging bite and a silk line that ties him to the weaver
+            var fg2 = Kit.Melee(sh, "Fangs", "ModYsvWeaverFangs2", null, 3, fangs, 70f).Speed(1.1f).Build();
+            var fg3 = Kit.Melee(sh, "Fangs", "ModYsvWeaverBind", v, 3, fangs, 100f).Speed(0.9f).Ev(4, "AnimAttack", thread).Build();
             var th = Kit.Shot(sh, "Tether", "ModYsvWeaverTether", 3, v, 0f, thread).Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, fg, 1.3f, rangeInner: 14f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, fg, 0.4f, rangeInner: 14f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, fg2, 0.4f, rangeInner: 14f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, fg3, 1.9f, rangeInner: 14f, rangeOuter: 46f));
             Kit.SetSpecial(p, Kit.Attack(sp, th, 0f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 0f), 6.5f);
-            Kit.Order(p, InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
         }
 
         // Rime Lurker: a lunging trapdoor bite; Snares flicks two snares by the hero (Set in Ice: snares on ice stay, 2 pips).
@@ -110,11 +115,16 @@ namespace CrawlFurther.Content.Gods.Ysveld
             int ring = Kit.AddEffect(p, YsveldFx.SnareRing, spawnPoint: DamageEffectData.eSpawnPoint.ClosestEnemy);
             Strike.Feet(p, from, 5f);
             var bt = Kit.Melee(sh, "Bite", "ModYsvLurkerBite", v, 3, bite, 70f).Build();
+            // Combo: two trapdoor bites, then the Ambush: a long lunge that bites twice
+            var bt2 = Kit.Melee(sh, "Bite", "ModYsvLurkerBite2", null, 3, bite, 80f).Speed(1.1f).Build();
+            var bt3 = Kit.Melee(sh, "Bite", "ModYsvLurkerAmbush", v, 2, bite, 140f, 4, bite, 40f).Speed(0.9f).Build();
             var sn = Special(sh, "Snare", "ModYsvLurkerSnare").Ev(4, "AnimAttack", ring).EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, bt, 1.3f, rangeInner: 14f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, bt, 0.4f, rangeInner: 14f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, bt2, 0.4f, rangeInner: 14f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, bt3, 1.8f, rangeInner: 14f, rangeOuter: 52f));
             Kit.EnableSpecial(p, Kit.Attack(sp, sn, 0f, rangeInner: 30f, rangeOuter: 110f, rangeRetreat: 0f), 6f);
-            Kit.Order(p, InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
         }
 
         // Silkmoth: three silk needles in a fan; Dive rushes through the hero (Frost Wake: a 50 px streak of ice behind it).
@@ -128,14 +138,21 @@ namespace CrawlFurther.Content.Gods.Ysveld
             int wake = Kit.AddEffect(p, YsveldFx.Wake, attach: true, spawnPoint: DamageEffectData.eSpawnPoint.Position);
             Strike.Feet(p, from, 10f);
             var vl = Kit.Shot(sh, "Volley", "ModYsvSilkmothVolley", 3, v, 0.03f, needles.ToArray()).Build();
+            var wide = new List<int>();
+            foreach (var a in new[] { -30f, -15f, 0.01f, 15f, 30f }) wide.Add(Kit.AddEffect(p, YsveldFx.Needle, offsetX: 8f, offsetY: 10f, angle: a));
+            // Combo: two volleys of three needles, then a flurry of five swept across
+            var vl2 = Kit.Shot(sh, "Volley", "ModYsvSilkmothVolley2", 3, null, 0.03f, needles.ToArray()).Speed(1.15f).Build();
+            var vl3 = Kit.Shot(sh, "Volley", "ModYsvSilkmothFlurry", 3, v, 0.05f, wide.ToArray()).Speed(0.85f).Build();
             var dv = new ClipBuilder(sh, "Dive", "ModYsvSilkmothDive").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop").Ev(2, "AnimInputOff")
                 .EvF(3, "AnimMove", 210f).Ev(3, "AnimAttack", dive).Ev(3, "AnimAttack", wake).EvO(3, "AnimSound", v)
                 .Ev(6, "AnimMoveStop").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, vl, 1.5f, rangeInner: 35f, rangeOuter: 95f, rangeRetreat: 30f));
+            atk.Add(Kit.Attack(a0, vl, 0.45f, rangeInner: 35f, rangeOuter: 95f, rangeRetreat: 30f));
+            atk.Add(Kit.Attack(a0, vl2, 0.45f, rangeInner: 35f, rangeOuter: 95f, rangeRetreat: 30f));
+            atk.Add(Kit.Attack(a0, vl3, 2.0f, rangeInner: 30f, rangeOuter: 90f, rangeRetreat: 30f));
             Kit.EnableSpecial(p, Kit.Attack(a0, dv, 0f, rangeInner: 25f, rangeOuter: 80f, rangeRetreat: 0f), 6f);
-            Kit.Order(p, InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
         }
 
         // Veil Witch: an ice shard from her wand; Crystals grow round the hero and shatter 1 s later (Cold Read: 1 + pips).
@@ -147,11 +164,18 @@ namespace CrawlFurther.Content.Gods.Ysveld
             int ring = Kit.AddEffect(p, YsveldFx.CrystalRing, spawnPoint: DamageEffectData.eSpawnPoint.ClosestEnemy);
             Strike.Feet(p, from, 12f);
             var sd = Kit.Shot(sh, "Shard", "ModYsvWitchShard", 3, v, 0f, shard).Build();
+            int sL = Kit.AddEffect(p, YsveldFx.Shard, offsetX: 13f, offsetY: 12f, angle: -12f);
+            int sR = Kit.AddEffect(p, YsveldFx.Shard, offsetX: 13f, offsetY: 12f, angle: 12f);
+            // Combo: two ice shards, then three in a tight fan
+            var sd2 = Kit.Shot(sh, "Shard", "ModYsvWitchShard2", 3, null, 0f, shard).Speed(1.15f).Build();
+            var sd3 = Kit.Shot(sh, "Shard", "ModYsvWitchSpread", 3, v, 0.04f, sL, shard, sR).Speed(0.85f).Build();
             var cr = Special(sh, "Crystals", "ModYsvWitchCrystals").Ev(4, "AnimAttack", ring).EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sd, 1.4f, rangeInner: 50f, rangeOuter: 120f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, sd, 0.4f, rangeInner: 50f, rangeOuter: 120f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, sd2, 0.4f, rangeInner: 50f, rangeOuter: 120f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, sd3, 1.9f, rangeInner: 45f, rangeOuter: 115f, rangeRetreat: 40f));
             Kit.SetSpecial(p, Kit.Attack(sp, cr, 0f, rangeInner: 40f, rangeOuter: 140f, rangeRetreat: 30f), 6.5f);
-            Kit.Order(p, InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
         }
 
         // Rime Knight: a two-handed cleave (Frozen Edge: it freezes 2 slabs of floor ahead); Ice Plates grows 2 plates.
@@ -164,12 +188,18 @@ namespace CrawlFurther.Content.Gods.Ysveld
             int puff = Kit.AddEffect(p, YsveldFx.Puff, offsetX: 5f, offsetY: 12f);
             Strike.Feet(p, from, 12f);
             var cl = Kit.Melee(sh, "Cleave", "ModYsvKnightCleave", v, 4, cleave, 40f).Ev(4, "AnimAttack", edge).Build();
+            int edge2 = Kit.AddEffect(p, YsveldFx.EdgeIce, offsetX: 36f, offsetY: 0f);
+            // Combo: two cleaves that freeze the floor at the tip, then the Rime Line: ice runs on further ahead
+            var cl2 = Kit.Melee(sh, "Cleave", "ModYsvKnightCleave2", null, 4, cleave, 50f).Speed(1.1f).Ev(4, "AnimAttack", edge).Build();
+            var cl3 = Kit.Melee(sh, "Cleave", "ModYsvKnightRimeLine", v, 4, cleave, 60f).Speed(0.85f).Ev(4, "AnimAttack", edge).Ev(4, "AnimAttack", edge2, 0.12f).Build();
             var pl = Special(sh, "Plate", "ModYsvKnightPlate").Ev(4, "ModGainPlates", 2).Ev(4, "AnimAttack", puff).EvO(4, "AnimSound", v)
                 .Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, cl, 1.4f, rangeInner: 14f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, cl, 0.4f, rangeInner: 14f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, cl2, 0.4f, rangeInner: 14f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, cl3, 1.9f, rangeInner: 14f, rangeOuter: 44f));
             Kit.SetSpecial(p, Kit.Attack(sp, pl, 0f, rangeInner: 0f, rangeOuter: 60f, rangeRetreat: 0f), 6.5f);
-            Kit.Order(p, InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
         }
 
         // Shard Hermit: a staff thrust; Plant Crystal plants a spike by the hero (Triangle: inside 3 of them he freezes).
@@ -180,11 +210,16 @@ namespace CrawlFurther.Content.Gods.Ysveld
             int jab = Kit.AddEffect(p, YsveldFx.Jab, attach: true, destroyOnAnimEnd: true, offsetX: 16f, offsetY: 10f);    // staff tip (22, -10)
             Strike.Feet(p, from, 10f);
             var jb = Kit.Melee(sh, "Jab", "ModYsvHermitJab", v, 3, jab, 60f).Build();
+            // Combo: two staff jabs, then the Flurry: a step in and three quick jabs
+            var jb2 = Kit.Melee(sh, "Jab", "ModYsvHermitJab2", null, 3, jab, 70f).Speed(1.15f).Build();
+            var jb3 = Kit.Melee(sh, "Jab", "ModYsvHermitFlurry", v, 2, jab, 90f, 3, jab, 20f, 5, jab, 30f).Speed(0.9f).Build();
             var pl = Special(sh, "Plant", "ModYsvHermitPlant").Ev(4, "YsvPlantCrystal").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, jb, 1.4f, rangeInner: 12f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, jb, 0.35f, rangeInner: 12f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, jb2, 0.35f, rangeInner: 12f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, jb3, 1.7f, rangeInner: 12f, rangeOuter: 42f));
             Kit.EnableSpecial(p, Kit.Attack(sp, pl, 0f, rangeInner: 20f, rangeOuter: 130f, rangeRetreat: 20f), 6.5f);
-            Kit.Order(p, InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
         }
 
         // ---------------------------------------------------------------------------------------------- tier 3
@@ -242,11 +277,16 @@ namespace CrawlFurther.Content.Gods.Ysveld
             foreach (var a in new[] { -24f, -12f, 0.01f, 12f, 24f }) hairs.Add(Kit.AddEffect(p, YsveldFx.Hairs, offsetX: 12f, offsetY: 9f, angle: a));
             Strike.Feet(p, from, 9f);
             var bt = Kit.Melee(sh, "Bite", "ModYsvTarantulaBite", v, 3, bite, 50f).Build();
+            // Combo: two crushing bites, then a lunging bite that flicks three frozen hairs after him
+            var bt2 = Kit.Melee(sh, "Bite", "ModYsvTarantulaBite2", null, 3, bite, 60f).Speed(1.1f).Build();
+            var bt3 = Kit.Melee(sh, "Bite", "ModYsvTarantulaFlick", v, 3, bite, 100f).Speed(0.9f).Ev(4, "AnimAttack", hairs[1]).Ev(4, "AnimAttack", hairs[2]).Ev(4, "AnimAttack", hairs[3]).Build();
             var fl = Kit.Shot(sh, "Flick", "ModYsvTarantulaFlick", 4, v, 0.02f, hairs.ToArray()).Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, bt, 1.7f, rangeInner: 16f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, bt, 0.45f, rangeInner: 16f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, bt2, 0.45f, rangeInner: 16f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, bt3, 2.0f, rangeInner: 16f, rangeOuter: 50f));
             Kit.EnableSpecial(p, Kit.Attack(sp, fl, 0f, rangeInner: 10f, rangeOuter: 46f, rangeRetreat: 0f), 6.5f);
-            Kit.Order(p, InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             var idle = new[] { "Idle0", "Idle1", "Idle2" }; var run = new[] { "Run0", "Run1", "Run2" };
             TarantulaBrood.BroodIdle = new exSpriteAnimClip[3]; TarantulaBrood.BroodRun = new exSpriteAnimClip[3];
             for (int i = 0; i < 3; i++)
@@ -265,13 +305,18 @@ namespace CrawlFurther.Content.Gods.Ysveld
             int grab = Kit.AddEffect(p, YsveldFx.ClawGrab, attach: true, destroyOnAnimEnd: true, offsetX: 21f, offsetY: 8f);
             Strike.Feet(p, from, 8f);
             var sn = Kit.Melee(sh, "Snap", "ModYsvHoarclawSnap", v, 3, snap, 40f).Build();
+            // Combo: two pincer snaps, then the Crush: a lunge and both pincers close on him
+            var sn2 = Kit.Melee(sh, "Snap", "ModYsvHoarclawSnap2", null, 3, snap, 50f).Speed(1.1f).Build();
+            var sn3 = Kit.Melee(sh, "Snap", "ModYsvHoarclawCrush", v, 2, snap, 100f, 4, grab, 30f).Speed(0.9f).Build();
             var sz = new ClipBuilder(sh, "Seize", "ModYsvHoarclawSeize").Once().EvF(0, "AnimInputMultiplyFreeFace", 0f)
                 .Ev(1, "AnimInputMultiplyStop").Ev(1, "AnimInputOff").EvF(2, "AnimMoveStick", 140f).Ev(2, "AnimAttack", grab)
                 .EvO(2, "AnimSound", v).Ev(3, "AnimMoveStop").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sn, 1.5f, rangeInner: 14f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, sn, 0.4f, rangeInner: 14f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, sn2, 0.4f, rangeInner: 14f, rangeOuter: 38f));
+            atk.Add(Kit.Attack(a0, sn3, 1.9f, rangeInner: 14f, rangeOuter: 50f));
             Kit.EnableSpecial(p, Kit.Attack(sp, sz, 0f, rangeInner: 10f, rangeOuter: 46f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
         }
 
         // Pale Empress: a wide fan of five aurora motes; Blizzard drifts after the hero for 3.4 s (Storm Queen: 8 s blizzards).
@@ -284,11 +329,18 @@ namespace CrawlFurther.Content.Gods.Ysveld
             int storm = Kit.AddEffect(p, YsveldFx.Storm, offsetX: 14f, offsetY: 14f);
             Strike.Feet(p, from, 16f);
             var au = Kit.Shot(sh, "Aurora", "ModYsvEmpressAurora", 3, v, 0.02f, motes.ToArray()).Build();
+            var crown = new List<int>();
+            for (int i = 0; i < 10; i++) crown.Add(Kit.AddEffect(p, YsveldFx.AuroraMote, offsetX: 0f, offsetY: 16f, angle: i * 36f + 0.01f));
+            // Combo: two fans of five motes, then the Corona: ten motes wheel out all round her
+            var au2 = Kit.Shot(sh, "Aurora", "ModYsvEmpressAurora2", 3, null, 0.02f, motes.ToArray()).Speed(1.15f).Build();
+            var au3 = Kit.Shot(sh, "Aurora", "ModYsvEmpressCorona", 3, v, 0.015f, crown.ToArray()).Speed(0.85f).Build();
             var bz = Special(sh, "Blizzard", "ModYsvEmpressBlizzard").Ev(4, "AnimAttack", storm).EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, au, 1.6f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, au, 0.45f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, au2, 0.45f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, au3, 2.2f, rangeInner: 0f, rangeOuter: 80f, rangeRetreat: 20f));
             Kit.EnableSpecial(p, Kit.Attack(a0, bz, 0f, rangeInner: 20f, rangeOuter: 150f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
         }
 
         // Glasswing: a glass scythe (doubled after a hatch); Glass Cocoon shuts her in glass for 2 s: crack it 3 times.
@@ -352,11 +404,16 @@ namespace CrawlFurther.Content.Gods.Ysveld
             int vortex = Kit.AddEffect(p, YsveldFx.Vortex, spawnPoint: DamageEffectData.eSpawnPoint.ClosestEnemy);
             Strike.Feet(p, from, 12f);
             var cl = Kit.Melee(sh, "Claw", "ModYsvWraithClaw", v, 3, claw, 60f).Build();
+            // Combo: two claw rakes, then the Gale: it rushes through and rakes twice
+            var cl2 = Kit.Melee(sh, "Claw", "ModYsvWraithClaw2", null, 3, claw, 70f).Speed(1.1f).Build();
+            var cl3 = Kit.Melee(sh, "Claw", "ModYsvWraithGale", v, 2, claw, 140f, 4, claw, 50f).Speed(0.9f).Build();
             var ml = Special(sh, "Maelstrom", "ModYsvWraithMaelstrom").Ev(4, "AnimAttack", vortex).EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, cl, 1.5f, rangeInner: 14f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, cl, 0.4f, rangeInner: 14f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, cl2, 0.4f, rangeInner: 14f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, cl3, 1.9f, rangeInner: 14f, rangeOuter: 54f));
             Kit.EnableSpecial(p, Kit.Attack(sp, ml, 0f, rangeInner: 20f, rangeOuter: 130f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
         }
 
         // Rime Colossus: a two-fisted slam with a quake (+0.3 on ice); Glacier Run paves an ice road and belly-slides down it.
@@ -395,13 +452,18 @@ namespace CrawlFurther.Content.Gods.Ysveld
             int rush = Kit.AddEffect(p, YsveldFx.RushHit, attach: true, destroyOnAnimEnd: true, offsetX: 14f, offsetY: 10f);
             Strike.Feet(p, from, 12f);
             var sm = Kit.Melee(sh, "Smash", "ModYsvWardenSmash", v, 4, smash, 40f).Build();
+            // Combo: two mace smashes, then the Bash: a shield rush into a smash
+            var sm2 = Kit.Melee(sh, "Smash", "ModYsvWardenSmash2", null, 4, smash, 50f).Speed(1.1f).Build();
+            var sm3 = Kit.Melee(sh, "Smash", "ModYsvWardenBash", v, 2, rush, 110f, 4, smash, 30f).Speed(0.9f).Build();
             var ru = Special(sh, "Rush", "ModYsvWardenRush").EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(0, "YsvShieldUp")
                 .Ev(1, "AnimInputMultiplyStop").EvF(2, "AnimMoveStick", 180f).Ev(2, "AnimAttack", rush).EvO(2, "AnimSound", v)
                 .Ev(6, "AnimMoveStop").Ev(7, "YsvShieldDown").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sm, 1.7f, rangeInner: 16f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, sm, 0.45f, rangeInner: 16f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, sm2, 0.45f, rangeInner: 16f, rangeOuter: 38f));
+            atk.Add(Kit.Attack(a0, sm3, 2.1f, rangeInner: 16f, rangeOuter: 52f));
             Kit.EnableSpecial(p, Kit.Attack(sp, ru, 0f, rangeInner: 30f, rangeOuter: 70f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             WardenChallenge.ChallengeClip = sh.Has("Challenge") ? new ClipBuilder(sh, "Challenge", "ModYsvWardenChallenge").Once().Build() : null;
         }
 
@@ -444,11 +506,18 @@ namespace CrawlFurther.Content.Gods.Ysveld
             int bolt = Kit.AddEffect(p, YsveldFx.PrismBolt, offsetX: 9f, offsetY: 14f);
             Strike.Feet(p, from, 14f);
             var bo = Kit.Shot(sh, "Bolt", "ModYsvOracleBolt", 3, v, 0f, bolt).Build();
+            int bL = Kit.AddEffect(p, YsveldFx.PrismBolt, offsetX: 9f, offsetY: 14f, angle: -18f);
+            int bR = Kit.AddEffect(p, YsveldFx.PrismBolt, offsetX: 9f, offsetY: 14f, angle: 18f);
+            // Combo: two prism bolts, then the Spectrum: three bolts split out of the prism
+            var bo2 = Kit.Shot(sh, "Bolt", "ModYsvOracleBolt2", 3, null, 0f, bolt).Speed(1.15f).Build();
+            var bo3 = Kit.Shot(sh, "Bolt", "ModYsvOracleSpectrum", 3, v, 0.04f, bL, bolt, bR).Speed(0.85f).Build();
             var sb = Special(sh, "Sunburst", "ModYsvOracleSunburst").Ev(3, "YsvSunburst").EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, bo, 1.5f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, bo, 0.45f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, bo2, 0.45f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, bo3, 2.0f, rangeInner: 40f, rangeOuter: 105f, rangeRetreat: 35f));
             Kit.EnableSpecial(p, Kit.Attack(sp, sb, 0f, rangeInner: 0f, rangeOuter: 80f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
         }
 
         // ---------------------------------------------------------------------------------------------- minions

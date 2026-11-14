@@ -164,7 +164,7 @@ namespace CrawlFurther.Content.Gods.Ossivar
             var bt = Kit.Melee(sh, "Bite", "ModOssBarghestBite", v, 2, bite, 60f, 4, bite, 30f).Build();
             // Combo: two pairs of rending bites, then the Maul: a lunge and three bites
             var bt2 = Kit.Melee(sh, "Bite", "ModOssBarghestBite2", null, 2, bite, 70f, 4, bite, 30f).Speed(1.1f).Build();
-            var bt3 = Kit.Melee(sh, "Bite", "ModOssBarghestMaul", v, 2, land, 120f, 4, bite, 30f, 5, bite, 20f).Speed(0.9f).Build();
+            var bt3 = Kit.Melee(sh, "Bite", "ModOssBarghestMaul", v, 2, land, 120f, 3, bite, 30f, 4, bite, 20f).Speed(0.9f).Build();
             var pc = new ClipBuilder(sh, "Pounce", "ModOssBarghestPounce").Once().AimLock(1)
                 .Ev(2, "AnimStartInvincibility").Ev(2, "OssPounce").EvO(2, "AnimSound", v)
                 .Ev(6, "AnimStopInvincibility").Ev(6, "AnimAttack", land).Ev(6, "AnimAttack", dust).Ev(-1, "AnimRun").Build();
