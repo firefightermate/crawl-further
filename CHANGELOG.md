@@ -3,6 +3,18 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## 1.4.4
+
+### Core
+- Test mode's Chaos page: chaos on or off for this game, `ChaosRooms.Mixing` (mostly big, only big, the game's own),
+  grow this floor's rooms now, and a list of this floor's rooms with their sizes (or why one keeps its size) that
+  reloads the floor around the picked room's big copy (`ChaosRooms.Featured`, weighted 1000 to 1).
+- `ChaosRooms`: groups are mixed per setting from one list of entries per game group; `RoomsOf(env)` reads an
+  environment's room groups from their fields; `WhyNot`, `Tried`.
+
+### Repository
+- `docs/testing.md`: the Chaos page.
+
 ## 1.4.3
 
 The release that ships 1.4.0 to 1.4.2 (built but never uploaded) and what follows to players. The player notes cover
