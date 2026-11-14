@@ -171,12 +171,18 @@ namespace CrawlFurther.Content.Gods.Zhekra
             var fan = new List<int>();
             foreach (var a in new[] { -14f, 0.01f, 14f }) fan.Add(Kit.AddEffect(p, ZhekraFx.HornetStinger, offsetX: 14f, offsetY: 8f, angle: a));
             int dart = Kit.AddEffect(p, ZhekraFx.MarkDart, offsetX: 14f, offsetY: 8f);
+            int line = Kit.AddEffect(p, ZhekraFx.HornetStinger, offsetX: 14f, offsetY: 8f);
+            // Combo: two volleys of three, then the Stream: five stingers down one line, a beat apart
             var vl = Kit.Shot(sh, "Volley", "ModZhkHornetVolley", 3, v, 0.04f, fan.ToArray()).Build();
+            var vl2 = Kit.Shot(sh, "Volley", "ModZhkHornetVolley2", 3, null, 0.04f, fan.ToArray()).Speed(1.15f).Build();
+            var strm = Kit.Shot(sh, "Volley", "ModZhkHornetStream", 3, v, 0.06f, line, line, line, line, line).Speed(0.85f).Build();
             var mk = Kit.Shot(sh, "Mark", "ModZhkHornetMark", 4, v, 0f, dart).Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, vl, 1.4f, rangeInner: 45f, rangeOuter: 105f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, vl, 0.4f, rangeInner: 45f, rangeOuter: 105f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, vl2, 0.4f, rangeInner: 45f, rangeOuter: 105f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, strm, 1.9f, rangeInner: 45f, rangeOuter: 110f, rangeRetreat: 35f));
             Kit.SetSpecial(p, Kit.Attack(sp, mk, 0f, rangeInner: 40f, rangeOuter: 130f, rangeRetreat: 30f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 8f);
         }
 
@@ -188,15 +194,20 @@ namespace CrawlFurther.Content.Gods.Zhekra
             int n0 = Strike.Mark(p);
             int stab = Kit.AddEffect(p, ZhekraFx.Stab, attach: true, destroyOnAnimEnd: true, offsetX: 16f, offsetY: 7f);
             int feed = Kit.AddEffect(p, ZhekraFx.FeedStab, attach: true, offsetX: 12f, offsetY: 6f);
+            // Combo: two needle stabs, then the Draw: a lunging stab that feeds (it swells as it does)
             var st = Kit.Melee(sh, "Stab", "ModZhkSiphonStab", v, 2, stab, 40f).Build();
+            var st2 = Kit.Melee(sh, "Stab", "ModZhkSiphonStab2", null, 2, stab, 50f).Speed(1.15f).Build();
+            var draw = Kit.Melee(sh, "Stab", "ModZhkSiphonDraw", v, 2, feed, 100f).Speed(0.85f).Build();
             var fd = new ClipBuilder(sh, "Feed", "ModZhkSiphonFeed").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(1, "AnimInputMultiplyStop").Ev(1, "AnimInputOff")
                 .EvF(1, "AnimMove", 220f).EvO(1, "AnimSound", v).Ev(2, "AnimMoveStop")
                 .Ev(2, "AnimAttack", feed).Ev(4, "AnimAttack", feed).Ev(6, "AnimAttack", feed).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, st, 1.3f, rangeInner: 12f, rangeOuter: 26f));
+            atk.Add(Kit.Attack(a0, st, 0.35f, rangeInner: 12f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, st2, 0.35f, rangeInner: 12f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, draw, 1.7f, rangeInner: 14f, rangeOuter: 44f));
             Kit.SetSpecial(p, Kit.Attack(sp, fd, 0f, rangeInner: 15f, rangeOuter: 55f, rangeRetreat: 0f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 7f);
             SiphonEngorge.Idles = Stances(sh, "Idle", "ModZhkSiphon", "", "1", "2", "3");
             SiphonEngorge.Runs = Stances(sh, "Run", "ModZhkSiphon", "", "1", "2", "3");
@@ -209,12 +220,19 @@ namespace CrawlFurther.Content.Gods.Zhekra
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int speck = Kit.AddEffect(p, ZhekraFx.GlueSpeck, offsetX: 16f, offsetY: 13f);
+            var spray = new List<int>();
+            foreach (var a in new[] { -30f, -15f, 0.01f, 15f, 30f }) spray.Add(Kit.AddEffect(p, ZhekraFx.GlueSpeck, offsetX: 16f, offsetY: 13f, angle: a));
+            // Combo: two squirts of three specks, then the Spray: five specks fanned out wide
             var sq = Kit.Shot(sh, "Specks", "ModZhkNasuteSpecks", 2, v, 0.06f, speck, speck, speck).Build();
+            var sq2 = Kit.Shot(sh, "Specks", "ModZhkNasuteSpecks2", 2, null, 0.06f, speck, speck, speck).Speed(1.15f).Build();
+            var sp5 = Kit.Shot(sh, "Specks", "ModZhkNasuteSpray", 2, v, 0.03f, spray.ToArray()).Speed(0.85f).Build();
             var su = Still(sh, "ShoreUp", "ModZhkNasuteShoreUp").Ev(4, "ModZhkShoreUp").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sq, 1.3f, rangeInner: 20f, rangeOuter: 65f, rangeRetreat: 15f));
+            atk.Add(Kit.Attack(a0, sq, 0.4f, rangeInner: 20f, rangeOuter: 65f, rangeRetreat: 15f));
+            atk.Add(Kit.Attack(a0, sq2, 0.4f, rangeInner: 20f, rangeOuter: 65f, rangeRetreat: 15f));
+            atk.Add(Kit.Attack(a0, sp5, 1.8f, rangeInner: 20f, rangeOuter: 60f, rangeRetreat: 15f));
             Kit.SetSpecial(p, Kit.Attack(sp, su, 0f, rangeInner: 0f, rangeOuter: 120f, rangeRetreat: 20f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 13f);
             NasuteBodyguard.PuffClip = Once(sh, "Puff", "ModZhkNasutePuff");
         }
@@ -260,12 +278,21 @@ namespace CrawlFurther.Content.Gods.Zhekra
             var rn = new ClipBuilder(sh, "Rain", "ModZhkMotherRain").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop").Ev(2, "AnimInputOff")
                 .Ev(3, "ZhkAcidRain").EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
+            // Combo: two acid rains, then the Downpour: the rain falls twice over
+            var rn2 = new ClipBuilder(sh, "Rain", "ModZhkMotherRain2").Once().Speed(1.1f)
+                .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop").Ev(2, "AnimInputOff")
+                .Ev(3, "ZhkAcidRain").Ev(-1, "AnimRun").Build();
+            var pour = new ClipBuilder(sh, "Rain", "ModZhkMotherDownpour").Once().Speed(0.85f)
+                .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop").Ev(2, "AnimInputOff")
+                .Ev(3, "ZhkAcidRain").EvO(3, "AnimSound", v).Ev(-1, "ZhkAcidRain").Ev(-1, "AnimRun").Build();
             var cl = Still(sh, "Call", "ModZhkMotherCall").Ev(2, "AnimAttack", pher).Ev(2, "ZhkFrenzyCall").EvO(2, "AnimSound", v)
                 .Ev(4, "AnimAttack", e1).Ev(5, "AnimAttack", e2).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, rn, 2f, rangeInner: 40f, rangeOuter: 150f, rangeRetreat: 30f));
+            atk.Add(Kit.Attack(a0, rn, 0.5f, rangeInner: 40f, rangeOuter: 150f, rangeRetreat: 30f));
+            atk.Add(Kit.Attack(a0, rn2, 0.5f, rangeInner: 40f, rangeOuter: 150f, rangeRetreat: 30f));
+            atk.Add(Kit.Attack(a0, pour, 2.4f, rangeInner: 40f, rangeOuter: 150f, rangeRetreat: 30f));
             Kit.SetSpecial(p, Kit.Attack(sp, cl, 0f, rangeInner: 0f, rangeOuter: 200f, rangeRetreat: 20f), 7.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.65f);
             Strike.Feet(p, n0, 20f);
         }
 
@@ -301,15 +328,20 @@ namespace CrawlFurther.Content.Gods.Zhekra
             int cut = Kit.AddEffect(p, ZhekraFx.Reap, attach: true, destroyOnAnimEnd: true, offsetX: 13f, offsetY: 14f);
             int x1 = Kit.AddEffect(p, ZhekraFx.ScissorHit, attach: true, destroyOnAnimEnd: true, offsetX: 14f, offsetY: 16f);
             int x2 = Kit.AddEffect(p, ZhekraFx.ScissorHit, attach: true, destroyOnAnimEnd: true, offsetX: 16f, offsetY: 13f);
+            // Combo: two double sweeps, then the Reaper: a lunge, both sweeps and the blades snap shut in an X
             var bl = Kit.Melee(sh, "Blades", "ModZhkMantisBlades", v, 2, cut, 40f, 4, cut, 30f).Build();
+            var bl2 = Kit.Melee(sh, "Blades", "ModZhkMantisBlades2", null, 2, cut, 50f, 4, cut, 30f).Speed(1.1f).Build();
+            var reap = Kit.Melee(sh, "Blades", "ModZhkMantisReaper", v, 2, cut, 100f, 4, cut, 30f).Speed(0.9f).Ev(5, "AnimAttack", x1).Ev(5, "AnimAttack", x2).Build();
             var sc = new ClipBuilder(sh, "Scissor", "ModZhkMantisScissor").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop").Ev(2, "AnimInputOff")
                 .EvF(3, "AnimMoveStick", 40f).Ev(3, "AnimAttack", x1).Ev(3, "AnimAttack", x2).EvO(3, "AnimSound", v)
                 .Ev(4, "AnimMoveStop").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, bl, 1.4f, rangeInner: 14f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, bl, 0.4f, rangeInner: 14f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, bl2, 0.4f, rangeInner: 14f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, reap, 1.9f, rangeInner: 14f, rangeOuter: 46f));
             Kit.SetSpecial(p, Kit.Attack(sp, sc, 0f, rangeInner: 12f, rangeOuter: 34f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 14f);
             MantisReflex.ReflexClip = Once(sh, "Reflex", "ModZhkMantisReflex");
         }
@@ -322,13 +354,18 @@ namespace CrawlFurther.Content.Gods.Zhekra
             int n0 = Strike.Mark(p);
             int bite = Kit.AddEffect(p, ZhekraFx.Clamp, attach: true, destroyOnAnimEnd: true, offsetX: 20f, offsetY: 6f);
             int dirt = Kit.AddEffect(p, ZhekraFx.Dirt, spawnPoint: DamageEffectData.eSpawnPoint.Position);
+            // Combo: two clamps, then the Ambush: it bursts forward and its jaws close twice
             var cl = Kit.Melee(sh, "Clamp", "ModZhkAntlionClamp", v, 2, bite, 40f).Build();
+            var cl2 = Kit.Melee(sh, "Clamp", "ModZhkAntlionClamp2", null, 2, bite, 50f).Speed(1.1f).Build();
+            var amb = Kit.Melee(sh, "Clamp", "ModZhkAntlionAmbush", v, 2, bite, 120f, 4, bite, 30f).Speed(0.9f).Build();
             var dg = Still(sh, "Dig", "ModZhkAntlionDig").Ev(0, "AnimAttack", dirt).EvO(0, "AnimSound", v).Ev(3, "AnimAttack", dirt)
                 .Ev(-1, "ModZhkPit").HandOff().Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, cl, 1.5f, rangeInner: 14f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, cl, 0.4f, rangeInner: 14f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, cl2, 0.4f, rangeInner: 14f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, amb, 1.9f, rangeInner: 14f, rangeOuter: 52f));
             Kit.SetSpecial(p, Kit.Attack(sp, dg, 0f, rangeInner: 0f, rangeOuter: 45f, rangeRetreat: 0f), 7.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 7f);
             AntlionPit.PitIdle = Looped(sh, "PitIdle", "ModZhkAntlionPitIdle");
             AntlionPit.FlickClip = Once(sh, "Flick", "ModZhkAntlionFlick");
@@ -344,12 +381,18 @@ namespace CrawlFurther.Content.Gods.Zhekra
             int slam = Kit.AddEffect(p, ZhekraFx.Slam, attach: true, destroyOnAnimEnd: true, offsetX: 16f, offsetY: 8f);
             int c1 = Kit.AddEffect(p, ZhekraFx.SwarmCloud, offsetX: 14f, offsetY: 14f, angle: -16f);
             int c2 = Kit.AddEffect(p, ZhekraFx.SwarmCloud, offsetX: 14f, offsetY: 14f, angle: 16f);
+            int c0 = Kit.AddEffect(p, ZhekraFx.SwarmCloud, offsetX: 14f, offsetY: 14f);
+            // Combo: two comb slams, then the Crack: the slam splits the comb and a hornet swarm pours out at him
             var sl = Kit.Melee(sh, "Slam", "ModZhkHiveSlam", v, 2, slam, 30f).Build();
+            var sl2 = Kit.Melee(sh, "Slam", "ModZhkHiveSlam2", null, 2, slam, 40f).Speed(1.1f).Build();
+            var crk = Kit.Melee(sh, "Slam", "ModZhkHiveCrack", v, 2, slam, 40f).Speed(0.85f).Ev(3, "AnimAttack", c0).Build();
             var sw = Kit.Shot(sh, "Swarm", "ModZhkHiveSwarm", 3, v, 0.1f, c1, c2).Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sl, 1.6f, rangeInner: 14f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, sl, 0.45f, rangeInner: 14f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, sl2, 0.45f, rangeInner: 14f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, crk, 2.2f, rangeInner: 14f, rangeOuter: 80f));
             Kit.SetSpecial(p, Kit.Attack(sp, sw, 0f, rangeInner: 40f, rangeOuter: 140f, rangeRetreat: 20f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 14f);
             HiveComb.IdleCrack = Looped(sh, "IdleCrack", "ModZhkHiveIdleCrack");
             HiveComb.RunCrack = Looped(sh, "RunCrack", "ModZhkHiveRunCrack");
@@ -362,12 +405,17 @@ namespace CrawlFurther.Content.Gods.Zhekra
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int lance = Kit.AddEffect(p, ZhekraFx.Lance, attach: true, destroyOnAnimEnd: true, offsetX: 20f, offsetY: 16f);
+            // Combo: two lance stings, then the Skewer: a long lunge that stings twice on the way through
             var ln = Kit.Melee(sh, "Lance", "ModZhkHunterLance", v, 3, lance, 50f).Build();
+            var ln2 = Kit.Melee(sh, "Lance", "ModZhkHunterLance2", null, 3, lance, 60f).Speed(1.1f).Build();
+            var sk = Kit.Melee(sh, "Lance", "ModZhkHunterSkewer", v, 2, lance, 140f, 4, lance, 40f).Speed(0.9f).Build();
             var rs = Still(sh, "Rise", "ModZhkHunterRise").EvO(1, "AnimSound", v).Ev(6, "ModZhkHunterMark").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, ln, 1.4f, rangeInner: 14f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, ln, 0.4f, rangeInner: 14f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, ln2, 0.4f, rangeInner: 14f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, sk, 1.9f, rangeInner: 16f, rangeOuter: 58f));
             Kit.SetSpecial(p, Kit.Attack(sp, rs, 0f, rangeInner: 40f, rangeOuter: 160f, rangeRetreat: 0f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 16f);
             HunterCarry.CarryClip = Looped(sh, "Carry", "ModZhkHunterCarry");
         }
@@ -378,12 +426,17 @@ namespace CrawlFurther.Content.Gods.Zhekra
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int drill = Kit.AddEffect(p, ZhekraFx.Drill, attach: true, destroyOnAnimEnd: true, offsetX: 16f, offsetY: 12f);
+            // Combo: two drills, then the Bore: it presses in and drills three times
             var dr = Kit.Melee(sh, "Drill", "ModZhkGorgerDrill", v, 2, drill, 35f).Build();
+            var dr2 = Kit.Melee(sh, "Drill", "ModZhkGorgerDrill2", null, 2, drill, 45f).Speed(1.1f).Build();
+            var bore = Kit.Melee(sh, "Drill", "ModZhkGorgerBore", v, 2, drill, 80f, 3, drill, 20f, 4, drill, 20f).Speed(0.85f).Build();
             var pm = Still(sh, "Pump", "ModZhkGorgerPump").Ev(2, "ModZhkTransfuse").EvO(2, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, dr, 1.5f, rangeInner: 14f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, dr, 0.4f, rangeInner: 14f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, dr2, 0.4f, rangeInner: 14f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, bore, 1.9f, rangeInner: 14f, rangeOuter: 42f));
             Kit.SetSpecial(p, Kit.Attack(sp, pm, 0f, rangeInner: 0f, rangeOuter: 140f, rangeRetreat: 20f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 12f);
             GorgerBank.Idles = Stances(sh, "Idle", "ModZhkGorger", "", "1", "2", "3");
             GorgerBank.Runs = Stances(sh, "Run", "ModZhkGorger", "", "1", "2", "3");
@@ -397,12 +450,17 @@ namespace CrawlFurther.Content.Gods.Zhekra
             int n0 = Strike.Mark(p);
             int ram = Kit.AddEffect(p, ZhekraFx.Ram, attach: true, destroyOnAnimEnd: true, offsetX: 13f, offsetY: 16f);
             int dart = Kit.AddEffect(p, ZhekraFx.EggDart, offsetX: 10f, offsetY: 18f);
+            // Combo: two rams, then the Buzz: a long ram that hits him twice as it barrels through
             var rm = Kit.Melee(sh, "Ram", "ModZhkBotflyRam", v, 2, ram, 70f).Build();
+            var rm2 = Kit.Melee(sh, "Ram", "ModZhkBotflyRam2", null, 2, ram, 80f).Speed(1.1f).Build();
+            var bz = Kit.Melee(sh, "Ram", "ModZhkBotflyBuzz", v, 2, ram, 160f, 4, ram, 60f).Speed(0.9f).Build();
             var ed = Kit.Shot(sh, "EggDart", "ModZhkBotflyEggDart", 4, v, 0f, dart).Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, rm, 1.4f, rangeInner: 14f, rangeOuter: 31f));
+            atk.Add(Kit.Attack(a0, rm, 0.4f, rangeInner: 14f, rangeOuter: 33f));
+            atk.Add(Kit.Attack(a0, rm2, 0.4f, rangeInner: 14f, rangeOuter: 35f));
+            atk.Add(Kit.Attack(a0, bz, 1.8f, rangeInner: 16f, rangeOuter: 60f));
             Kit.SetSpecial(p, Kit.Attack(sp, ed, 0f, rangeInner: 35f, rangeOuter: 110f, rangeRetreat: 30f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 16f);
         }
 
@@ -415,15 +473,20 @@ namespace CrawlFurther.Content.Gods.Zhekra
             int gore = Kit.AddEffect(p, ZhekraFx.Gore, attach: true, destroyOnAnimEnd: true, offsetX: 18f, offsetY: 12f);
             int end = Kit.AddEffect(p, ZhekraFx.BullHit, attach: true, destroyOnAnimEnd: true, offsetX: 18f, offsetY: 8f);
             int trail = Kit.AddEffect(p, ZhekraFx.Resin, spawnPoint: DamageEffectData.eSpawnPoint.Position);
+            // Combo: two gores, then the Toss: a lunging gore that ends in the bull's crash, leaving resin where it lands
             var gr = Kit.Melee(sh, "Gore", "ModZhkColossusGore", v, 2, gore, 30f).Build();
+            var gr2 = Kit.Melee(sh, "Gore", "ModZhkColossusGore2", null, 2, gore, 40f).Speed(1.1f).Build();
+            var ts = Kit.Melee(sh, "Gore", "ModZhkColossusToss", v, 2, gore, 100f, 4, end, 20f).Speed(0.9f).Ev(4, "AnimAttack", trail).Build();
             var bd = new ClipBuilder(sh, "Bulldoze", "ModZhkColossusBulldoze").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(1, "AnimInputMultiplyStop").Ev(1, "AnimInputOff")
                 .EvF(2, "AnimMove", 280f).EvF(2, "ModZhkBulldoze", 0.28f).EvO(2, "AnimSound", v).Ev(3, "AnimAttack", trail)
                 .Ev(5, "AnimAttack", trail).Ev(6, "AnimMoveStop").Ev(6, "AnimAttack", end).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, gr, 1.6f, rangeInner: 16f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, gr, 0.45f, rangeInner: 16f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, gr2, 0.45f, rangeInner: 16f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, ts, 2.0f, rangeInner: 16f, rangeOuter: 50f));
             Kit.SetSpecial(p, Kit.Attack(sp, bd, 0f, rangeInner: 20f, rangeOuter: 100f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 10f);
         }
 
@@ -474,14 +537,19 @@ namespace CrawlFurther.Content.Gods.Zhekra
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int shove = Kit.AddEffect(p, ZhekraFx.Shove, attach: true, destroyOnAnimEnd: true, offsetX: 22f, offsetY: 8f);
+            // Combo: two shoves, then the Steamroll: the ball rolls on through him, hitting twice
             var sv = Kit.Melee(sh, "Shove", "ModZhkSunScarabShove", v, 2, shove, 45f).Build();
+            var sv2 = Kit.Melee(sh, "Shove", "ModZhkSunScarabShove2", null, 2, shove, 55f).Speed(1.1f).Build();
+            var roll = Kit.Melee(sh, "Shove", "ModZhkSunScarabRoll", v, 2, shove, 130f, 4, shove, 60f).Speed(0.9f).Build();
             var rl = new ClipBuilder(sh, "Release", "ModZhkSunScarabRelease").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(1, "AnimInputMultiplyStop").Ev(1, "AnimInputOff")
                 .Ev(2, "ModZhkRelease").EvO(2, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sv, 1.6f, rangeInner: 16f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, sv, 0.45f, rangeInner: 16f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, sv2, 0.45f, rangeInner: 16f, rangeOuter: 38f));
+            atk.Add(Kit.Attack(a0, roll, 2.0f, rangeInner: 16f, rangeOuter: 56f));
             Kit.SetSpecial(p, Kit.Attack(sp, rl, 0f, rangeInner: 35f, rangeOuter: 150f, rangeRetreat: 20f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 8f);
             SunScarabFossil.Idles = Stances(sh, "Idle", "ModZhkSunScarab", "", "1", "2", "3");
             SunScarabFossil.Runs = Stances(sh, "Run", "ModZhkSunScarab", "", "1", "2", "3");

@@ -44,7 +44,9 @@ namespace CrawlFurther.Content.Gods.BelMora
             SetStance(null, null);
             if (m_specialData != null && m_special != null) m_specialData.m_animationFront = m_special;
             m_specialData = null;   // looked up again: a pooled body is re-inhabited with fresh attack data
-            NextBasic(0);
+            // the game never clears a next-attack override: only a quirk that picks its basics itself keeps one, so a
+            // combo of basics runs through all of its steps
+            NextBasic(PicksBasics ? 0 : -1);
             SpeedScale(1f);
         }
 
@@ -117,6 +119,9 @@ namespace CrawlFurther.Content.Gods.BelMora
         }
 
         /// <summary>Which basic attack (index in the kit's list) the body throws next.</summary>
+        /// <summary>True for a quirk that chooses which basic comes next itself (<see cref="NextBasic"/>).</summary>
+        protected virtual bool PicksBasics { get { return false; } }
+
         protected void NextBasic(int index) { if (m_attacks != null) m_attacks.SetNextAttackOverride(index); }
 
         /// <summary>Swap the clip the special plays (null puts the kit's own back).</summary>

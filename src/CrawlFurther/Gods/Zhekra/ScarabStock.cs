@@ -12,6 +12,8 @@ namespace CrawlFurther.Content.Gods.Zhekra
     /// </summary>
     public class ScarabStock : ZhkBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         public const float GrowTime = 4f / 3f, HurlRange = 170f;
         public const int MaxSize = 3;
         /// <summary>Idle, run and hurl with a ball of size 0-3 (index 0 of Hurls is the no-ball headbutt).</summary>

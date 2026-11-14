@@ -13,6 +13,8 @@ namespace CrawlFurther.Content.Gods.Zhekra
     /// </summary>
     public class SoldierGuard : ZhkBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         public const float GuardTime = 2f, Reach = 30f, Delay = 0.1f;
         /// <summary>The ambush strike (set by the kit).</summary>
         public static exSpriteAnimClip StrikeClip;

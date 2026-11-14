@@ -11,6 +11,8 @@ namespace CrawlFurther.Content.Gods.Zhekra
     /// </summary>
     public class GrubGorge : ZhkBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         public const int MaxFeeds = 3;
         public const float Growth = 0.3f;
         /// <summary>Idle, run and spit of the grub after 0-3 feeds (set by the kit).</summary>

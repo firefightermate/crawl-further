@@ -15,6 +15,8 @@ namespace CrawlFurther.Content.Gods.BelMora
     /// </summary>
     public class BellCast : BelBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         public const float Flight = 0.8f, BareSpeed = 1.3f, BareTaken = 1.4f, LiftTime = 2f, Reach = 22f, FightFirst = 1.5f, MaxBare = 8f;
         /// <summary>The bare stance, the bare special (a punch) and the lift (set by the kit).</summary>
         public static exSpriteAnimClip BareIdle, BareRun, BareSpecial, LiftClip;

@@ -12,6 +12,8 @@ namespace CrawlFurther.Content.Gods.Zhekra
     /// </summary>
     public class SpitterSac : ZhkBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         public const float StageTime = 2f, BurstDamage = 1f;
         public const int Full = 3;
         /// <summary>Idle and run with the sac at 0-3 (set by the kit).</summary>

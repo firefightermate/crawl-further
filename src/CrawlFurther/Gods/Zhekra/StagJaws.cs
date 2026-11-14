@@ -14,6 +14,8 @@ namespace CrawlFurther.Content.Gods.Zhekra
     /// </summary>
     public class StagJaws : ZhkBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         public const float Gap = 18f, AirTime = 0.6f, HookNear = 20f, HookFar = 40f;
 
         void Update()

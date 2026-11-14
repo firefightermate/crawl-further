@@ -13,6 +13,8 @@ namespace CrawlFurther.Content.Gods.Zhekra
     /// </summary>
     public class MortarSpotters : ZhkBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         public const float SpotRadius = 80f, Range = 240f, Tick = 0.5f, MarkY = 26f;
 
         readonly List<ZhkBrain> m_spot = new List<ZhkBrain>();
