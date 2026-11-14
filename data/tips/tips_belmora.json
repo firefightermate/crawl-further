@@ -28,7 +28,7 @@
  },
  "ModBellDiver": {
   "name": "Bell Diver",
-  "attack": "Anchor slam; a quake ring ahead knocks back",
+  "attack": "Two anchor slams, then a drop that pools brine",
   "special": "Chain hook: reels the hero in on a hit",
   "passive": [
    "A missed hook anchors: you haul yourself to it",
@@ -37,7 +37,7 @@
  },
  "ModSpinewalker": {
   "name": "Spinewalker",
-  "attack": "Spear the floor just ahead with a stilt",
+  "attack": "Two stilt stabs, then a stride spearing further on",
   "special": "Drop spined eggs that burst as he nears",
   "passive": [
    "Your eggs drift after the hero in brine",
@@ -47,7 +47,7 @@
  },
  "ModSaltSiren": {
   "name": "Salt Siren",
-  "attack": "Water bolt, long range; may slow",
+  "attack": "Two water bolts, then a wave that rolls at him",
   "special": "Song: tug the hero to you, brine wells under him",
   "passive": [
    "Your song drags nearby brine pools to the hero",
@@ -56,7 +56,7 @@
  },
  "ModBrineLamprey": {
   "name": "Brine Lamprey",
-  "attack": "Rasping bite; may bleed",
+  "attack": "Two rasps, then a darting rasp that bites twice",
   "special": "Lunge along the floor",
   "passive": [
    "A lunge that lands latches on, then rasps again",
@@ -65,7 +65,7 @@
  },
  "ModBellHermit": {
   "name": "Bell Hermit",
-  "attack": "Lunging claw crush with big knockback",
+  "attack": "Two claw crushes, then a crush that rings a peal",
   "special": "Bell down: take far less damage, hits ring out",
   "passive": [
    "Brine fills your bell; Bell Down pours it out",
@@ -74,7 +74,7 @@
  },
  "ModAnemoneBoxer": {
   "name": "Anemone Boxer",
-  "attack": "One-two punch with anemone gloves; may poison",
+  "attack": "One-two twice, then a flurry that ends in a sting",
   "special": "Hop in with poison jabs",
   "passive": [
    "After every punch you hop back out of reach",
@@ -93,7 +93,7 @@
  },
  "ModDrownedCaptain": {
   "name": "Drowned Captain",
-  "attack": "Gaff slash that hauls the hero in; may bleed",
+  "attack": "Two gaff slashes, then a lunge that ends in a boot",
   "special": "Grapple Swing: swing across (can't be hit), boot",
   "passive": [
    "A hero you haul or kick into brine is held under",
@@ -112,7 +112,7 @@
  },
  "ModBroodUrchin": {
   "name": "Brood Urchin",
-  "attack": "Spit a fan of three spines",
+  "attack": "Two sprays of three spines, then one of five",
   "special": "Lob eggs that burst when the tide comes",
   "passive": [
    "When the tide comes in, every egg bursts in spines",
@@ -122,7 +122,7 @@
  },
  "ModTideMatriarch": {
   "name": "Tide Matriarch",
-  "attack": "Trident thrust that also flings a coral shard",
+  "attack": "Two thrusts with a coral shard, then a wave",
   "special": "Riptide Lanes: currents from brine carry him to you",
   "passive": [
    "No brine near? You call the tide in early",
@@ -131,7 +131,7 @@
  },
  "ModJellySiren": {
   "name": "Jelly Siren",
-  "attack": "Long tentacle lash; may slow",
+  "attack": "Two long lashes, then three tentacles in a fan",
   "special": "Jet Pulse: circle the hero; the trail grows long",
   "passive": [
    "Your long tentacles trail behind: they sting",
@@ -141,7 +141,7 @@
  },
  "ModGulperEel": {
   "name": "Gulper Eel",
-  "attack": "Wide jaw scoop just ahead",
+  "attack": "Two jaw scoops, then a lunge that scoops twice",
   "special": "Unhinge, then swallow the hero whole and spit him",
   "passive": [
    "Full pouch: slow and vulnerable",
@@ -151,7 +151,7 @@
  },
  "ModSlimeHag": {
   "name": "Slime Hag",
-  "attack": "Rasping bite that ties you in a knot",
+  "attack": "Knot-tying bites; the third lunges and spits slime",
   "special": "Spew slime that slows the hero's shots",
   "passive": [
    "A bite that lands wraps you up, then tears free",
@@ -161,7 +161,7 @@
  },
  "ModAbyssKraken": {
   "name": "Abyss Kraken",
-  "attack": "Two arms slam the floor ahead; may slow",
+  "attack": "Two arm slams, then arms crash ahead and aside",
   "special": "Arms burst under the hero and from brine; they root",
   "passive": [
    "With three arms up, your head is open",
@@ -170,7 +170,7 @@
  },
  "ModBelltowerHermit": {
   "name": "Belltower Hermit",
-  "attack": "Crusher claw snap with big knockback",
+  "attack": "Two claw snaps, then two peals roll out ahead",
   "special": "Five peals march out to the hero; may stun",
   "passive": [
    "A peal in brine rings through it: stuns all in it",
@@ -180,7 +180,7 @@
  },
  "ModAnemoneColossus": {
   "name": "Anemone Colossus",
-  "attack": "Both pincers hammer the floor ahead",
+  "attack": "Two pincer hammers, then one that plants a bud",
   "special": "Flick two anemone buds by the hero: they sting",
   "passive": [
    "In brine your garden opens and stings all round",
@@ -190,7 +190,7 @@
  },
  "ModReefChampion": {
   "name": "Reef Champion",
-  "attack": "Rising uppercut with a club fist",
+  "attack": "Two uppercuts, then a rush of two more",
   "special": "Haymaker: wind up, one punch that knocks far back",
   "passive": [
    "Now and then the bell rings: rest, heal, speed up",

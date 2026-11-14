@@ -28,7 +28,7 @@
   },
   "ModSylSporeHusk": {
     "name": "Spore Husk",
-    "attack": "Club smash that bursts a poison cloud",
+    "attack": "Two smashes, then a quake that shakes out seeds",
     "special": "Spore Belch: a wide cone of poison spores",
     "passive": [
       "Your smash bursts every ripe pod nearby",
@@ -37,7 +37,7 @@
   },
   "ModBloomWitch": {
     "name": "Bloom Witch",
-    "attack": "Pollen lance: pierces, long range, may poison",
+    "attack": "Two lances, then three that bloom into spores",
     "special": "Graft a ripe pod onto your kin and yourself",
     "passive": [
       "Graft ripe pods onto your kin's heads",
@@ -46,7 +46,7 @@
   },
   "ModBrambleKnight": {
     "name": "Bramble Knight",
-    "attack": "Two-hit thorn sweep, may bleed",
+    "attack": "Thorn sweep, then a drive that plants a thorn line",
     "special": "Overgrow: four thorn patches burst up round you",
     "passive": [
       "Your sweep's tip plants a thorn patch",
@@ -55,7 +55,7 @@
   },
   "ModSylStrangler": {
     "name": "Strangler Vine",
-    "attack": "Lunging bite",
+    "attack": "Two bites, then a lunge whose coils hold him",
     "special": "Lasso a pod or seed near you and sling it at him",
     "passive": [
       "Lasso a pod and sling it at him",
@@ -65,7 +65,7 @@
   },
   "ModSylGallWasp": {
     "name": "Gall Wasp",
-    "attack": "Needle that plants a seed where it lands",
+    "attack": "Three needles a beat apart; the middle one sows",
     "special": "Dart through the hero, dropping two seeds",
     "passive": [
       "Your seeds ripen faster",
@@ -74,7 +74,7 @@
   },
   "ModSylBloatfly": {
     "name": "Bloatfly",
-    "attack": "Retch a cone of poison bile",
+    "attack": "Two bile retches, then a glob that bursts in five",
     "special": "Bile Rain: retch straight down on him; steer it",
     "passive": [
       "In your bile, his poison lasts longer",
@@ -84,7 +84,7 @@
   },
   "ModSylBriarBehemoth": {
     "name": "Briar Behemoth",
-    "attack": "Tusk hook, may bleed",
+    "attack": "Two tusk hooks, then your bush whips round too",
     "special": "Charge; your bush swings in as you stop",
     "passive": [
       "Your dragged bush swings in when you turn or stop",
@@ -103,7 +103,7 @@
   },
   "ModSylPuffball": {
     "name": "Puffball Brute",
-    "attack": "Fist slam in a wide ring of spores",
+    "attack": "Two spore slams, then a ring that rolls on ahead",
     "special": "Bounce through the hero and land in a spore ring",
     "passive": [
       "Knocked into a wall, you bounce back at him",
@@ -113,7 +113,7 @@
   },
   "ModSylCordyceps": {
     "name": "Cordyceps Saint",
-    "attack": "Spine flick, long range, may poison",
+    "attack": "Two spine flicks, then a volley of three",
     "special": "Spines seed stalks that drag him in, then burst",
     "passive": [
       "Infect your kin: they fight on after death",
@@ -123,7 +123,7 @@
   },
   "ModRotMother": {
     "name": "The Rot Mother",
-    "attack": "Roots erupt under the hero twice, may root",
+    "attack": "Roots erupt under him; the third run races at him",
     "special": "Sprouting: three Sprouts burst up round the hero",
     "passive": [
       "Each pod that bursts on him heals you",
@@ -132,7 +132,7 @@
   },
   "ModSylNightshade": {
     "name": "Nightshade",
-    "attack": "Berry toss: splits into three, may poison",
+    "attack": "Two berries that split, then a handful of three",
     "special": "Shade Garden: hide your pods, plant two by him",
     "passive": [
       "Your pods go unseen a while. He has to guess",
@@ -142,7 +142,7 @@
   },
   "ModSylPollenMonarch": {
     "name": "Pollen Monarch",
-    "attack": "Wing clap: three pollen darts in a fan",
+    "attack": "Claps of three and five darts, then a pollen gust",
     "special": "Pollen Storm: a wide cloud ahead, and four seeds",
     "passive": [
       "Dusted, he sets off pods from further away",
@@ -151,7 +151,7 @@
   },
   "ModSylSower": {
     "name": "The Sower",
-    "attack": "Seed shot: plants a seed where it lands",
+    "attack": "Two seed shots, then a harvest: his pods burst",
     "special": "Strafe across his front, sowing a row of seeds",
     "passive": [
       "Seeds from one pass burst together",
@@ -161,7 +161,7 @@
   },
   "ModSylCarrionLily": {
     "name": "Carrion Lily",
-    "attack": "Stalk lunge: a poison bite",
+    "attack": "Bites that breathe rot; the third breathes three",
     "special": "Corpse Bloom: a wide cone of rot",
     "passive": [
       "Planted, you heal and reach far. Uproot to move",
@@ -170,7 +170,7 @@
   },
   "ModSylBriarWyrm": {
     "name": "Briar Wyrm",
-    "attack": "Mace tail: hits in front, then behind you",
+    "attack": "Mace front and back; the third flings thorns",
     "special": "Thorn Spiral: spin out thorns in two arms",
     "passive": [
       "Your mace hits in front, then behind you",
@@ -180,7 +180,7 @@
   },
   "ModSylBlightBellows": {
     "name": "Blight Bellows",
-    "attack": "Bladder lob: bounces three times, then bursts",
+    "attack": "Two bouncing bladders, then a pair round him",
     "special": "Gas Lanes: pump three lanes of gas; turn between",
     "passive": [
       "Your bladders bounce three times, puffing gas",
@@ -190,7 +190,7 @@
   },
   "ModSylCarrionQueen": {
     "name": "Carrion Queen",
-    "attack": "Proboscis stab, may poison",
+    "attack": "Two stabs, then a lunging stab that heals you",
     "special": "Proboscis Dive: a long dive you steer",
     "passive": [
       "Your drone keeps dazing him: stay close",

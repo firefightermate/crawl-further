@@ -23,6 +23,17 @@ namespace CrawlFurther.Content.Gods.Umbrael
         bool m_riding;
 
         protected override void OnEnable() { base.OnEnable(); m_riding = false; m_under = null; }
+
+        /// <summary>The Riptide (its third bite): the current drags the hero this hard toward it before it lunges.</summary>
+        public const float Riptide = 150f;
+
+        /// <summary>Clip event (the Riptide's wind-up): the hero is dragged in.</summary>
+        public void ModUmbRiptide()
+        {
+            var hero = ModUtil.Hero();
+            if (!Alive || hero == null || ((Vector2)hero.transform.position - Me).sqrMagnitude > 90f * 90f) return;
+            ModUtil.Pull(hero, Me, Riptide);
+        }
         protected override void OnDisable()
         {
             base.OnDisable();

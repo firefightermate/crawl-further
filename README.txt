@@ -16,6 +16,11 @@ Delete an old BepInEx\plugins\CrawlMod folder when you update. The config files 
 updating from any earlier version keeps your settings and saves. New settings files start with CrawlFurther.
 The mod's two bosses are switched off in this version (see BOSSES).
 
+NEW IN 1.4.2
+------------
+  - Tier 2 and 3 basic attacks of Sylvene, Umbrael, Bel'Mora and Zhekra monsters are combos: press attack
+    again within a beat to chain the next step, and the third step is a finisher with something of its own.
+
 NEW IN 1.4.1
 ------------
   - Tier 2 and 3 monsters hit a much bigger area: none of their swings, bites or slams is smaller than the

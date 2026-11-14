@@ -17,6 +17,18 @@ namespace CrawlFurther.Content.Gods.Sylvene
         public const int Needles = 6;
         static readonly Vector2 Muzzle = new Vector2(12f, 10f);
 
+        public const float HarvestRange = 60f, HarvestBeat = 0.3f;
+
+        /// <summary>Clip event (the Harvest, its third shot): every ripe pod within <see cref="HarvestRange"/> px of the hero
+        /// shakes for a beat and bursts.</summary>
+        public void ModSylHarvest()
+        {
+            if (!Alive) return;
+            var hero = HeroPos;
+            foreach (var s in SeedFx.Snapshot())
+                if (s != null && s.Ripe && Near(s.Pos, hero, HarvestRange)) s.ShakeLoose(HarvestBeat);
+        }
+
         /// <summary>Clip event: the pass begins.</summary>
         public void ModSylStrafe() { if (Alive) StartCoroutine(Strafe()); }
 

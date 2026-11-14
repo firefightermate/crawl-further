@@ -15,6 +15,8 @@ namespace CrawlFurther.Content.Gods.Zhekra
     /// </summary>
     public class BloaterDeflate : ZhkBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         public const int Darts = 3;
         public const float DartSpeed = 230f, DartTime = 0.24f, LimpTime = 2f, LimpDamage = 1.3f, RefillTime = 5f, MistStep = 12f;
         /// <summary>Idle and run full / mid / low, and the limp hang (set by the kit).</summary>

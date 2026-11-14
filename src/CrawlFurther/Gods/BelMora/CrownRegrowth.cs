@@ -14,6 +14,8 @@ namespace CrawlFurther.Content.Gods.BelMora
     /// </summary>
     public class CrownRegrowth : BelBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         public const float Per = 2.5f, Regrow = 2f, RegrowHeal = 1.5f;
         public const int MaxArms = 5, MinArms = 2;
         /// <summary>Per arm count (index = arms, 2..5): the idle, run and fling clips (set by the kit).</summary>

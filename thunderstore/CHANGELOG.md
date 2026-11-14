@@ -1,5 +1,37 @@
 # Changelog
 
+## 1.4.2
+
+- Tier 2 and 3 basic attacks of Sylvene, Umbrael, Bel'Mora and Zhekra monsters are now combos. Press attack again
+  within a beat to chain the next step, and the third step is a finisher with something of its own. Most are listed
+  below.
+- Sylvene: the Spore Husk's third smash shakes seeds out of the floor. The Bloom Witch ends on three lances that bloom
+  into spores, and the Bramble Knight drives a line of thorns into the floor. The Strangler Vine's third bite coils
+  round the hero and holds him. The Gall Wasp fires its needles in volleys of three. The Bloatfly heaves a glob that
+  bursts into five. The Briar Behemoth's bush whips round after its third hook. The Puffball Brute's third slam sends a
+  second ring rolling on ahead, and the Cordyceps Saint ends on a volley of spines. The Rot Mother's roots race at the
+  hero, and the Nightshade throws a handful of berries. The Pollen Monarch ends on a pollen gust, and the Sower's
+  harvest bursts every ripe pod near the hero. The Carrion Lily's bites breathe rot, and the Briar Wyrm flings thorns
+  behind it. The Blight Bellows throws two bladders round the hero, and the Carrion Queen's third stab heals her.
+- Umbrael: the Twinned lunge through with both bodies, and the Mirror Witch fans three bolts round the room. The
+  Gloamcoil leaves darkness where its lunge starts and ends. The Glassmoth sweeps five scales across, and the Hourglass
+  fires three shards down one line. The Glass Seraph and the Argus Moth throw scales or feathers all round them. The
+  Bristleback sprays five caltrops, and the Unblinking's beam rakes across. The Glass Widow lunges and stabs twice, and
+  the Undertow drags the hero in before its third bite. The Glitterswarm bites three times as it surges, and the
+  Pendulum's blade goes round twice. The Sand Wraith's third fist drops a sand column on the hero's spot.
+- Bel'Mora: the Bell Diver's third slam leaves brine. The Spinewalker strides in spearing the floor further and further
+  ahead, and the Salt Siren ends on a wave. The Brine Lamprey darts and bites twice. The Bell Hermit and the Belltower
+  Hermit ring out peals, and the Anemone Boxer ends on a flurry and a sting. The Drowned Captain ends with his boot,
+  the Brood Urchin sprays five spines, and the Tide Matriarch calls a wave. The Jelly Siren lashes with three
+  tentacles at once, and the Gulper Eel lunges and scoops twice. The Slime Hag lunges and spits slime, and the Abyss
+  Kraken's arms crash down ahead and to both sides. The Anemone Colossus plants a bud, and the Reef Champion rushes in
+  with two more uppercuts.
+- Zhekra: the Hive Hornet fires five stingers down one line, and the Blood Siphon's third stab feeds. The Nasute sprays
+  five specks of glue, and the Brood Mother's rain pours twice. The Acid Mantis snaps its blades in an X, and the Pit
+  Antlion bursts out clamping twice. The Amber Hive cracks out a swarm, and the Hunting Wasp skewers twice. The Blood
+  Gorger bores three times. The Botfly Matron rams twice in one charge, the Chitin Colossus leaves resin where it
+  lands, and the Sun Scarab's ball rolls through the hero.
+
 ## 1.4.1
 
 - Tier 2 and 3 monsters hit a much bigger area. Many of their swings, bites and slams were smaller than the game's own
