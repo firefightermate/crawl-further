@@ -96,11 +96,16 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int s2 = Kit.AddEffect(p, OssivarFx.BoneSpear, offsetX: 14f, offsetY: 12f, angle: 0.01f);
             int s3 = Kit.AddEffect(p, OssivarFx.BoneSpear, offsetX: 14f, offsetY: 12f, angle: 14f);
             var th = Kit.Melee(sh, "Thrust", "ModOssLancerThrust", v, 2, thrust, 90f).Build();
+            // Combo: two thrusts, then the Charge: a long run behind the spear that skewers twice
+            var th2 = Kit.Melee(sh, "Thrust", "ModOssLancerThrust2", null, 2, thrust, 100f).Speed(1.15f).Build();
+            var th3 = Kit.Melee(sh, "Thrust", "ModOssLancerCharge", v, 2, thrust, 170f, 4, thrust, 60f).Speed(0.9f).Build();
             var vo = Kit.Shot(sh, "Volley", "ModOssLancerVolley", 3, v, 0f, s1, s2, s3).Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, th, 1.0f, rangeInner: 18f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, th, 0.35f, rangeInner: 18f, rangeOuter: 38f));
+            atk.Add(Kit.Attack(a0, th2, 0.35f, rangeInner: 18f, rangeOuter: 40f));
+            atk.Add(Kit.Attack(a0, th3, 1.5f, rangeInner: 18f, rangeOuter: 64f));
             Kit.SetSpecial(p, Kit.Attack(sp, vo, 0f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 28f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 12f);
         }
 
@@ -111,11 +116,16 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int n0 = Strike.Mark(p);
             int spade = Kit.AddEffect(p, OssivarFx.DigSpade, attach: true, destroyOnAnimEnd: true, offsetX: 12f, offsetY: 5f);
             var sd = Kit.Melee(sh, "Spade", "ModOssDigSpade", v, 2, spade, 50f).Build();
+            // Combo: two spade swings, then the Backfill: it digs in and flings the spade twice, stepping in
+            var sd2 = Kit.Melee(sh, "Spade", "ModOssDigSpade2", null, 2, spade, 60f).Speed(1.15f).Build();
+            var sd3 = Kit.Melee(sh, "Spade", "ModOssDigBackfill", v, 2, spade, 90f, 4, spade, 40f).Speed(0.9f).Build();
             var un = new ClipBuilder(sh, "Unearth", "ModOssUnearth").Once().Channel(v, 5, "OssUnearth").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sd, 1.0f, rangeInner: 10f, rangeOuter: 22f));   // quick enough to land two inside 2 s
+            atk.Add(Kit.Attack(a0, sd, 0.35f, rangeInner: 10f, rangeOuter: 24f));
+            atk.Add(Kit.Attack(a0, sd2, 0.35f, rangeInner: 10f, rangeOuter: 26f));
+            atk.Add(Kit.Attack(a0, sd3, 1.5f, rangeInner: 10f, rangeOuter: 38f));
             Kit.SetSpecial(p, Kit.Attack(sp, un, 0f, rangeInner: 0f, rangeOuter: 120f, rangeRetreat: 0f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 10f);
         }
 
@@ -127,13 +137,18 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int gore = Kit.AddEffect(p, OssivarFx.TuskGore, attach: true, destroyOnAnimEnd: true, offsetX: 12f, offsetY: 11f);
             int rush = Kit.AddEffect(p, OssivarFx.TuskRush, attach: true, destroyOnAnimEnd: true, offsetX: 12f, offsetY: 8f);
             var gr = Kit.Melee(sh, "Gore", "ModOssTuskGore", v, 2, gore, 60f).Build();
+            // Combo: two gores, then the Toss: a lunging gore that tosses him with a second
+            var gr2 = Kit.Melee(sh, "Gore", "ModOssTuskGore2", null, 2, gore, 70f).Speed(1.1f).Build();
+            var gr3 = Kit.Melee(sh, "Gore", "ModOssTuskToss", v, 2, rush, 130f, 4, gore, 40f).Speed(0.9f).Build();
             var ch = new ClipBuilder(sh, "Charge", "ModOssTuskCharge").Once().AimLock(1).Ev(1, "OssChargeOn")
                 .EvF(2, "AnimMove", 230f).Ev(2, "AnimAttack", rush).EvO(2, "AnimSound", v)
                 .Ev(7, "AnimMoveStop").Ev(7, "OssChargeOff").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, gr, 1.3f, rangeInner: 10f, rangeOuter: 24f));
+            atk.Add(Kit.Attack(a0, gr, 0.4f, rangeInner: 10f, rangeOuter: 26f));
+            atk.Add(Kit.Attack(a0, gr2, 0.4f, rangeInner: 10f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, gr3, 1.8f, rangeInner: 10f, rangeOuter: 48f));
             Kit.SetSpecial(p, Kit.Attack(sp, ch, 0f, rangeInner: 30f, rangeOuter: 90f, rangeRetreat: 0f), 6f);   // 230 px/s x 0.3 s
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 13f);
         }
 
@@ -147,13 +162,18 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int land = Kit.AddEffect(p, OssivarFx.PounceBite, attach: true, destroyOnAnimEnd: true, offsetX: 12f, offsetY: 9f);
             int dust = Kit.AddEffect(p, OssivarFx.PounceDust, spawnPoint: DamageEffectData.eSpawnPoint.Position);
             var bt = Kit.Melee(sh, "Bite", "ModOssBarghestBite", v, 2, bite, 60f, 4, bite, 30f).Build();
+            // Combo: two pairs of rending bites, then the Maul: a lunge and three bites
+            var bt2 = Kit.Melee(sh, "Bite", "ModOssBarghestBite2", null, 2, bite, 70f, 4, bite, 30f).Speed(1.1f).Build();
+            var bt3 = Kit.Melee(sh, "Bite", "ModOssBarghestMaul", v, 2, land, 120f, 4, bite, 30f, 5, bite, 20f).Speed(0.9f).Build();
             var pc = new ClipBuilder(sh, "Pounce", "ModOssBarghestPounce").Once().AimLock(1)
                 .Ev(2, "AnimStartInvincibility").Ev(2, "OssPounce").EvO(2, "AnimSound", v)
                 .Ev(6, "AnimStopInvincibility").Ev(6, "AnimAttack", land).Ev(6, "AnimAttack", dust).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, bt, 1.1f, rangeInner: 10f, rangeOuter: 24f));
+            atk.Add(Kit.Attack(a0, bt, 0.35f, rangeInner: 10f, rangeOuter: 26f));
+            atk.Add(Kit.Attack(a0, bt2, 0.35f, rangeInner: 10f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, bt3, 1.6f, rangeInner: 10f, rangeOuter: 46f));
             Kit.SetSpecial(p, Kit.Attack(sp, pc, 0f, rangeInner: 30f, rangeOuter: 88f, rangeRetreat: 0f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 9f);
         }
 
@@ -164,11 +184,18 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int n0 = Strike.Mark(p);
             int bolt = Kit.AddEffect(p, OssivarFx.MarrowBolt, offsetX: 12f, offsetY: 12f);
             var b = Kit.Shot(sh, "Bolt", "ModOssPriestBolt", 3, v, 0f, bolt).Build();
+            int bl = Kit.AddEffect(p, OssivarFx.MarrowBolt, offsetX: 12f, offsetY: 12f, angle: -30f);
+            int br = Kit.AddEffect(p, OssivarFx.MarrowBolt, offsetX: 12f, offsetY: 12f, angle: 30f);
+            // Combo: two homing bolts, then the Litany: three that spread wide and close in on him
+            var b2 = Kit.Shot(sh, "Bolt", "ModOssPriestBolt2", 3, null, 0f, bolt).Speed(1.15f).Build();
+            var b3 = Kit.Shot(sh, "Bolt", "ModOssPriestLitany", 3, v, 0.06f, bl, bolt, br).Speed(0.85f).Build();
             var rs = new ClipBuilder(sh, "Raise", "ModOssPriestRaise").Once().Channel(v, 5, "OssRaise").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, b, 1.6f, rangeInner: 60f, rangeOuter: 120f, rangeRetreat: 45f));
+            atk.Add(Kit.Attack(a0, b, 0.45f, rangeInner: 60f, rangeOuter: 120f, rangeRetreat: 45f));
+            atk.Add(Kit.Attack(a0, b2, 0.45f, rangeInner: 60f, rangeOuter: 120f, rangeRetreat: 45f));
+            atk.Add(Kit.Attack(a0, b3, 2.1f, rangeInner: 50f, rangeOuter: 120f, rangeRetreat: 45f));
             Kit.SetSpecial(p, Kit.Attack(sp, rs, 0f, rangeInner: 40f, rangeOuter: 200f, rangeRetreat: 40f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 12f);
         }
 
@@ -181,13 +208,21 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int dive = Kit.AddEffect(p, OssivarFx.DiveHit, spawnPoint: DamageEffectData.eSpawnPoint.Position);
             var rk = new ClipBuilder(sh, "Rake", "ModOssVultureRake").Once().AimLock(1)
                 .EvF(2, "AnimMove", 170f).Ev(2, "AnimAttack", rake).EvO(2, "AnimSound", v).Ev(4, "AnimMoveStop").Ev(-1, "AnimRun").Build();
+            // Combo: two swoops, then the Double Swoop: it rakes through him and back again
+            var rk2 = new ClipBuilder(sh, "Rake", "ModOssVultureRake2").Once().Speed(1.1f).AimLock(1)
+                .EvF(2, "AnimMove", 190f).Ev(2, "AnimAttack", rake).Ev(4, "AnimMoveStop").Ev(-1, "AnimRun").Build();
+            var rk3 = new ClipBuilder(sh, "Rake", "ModOssVultureDouble").Once().Repeat(2).Speed(1.2f).AimLock(1)
+                .EvF(2, "AnimMove", 220f).Ev(2, "AnimAttack", rake).EvO(2, "AnimSound", v).EvF(5, "AnimInputMultiplyFreeFace", 0f)
+                .Ev(7, "AnimInputMultiplyStop").EvF(8, "AnimMove", 220f).Ev(8, "AnimAttack", rake).Ev(10, "AnimMoveStop").Ev(-1, "AnimRun").Build();
             var pl = new ClipBuilder(sh, "Plummet", "ModOssVulturePlummet").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop")
                 .Ev(2, "OssPlummetUp").Ev(4, "OssPlummetDown").Ev(6, "AnimAttack", dive).Ev(6, "OssPlummetLand").EvO(6, "AnimSound", v)
                 .Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, rk, 1.2f, rangeInner: 12f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, rk, 0.4f, rangeInner: 12f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, rk2, 0.4f, rangeInner: 12f, rangeOuter: 38f));
+            atk.Add(Kit.Attack(a0, rk3, 1.8f, rangeInner: 12f, rangeOuter: 50f));
             Kit.SetSpecial(p, Kit.Attack(sp, pl, 0f, rangeInner: 30f, rangeOuter: 150f, rangeRetreat: 30f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 10f);
         }
 
@@ -232,11 +267,16 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int rake = Kit.AddEffect(p, OssivarFx.HookRake, attach: true, destroyOnAnimEnd: true, offsetX: 18f, offsetY: 13f);
             int harp = Kit.AddEffect(p, OssivarFx.Harpoon, offsetX: 23f, offsetY: 16f);
             var rk = Kit.Melee(sh, "Rake", "ModOssHookRake", v, 2, rake, 40f).Build();
+            // Combo: two hook rakes, then the Reel: a lunge and two rakes that drag back across him
+            var rk2 = Kit.Melee(sh, "Rake", "ModOssHookRake2", null, 2, rake, 50f).Speed(1.1f).Build();
+            var rk3 = Kit.Melee(sh, "Rake", "ModOssHookReel", v, 2, rake, 110f, 4, rake, 0f).Speed(0.9f).Build();
             var hp = Kit.Shot(sh, "Harpoon", "ModOssHookHarpoon", 3, v, 0f, harp).Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, rk, 1.4f, rangeInner: 10f, rangeOuter: 26f));
+            atk.Add(Kit.Attack(a0, rk, 0.4f, rangeInner: 10f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, rk2, 0.4f, rangeInner: 10f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, rk3, 1.8f, rangeInner: 10f, rangeOuter: 46f));
             Kit.SetSpecial(p, Kit.Attack(sp, hp, 0f, rangeInner: 30f, rangeOuter: 100f, rangeRetreat: 24f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 16f);
         }
 
@@ -247,11 +287,16 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int n0 = Strike.Mark(p);
             int mal = Kit.AddEffect(p, OssivarFx.MalletSmash, attach: true, destroyOnAnimEnd: true, offsetX: 19f, offsetY: 5f);
             var ml = Kit.Melee(sh, "Mallet", "ModOssTombMallet", v, 3, mal, 30f).Ev(3, "OssMalletKnock").Build();
+            // Combo: two mallet smashes, then the Chisel: two smashes in a row, stepping in
+            var ml2 = Kit.Melee(sh, "Mallet", "ModOssTombMallet2", null, 3, mal, 40f).Speed(1.1f).Ev(3, "OssMalletKnock").Build();
+            var ml3 = Kit.Melee(sh, "Mallet", "ModOssTombChisel", v, 3, mal, 40f, 10, mal, 70f).Repeat(2).Speed(1.2f).Ev(3, "OssMalletKnock").Ev(10, "OssMalletKnock").Build();
             var rs = new ClipBuilder(sh, "Raise", "ModOssTombRaise").Once().AimLock(3).Ev(4, "OssRaiseStones").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, ml, 1.6f, rangeInner: 10f, rangeOuter: 24f));
+            atk.Add(Kit.Attack(a0, ml, 0.45f, rangeInner: 10f, rangeOuter: 26f));
+            atk.Add(Kit.Attack(a0, ml2, 0.45f, rangeInner: 10f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, ml3, 2.0f, rangeInner: 10f, rangeOuter: 40f));
             Kit.SetSpecial(p, Kit.Attack(sp, rs, 0f, rangeInner: 20f, rangeOuter: 100f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 18f);
         }
 
@@ -263,6 +308,9 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int n0 = Strike.Mark(p);
             int slam = Kit.AddEffect(p, OssivarFx.CoffinSlam, attach: true, destroyOnAnimEnd: true, offsetX: 30f, offsetY: 5f);
             var sl = Kit.Melee(sh, "Slam", "ModOssCoffinSlam", v, 3, slam, 30f).Build();
+            // Combo: two coffin slams, then the Pallbearer: two slams running, the second carried forward
+            var sl2 = Kit.Melee(sh, "Slam", "ModOssCoffinSlam2", null, 3, slam, 40f).Speed(1.1f).Build();
+            var sl3 = Kit.Melee(sh, "Slam", "ModOssCoffinPall", v, 3, slam, 40f, 10, slam, 80f).Repeat(2).Speed(1.2f).Build();
             var wh = new ClipBuilder(sh, "Whirl", "ModOssCoffinWhirl").Once().Repeat(5)
                 .Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop").Ev(0, "OssWhirlOn").EvO(0, "AnimSound", v)
                 .Ev(-1, "AnimRun").Ev(-1, "OssWhirlEnd").Build();
@@ -270,9 +318,11 @@ namespace CrawlFurther.Content.Gods.Ossivar
                 .Ev(-1, "AnimRun").Build();
             BearerWhirl.DizzyClip = Loop(sh, "Dizzy", "ModOssCoffinDizzy");
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sl, 1.7f, rangeInner: 14f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, sl, 0.45f, rangeInner: 14f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, sl2, 0.45f, rangeInner: 14f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, sl3, 2.1f, rangeInner: 14f, rangeOuter: 48f));
             Kit.SetSpecial(p, Kit.Attack(sp, wh, 0f, rangeInner: 0f, rangeOuter: 60f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 15f);
         }
 
@@ -283,13 +333,18 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int n0 = Strike.Mark(p);
             int tusk = Kit.AddEffect(p, OssivarFx.MammothTusk, attach: true, destroyOnAnimEnd: true, offsetX: 20f, offsetY: 15f);
             var tk = Kit.Melee(sh, "Tusk", "ModOssMammothTusk", v, 2, tusk, 30f).Build();
+            // Combo: two tusk sweeps, then the Stampede: a lunging sweep, and its feet throw up bone spikes
+            var tk2 = Kit.Melee(sh, "Tusk", "ModOssMammothTusk2", null, 2, tusk, 40f).Speed(1.1f).Build();
+            var tk3 = Kit.Melee(sh, "Tusk", "ModOssMammothStampede", v, 2, tusk, 90f).Speed(0.85f).Ev(2, "OssFootfall").Ev(4, "OssFootfall").Build();
             var qk = new ClipBuilder(sh, "Quake", "ModOssMammothQuake").Once().Channel(v, 4, "OssCrossQuake").Build();
             var run = new ClipBuilder(sh, "Run", "ModOssMammothRun").Loop().Ev(0, "OssFootfall").Ev(3, "OssFootfall").Build();
             R.Set(p, "m_animationRun", run);
             atk.Clear();
-            atk.Add(Kit.Attack(a0, tk, 1.5f, rangeInner: 12f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, tk, 0.45f, rangeInner: 12f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, tk2, 0.45f, rangeInner: 12f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, tk3, 2.0f, rangeInner: 12f, rangeOuter: 44f));
             Kit.SetSpecial(p, Kit.Attack(sp, qk, 0f, rangeInner: 0f, rangeOuter: 60f, rangeRetreat: 0f), 7.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 18f);
         }
 
@@ -300,6 +355,9 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int n0 = Strike.Mark(p);
             int slash = Kit.AddEffect(p, OssivarFx.RazorSlash, attach: true, destroyOnAnimEnd: true, offsetX: 15f, offsetY: 16f);
             var sl = Kit.Melee(sh, "Slash", "ModOssRazorSlash", v, 2, slash, 50f).Build();
+            // Combo: two tusk slashes, then the Gash: a long lunge that slashes twice
+            var sl2 = Kit.Melee(sh, "Slash", "ModOssRazorSlash2", null, 2, slash, 60f).Speed(1.1f).Build();
+            var sl3 = Kit.Melee(sh, "Slash", "ModOssRazorGash", v, 2, slash, 120f, 4, slash, 40f).Speed(0.9f).Build();
             var sk = new ClipBuilder(sh, "Skid", "ModOssRazorSkid").Once().AimLock(0).EvF(0, "AnimMove", 220f).Ev(3, "AnimMoveStop")
                 .Ev(4, "OssQuillFire").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             var idles = new exSpriteAnimClip[RazorQuills.Max + 1];
@@ -311,9 +369,11 @@ namespace CrawlFurther.Content.Gods.Ossivar
             }
             RazorQuills.Idles = idles; RazorQuills.Runs = runs;
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sl, 1.2f, rangeInner: 10f, rangeOuter: 24f));
+            atk.Add(Kit.Attack(a0, sl, 0.35f, rangeInner: 10f, rangeOuter: 26f));
+            atk.Add(Kit.Attack(a0, sl2, 0.35f, rangeInner: 10f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, sl3, 1.7f, rangeInner: 10f, rangeOuter: 46f));
             Kit.SetSpecial(p, Kit.Attack(sp, sk, 0f, rangeInner: 30f, rangeOuter: 100f, rangeRetreat: 0f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 16f);
         }
 
@@ -324,12 +384,17 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int n0 = Strike.Mark(p);
             int bite = Kit.AddEffect(p, OssivarFx.CerberusBite, attach: true, destroyOnAnimEnd: true, offsetX: 21f, offsetY: 17f);
             var bt = Kit.Melee(sh, "Bite", "ModOssCerberusBite", v, 3, bite, 30f).Build();
+            // Combo: two three-headed bites, then the Frenzy: a lunge and each head bites in turn
+            var bt2 = Kit.Melee(sh, "Bite", "ModOssCerberusBite2", null, 3, bite, 40f).Speed(1.1f).Build();
+            var bt3 = Kit.Melee(sh, "Bite", "ModOssCerberusFrenzy", v, 2, bite, 90f, 3, bite, 20f, 4, bite, 20f).Speed(0.85f).Build();
             var br = new ClipBuilder(sh, "Breath", "ModOssCerberusBreath").Once().AimLock(1).Ev(2, "OssBreathOuter").EvO(2, "AnimSound", v)
                 .Ev(3, "OssBreathMiddle").Ev(9, "OssBreathEnd").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, bt, 1.4f, rangeInner: 10f, rangeOuter: 26f));
+            atk.Add(Kit.Attack(a0, bt, 0.4f, rangeInner: 10f, rangeOuter: 28f));
+            atk.Add(Kit.Attack(a0, bt2, 0.4f, rangeInner: 10f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, bt3, 1.9f, rangeInner: 10f, rangeOuter: 42f));
             Kit.SetSpecial(p, Kit.Attack(sp, br, 0f, rangeInner: 16f, rangeOuter: 52f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 17f);
         }
 
@@ -341,15 +406,20 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int bite = Kit.AddEffect(p, OssivarFx.GrimBite, attach: true, destroyOnAnimEnd: true, offsetX: 24f, offsetY: 17f);
             int lunge = Kit.AddEffect(p, OssivarFx.GrimLunge, attach: true, destroyOnAnimEnd: true, offsetX: 19f, offsetY: 12f);
             var bt = Kit.Melee(sh, "Bite", "ModOssGrimBite", v, 2, bite, 80f).Build();
+            // Combo: two lunging bites, then the Hunt: it runs through him, the lunge and the bite both landing
+            var bt2 = Kit.Melee(sh, "Bite", "ModOssGrimBite2", null, 2, bite, 90f).Speed(1.1f).Build();
+            var bt3 = Kit.Melee(sh, "Bite", "ModOssGrimHunt", v, 2, lunge, 150f, 4, bite, 40f).Speed(0.9f).Build();
             var ln = new ClipBuilder(sh, "Lunge", "ModOssGrimLunge").Once().AimLock(1).EvF(2, "AnimMove", 250f).Ev(2, "AnimAttack", lunge).EvO(2, "AnimSound", v)
                 .Ev(6, "AnimMoveStop").Ev(-1, "AnimRun").Build();
             GrimUndying.FallClip = Once(sh, "Fall", "ModOssGrimFall");
             GrimUndying.HeapClip = Loop(sh, "Heap", "ModOssGrimHeap");
             GrimUndying.RiseClip = Once(sh, "Rise", "ModOssGrimRise");
             atk.Clear();
-            atk.Add(Kit.Attack(a0, bt, 1.3f, rangeInner: 12f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, bt, 0.4f, rangeInner: 12f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, bt2, 0.4f, rangeInner: 12f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, bt3, 1.8f, rangeInner: 12f, rangeOuter: 56f));
             Kit.SetSpecial(p, Kit.Attack(sp, ln, 0f, rangeInner: 20f, rangeOuter: 66f, rangeRetreat: 0f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 13f);
         }
 
@@ -358,6 +428,9 @@ namespace CrawlFurther.Content.Gods.Ossivar
         {
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             var send = new ClipBuilder(sh, "Send", "ModOssSaintSend").Once().AimLock(2).Ev(2, "OssSendCrow").EvO(2, "AnimSound", v).Ev(-1, "AnimRun").Build();
+            // Combo: two crows, then a pair sent together
+            var send2 = new ClipBuilder(sh, "Send", "ModOssSaintSend2").Once().Speed(1.15f).AimLock(2).Ev(2, "OssSendCrow").Ev(-1, "AnimRun").Build();
+            var send3 = new ClipBuilder(sh, "Send", "ModOssSaintSendPair").Once().Speed(0.85f).AimLock(2).Ev(2, "OssSendCrow").Ev(3, "OssSendCrow").EvO(2, "AnimSound", v).Ev(-1, "AnimRun").Build();
             var mur = new ClipBuilder(sh, "Murder", "ModOssSaintMurder").Once().AimLock(3).Ev(3, "OssMurder").EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             var idles = new exSpriteAnimClip[SaintFlock.MaxCrows + 1];
             var runs = new exSpriteAnimClip[SaintFlock.MaxCrows + 1];
@@ -368,9 +441,11 @@ namespace CrawlFurther.Content.Gods.Ossivar
             }
             SaintFlock.Idles = idles; SaintFlock.Runs = runs;
             atk.Clear();
-            atk.Add(Kit.Attack(a0, send, 1.5f, rangeInner: 40f, rangeOuter: 120f, rangeRetreat: 36f));
+            atk.Add(Kit.Attack(a0, send, 0.45f, rangeInner: 40f, rangeOuter: 120f, rangeRetreat: 36f));
+            atk.Add(Kit.Attack(a0, send2, 0.45f, rangeInner: 40f, rangeOuter: 120f, rangeRetreat: 36f));
+            atk.Add(Kit.Attack(a0, send3, 2.0f, rangeInner: 40f, rangeOuter: 120f, rangeRetreat: 36f));
             Kit.SetSpecial(p, Kit.Attack(sp, mur, 0f, rangeInner: 20f, rangeOuter: 80f, rangeRetreat: 20f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
         }
 
         // The Ossuary: fists slam a ring of spikes; Ribcage shuts the hero in six ribs. It holds up to 3 plates.
@@ -381,11 +456,18 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int slam = Kit.AddEffect(p, OssivarFx.OssuarySlam, offsetX: 29f, offsetY: 0.01f);
             Kit.AimReach(p, slam, 8f, 8f);
             var sl = new ClipBuilder(sh, "Slam", "ModOssuarySlam").Once().AimLock(2).Ev(3, "AnimAttack", slam).EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
+            int slam2 = Kit.AddEffect(p, OssivarFx.OssuarySlam, offsetX: 56f, offsetY: 0.01f);
+            // Combo: two spike rings, then the Procession: the spikes run on and ring up again further ahead
+            var sl2 = new ClipBuilder(sh, "Slam", "ModOssuarySlam2").Once().Speed(1.1f).AimLock(2).Ev(3, "AnimAttack", slam).Ev(-1, "AnimRun").Build();
+            var sl3 = new ClipBuilder(sh, "Slam", "ModOssuaryProcession").Once().Speed(0.85f).AimLock(2).Ev(3, "AnimAttack", slam)
+                .Ev(3, "AnimAttack", slam2, 0.18f).EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             var rb = new ClipBuilder(sh, "Rib", "ModOssuaryRib").Once().Channel(v, 2, "OssRibCrack").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sl, 1.6f, rangeInner: 18f, rangeOuter: 42f));
+            atk.Add(Kit.Attack(a0, sl, 0.45f, rangeInner: 18f, rangeOuter: 44f));
+            atk.Add(Kit.Attack(a0, sl2, 0.45f, rangeInner: 18f, rangeOuter: 46f));
+            atk.Add(Kit.Attack(a0, sl3, 2.2f, rangeInner: 18f, rangeOuter: 80f));
             Kit.SetSpecial(p, Kit.Attack(sp, rb, 0f, rangeInner: 0f, rangeOuter: 120f, rangeRetreat: 0f), 7.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 10f);
         }
 
@@ -397,11 +479,16 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int bite = Kit.AddEffect(p, OssivarFx.WyrmBite, attach: true, destroyOnAnimEnd: true, offsetX: 29f, offsetY: 15f);
             int lash = Kit.AddEffect(p, OssivarFx.WyrmLash, attach: true, destroyOnAnimEnd: true, offsetX: 17f, offsetY: 13f);
             var lg = Kit.Melee(sh, "Lunge", "ModOssWyrmLunge", v, 2, bite, 30f).Build();
+            // Combo: two long-necked lunges, then the Coil: a lunge whose neck sweeps round after the bite
+            var lg2 = Kit.Melee(sh, "Lunge", "ModOssWyrmLunge2", null, 2, bite, 40f).Speed(1.1f).Build();
+            var lg3 = Kit.Melee(sh, "Lunge", "ModOssWyrmCoil", v, 2, bite, 60f, 4, lash, 0f).Speed(0.85f).Build();
             var la = new ClipBuilder(sh, "Lash", "ModOssWyrmLash").Once().AimLock(4).Ev(5, "AnimAttack", lash).EvO(5, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, lg, 1.5f, rangeInner: 16f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, lg, 0.45f, rangeInner: 16f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, lg2, 0.45f, rangeInner: 16f, rangeOuter: 38f));
+            atk.Add(Kit.Attack(a0, lg3, 2.0f, rangeInner: 16f, rangeOuter: 44f));
             Kit.SetSpecial(p, Kit.Attack(sp, la, 0f, rangeInner: 0f, rangeOuter: 34f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 14f);
         }
 
@@ -413,14 +500,22 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int stab = Kit.AddEffect(p, OssivarFx.RocStab, attach: true, destroyOnAnimEnd: true, offsetX: 18f, offsetY: 11f);
             var st = new ClipBuilder(sh, "Stab", "ModOssRocStab").Once().AimLock(1)
                 .EvF(2, "AnimMove", 170f).Ev(2, "AnimAttack", stab).EvO(2, "AnimSound", v).Ev(4, "AnimMoveStop").Ev(-1, "AnimRun").Build();
+            // Combo: two diving stabs, then the Strafe: it dives through, turns and stabs again
+            var st2 = new ClipBuilder(sh, "Stab", "ModOssRocStab2").Once().Speed(1.1f).AimLock(1)
+                .EvF(2, "AnimMove", 190f).Ev(2, "AnimAttack", stab).Ev(4, "AnimMoveStop").Ev(-1, "AnimRun").Build();
+            var st3 = new ClipBuilder(sh, "Stab", "ModOssRocStrafe").Once().Repeat(2).Speed(1.2f).AimLock(1)
+                .EvF(2, "AnimMove", 220f).Ev(2, "AnimAttack", stab).EvO(2, "AnimSound", v).EvF(5, "AnimInputMultiplyFreeFace", 0f)
+                .Ev(7, "AnimInputMultiplyStop").EvF(8, "AnimMove", 220f).Ev(8, "AnimAttack", stab).Ev(10, "AnimMoveStop").Ev(-1, "AnimRun").Build();
             var gr = new ClipBuilder(sh, "Grab", "ModOssRocGrab").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop")
                 .Ev(2, "OssGrab").EvO(2, "AnimSound", v).Ev(-1, "OssCarry").HandOff().Build();
             RocAirlift.CarryClip = Loop(sh, "Carry", "ModOssRocCarry");
             RocAirlift.DropClip = new ClipBuilder(sh, "Drop", "ModOssRocDrop").Once().Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, st, 1.3f, rangeInner: 12f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, st, 0.4f, rangeInner: 12f, rangeOuter: 38f));
+            atk.Add(Kit.Attack(a0, st2, 0.4f, rangeInner: 12f, rangeOuter: 40f));
+            atk.Add(Kit.Attack(a0, st3, 1.9f, rangeInner: 12f, rangeOuter: 52f));
             Kit.SetSpecial(p, Kit.Attack(sp, gr, 0f, rangeInner: 30f, rangeOuter: 140f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 12f);
         }
 
