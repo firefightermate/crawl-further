@@ -123,7 +123,7 @@
   },
   "ModOssBoneMammoth": {
     "name": "Bone Mammoth",
-    "attack": "Two tusk sweeps, then a stampede that raises spikes",
+    "attack": "Two tusk sweeps, then a stampede: its steps jolt him",
     "special": "Cross Quake: rear, stamp, spikes along a cross",
     "passive": [
       "Your stamp splits the floor in a cross",
