@@ -9,6 +9,8 @@ namespace CrawlFurther.Content.Gods.Jinx
     /// </summary>
     public class SharpAce : JinxBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         int m_deals;
 
         protected override void OnEnable() { base.OnEnable(); m_deals = 0; Show(false); }

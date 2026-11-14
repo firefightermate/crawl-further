@@ -12,6 +12,8 @@ namespace CrawlFurther.Content.Gods.Jinx
     /// </summary>
     public class HouseTiers : JinxBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         public const int MaxTiers = 3, StormCards = 6;
         public const float SpeedPerTier = 0.15f, StormLaunch = 2.5f, StormGap = 0.18f;
         /// <summary>Per tiers left (0..2): idle, run and Storm clips (set by the kit; tier 3 is the body's own).</summary>

@@ -11,6 +11,8 @@ namespace CrawlFurther.Content.Gods.Ossivar
     /// </summary>
     public class RattleSkull : OssBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         public const float AutoRecall = 6f;
         /// <summary>The headless stance (set by the kit).</summary>
         public static exSpriteAnimClip BareIdle, BareRun;

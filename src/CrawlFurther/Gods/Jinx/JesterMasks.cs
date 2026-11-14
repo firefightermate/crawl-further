@@ -12,6 +12,8 @@ namespace CrawlFurther.Content.Gods.Jinx
     /// </summary>
     public class JesterMasks : JinxBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         public const float ComedySpeed = 1.15f, TragedyDamage = 0.75f;
         /// <summary>The tragedy stance and the Tragedy-to-Comedy turn (set by the kit).</summary>
         public static exSpriteAnimClip SadIdle, SadRun, FlipBack;

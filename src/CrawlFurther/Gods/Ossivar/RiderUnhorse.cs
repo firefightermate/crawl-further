@@ -13,6 +13,8 @@ namespace CrawlFurther.Content.Gods.Ossivar
     /// </summary>
     public class RiderUnhorse : OssBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         public const float CrackAt = 7f, FallAt = 5f, FootW = 12f, FootH = 26f;
         /// <summary>Set by the kit.</summary>
         public static exSpriteAnimClip CrackIdle, CrackRun, UnhorseClip, FootIdle, FootRun, FootThrust, FootDeath;

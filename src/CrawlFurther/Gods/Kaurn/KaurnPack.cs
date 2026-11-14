@@ -110,15 +110,22 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int flash = Kit.AddEffect(p, KaurnFx.HitFx, offsetX: 18f, offsetY: 2f);
             int rod = Kit.AddEffect(p, KaurnFx.RodHot, offsetX: 11f, offsetY: 0f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
             int spark = Kit.AddEffect(p, KaurnFx.HitFx, offsetX: 11f, offsetY: 12f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
+            // Combo: two hammer smashes, each sending a surge along the floor, then the Double: two smashes in a row
             var hm = Kit.Melee(sh, "Hammer", "ModKrnSmithHammer", v, 3, smash, 25f)
                 .Ev(3, "AnimAttack", surge).Ev(3, "AnimAttack", flash).Ev(3, "KrnCharge").Build();
+            var hm2 = Kit.Melee(sh, "Hammer", "ModKrnSmithHammer2", null, 3, smash, 35f).Speed(1.15f)
+                .Ev(3, "AnimAttack", surge).Ev(3, "AnimAttack", flash).Ev(3, "KrnCharge").Build();
+            var hm3 = Kit.Melee(sh, "Hammer", "ModKrnSmithDouble", v, 3, smash, 40f, 10, smash, 50f).Repeat(2).Speed(1.2f)
+                .Ev(3, "AnimAttack", surge).Ev(3, "AnimAttack", flash).Ev(10, "AnimAttack", surge).Ev(10, "AnimAttack", flash).Ev(10, "KrnCharge").Build();
             var pt = Special(sh, "Plant", "ModKrnSmithPlant").Ev(3, "AnimAttack", rod).Ev(3, "AnimAttack", spark).EvO(3, "AnimSound", v)
                 .Ev(4, "ModGainPlates", 1).Ev(4, "KrnDischarge").Ev(-1, "AnimRun").Build();
             atk.Clear();
             // hammer box x 11..25 (+ 25 px/s lunge); the surge runs on 150 px/s x 0.45 s from x 20 (~88 px)
-            atk.Add(Kit.Attack(a0, hm, 1.5f, rangeInner: 8f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, hm, 0.4f, rangeInner: 8f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, hm2, 0.4f, rangeInner: 8f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, hm3, 1.9f, rangeInner: 8f, rangeOuter: 40f));
             Kit.SetSpecial(p, Kit.Attack(sp, pt, 0f, rangeInner: 0f, rangeOuter: 80f, rangeRetreat: 0f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, first, 10f);
         }
 
@@ -129,13 +136,20 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int first = Strike.Mark(p);
             int st = Kit.AddEffect(p, KaurnFx.Staple, offsetX: 12f, offsetY: 14f);
             int hk = Kit.AddEffect(p, KaurnFx.WireHook, offsetX: 10f, offsetY: 15f);
+            int stL = Kit.AddEffect(p, KaurnFx.Staple, offsetX: 12f, offsetY: 14f, angle: -14f);
+            int stR = Kit.AddEffect(p, KaurnFx.Staple, offsetX: 12f, offsetY: 14f, angle: 14f);
+            // Combo: two staples, then a spread of three
             var s = Kit.Shot(sh, "Staple", "ModKrnGremlinStaple", 3, v, 0f, st).Ev(3, "KrnCharge").Build();
+            var s2 = Kit.Shot(sh, "Staple", "ModKrnGremlinStaple2", 3, null, 0f, st).Speed(1.15f).Ev(3, "KrnCharge").Build();
+            var s3 = Kit.Shot(sh, "Staple", "ModKrnGremlinSpread", 3, v, 0.04f, stL, st, stR).Speed(0.85f).Ev(3, "KrnCharge").Build();
             var h = Kit.Shot(sh, "WireUp", "ModKrnGremlinWireUp", 3, v, 0f, hk).Ev(3, "KrnDischarge").Build();
             atk.Clear();
             // staple 200 px/s x 0.45 s (~90 px); hook 190 px/s x 0.5 s (~95 px)
-            atk.Add(Kit.Attack(a0, s, 1.4f, rangeInner: 30f, rangeOuter: 90f, rangeRetreat: 26f));
+            atk.Add(Kit.Attack(a0, s, 0.4f, rangeInner: 30f, rangeOuter: 90f, rangeRetreat: 26f));
+            atk.Add(Kit.Attack(a0, s2, 0.4f, rangeInner: 30f, rangeOuter: 90f, rangeRetreat: 26f));
+            atk.Add(Kit.Attack(a0, s3, 1.8f, rangeInner: 30f, rangeOuter: 85f, rangeRetreat: 26f));
             Kit.EnableSpecial(p, Kit.Attack(sp, h, 0f, rangeInner: 25f, rangeOuter: 92f, rangeRetreat: 0f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, first, 14f);
         }
 
@@ -176,13 +190,20 @@ namespace CrawlFurther.Content.Gods.Kaurn
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int first = Strike.Mark(p);
             int ball = Kit.AddEffect(p, KaurnFx.Ball, offsetX: 11f, offsetY: 14f);
+            int bL = Kit.AddEffect(p, KaurnFx.Ball, offsetX: 11f, offsetY: 14f, angle: -14f);
+            int bR = Kit.AddEffect(p, KaurnFx.Ball, offsetX: 11f, offsetY: 14f, angle: 14f);
+            // Combo: two balls of lightning, then a pair that splits round the hero
             var ob = Kit.Shot(sh, "Orb", "ModKrnCallerOrb", 3, v, 0f, ball).Ev(3, "KrnCharge").Build();
+            var ob2 = Kit.Shot(sh, "Orb", "ModKrnCallerOrb2", 3, null, 0f, ball).Speed(1.15f).Ev(3, "KrnCharge").Build();
+            var ob3 = Kit.Shot(sh, "Orb", "ModKrnCallerPair", 3, v, 0.05f, bL, bR).Speed(0.85f).Ev(3, "KrnCharge").Build();
             var bd = Special(sh, "Build", "ModKrnCallerBuild").Ev(2, "KrnStaticBuild").Ev(2, "KrnDischarge").EvO(2, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // the ball accelerates 60 -> 150 px/s over its 1.7 s (~175 px); the bolt finds the hero wherever he is
-            atk.Add(Kit.Attack(a0, ob, 1.5f, rangeInner: 50f, rangeOuter: 130f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, ob, 0.45f, rangeInner: 50f, rangeOuter: 130f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, ob2, 0.45f, rangeInner: 50f, rangeOuter: 130f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, ob3, 2.0f, rangeInner: 45f, rangeOuter: 120f, rangeRetreat: 40f));
             Kit.SetSpecial(p, Kit.Attack(sp, bd, 0f, rangeInner: 30f, rangeOuter: 150f, rangeRetreat: 30f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, first, 13f);
         }
 
@@ -194,14 +215,19 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int j0 = Kit.AddEffect(p, KaurnFx.Jolt, offsetX: 13f, offsetY: 15f, angle: -8f);
             int j1 = Kit.AddEffect(p, KaurnFx.Jolt, offsetX: 13f, offsetY: 15f, angle: 8f);
             int ring = Kit.AddEffect(p, KaurnFx.Ring, spawnPoint: DamageEffectData.eSpawnPoint.Position);
+            // Combo: two pairs of jolts, then the Discharge: jolts and a shock ring bursts round the golem
             var jo = Kit.Shot(sh, "Jolts", "ModKrnLeydenJolts", 3, v, 0.04f, j0, j1).Ev(3, "KrnCharge").Build();
+            var jo2 = Kit.Shot(sh, "Jolts", "ModKrnLeydenJolts2", 3, null, 0.04f, j0, j1).Speed(1.15f).Ev(3, "KrnCharge").Build();
+            var jo3 = Kit.Shot(sh, "Jolts", "ModKrnLeydenDischarge", 3, v, 0.04f, j0, j1).Speed(0.85f).Ev(4, "AnimAttack", ring).Ev(3, "KrnCharge").Build();
             var rg = Special(sh, "Ring", "ModKrnLeydenRing").Ev(4, "AnimAttack", ring).Ev(4, "KrnDischarge").Ev(4, "KrnFillAllies")
                 .EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // jolts fly 230 px/s for 0.45 s from 13 px ahead (~116 px)
-            atk.Add(Kit.Attack(a0, jo, 1.5f, rangeInner: 45f, rangeOuter: 110f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, jo, 0.45f, rangeInner: 45f, rangeOuter: 110f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, jo2, 0.45f, rangeInner: 45f, rangeOuter: 110f, rangeRetreat: 35f));
+            atk.Add(Kit.Attack(a0, jo3, 2.0f, rangeInner: 0f, rangeOuter: 80f, rangeRetreat: 20f));
             Kit.SetSpecial(p, Kit.Attack(sp, rg, 0f, rangeInner: 0f, rangeOuter: 70f, rangeRetreat: 0f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, first, 14f);
             for (int k = 1; k <= LeydenJar.Jar; k++)
             {
@@ -217,13 +243,20 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int first = Strike.Mark(p);
             int sk = Kit.AddEffect(p, KaurnFx.Seeker, offsetX: 9f, offsetY: 12f);
             int fd = Kit.AddEffect(p, KaurnFx.Field, spawnPoint: DamageEffectData.eSpawnPoint.ClosestEnemy);
+            int skL = Kit.AddEffect(p, KaurnFx.Seeker, offsetX: 9f, offsetY: 12f, angle: -40f);
+            int skR = Kit.AddEffect(p, KaurnFx.Seeker, offsetX: 9f, offsetY: 12f, angle: 40f);
+            // Combo: two seeking wisps, then three that fan out wide and turn in after the hero
             var s = Kit.Shot(sh, "Seek", "ModKrnLanternSeek", 3, v, 0f, sk).Ev(3, "KrnCharge").Build();
+            var s2 = Kit.Shot(sh, "Seek", "ModKrnLanternSeek2", 3, null, 0f, sk).Speed(1.15f).Ev(3, "KrnCharge").Build();
+            var s3 = Kit.Shot(sh, "Seek", "ModKrnLanternFlock", 3, v, 0.06f, skL, sk, skR).Speed(0.85f).Ev(3, "KrnCharge").Build();
             var f = Special(sh, "Field", "ModKrnLanternField").Ev(4, "AnimAttack", fd).Ev(4, "KrnDischarge").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // the wisp flies 110 px/s, homing for 1.1 s, and hangs where it stops (~170 px)
-            atk.Add(Kit.Attack(a0, s, 1.6f, rangeInner: 45f, rangeOuter: 140f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, s, 0.45f, rangeInner: 45f, rangeOuter: 140f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, s2, 0.45f, rangeInner: 45f, rangeOuter: 140f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, s3, 2.1f, rangeInner: 45f, rangeOuter: 130f, rangeRetreat: 40f));
             Kit.EnableSpecial(p, Kit.Attack(sp, f, 0f, rangeInner: 30f, rangeOuter: 140f, rangeRetreat: 30f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, first, 12f);
         }
 
@@ -241,14 +274,24 @@ namespace CrawlFurther.Content.Gods.Kaurn
             var sl = new ClipBuilder(sh, "Slam", "ModKrnColossusSlam").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(3, "AnimInputMultiplyStop").Ev(3, "AnimInputOff")
                 .Ev(4, "AnimAttack", quake).Ev(4, "KrnCharge").Ev(4, "KrnHeat").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
+            int quake2 = Kit.AddEffect(p, KaurnFx.Quake, offsetX: 42f, offsetY: 0f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
+            // Combo: two slams, then the Aftershock: the quake rolls on and bursts up again further ahead
+            var sl2 = new ClipBuilder(sh, "Slam", "ModKrnColossusSlam2").Once().Speed(1.1f)
+                .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(3, "AnimInputMultiplyStop").Ev(3, "AnimInputOff")
+                .Ev(4, "AnimAttack", quake).Ev(4, "KrnCharge").Ev(4, "KrnHeat").Ev(-1, "AnimRun").Build();
+            var sl3 = new ClipBuilder(sh, "Slam", "ModKrnColossusAftershock").Once().Speed(0.85f)
+                .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(3, "AnimInputMultiplyStop").Ev(3, "AnimInputOff")
+                .Ev(4, "AnimAttack", quake).Ev(4, "AnimAttack", quake2, 0.18f).Ev(4, "KrnCharge").Ev(4, "KrnHeat").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             var fe = Special(sh, "Fence", "ModKrnColossusFence").Ev(5, "AnimAttack", quake0);
             for (int i = 0; i < rods.Count; i++) fe.Ev(5, "AnimAttack", rods[i], 0.02f * (i + 1));
             fe.Ev(5, "KrnDischarge").Ev(5, "KrnHeat").EvO(5, "AnimSound", v).Ev(-1, "AnimRun");
             atk.Clear();
             // slam quake: 48 x 18 centred 17 px ahead; the fence rods stand 33 px out on the diagonals
-            atk.Add(Kit.Attack(a0, sl, 1.8f, rangeInner: 0f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, sl, 0.5f, rangeInner: 0f, rangeOuter: 38f));
+            atk.Add(Kit.Attack(a0, sl2, 0.5f, rangeInner: 0f, rangeOuter: 40f));
+            atk.Add(Kit.Attack(a0, sl3, 2.3f, rangeInner: 0f, rangeOuter: 66f));
             Kit.SetSpecial(p, Kit.Attack(sp, fe.Build(), 0f, rangeInner: 0f, rangeOuter: 40f, rangeRetreat: 0f), 7.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.65f);
             Strike.Feet(p, first, 18f);
             ColossusOverheat.HotIdle = Looped(sh, "IdleH1", "ModKrnColossusIdleH1");
             ColossusOverheat.HotRun = Looped(sh, "RunH1", "ModKrnColossusRunH1");
@@ -266,13 +309,19 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int first = Strike.Mark(p);
             int smash = Kit.AddEffect(p, KaurnFx.MasterSmash, attach: true, destroyOnAnimEnd: true, offsetX: 22f, offsetY: 4f);
             int flash = Kit.AddEffect(p, KaurnFx.HitFx, offsetX: 23f, offsetY: 2f);
+            // Combo: two sledge swings, then the Overhand: two swings running, the second stepping in
             var sw = Kit.Melee(sh, "Swing", "ModKrnMasterSwing", v, 3, smash, 30f).Ev(3, "AnimAttack", flash).Ev(3, "KrnCharge").Build();
+            var sw2 = Kit.Melee(sh, "Swing", "ModKrnMasterSwing2", null, 3, smash, 40f).Speed(1.1f).Ev(3, "AnimAttack", flash).Ev(3, "KrnCharge").Build();
+            var sw3 = Kit.Melee(sh, "Swing", "ModKrnMasterOverhand", v, 3, smash, 40f, 10, smash, 70f).Repeat(2).Speed(1.15f)
+                .Ev(3, "AnimAttack", flash).Ev(10, "AnimAttack", flash).Ev(10, "KrnCharge").Build();
             var vo = Special(sh, "Volley", "ModKrnMasterVolley").Ev(4, "KrnVolley").Ev(4, "KrnDischarge").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // sledge box x 14..30 plus a 30 px/s step; the rods land round the hero wherever he is (max 130 px)
-            atk.Add(Kit.Attack(a0, sw, 1.8f, rangeInner: 8f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, sw, 0.5f, rangeInner: 8f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, sw2, 0.5f, rangeInner: 8f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, sw3, 2.2f, rangeInner: 8f, rangeOuter: 44f));
             Kit.EnableSpecial(p, Kit.Attack(sp, vo, 0f, rangeInner: 20f, rangeOuter: 120f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, first, 20f);
             // the sheet's own Idle and Run carry the rods he starts with
             for (int n = 0; n <= ForgemasterCollector.MaxRods; n++)
@@ -289,15 +338,22 @@ namespace CrawlFurther.Content.Gods.Kaurn
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p) ?? a0; var v = Kit.Voice(p);
             int first = Strike.Mark(p);
             int br = Kit.AddEffect(p, KaurnFx.Breath, offsetX: 20f, offsetY: 23f);
+            int bL = Kit.AddEffect(p, KaurnFx.Breath, offsetX: 20f, offsetY: 23f, angle: -16f);
+            int bR = Kit.AddEffect(p, KaurnFx.Breath, offsetX: 20f, offsetY: 23f, angle: 16f);
+            // Combo: two beams, then the Sweep: the beam swings across from one side to the other
             var b = Kit.Shot(sh, "Breath", "ModKrnWyvernBreath", 3, v, 0f, br).Ev(3, "KrnCharge").Build();
+            var b2 = Kit.Shot(sh, "Breath", "ModKrnWyvernBreath2", 3, null, 0f, br).Speed(1.15f).Ev(3, "KrnCharge").Build();
+            var b3 = Kit.Shot(sh, "Breath", "ModKrnWyvernSweep", 3, v, 0.1f, bL, br, bR).Speed(0.85f).Ev(3, "KrnCharge").Build();
             var r = Special(sh, "Dive", "ModKrnWyvernDive").Ev(0, "AnimStartInvincibility").Ev(0, "KrnRidePlan").Ev(0, "KrnDischarge")
                 .EvO(0, "AnimSound", v).Ev(5, "KrnRideGo").Ev(5, "AnimStopInvincibility").HandOff().Build();
             atk.Clear();
             // the beam reaches 2..60 px past the mouth (20 px ahead): x 22..80
-            atk.Add(Kit.Attack(a0, b, 1.7f, rangeInner: 20f, rangeOuter: 72f, rangeRetreat: 18f));
+            atk.Add(Kit.Attack(a0, b, 0.5f, rangeInner: 20f, rangeOuter: 72f, rangeRetreat: 18f));
+            atk.Add(Kit.Attack(a0, b2, 0.5f, rangeInner: 20f, rangeOuter: 72f, rangeRetreat: 18f));
+            atk.Add(Kit.Attack(a0, b3, 2.2f, rangeInner: 20f, rangeOuter: 70f, rangeRetreat: 18f));
             // it rides to wherever the arcs reach the hero: any range works, it wants the hero away from it
             Kit.EnableSpecial(p, Kit.Attack(sp, r, 0f, rangeInner: 40f, rangeOuter: 170f, rangeRetreat: 0f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, first, 20f);
             WyvernRide.BurstClip = Once(sh, "Burst", "ModKrnWyvernBurst");
         }
@@ -308,14 +364,21 @@ namespace CrawlFurther.Content.Gods.Kaurn
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p) ?? a0; var v = Kit.Voice(p);
             int first = Strike.Mark(p);
             int can = Kit.AddEffect(p, KaurnFx.Canister, offsetX: 12f, offsetY: 22f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
+            int cL = Kit.AddEffect(p, KaurnFx.Canister, offsetX: 12f, offsetY: 22f, angle: -16f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
+            int cR = Kit.AddEffect(p, KaurnFx.Canister, offsetX: 12f, offsetY: 22f, angle: 16f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
+            // Combo: two canisters, then a cluster of three
             var l = Kit.Shot(sh, "Lob", "ModKrnSapperLob", 3, v, 0f, can).Ev(3, "KrnCharge").Build();
+            var l2 = Kit.Shot(sh, "Lob", "ModKrnSapperLob2", 3, null, 0f, can).Speed(1.1f).Ev(3, "KrnCharge").Build();
+            var l3 = Kit.Shot(sh, "Lob", "ModKrnSapperCluster", 3, v, 0.06f, cL, can, cR).Speed(0.85f).Ev(3, "KrnCharge").Build();
             var m = Special(sh, "Lay", "ModKrnSapperLay").Ev(4, "KrnLayCharges").Ev(4, "KrnDischarge").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // the canister lands where the hero stood (max 130 px) after 0.6 s
-            atk.Add(Kit.Attack(a0, l, 1.8f, rangeInner: 40f, rangeOuter: 125f, rangeRetreat: 36f));
+            atk.Add(Kit.Attack(a0, l, 0.5f, rangeInner: 40f, rangeOuter: 125f, rangeRetreat: 36f));
+            atk.Add(Kit.Attack(a0, l2, 0.5f, rangeInner: 40f, rangeOuter: 125f, rangeRetreat: 36f));
+            atk.Add(Kit.Attack(a0, l3, 2.2f, rangeInner: 40f, rangeOuter: 120f, rangeRetreat: 36f));
             // lay them from out of reach, then walk in to set them off
             Kit.EnableSpecial(p, Kit.Attack(sp, m, 0f, rangeInner: 60f, rangeOuter: 125f, rangeRetreat: 50f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.65f);
             Strike.Feet(p, first, 16f);
         }
 
@@ -327,17 +390,22 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int gore = Kit.AddEffect(p, KaurnFx.BullGore, attach: true, destroyOnAnimEnd: true, offsetX: 20f, offsetY: 16f);
             int flash = Kit.AddEffect(p, KaurnFx.HitFx, offsetX: 22f, offsetY: 22f);
             int stud = Kit.AddEffect(p, KaurnFx.Stud, offsetX: 16f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
+            // Combo: two horn hooks, then the Toss: a lunging hook and a second one that throws him back
             var gr = Kit.Melee(sh, "Hook", "ModKrnBullHook", v, 2, gore, 35f).Ev(2, "AnimAttack", flash).Ev(2, "KrnCharge").Build();
+            var gr2 = Kit.Melee(sh, "Hook", "ModKrnBullHook2", null, 2, gore, 45f).Speed(1.1f).Ev(2, "AnimAttack", flash).Ev(2, "KrnCharge").Build();
+            var gr3 = Kit.Melee(sh, "Hook", "ModKrnBullToss", v, 2, gore, 110f, 4, gore, 40f).Speed(0.9f).Ev(2, "AnimAttack", flash).Ev(4, "AnimAttack", flash).Ev(4, "KrnCharge").Build();
             var st = new ClipBuilder(sh, "Paw", "ModKrnBullPaw").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(0, "AnimMoveStop").Ev(7, "AnimInputMultiplyStop").Ev(7, "AnimInputOff")
                 .Ev(1, "AnimAttack", stud).Ev(4, "AnimAttack", stud).Ev(7, "AnimAttack", stud).Ev(7, "KrnDischarge").EvO(7, "AnimSound", v)
                 .Ev(8, "KrnStampede").HandOff().Build();
             atk.Clear();
             // horn box x 11..29 plus a 35 px/s step
-            atk.Add(Kit.Attack(a0, gr, 1.6f, rangeInner: 6f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, gr, 0.45f, rangeInner: 6f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, gr2, 0.45f, rangeInner: 6f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, gr3, 2.0f, rangeInner: 6f, rangeOuter: 54f));
             // the charge runs up to 160 px at 230 px/s
             Kit.SetSpecial(p, Kit.Attack(sp, st, 0f, rangeInner: 30f, rangeOuter: 140f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, first, 14f);
             BullMomentum.ChargeClip = Looped(sh, "Charge", "ModKrnBullCharge");
             BullMomentum.StuckClip = Looped(sh, "Stuck", "ModKrnBullStuck");
@@ -351,14 +419,19 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int b1 = Kit.AddEffect(p, KaurnFx.WargBite, attach: true, destroyOnAnimEnd: true, offsetX: 22f, offsetY: 14f);
             int b2 = Kit.AddEffect(p, KaurnFx.WargBite, attach: true, destroyOnAnimEnd: true, offsetX: 26f, offsetY: 14f);
             int ring = Kit.AddEffect(p, KaurnFx.PolarRing, spawnPoint: DamageEffectData.eSpawnPoint.Position);
+            // Combo: two pairs of bites, then the Hunt: a long lunge with three snaps
             var s = Kit.Melee(sh, "Bites", "ModKrnWargBites", v, 2, b1, 40f, 5, b2, 70f).Ev(5, "KrnCharge").Build();
+            var s2 = Kit.Melee(sh, "Bites", "ModKrnWargBites2", null, 2, b1, 50f, 5, b2, 80f).Speed(1.1f).Ev(5, "KrnCharge").Build();
+            var s3 = Kit.Melee(sh, "Bites", "ModKrnWargHunt", v, 2, b1, 110f, 4, b2, 60f, 6, b2, 60f).Speed(0.9f).Ev(5, "KrnCharge").Build();
             var mz = Special(sh, "Magnetize", "ModKrnWargMagnetize").Ev(3, "AnimAttack", ring).Ev(3, "KrnMagnetize").Ev(3, "KrnDischarge")
                 .EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // jaws reach 29 / 33 px ahead plus the lunges
-            atk.Add(Kit.Attack(a0, s, 1.6f, rangeInner: 8f, rangeOuter: 40f));
+            atk.Add(Kit.Attack(a0, s, 0.45f, rangeInner: 8f, rangeOuter: 40f));
+            atk.Add(Kit.Attack(a0, s2, 0.45f, rangeInner: 8f, rangeOuter: 42f));
+            atk.Add(Kit.Attack(a0, s3, 2.0f, rangeInner: 8f, rangeOuter: 56f));
             Kit.EnableSpecial(p, Kit.Attack(sp, mz, 0f, rangeInner: 20f, rangeOuter: 110f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, first, 14f);
         }
 
@@ -368,14 +441,21 @@ namespace CrawlFurther.Content.Gods.Kaurn
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int first = Strike.Mark(p);
             int lance = Kit.AddEffect(p, KaurnFx.Lance, offsetX: 26f, offsetY: 18f);
+            int lL = Kit.AddEffect(p, KaurnFx.Lance, offsetX: 26f, offsetY: 18f, angle: -9f);
+            int lR = Kit.AddEffect(p, KaurnFx.Lance, offsetX: 26f, offsetY: 18f, angle: 9f);
+            // Combo: two lances, then the Trident: three lances at once
             var ln = Kit.Shot(sh, "Lance", "ModKrnHeraldLance", 3, v, 0f, lance).Ev(3, "KrnCharge").Build();
+            var ln2 = Kit.Shot(sh, "Lance", "ModKrnHeraldLance2", 3, null, 0f, lance).Speed(1.15f).Ev(3, "KrnCharge").Build();
+            var ln3 = Kit.Shot(sh, "Lance", "ModKrnHeraldTrident", 3, v, 0.03f, lL, lance, lR).Speed(0.85f).Ev(3, "KrnCharge").Build();
             var hn = Special(sh, "Horn", "ModKrnHeraldHorn").Ev(4, "KrnStorm").Ev(4, "KrnDischarge").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // the lance is born 26 px ahead and flies 260 px/s x 0.65 s (~195 px)
-            atk.Add(Kit.Attack(a0, ln, 1.6f, rangeInner: 36f, rangeOuter: 150f, rangeRetreat: 34f));
+            atk.Add(Kit.Attack(a0, ln, 0.45f, rangeInner: 36f, rangeOuter: 150f, rangeRetreat: 34f));
+            atk.Add(Kit.Attack(a0, ln2, 0.45f, rangeInner: 36f, rangeOuter: 150f, rangeRetreat: 34f));
+            atk.Add(Kit.Attack(a0, ln3, 2.1f, rangeInner: 36f, rangeOuter: 140f, rangeRetreat: 34f));
             // the storm hits 60-110 px out: it blows the horn when the hero is in that band
             Kit.SetSpecial(p, Kit.Attack(sp, hn, 0f, rangeInner: 50f, rangeOuter: 105f, rangeRetreat: 0f), 7.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, first, 18f);
         }
 
@@ -385,13 +465,20 @@ namespace CrawlFurther.Content.Gods.Kaurn
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p) ?? a0; var v = Kit.Voice(p);
             int first = Strike.Mark(p);
             int orb = Kit.AddEffect(p, KaurnFx.SplitOrb, offsetX: 14f, offsetY: 17f);
+            int oL = Kit.AddEffect(p, KaurnFx.SplitOrb, offsetX: 14f, offsetY: 17f, angle: -18f);
+            int oR = Kit.AddEffect(p, KaurnFx.SplitOrb, offsetX: 14f, offsetY: 17f, angle: 18f);
+            // Combo: two splitting orbs, then a pair of them
             var o = Kit.Shot(sh, "Orb", "ModKrnMagusOrb", 3, v, 0f, orb).Ev(3, "KrnCharge").Build();
+            var o2 = Kit.Shot(sh, "Orb", "ModKrnMagusOrb2", 3, null, 0f, orb).Speed(1.15f).Ev(3, "KrnCharge").Build();
+            var o3 = Kit.Shot(sh, "Orb", "ModKrnMagusPair", 3, v, 0.05f, oL, oR).Speed(0.85f).Ev(3, "KrnCharge").Build();
             var kd = Special(sh, "Kindle", "ModKrnMagusKindle").Ev(5, "KrnKindle").Ev(5, "KrnDischarge").EvO(5, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // the orb flies 0.38 s (~57 px) then splits; shards go 220 px/s x 0.5 s
-            atk.Add(Kit.Attack(a0, o, 1.7f, rangeInner: 45f, rangeOuter: 150f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, o, 0.5f, rangeInner: 45f, rangeOuter: 150f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, o2, 0.5f, rangeInner: 45f, rangeOuter: 150f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, o3, 2.2f, rangeInner: 45f, rangeOuter: 140f, rangeRetreat: 40f));
             Kit.EnableSpecial(p, Kit.Attack(sp, kd, 0f, rangeInner: 40f, rangeOuter: 130f, rangeRetreat: 20f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.65f);
             Strike.Feet(p, first, 17f);
         }
 
@@ -401,14 +488,19 @@ namespace CrawlFurther.Content.Gods.Kaurn
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int first = Strike.Mark(p);
             int orb = Kit.AddEffect(p, KaurnFx.Orb, offsetX: 16f, offsetY: 22f);
+            // Combo: two orbs, then the Transit: three orbs down one line, a beat apart
             var fl = Kit.Shot(sh, "Fling", "ModKrnOrreryFling", 3, v, 0f, orb).Ev(3, "KrnCharge").Build();
+            var fl2 = Kit.Shot(sh, "Fling", "ModKrnOrreryFling2", 3, null, 0f, orb).Speed(1.15f).Ev(3, "KrnCharge").Build();
+            var fl3 = Kit.Shot(sh, "Fling", "ModKrnOrreryTransit", 3, v, 0.12f, orb, orb, orb).Speed(0.85f).Ev(3, "KrnCharge").Build();
             var al = Special(sh, "Align", "ModKrnOrreryAlign").Ev(1, "KrnAlign").Ev(1, "KrnDischarge").EvO(8, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // the orb flies 150 px/s for 1.2 s from 16 px ahead
-            atk.Add(Kit.Attack(a0, fl, 1.6f, rangeInner: 45f, rangeOuter: 140f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, fl, 0.45f, rangeInner: 45f, rangeOuter: 140f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, fl2, 0.45f, rangeInner: 45f, rangeOuter: 140f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, fl3, 2.1f, rangeInner: 45f, rangeOuter: 140f, rangeRetreat: 40f));
             // the beam reaches 160 px
             Kit.SetSpecial(p, Kit.Attack(sp, al, 0f, rangeInner: 30f, rangeOuter: 150f, rangeRetreat: 20f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, first, 22f);
         }
 
@@ -419,14 +511,21 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int first = Strike.Mark(p);
             int hit = Kit.AddEffect(p, KaurnFx.WhipHit, attach: true, destroyOnAnimEnd: true, offsetX: 32f, offsetY: 20f);
             int vis = Kit.AddEffect(p, KaurnFx.WhipVis, offsetX: 12f, offsetY: 22f);
+            int hL = Kit.AddEffect(p, KaurnFx.WhipHit, attach: true, destroyOnAnimEnd: true, offsetX: 32f, offsetY: 20f, angle: -22f);
+            int hR = Kit.AddEffect(p, KaurnFx.WhipHit, attach: true, destroyOnAnimEnd: true, offsetX: 32f, offsetY: 20f, angle: 22f);
+            // Combo: two whip lashes, then the Arc: the whip cracks across from one side to the other
             var w = Kit.Melee(sh, "Whip", "ModKrnPileWhip", v, 3, hit, 20f).Ev(3, "AnimAttack", vis).Ev(3, "KrnCharge").Build();
+            var w2 = Kit.Melee(sh, "Whip", "ModKrnPileWhip2", null, 3, hit, 30f).Speed(1.15f).Ev(3, "AnimAttack", vis).Ev(3, "KrnCharge").Build();
+            var w3 = Kit.Melee(sh, "Whip", "ModKrnPileArc", v, 3, hL, 20f).Speed(0.85f).Ev(3, "AnimAttack", vis).Ev(4, "AnimAttack", hit).Ev(5, "AnimAttack", hR).Ev(3, "KrnCharge").Build();
             var n = Special(sh, "Surge", "ModKrnPileSurge").Ev(7, "KrnSurge").Ev(7, "KrnDischarge").EvO(7, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // the lash box spans x 12..52, y 15..25 above the feet
-            atk.Add(Kit.Attack(a0, w, 1.6f, rangeInner: 10f, rangeOuter: 50f));
+            atk.Add(Kit.Attack(a0, w, 0.45f, rangeInner: 10f, rangeOuter: 50f));
+            atk.Add(Kit.Attack(a0, w2, 0.45f, rangeInner: 10f, rangeOuter: 52f));
+            atk.Add(Kit.Attack(a0, w3, 2.0f, rangeInner: 10f, rangeOuter: 50f));
             // its arcs reach 70 px from it: surge when the hero is among them
             Kit.EnableSpecial(p, Kit.Attack(sp, n, 0f, rangeInner: 0f, rangeOuter: 80f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, first, 20f);
         }
 
@@ -438,12 +537,20 @@ namespace CrawlFurther.Content.Gods.Kaurn
             var r = new ClipBuilder(sh, "Relay", "ModKrnSpireRelay").Once().EvF(0, "AnimInputMultiplyFreeFace", 0f)
                 .Ev(1, "AnimInputMultiplyStop").Ev(1, "AnimInputOff").Ev(1, "KrnRemoteAim").Ev(4, "KrnRemoteFire").Ev(4, "KrnCharge")
                 .EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
+            // Combo: two relayed bolts, then the Chorus: the relay fires twice
+            var r2 = new ClipBuilder(sh, "Relay", "ModKrnSpireRelay2").Once().Speed(1.15f).EvF(0, "AnimInputMultiplyFreeFace", 0f)
+                .Ev(1, "AnimInputMultiplyStop").Ev(1, "AnimInputOff").Ev(1, "KrnRemoteAim").Ev(4, "KrnRemoteFire").Ev(4, "KrnCharge").Ev(-1, "AnimRun").Build();
+            var r3 = new ClipBuilder(sh, "Relay", "ModKrnSpireChorus").Once().Speed(0.85f).EvF(0, "AnimInputMultiplyFreeFace", 0f)
+                .Ev(1, "AnimInputMultiplyStop").Ev(1, "AnimInputOff").Ev(1, "KrnRemoteAim").Ev(4, "KrnRemoteFire").Ev(4, "KrnCharge")
+                .EvO(4, "AnimSound", v).Ev(-1, "KrnRemoteAim").Ev(-1, "KrnRemoteFire").Ev(-1, "AnimRun").Build();
             var an = Special(sh, "Answer", "ModKrnSpireAnswer").Ev(4, "KrnAnswer").Ev(4, "KrnDischarge").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // the bolt flies 240 px/s for 0.6 s from a rod within 100 px of the hero, or from its own crown
-            atk.Add(Kit.Attack(a0, r, 1.7f, rangeInner: 45f, rangeOuter: 145f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, r, 0.5f, rangeInner: 45f, rangeOuter: 145f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, r2, 0.5f, rangeInner: 45f, rangeOuter: 145f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, r3, 2.2f, rangeInner: 45f, rangeOuter: 145f, rangeRetreat: 40f));
             Kit.EnableSpecial(p, Kit.Attack(sp, an, 0f, rangeInner: 20f, rangeOuter: 130f, rangeRetreat: 20f), 7.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.65f);
             Strike.Feet(p, first, 30f);
             SpireRemote.RootedClip = Looped(sh, "Rooted", "ModKrnSpireRooted");
         }
@@ -455,13 +562,20 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int first = Strike.Mark(p);
             int d0 = Kit.AddEffect(p, KaurnFx.Dart, offsetX: 12f, offsetY: 19f, angle: -6f);
             int d1 = Kit.AddEffect(p, KaurnFx.Dart, offsetX: 12f, offsetY: 19f, angle: 6f);
+            int d2 = Kit.AddEffect(p, KaurnFx.Dart, offsetX: 12f, offsetY: 19f, angle: -20f);
+            int d3 = Kit.AddEffect(p, KaurnFx.Dart, offsetX: 12f, offsetY: 19f, angle: 20f);
+            // Combo: two pairs of weaving darts, then a swarm of four
             var dt = Kit.Shot(sh, "Darts", "ModKrnMothDarts", 3, v, 0.06f, d0, d1).Ev(3, "KrnCharge").Build();
+            var dt2 = Kit.Shot(sh, "Darts", "ModKrnMothDarts2", 3, null, 0.06f, d0, d1).Speed(1.15f).Ev(3, "KrnCharge").Build();
+            var dt3 = Kit.Shot(sh, "Darts", "ModKrnMothSwarm", 3, v, 0.05f, d2, d0, d1, d3).Speed(0.85f).Ev(3, "KrnCharge").Build();
             var dr = Special(sh, "Drink", "ModKrnMothDrink").Ev(3, "KrnDischarge").Ev(3, "KrnDrink").EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // darts fly 150 px/s for 0.9 s (~135 px)
-            atk.Add(Kit.Attack(a0, dt, 1.5f, rangeInner: 40f, rangeOuter: 130f, rangeRetreat: 36f));
+            atk.Add(Kit.Attack(a0, dt, 0.45f, rangeInner: 40f, rangeOuter: 130f, rangeRetreat: 36f));
+            atk.Add(Kit.Attack(a0, dt2, 0.45f, rangeInner: 40f, rangeOuter: 130f, rangeRetreat: 36f));
+            atk.Add(Kit.Attack(a0, dt3, 2.0f, rangeInner: 40f, rangeOuter: 120f, rangeRetreat: 36f));
             Kit.EnableSpecial(p, Kit.Attack(sp, dr, 0f, rangeInner: 0f, rangeOuter: 150f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, first, 19f);
             MothSparkFall.FullIdle = Looped(sh, "IdleFull", "ModKrnMothIdleFull");
             MothSparkFall.FullRun = Looped(sh, "RunFull", "ModKrnMothRunFull");
