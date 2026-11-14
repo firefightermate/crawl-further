@@ -487,7 +487,7 @@ def bone_orchard():
     monster(R, "OssCoffinBearer", 66, R.fy0 + 4, flip=True)
     hero(R, -54, R.fy0 + 6)
     for xx in (-80, -10, 60):
-        R.put("PropActionable_Feature_Altar_Skull", xx, R.fy1 - 5)
+        R.put("PropActionable_Feature_Altar_Skull", xx, R.fy1 - 9)
     x = R.fx0 + 10
     while x < R.fx1 - 8:
         stand(R, Q.bone_pile(R.rnd.randint(14, 20), seed=int(x)), x, R.fy1 - 6)
