@@ -3,6 +3,32 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## 1.4.1
+
+A test build (not uploaded).
+
+### Core
+- `Strike.Boxify`: capsule hit colliders become boxes of the same footprint and the game's own 230 depth. A capsule's
+  round cross-section also limits z, which follows screen height, so capsule hits lost reach up and down the floor.
+  `Strike.Collider` and `FxKit.TimedHit`'s `colliderScale` box first.
+- `HitFloor`: after a mod monster's kit, every strike (a damage effect that neither flies nor ticks) is boxed, and a
+  tier 2 or 3 monster's strikes are raised to the least size for its tier (body 24 x 18 / 30 x 22, thrusts 14 / 16
+  tall, ground 44 x 18 / 56 x 24). Strikes that show their own art grow at most 15% past their authored size.
+- Pause > Tips: the mod pages draw their text in the HUD tip font (CrawlLarge) at half its pixel size; wrapping uses its
+  widths (`PauseTips.Large`, `BodyFontScale`; `tools/merge_tips.py` matches), line pitch 8.
+
+### Content
+- Puffball Brute: `FxSylPuffSlam` ring art, slam and landing rings sized to it, `PuffRoll` body hit through Bounce.
+- Cordyceps Saint: Infest (`SporeSpine`, `HeroStalks`, `StalkBurst`); no self-infection.
+- Sand Wraith: `FxUmbSandGlass` redrawn as a 12-frame countdown (D/H), picked from the timer; the column falls at 3 s
+  with a base hit.
+- Ground rings fitted to their art: Bell Toll, Kaurn ring and quake, Ossuary slam, Carrion Vulture dive, Pyre Warden
+  censer (R2 art).
+
+### Repository
+- `tools/hitbox_audit.py`: every attack's hit area against the game's own monsters by tier (`--vanilla`, `--effects`,
+  `--floor` to apply the HitFloor rule, `--why` for moves it cannot measure).
+
 ## 1.4.0
 
 The release that ships 1.3.1 to 1.3.4 (built but never uploaded) to players; their entries follow. Nothing in the

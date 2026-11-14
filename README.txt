@@ -16,6 +16,18 @@ Delete an old BepInEx\plugins\CrawlMod folder when you update. The config files 
 updating from any earlier version keeps your settings and saves. New settings files start with CrawlFurther.
 The mod's two bosses are switched off in this version (see BOSSES).
 
+NEW IN 1.4.1
+------------
+  - Tier 2 and 3 monsters hit a much bigger area: none of their swings, bites or slams is smaller than the
+    game's own monsters of the same rank, and the biggest monsters hit the widest.
+  - Ground slams reach as far up and down the floor as they look, and more rings hit everywhere their art
+    shows.
+  - Puffball Brute: a much wider slam ring. Bounce bumps the hero on the way and lands harder.
+  - Cordyceps Saint: Infest. Spore spines seed stalks in the hero that drag him in, then burst while a
+    shambler walks off him.
+  - Sand Wraith: the hourglass counts down for real, and the column falls when the top bulb is empty.
+  - The mod's Pause > Tips pages use the font of the live monster tips.
+
 NEW IN 1.4.0
 ------------
   - Every mod monster has its own challenge goal, like the game's own: stronger monsters ask for a higher hero

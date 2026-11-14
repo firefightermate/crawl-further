@@ -165,7 +165,7 @@ namespace CrawlFurther.Content.Gods.Kaurn
 
             // ---- Coil Wisp: a lightning mote; a shock ring
             Mote = Proj("ModKrnMote", "FxKrnMote", 160f, 0.9f, 0.7f, 0.4f);
-            Ring = Hit("ModKrnRing", "FxKrnRing", 1, 4, 0.8f, 0.6f, 26, 11, 42f, 16f, daze, 0.35f);
+            Ring = Hit("ModKrnRing", "FxKrnRing", 1, 4, 0.8f, 0.6f, 26, 11, 48f, 19f, daze, 0.35f);
 
             // ---- Anvil Smith: a hammer smash and its floor surge; the iron plate
             SmithSmash = Body("ModKrnSmash", 1.1f, 0.9f, 0.15f, 14f, 12f);      // hammer head at (18, -1)
@@ -202,7 +202,7 @@ namespace CrawlFurther.Content.Gods.Kaurn
             Field = Hit("ModKrnField", "FxKrnField", 2, 10, 0.3f, 0.1f, 26, 11, 44f, 16f, slow, 0.5f, 0.5f);
 
             // ---- Forge Colossus: the quake; the vent's steam
-            Quake = Hit("ModKrnQuake", "FxKrnQuake", 1, 4, 1.4f, 1.6f, 31, 15, 48f, 18f, daze, 0.3f);
+            Quake = Hit("ModKrnQuake", "FxKrnQuake", 1, 4, 1.4f, 1.6f, 31, 15, 52f, 21f, daze, 0.3f);
             Steam = Hit("ModKrnSteam", "FxKrnSteam", 1, 4, 0.8f, 2.4f, 38, 26, 60f, 24f);
 
             // ---- Forgemaster: the sledge (damage set per swing by the rods carried); thrown rods

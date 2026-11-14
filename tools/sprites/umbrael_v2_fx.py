@@ -852,14 +852,16 @@ def fx_pendulum(out):
 
 # ------------------------------------------------------------------ Sand Wraith: the glass over him, the column
 def fx_sand(out):
+    # the countdown, one frame per twelfth of the 3 s: the top bulb drains into the bottom one and is empty on the last
+    # frame, when the column falls (the code picks the frame from the real timer). H: the same with the eye wide and lit,
+    # once the glass is holding a hit.
     anims = []
-    for n in range(5):
-        fr = []
-        for k in range(2):
+    for tag, eye in (("D", "open"), ("H", "wide")):
+        for k in range(12):
             r = Rig()
-            hourglass_body(r, 0, -8, 0.0, 0.9 - n * 0.15, 0.05 + n * 0.2, 0.0, "open" if k == 0 else "wide", stream=True)
-            fr.append(done(r))
-        anims.append(("Fill%d" % n, fr, [0.2, 0.2]))
+            top = 1.0 - k / 11.0
+            hourglass_body(r, 0, -8, 0.0, top, 0.05 + 0.9 * k / 11.0, 0.0, eye, stream=k < 11)
+            anims.append(("%s%d" % (tag, k), [done(r)], [0.25]))
     fx("FxUmbSandGlass", (16, 20), (8, 1), anims, out)
     sh = []
     for k in range(4):

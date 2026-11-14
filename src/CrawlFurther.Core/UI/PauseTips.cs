@@ -30,7 +30,10 @@ namespace CrawlFurther.UI
         /// out), and the MiddleLeft anchor height of each line (one TextMesh per line, LinePitch apart: a MiddleLeft
         /// anchor sits 4.3 px above the baseline, the way the vanilla map legend lines up with its icons).
         /// </summary>
-        public const float BodyLeft = -94f, BodyWidth = 188f, BodyFirstY = 30f, LinePitch = 7f, FooterY = -24f;
+        public const float BodyLeft = -94f, BodyWidth = 188f, BodyFirstY = 30f, LinePitch = 8f, FooterY = -25f;
+        /// <summary>The mod pages' text is drawn in the HUD tip font (CrawlLarge, the font of the live monster tips), at this
+        /// fraction of its own pixel size, so a line holds about as many words as the vanilla body font did.</summary>
+        public const float BodyFontScale = 0.5f;
         public const int LinesPerPage = 7;
         // tab row (the vanilla combat page's numbers, in the "Tips" container's frame)
         const float TabY = 39.33f, TabTextY = 40.14f, RuleY = 34.33f, TabW = 43f, VanillaRuleHalf = 68.5f;
@@ -42,6 +45,9 @@ namespace CrawlFurther.UI
         /// <summary>CrawlTextBodyThin advance widths, chars 32..126 (tools/merge_tips.py has the same table).</summary>
         static readonly byte[] Thin = { 3,2,4,0,4,4,5,2,3,3,2,4,2,4,2,4,4,3,4,4,4,4,4,4,4,4,2,2,4,4,4,4,6,4,4,3,4,3,3,4,4,2,4,4,3,5,
             4,4,4,4,4,4,4,4,4,5,4,4,4,3,4,3,4,4,2,4,4,3,4,4,3,4,4,2,2,4,2,5,4,4,4,4,3,4,3,4,4,5,4,4,4,3,2,3,4 };
+        /// <summary>CrawlLarge advance widths at its own size, chars 32..126 (tools/merge_tips.py has the same table).</summary>
+        static readonly byte[] Large = { 5,4,8,8,9,7,9,4,4,6,7,7,4,6,4,5,9,5,9,9,9,9,9,9,9,9,4,4,7,7,7,9,13,9,9,7,9,7,7,9,9,4,9,9,7,11,
+            9,9,9,9,9,9,8,9,9,11,9,9,8,4,5,4,7,9,4,9,9,7,9,9,7,9,9,4,5,9,4,11,9,9,9,9,7,9,7,9,9,11,8,9,9,5,3,5,8 };
         /// <summary>CrawlSmall advance widths (the tab headers).</summary>
         static readonly byte[] Small = { 5,3,4,6,7,0,7,2,4,4,6,6,2,5,2,4,6,4,6,6,6,6,6,6,6,6,2,2,5,4,5,7,7,6,6,5,6,5,5,6,6,3,6,6,5,8,
             6,6,6,6,6,6,5,6,6,8,6,6,6,4,4,4,4,6,2,6,6,5,6,5,5,6,6,3,6,6,5,8,6,6,6,6,6,6,5,6,6,8,6,6,6,0,0,0,0 };
@@ -50,9 +56,13 @@ namespace CrawlFurther.UI
         public const char NoBreak = '~';
 
         // ------------------------------------------------------------------ text layout (no Unity calls: testable)
-        public static int Width(string s, bool small = false)
+        /// <summary>Width of body text in the HUD tip font, in its own pixels (times <see cref="BodyFontScale"/> on the page).</summary>
+        public static int BodyTextWidth(string s) { return Measure(s, Large); }
+
+        public static int Width(string s, bool small = false) { return Measure(s, small ? Small : Thin); }
+
+        static int Measure(string s, byte[] t)
         {
-            var t = small ? Small : Thin;
             int w = 0;
             bool tag = false;
             foreach (char c in s)
@@ -78,13 +88,13 @@ namespace CrawlFurther.UI
             int curW = 0;
             foreach (var word in para.Split(' '))
             {
-                int ww = Width(word), sp = cur.Length > 0 ? Width(" ") : 0;
-                if (cur.Length > 0 && curW + sp + ww > maxWidth)
+                int ww = BodyTextWidth(word), sp = cur.Length > 0 ? BodyTextWidth(" ") : 0;
+                if (cur.Length > 0 && curW + sp + ww > maxWidth / BodyFontScale)
                 {
                     lines.Add(Close(openAtStart, cur.ToString(), open));
                     cur.Length = 0;
                     curW = 0;
-                    if (bullet) { cur.Append(Indent); curW = Width(Indent); }
+                    if (bullet) { cur.Append(Indent); curW = BodyTextWidth(Indent); }
                     openAtStart = open;
                     sp = 0;
                 }
@@ -403,6 +413,48 @@ namespace CrawlFurther.UI
             return p;
         }
 
+        static Font s_hudFont;
+        static Material s_hudMat;
+
+        /// <summary>The live monster tips' font (the HUD name text's, so a font-swapping translation mod is followed), or
+        /// the game's CrawlLarge.</summary>
+        static Font HudFont(out Material mat)
+        {
+            if (s_hudFont == null)
+            {
+                foreach (var gp in UnityEngine.Object.FindObjectsOfType<GUIPlayer>())
+                {
+                    var tm = R.Get<TextMesh>(gp, "m_name");
+                    if (tm == null || tm.font == null) continue;
+                    s_hudFont = tm.font;
+                    var r = tm.GetComponent<Renderer>();
+                    s_hudMat = r != null && r.sharedMaterial != null ? r.sharedMaterial : tm.font.material;
+                    break;
+                }
+                if (s_hudFont == null)
+                    foreach (var f in Resources.FindObjectsOfTypeAll<Font>())
+                        if (f != null && f.name == "CrawlLarge") { s_hudFont = f; s_hudMat = f.material; break; }
+            }
+            mat = s_hudMat;
+            return s_hudFont;
+        }
+
+        /// <summary>Draw <paramref name="tm"/> in the HUD tip font, rasterised large and scaled to
+        /// <see cref="BodyFontScale"/> of its pixel size (the way the HUD draws it).</summary>
+        static void UseHudFont(TextMesh tm)
+        {
+            Material mat;
+            var font = HudFont(out mat);
+            if (tm == null || font == null || tm.font == font) return;
+            float f0 = tm.fontSize > 0 ? tm.fontSize : 16f;
+            const int Raster = 96;
+            tm.characterSize = tm.characterSize * f0 * BodyFontScale / Raster;
+            tm.fontSize = Raster;
+            tm.font = font;
+            var r = tm.GetComponent<Renderer>();
+            if (r != null && mat != null) r.sharedMaterial = mat;
+        }
+
         static TextMesh CloneText(TextMesh src, Transform parent, string name)
         {
             // made straight under the (inactive) page: never enabled at the scene root, so its appear effect only
@@ -425,6 +477,7 @@ namespace CrawlFurther.UI
             var pz = proto.localPosition.z;
             go.transform.localPosition = new Vector3(0f, 0f, pz);
             var parts = Pick(go.transform, false);
+            UseHudFont(parts.body);   // the body, subtitle, counter and footer are all copies of it
 
             // the tab, doubled up when the caption is wider than one tab
             int hw = Width(pg.header, true);

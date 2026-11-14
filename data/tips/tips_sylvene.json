@@ -103,8 +103,8 @@
   },
   "ModSylPuffball": {
     "name": "Puffball Brute",
-    "attack": "Fist slam in a ring of spores",
-    "special": "Bounce at the hero, steered; land in a spore ring",
+    "attack": "Fist slam in a wide ring of spores",
+    "special": "Bounce through the hero and land in a spore ring",
     "passive": [
       "Knocked into a wall, you bounce back at him",
       "Death drops a seed that ripens into a poison pod"
@@ -114,12 +114,12 @@
   "ModSylCordyceps": {
     "name": "Cordyceps Saint",
     "attack": "Spine flick, long range, may poison",
-    "special": "Infect your kin or yourself",
+    "special": "Spines seed stalks that drag him in, then burst",
     "passive": [
       "Infect your kin: they fight on after death",
       "Death drops a seed that ripens into a poison pod"
     ],
-    "vault": "Drives spores into its kin. The infected rise again for a few seconds"
+    "vault": "Its spines seed stalks that drag the host in, then fruit"
   },
   "ModRotMother": {
     "name": "The Rot Mother",

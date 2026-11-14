@@ -80,20 +80,48 @@ namespace CrawlFurther.Monsters
         }
         static readonly HashSet<DamageEffectData> s_deathFixed = new HashSet<DamageEffectData>();
 
-        /// <summary>Size every collider on a template, in its local (pre-scale) pixels.</summary>
+        /// <summary>Depth (z) of the boxes <see cref="Boxify"/> makes: the game's own attack boxes are 230 deep, so the
+        /// hit never depends on how the depth sorter set the two bodies' z.</summary>
+        public const float BoxDepth = 230f;
+
+        /// <summary>
+        /// Swap every capsule collider on a template for a box of the same footprint and the game's own depth. A capsule's
+        /// round cross-section also limits z, and z follows screen height (DepthHandler), so a capsule hit loses reach up
+        /// and down the floor that a box of the same size keeps. Contacts that named the capsule name the box.
+        /// </summary>
+        public static void Boxify(GameObject go)
+        {
+            if (go == null) return;
+            foreach (var c in go.GetComponents<CapsuleCollider>())
+            {
+                float w, h;
+                if (c.direction == 0) { w = Mathf.Max(c.height, c.radius * 2f); h = c.radius * 2f; }
+                else if (c.direction == 1) { w = c.radius * 2f; h = Mathf.Max(c.height, c.radius * 2f); }
+                else { w = h = c.radius * 2f; }
+                var b = go.AddComponent<BoxCollider>();
+                b.isTrigger = c.isTrigger;
+                b.enabled = c.enabled;
+                b.sharedMaterial = c.sharedMaterial;
+                b.center = new Vector3(c.center.x, c.center.y, 5f);
+                b.size = new Vector3(w, h, BoxDepth);
+                var de = go.GetComponent<DamageEffect>();
+                if (de != null && de.m_contactData != null)
+                    foreach (var cd in de.m_contactData)
+                        if (cd != null && cd.m_collider == c) cd.m_collider = b;
+                UnityEngine.Object.DestroyImmediate(c);
+            }
+        }
+
+        /// <summary>Size every collider on a template, in its local (pre-scale) pixels. Capsules become boxes first
+        /// (<see cref="Boxify"/>).</summary>
         public static void Collider(GameObject go, float w, float h, float cx = 0f, float cy = 0f)
         {
             if (go == null) return;
+            Boxify(go);
             foreach (var b in go.GetComponents<BoxCollider>())
             {
-                b.size = new Vector3(w, h, b.size.z);
+                b.size = new Vector3(w, h, Mathf.Max(b.size.z, BoxDepth));
                 b.center = new Vector3(cx, cy, b.center.z);
-            }
-            foreach (var c in go.GetComponents<CapsuleCollider>())
-            {
-                if (w >= h) { c.direction = 0; c.height = w; c.radius = h * 0.5f; }
-                else { c.direction = 1; c.height = h; c.radius = w * 0.5f; }
-                c.center = new Vector3(cx, cy, c.center.z);
             }
             foreach (var s in go.GetComponents<SphereCollider>())
             {

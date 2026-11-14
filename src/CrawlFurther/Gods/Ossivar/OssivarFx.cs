@@ -178,7 +178,7 @@ namespace CrawlFurther.Content.Gods.Ossivar
             DiveShadow = Vis("ModOssDiveShadow", "FxOssDiveShadow", "Play", 15, 6);
             DiveHit = FxKit.TimedHit("ModOssDiveHit", "TrollGroundPoundBigShockwave", "FxOssDiveImpact", "Play", 0, 2, 1.2f, 1.0f,
                                      durations: new[] { 0.05f, 0.06f, 0.07f, 0.08f, 0.1f }, canFlip: false);
-            Strike.Ground(DiveHit, "FxOssDiveImpact", 26, 22, 20f, 10f);
+            Strike.Ground(DiveHit, "FxOssDiveImpact", 26, 22, 46f, 14f);
             WatchRing = Vis("ModOssWatchRing", "FxOssWatchRing", "Loop", 17, 7, loop: true);
 
             // ---- Charnel Rider (mounted and on foot)
@@ -246,7 +246,7 @@ namespace CrawlFurther.Content.Gods.Ossivar
             // ---- The Ossuary
             OssuarySlam = FxKit.TimedHit("ModOssuarySlam", "TrollGroundPoundBigShockwave", "FxSpikeRing", "Play", 0, 3, 1.3f, 1.4f,
                                          colliderScale: 0.6f, canFlip: false);
-            Strike.Ground(OssuarySlam, "FxSpikeRing", 26, 13, 40f, 16f);
+            Strike.Ground(OssuarySlam, "FxSpikeRing", 26, 13, 50f, 19f);
             RibCrack = Vis("ModOssRibCrack", "FxOssRibCrack", "Play", 26, 18);
             Rib = Standing("ModOssRib", "FxOssRib", "Rise", "Stand", 11, 19);
             RibRise = Clip("FxOssRib", "Rise"); RibRiseL = Clip("FxOssRib", "RiseL");

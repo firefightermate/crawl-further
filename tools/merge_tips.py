@@ -46,6 +46,10 @@ HIGHLIGHT = "#d4be9c"
 # PauseTips.Thin in C#.
 THIN = [3,2,4,0,4,4,5,2,3,3,2,4,2,4,2,4,4,3,4,4,4,4,4,4,4,4,2,2,4,4,4,4,6,4,4,3,4,3,3,4,4,2,4,4,3,5,4,4,4,4,4,4,4,4,
         4,5,4,4,4,3,4,3,4,4,2,4,4,3,4,4,3,4,4,2,2,4,2,5,4,4,4,4,3,4,3,4,4,5,4,4,4,3,2,3,4]
+# CrawlLarge (the HUD tip font the pages' body is drawn in, at half its pixel size). Same table as PauseTips.Large.
+LARGE = [5,4,8,8,9,7,9,4,4,6,7,7,4,6,4,5,9,5,9,9,9,9,9,9,9,9,4,4,7,7,7,9,13,9,9,7,9,7,7,9,9,4,9,9,7,11,9,9,9,9,9,9,8,9,
+         9,11,9,9,8,4,5,4,7,9,4,9,9,7,9,9,7,9,9,4,5,9,4,11,9,9,9,9,7,9,7,9,9,11,8,9,9,5,3,5,8]
+BODY_FONT_SCALE = 0.5  # PauseTips.BodyFontScale
 # CrawlSmall (tab headers)
 SMALL = [5,3,4,6,7,0,7,2,4,4,6,6,2,5,2,4,6,4,6,6,6,6,6,6,6,6,2,2,5,4,5,7,7,6,6,5,6,5,5,6,6,3,6,6,5,8,6,6,6,6,6,6,5,6,
          6,8,6,6,6,4,4,4,4,6,2,6,6,5,6,5,5,6,6,3,6,6,5,8,6,6,6,6,6,6,5,6,6,8,6,6,6,0,0,0,0]
@@ -84,7 +88,7 @@ def wrap(para, maxw=BODY_WIDTH):
     lines, cur = [], ""
     for w in words:
         trial = w if not cur else cur + " " + w
-        if cur and width(trial) > maxw:
+        if cur and width(trial, LARGE) > maxw / BODY_FONT_SCALE:
             lines.append(cur)
             cur = (INDENT if bullet else "") + w
         else:

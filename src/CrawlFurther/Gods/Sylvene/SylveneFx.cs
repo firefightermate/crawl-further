@@ -22,7 +22,7 @@ namespace CrawlFurther.Content.Gods.Sylvene
         public static GameObject HuskClub, ShakeRing, BelchCloud, PollenLance, ThornSwipeA, ThornSwipeB, SweepPatch, OvergrowPatch,
                                  StranglerBite, LassoLash, PodSling, SeedSling, GallNeedle, WaspDash, BileDrop, BileHit, BilePuddle;
         // tier 3
-        public static GameObject BehemothGore, BehemothRam, Bush, BushSwing, BushSwingBig, LanceTrim, PuffRing, PuffLand, PuffWall,
+        public static GameObject BehemothGore, BehemothRam, Bush, BushSwing, BushSwingBig, LanceTrim, PuffRing, PuffLand, PuffRoll, PuffWall, SporeSpine, StalkBurst,
                                  Spine, ShamblerBurst, RootEruption, SproutRise, Wisp, Berry, BerrySmall, BerrySplit, BerryPop, Shimmer,
                                  PollenDart, PollenCloud, SeedShot, StrafeNeedle, FurrowVine, LilyBite, RotCloud, WyrmFront, WyrmBack,
                                  Thorn, Bladder, GasPuff, GasTile, BladderBurst, QueenStab, QueenDive, DroneRing;
@@ -168,16 +168,26 @@ namespace CrawlFurther.Content.Gods.Sylvene
             LanceTrim = FxKit.Visual("ModSylLanceTrim", "FxSylLanceTrim", "Play");
 
             // ---- Puffball Brute: a ring of spores round the fists, the landing ring, the wall rebound
-            PuffRing = FxKit.TimedHit("ModSylPuffRing", "skydropExplode", "FxSylPuffRing", "Play", 1, 4, 1.3f, 1.1f, poison, 0.3f, canFlip: false);
-            Strike.Ground(PuffRing, "FxSylPuffRing", 18, 12, 32f, 12f);
-            PuffLand = FxKit.TimedHit("ModSylPuffLand", "skydropExplode", "FxSylPuffRing", "Play", 1, 4, 1.3f, 1.2f, poison, 1f, canFlip: false);
-            Strike.Ground(PuffLand, "FxSylPuffRing", 18, 12, 34f, 14f);
+            // the giant's slam: a spore ring 60 wide rolling out flat from its fists; the landing ring after Bounce is the
+            // same art, wider and harder (the bounce is the harder hit to land)
+            PuffRing = FxKit.TimedHit("ModSylPuffRing", "skydropExplode", "FxSylPuffSlam", "Play", 1, 5, 1.3f, 1.1f, poison, 0.3f, canFlip: false);
+            Strike.Ground(PuffRing, "FxSylPuffSlam", 42, 23, 58f, 24f);
+            PuffLand = FxKit.TimedHit("ModSylPuffLand", "skydropExplode", "FxSylPuffSlam", "Play", 1, 5, 2.0f, 1.4f, poison, 1f, canFlip: false);
+            Strike.Ground(PuffLand, "FxSylPuffSlam", 42, 23, 64f, 26f);
+            // rolling through the hero on the way: a light bump, every 0.3 s
+            PuffRoll = FxKit.BodyHit("ModSylPuffRoll", 0.5f, 0.3f, 0.8f, 0.45f);
+            Strike.HitBox(PuffRoll, 32f, 22f, 0f, 11f);
             PuffWall = FxKit.BodyHit("ModSylPuffWall", 1.0f, 0f, 1.2f, 0.3f);
             Strike.HitBox(PuffWall, 26f, 20f, 0f, 12f);
 
             // ---- Cordyceps Saint: a spine; the shambler's burst into three seeds
             Spine = FxKit.Projectile("ModSylSpine", "DFX_skelMageNewProjectile", "FxSylSpine", "Fly", 240f, 0.55f, 1.1f, 0.3f, poison, 0.3f);
             Strike.Collider(Spine, 10f, 5f);
+            // Infest: the spore spines that seed stalks in the hero, and the burst when they fruit
+            SporeSpine = FxKit.Projectile("ModSylSporeSpine", "DFX_skelMageNewProjectile", "FxSylSpine", "Fly", 210f, 0.7f, 0.5f, 0.2f);
+            Strike.Collider(SporeSpine, 12f, 8f);
+            StalkBurst = FxKit.TimedHit("ModSylStalkBurst", "skydropExplode", "FxSylPodBurst", "Play", 2, 5, 1.2f, 0.8f, poison, 1f, canFlip: false);
+            Strike.Ground(StalkBurst, "FxSylPodBurst", 21, 16, 34f, 16f);
             StalkInd = ModStatus.Indicator("ModSylStalkInd", "FxSylStalk", "Loop", 1f, OverlayAt.Head);
             ShamblerBurst = FxKit.Inert("ModSylShamblerBurst", "FxSylPodBurst", "Play");
             if (ShamblerBurst != null)

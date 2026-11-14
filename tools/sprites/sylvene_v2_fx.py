@@ -306,8 +306,33 @@ def spore_ring(k, R=11, mat="sporec"):
     return done(r)
 
 
+def spore_slam(k, R=30, mat="sporec"):
+    """The Puffball Brute's slam: a thick ring of spore lumps rolling out flat over the floor (rx to 30, ry a third of
+    it), a second row trailing inside it, and lumps thrown up at the start."""
+    r = Rig()
+    rx = 8 + k * (R - 8) / 5
+    n = 24
+    thin = min(2, k // 2)
+    for i in range(n):
+        a = (i + 0.5 * (k % 2)) / n * math.tau
+        rad = (4.4 - 0.3 * k) * (1.15 if i % 3 == 0 else 1.0)
+        puff(r, rx * math.cos(a), -2 + rx * 0.36 * math.sin(a), rad, i * 0.01, mat, thin, seed=i + 7 * k, n=5)
+    if 1 <= k <= 4:
+        ri = rx * 0.68
+        for i in range(n * 2 // 3):
+            a = (i + 0.3) / (n * 2 // 3) * math.tau
+            puff(r, ri * math.cos(a), -2 + ri * 0.36 * math.sin(a), 2.6 - 0.2 * k, 0.3 + i * 0.01, mat, min(3, thin + 1), seed=90 + i, n=3)
+    if k < 3:
+        for i in range(7):
+            a = i / 7 * math.tau + 0.4
+            d = rx * 0.5
+            puff(r, d * math.cos(a), -5 - 3 * (2 - k) + d * 0.3 * math.sin(a), 3.0 - 0.6 * k, 0.5 + i * 0.01, mat, k, seed=40 + i, n=4)
+    return done(r)
+
+
 def fx_rings(out):
     fx("FxSylPuffRing", (36, 14), (18, 12), [("Play", [spore_ring(k) for k in range(6)], [0.06, 0.08, 0.09, 0.1, 0.1, 0.12])], out)
+    fx("FxSylPuffSlam", (84, 40), (42, 23), [("Play", [spore_slam(k) for k in range(6)], [0.05, 0.06, 0.08, 0.1, 0.1, 0.12])], out, scale=5)
     fx("FxSylShakeRing", (40, 16), (20, 8), [("Play", [ground_ring(k, 6 + k * 4, 2 + k * 1.4, "glowg") for k in range(4)], [0.06, 0.07, 0.08, 0.1])], out, scale=6)
     # the drone: a ring of sound rolling out to r 50 (rx 50, ry 25: it lies flat on the floor)
     fr = []

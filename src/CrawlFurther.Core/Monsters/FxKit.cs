@@ -105,7 +105,7 @@ namespace CrawlFurther.Monsters
             ImpactFx.Theme(go, art);
             if (Math.Abs(colliderScale - 1f) > 0.01f)
             {
-                foreach (var c in go.GetComponents<CapsuleCollider>()) { c.radius *= colliderScale; c.height *= colliderScale; c.center *= colliderScale; }
+                Strike.Boxify(go);
                 foreach (var c in go.GetComponents<BoxCollider>()) { c.size = Vector3.Scale(c.size, new Vector3(colliderScale, colliderScale, 1f)); c.center = Vector3.Scale(c.center, new Vector3(colliderScale, colliderScale, 1f)); }
             }
             NoTint(go);
