@@ -49,19 +49,41 @@ namespace CrawlFurther.Game
         static readonly Regex NotRoom = new Regex(@"HeroBattle|Powerup|Store|Portal|Boss|^Tute");
 
         static readonly Dictionary<GameObject, Room> s_big = new Dictionary<GameObject, Room>();
-        static readonly Dictionary<SpawnGroup, SpawnGroup> s_groups = new Dictionary<SpawnGroup, SpawnGroup>();
         static readonly Dictionary<Texture, Texture2D> s_readable = new Dictionary<Texture, Texture2D>();
         static GameObject s_groupHolder;
 
-        /// <summary>The chaos version of a room group: each room that can grow is there big (weighted <see cref="BigWeight"/>)
-        /// and at its own size.</summary>
+        /// <summary>How a chaos floor mixes big rooms with the game's own.</summary>
+        public enum Mix
+        {
+            /// <summary>Each room that can grow is there big (weighted <see cref="BigWeight"/>) and at its own size.</summary>
+            Mostly,
+            /// <summary>Only big rooms, except rooms that can't grow (kept, rarely, so a floor still fills).</summary>
+            Only,
+            /// <summary>The game's own rooms (a test setting; turning chaos rooms off for good is <see cref="Enabled"/>).</summary>
+            Off,
+        }
+
+        /// <summary>Test mode's choice of mix. Players always get <see cref="Mix.Mostly"/>.</summary>
+        public static Mix Mixing = Mix.Mostly;
+        /// <summary>Test mode: a big room the next floor is built around (weighted so it takes most places, and the start
+        /// room when it is an entry room). Null for none.</summary>
+        public static Room Featured;
+
+        class Entry { public GameObject obj; public float chance; public Room big; }
+        static readonly Dictionary<SpawnGroup, List<Entry>> s_entries = new Dictionary<SpawnGroup, List<Entry>>();
+        static readonly Dictionary<string, SpawnGroup> s_mixed = new Dictionary<string, SpawnGroup>();
+        static readonly Dictionary<GameObject, string> s_why = new Dictionary<GameObject, string>();
+
+        /// <summary>The chaos version of a room group, mixed as <see cref="Mixing"/> says.</summary>
         public static SpawnGroup GroupFor(SpawnGroup orig)
         {
-            if (orig == null || !Enabled) return orig;
-            SpawnGroup g;
-            if (s_groups.TryGetValue(orig, out g) && g != null) return g;
+            if (orig == null || !Enabled || Mixing == Mix.Off) return orig;
             try
             {
+                var list = EntriesOf(orig);
+                string key = orig.GetInstanceID() + "/" + Mixing + "/" + (Featured != null ? Featured.GetInstanceID() : 0);
+                SpawnGroup g;
+                if (s_mixed.TryGetValue(key, out g) && g != null) return g;
                 if (s_groupHolder == null)
                 {
                     s_groupHolder = new GameObject("CrawlMod_ChaosRoomGroups");
@@ -73,21 +95,42 @@ namespace CrawlFurther.Game
                 g = go.AddComponent<SpawnGroup>();
                 g.m_items = new List<SpawnItem>();
                 g.m_numToSpawn = orig.m_numToSpawn;
-                int big = 0, all = 0;
-                AddItems(orig, 1f, g.m_items, ref big, ref all);
-                s_groups[orig] = g;
-                FurtherCore.Log.LogInfo("Chaos: " + orig.name + " has " + big + " big rooms out of " + all);
+                int big = 0;
+                foreach (var e in list)
+                {
+                    if (e.big != null) big++;
+                    if (e.big != null && e.big == Featured) { g.m_items.Add(new SpawnItem { m_object = e.big.gameObject, m_chance = e.chance * 1000f }); continue; }
+                    if (Mixing == Mix.Only)
+                        g.m_items.Add(e.big != null ? new SpawnItem { m_object = e.big.gameObject, m_chance = e.chance }
+                                                    : new SpawnItem { m_object = e.obj, m_chance = e.chance * 0.25f });
+                    else
+                    {
+                        g.m_items.Add(new SpawnItem { m_object = e.obj, m_chance = e.chance });
+                        if (e.big != null) g.m_items.Add(new SpawnItem { m_object = e.big.gameObject, m_chance = e.chance * BigWeight });
+                    }
+                }
+                s_mixed[key] = g;
+                FurtherCore.Log.LogInfo("Chaos: " + orig.name + " has " + big + " big rooms out of " + list.Count + " (" + Mixing + (Featured != null ? ", around " + Featured.name : "") + ")");
                 return g;
             }
             catch (Exception e)
             {
                 FurtherCore.Log.LogError("Chaos rooms: " + orig.name + ": " + e);
-                s_groups[orig] = orig;
                 return orig;
             }
         }
 
-        static void AddItems(SpawnGroup src, float scale, List<SpawnItem> into, ref int big, ref int all)
+        static List<Entry> EntriesOf(SpawnGroup orig)
+        {
+            List<Entry> list;
+            if (s_entries.TryGetValue(orig, out list)) return list;
+            list = new List<Entry>();
+            AddItems(orig, 1f, list);
+            s_entries[orig] = list;
+            return list;
+        }
+
+        static void AddItems(SpawnGroup src, float scale, List<Entry> into)
         {
             float total = 0f;
             foreach (var it in src.m_items) if (it != null && it.m_object != null) total += it.m_chance;
@@ -96,15 +139,45 @@ namespace CrawlFurther.Game
             {
                 if (it == null || it.m_object == null) continue;
                 var nested = it.m_object.GetComponent<SpawnGroup>();
-                if (nested != null && nested != src) { AddItems(nested, scale * it.m_chance / total, into, ref big, ref all); continue; }
-                float chance = it.m_chance * scale;
-                into.Add(new SpawnItem { m_object = it.m_object, m_chance = chance });
-                all++;
+                if (nested != null && nested != src) { AddItems(nested, scale * it.m_chance / total, into); continue; }
                 var room = it.m_object.GetComponent<Room>();
-                var b = room != null ? Big(room) : null;
-                if (b != null) { into.Add(new SpawnItem { m_object = b.gameObject, m_chance = chance * BigWeight }); big++; }
+                into.Add(new Entry { obj = it.m_object, chance = it.m_chance * scale, big = room != null ? Big(room) : null });
             }
         }
+
+        /// <summary>The game's rooms in an environment's room groups (start rooms first), each once.</summary>
+        public static List<Room> RoomsOf(Environment env)
+        {
+            var o = new List<Room>();
+            if (env == null) return o;
+            // the fields, not the getters: in a chaos game the getters already hand back the mixed groups
+            foreach (var f in new[] { "m_roomGroupStarting", "m_roomGroup2p", "m_roomGroup3p", "m_roomGroup4p" })
+                Collect(R.Get<SpawnGroup>(env, f), o, 0);
+            return o;
+        }
+
+        static void Collect(SpawnGroup g, List<Room> o, int depth)
+        {
+            if (g == null || g.m_items == null || depth > 4) return;
+            foreach (var it in g.m_items)
+            {
+                if (it == null || it.m_object == null) continue;
+                var nested = it.m_object.GetComponent<SpawnGroup>();
+                if (nested != null && nested != g) { Collect(nested, o, depth + 1); continue; }
+                var r = it.m_object.GetComponent<Room>();
+                if (r != null && !o.Contains(r)) o.Add(r);
+            }
+        }
+
+        /// <summary>Why a room has no big copy ("" when it has one or hasn't been tried).</summary>
+        public static string WhyNot(Room prefab)
+        {
+            string w;
+            return prefab != null && s_why.TryGetValue(prefab.gameObject, out w) ? w : "";
+        }
+
+        /// <summary>Whether a big copy of this room has been tried yet (so its size or reason is known).</summary>
+        public static bool Tried(Room prefab) { return prefab != null && s_big.ContainsKey(prefab.gameObject); }
 
         /// <summary>The big copy of <paramref name="prefab"/>, built the first time it is asked for; null if the room
         /// can't grow.</summary>
@@ -114,12 +187,15 @@ namespace CrawlFurther.Game
             Room r;
             if (s_big.TryGetValue(prefab.gameObject, out r)) return r;
             r = null;
-            if (Eligible(prefab))
+            string why = "";
+            if (!Eligible(prefab)) why = "kept: corridor, shop, portal, boss or odd-shaped room";
+            else
             {
-                try { r = Build(prefab); }
-                catch (Exception e) { FurtherCore.Log.LogWarning("Chaos rooms: " + prefab.name + " stays its own size (" + e.Message + ")"); r = null; }
+                try { r = Build(prefab); if (r == null) why = "no clean place to grow it (painted floor, tracks or set pieces in the way)"; }
+                catch (Exception e) { why = "could not grow: " + e.Message; FurtherCore.Log.LogWarning("Chaos rooms: " + prefab.name + " stays its own size (" + e.Message + ")"); r = null; }
             }
             s_big[prefab.gameObject] = r;
+            s_why[prefab.gameObject] = why;
             return r;
         }
 

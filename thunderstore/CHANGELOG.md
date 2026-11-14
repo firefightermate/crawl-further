@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.4.3
+## 1.4.4
 
 Everything since 1.3.0.
 
@@ -18,6 +18,8 @@ Everything since 1.3.0.
   that were far from their goal were retuned.
 - The Poltergeist's hex bolt can't hit the hero from on top of him or in the shop.
 - The mod's pages in Pause > Tips use the font of the live monster tips.
+- Test mode (F2) has a Chaos page: turn chaos on, pick how many big rooms a floor gets, and reload the floor built
+  around any big room to look at it.
 
 ## 1.3.0
 

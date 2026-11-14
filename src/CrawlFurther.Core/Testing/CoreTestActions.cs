@@ -13,7 +13,7 @@ namespace CrawlFurther.Testing
     static class CoreTestActions
     {
         const string Become = "Become", Spawn = "Spawn", Items = "Items", Run = "Run", Players = "Player", View = "View",
-                     Unlocks = "Progress";
+                     Unlocks = "Progress", Chaos = "Chaos";
         const string Vanilla = "Crawl", Modded = "Mods";
 
         static Boss s_boss;
@@ -27,6 +27,7 @@ namespace CrawlFurther.Testing
             AddRun();
             AddPlayers();
             AddView();
+            AddChaos();
             AddUnlocks();
         }
 
@@ -180,6 +181,77 @@ namespace CrawlFurther.Testing
             TestMode.AddToggle(View, "Hitboxes (red) and hurtboxes (green)", () => TestCheats.Hitboxes, v => TestCheats.Hitboxes = v);
             TestMode.AddToggle(View, "Freeze monster AI and bots", () => TestCheats.FreezeAI, v => TestCheats.FreezeAI = v);
             TestMode.AddToggle(View, "Hide the HUD", () => TestCheats.HideHud, v => TestCheats.HideHud = v);
+        }
+
+        static void AddChaos()
+        {
+            TestMode.AddChoice(Chaos, "Chaos in this game", new[] { "Off", "On" },
+                () => Game.ChaosMode.Active ? 1 : 0, i => { Game.ChaosMode.SetForThisGame(i == 1); TestMode.Say("Chaos " + (i == 1 ? "on" : "off") + " for this game (rooms change from the next floor or a reload)"); });
+            TestMode.AddChoice(Chaos, "Rooms on chaos floors", new[] { "Mostly big", "Only big", "Game's own" },
+                () => (int)Game.ChaosRooms.Mixing, i => { Game.ChaosRooms.Mixing = (Game.ChaosRooms.Mix)i; TestMode.Say("Chaos floors: " + new[] { "mostly big rooms", "only big rooms", "the game's own rooms" }[i] + " (from the next floor or a reload)"); });
+            TestMode.AddAction(Chaos, "Grow this floor's rooms now (sizes show in the list below)", () =>
+            {
+                var rooms = Game.ChaosRooms.RoomsOf(SafeEnvironment());
+                if (rooms.Count == 0) throw new TestModeException("Start a game first: the rooms come from the floor you are on");
+                int grew = 0;
+                foreach (var r in rooms) if (Game.ChaosRooms.Big(r) != null) grew++;
+                TestMode.Say(grew + " of " + rooms.Count + " rooms here have a big copy (each one is in LogOutput.log)");
+            });
+            TestMode.AddList(Chaos, "See a big room (reloads this floor built around it)", ChaosRoomList, item =>
+            {
+                var room = (Room)item.Value;
+                var big = Game.ChaosRooms.Big(room);
+                if (big == null) throw new TestModeException(room.name + " has no big copy: " + Game.ChaosRooms.WhyNot(room));
+                Game.ChaosRooms.Featured = big;
+                Game.ChaosMode.SetForThisGame(true);
+                TestMode.Say("Reloading around " + room.name + ": most rooms on this floor will be it. Next room and Open the doors (Run page) walk through them");
+                TestGame.ReloadLevel();
+            });
+            TestMode.AddAction(Chaos, "Stop building floors around one room", () =>
+            {
+                Game.ChaosRooms.Featured = null;
+                TestMode.Say("Chaos floors mix their rooms as usual again (from the next floor or a reload)");
+            });
+            TestMode.AddAction(Chaos, "Reload this floor (new layout)", () => TestGame.ReloadLevel());
+        }
+
+        static Environment SafeEnvironment()
+        {
+            try { return SystemLevel.GetEnvironment(); }
+            catch { return null; }
+        }
+
+        static IEnumerable<TestItem> ChaosRoomList()
+        {
+            var all = new List<TestItem>(ChaosRoomItems());
+            var sorted = new List<TestItem>();
+            foreach (var g in new[] { "Grows", "Not grown yet (picking one grows it)", "Stays its own size" })
+                foreach (var i in all) if (i.Group == g) sorted.Add(i);
+            return sorted;
+        }
+
+        static IEnumerable<TestItem> ChaosRoomItems()
+        {
+            var env = SafeEnvironment();
+            foreach (var r in Game.ChaosRooms.RoomsOf(env))
+            {
+                var cb = r.m_cameraBounds;
+                string size = Mathf.RoundToInt(cb.width) + " x " + Mathf.RoundToInt(cb.height);
+                string group;
+                string label = r.name + "  " + size;
+                if (!Game.ChaosRooms.Tried(r)) group = "Not grown yet (picking one grows it)";
+                else
+                {
+                    var big = Game.ChaosRooms.Big(r);
+                    if (big != null)
+                    {
+                        group = "Grows";
+                        label += " to " + Mathf.RoundToInt(big.m_cameraBounds.width) + " x " + Mathf.RoundToInt(big.m_cameraBounds.height);
+                    }
+                    else { group = "Stays its own size"; label += ": " + Game.ChaosRooms.WhyNot(r); }
+                }
+                yield return new TestItem(label, r, group);
+            }
         }
 
         static void AddUnlocks()

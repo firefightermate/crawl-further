@@ -1,4 +1,4 @@
-CRAWL: FURTHER 1.4.3
+CRAWL: FURTHER 1.4.4
 ====================
 
 Crawl: Further (formerly "Crawl Mod") is a big content mod for Crawl. Nine new gods with 189 monsters between
@@ -9,14 +9,14 @@ violet gem on its picture (portraits, shop pictures, vault cells and the evoluti
 Every mod monster, item, weapon, object, god, origin and ghost form has a vault entry, and everything has its
 own drawn art.
 
-Launch Crawl normally. The top-left banner shows "Crawl: Further 1.4.3" and "self-test OK" when everything
+Launch Crawl normally. The top-left banner shows "Crawl: Further 1.4.4" and "self-test OK" when everything
 loaded. If anything failed, BepInEx\plugins\CrawlFurther\CrawlMod_selftest.txt lists what and why.
 The mod is two DLLs in BepInEx\plugins\CrawlFurther: CrawlFurther.Core.dll (the library) and CrawlFurther.dll.
 Delete an old BepInEx\plugins\CrawlMod folder when you update. The config files keep their old names, so
 updating from any earlier version keeps your settings and saves. New settings files start with CrawlFurther.
 The mod's two bosses are switched off in this version (see BOSSES).
 
-NEW IN 1.4.3
+NEW IN 1.4.4
 ------------
   Everything since 1.3.0.
   - Chaos floors are built mostly from big rooms: wider, deeper copies of the game's own rooms, grown out of
@@ -33,6 +33,8 @@ NEW IN 1.4.3
     Monsters that were far from their goal were retuned.
   - The Poltergeist's hex bolt can't hit the hero from on top of him or in the shop.
   - The mod's pages in Pause > Tips use the font of the live monster tips.
+  - Test mode (F2) has a Chaos page: turn chaos on, pick how many big rooms a floor gets, and reload the floor
+    built around any big room to look at it.
 
 NEW IN 1.3.0
 ------------

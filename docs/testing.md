@@ -119,6 +119,17 @@ there is nothing to drop at his feet.
 | Freeze monster AI and bots | Room monsters and bots stand still and stop attacking. Bosses keep going |
 | Hide the HUD | Hides the game's HUD, as its own GUI hide does |
 
+### Chaos
+
+| Control | What it does |
+| --- | --- |
+| Chaos in this game | Turns chaos on or off for this game (two spells, tier 2 starters, faster levels, the big rooms from the next floor or a reload) |
+| Rooms on chaos floors | Mostly big (what players get), only big, or the game's own rooms |
+| Grow this floor's rooms now | Builds the big copy of every room this floor's environment uses, so the list below shows each room's size or why it keeps its own |
+| See a big room | Pick a room: chaos turns on and the floor reloads built around that room's big copy (most rooms on it are that room, and it is the start room if it is an entry room). Walk through with Run > Open the doors and Next room |
+| Stop building floors around one room | Back to the usual mix |
+| Reload this floor (new layout) | The game's Reload Level |
+
 ### Progress
 
 | Control | What it does |
@@ -195,7 +206,7 @@ static IEnumerable<TestItem> Bodies()
 Check `TestMode.On` first so nothing is built when test mode is off. The calls are in `CrawlFurther.Testing`.
 
 - `AddAction`, `AddToggle`, `AddNumber`, `AddChoice` and `AddList` take the page name first. A new name makes a
-  new page, after Core's. Core's pages are Become, Spawn, Items, Run, Player, View and Progress.
+  new page, after Core's. Core's pages are Become, Spawn, Items, Run, Player, View, Chaos and Progress.
 - `AddAction(page, name, run)` is a button. `AddToggle(page, name, get, set)` is a switch that shows `get()`.
   `AddNumber(page, name, min, max, start, run)` is a number with - and + and a Go button. `AddChoice(page, name,
   options, get, set)` is a row of buttons with one lit. `AddList(page, name, items, pick)` is a picker whose entries
