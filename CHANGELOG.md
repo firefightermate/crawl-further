@@ -3,6 +3,16 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## 1.4.0
+
+The release that ships 1.3.1 to 1.3.4 (built but never uploaded) to players; their entries follow. Nothing in the
+mod changed after 1.3.4.
+
+### Repository
+- `tools/concepts/`: chaos biome mock-ups rebuilt on the game's own colliders, with painted props (`paint.py`,
+  `props.py`), floor and wall detail (`detail.py`), a darkness layer and a collision check (`collision_check.py`).
+  Concepts only, not shipped.
+
 ## 1.3.4
 
 ### Content
