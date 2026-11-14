@@ -266,13 +266,14 @@ namespace CrawlFurther.Content.Gods.Sylvene
             int n0 = Strike.Mark(p);
             int ring = Kit.AddEffect(p, SylveneFx.PuffRing, offsetX: 16f, offsetY: 0.01f, spawnPoint: DamageEffectData.eSpawnPoint.Position);   // fists land at (13, -1)
             int land = Kit.AddEffect(p, SylveneFx.PuffLand, offsetX: 0.01f, offsetY: 0.01f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
+            int roll = Kit.AddEffect(p, SylveneFx.PuffRoll, attach: true, destroyOnAnimEnd: true, offsetX: 0.01f, offsetY: 0.01f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
             var sl = Kit.Melee(sh, "Slam", "ModSylPuffSlam", v, 2, ring, 15f).Build();
             var bn = new ClipBuilder(sh, "Bounce", "ModSylPuffBounce").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(0, "AnimMoveStop").Ev(2, "AnimInputMultiplyStop")
-                .Ev(2, "AnimStartInvincibility").EvF(2, "AnimMoveStick", 230f).EvO(2, "AnimSound", v)
+                .Ev(2, "AnimStartInvincibility").EvF(2, "AnimMoveStick", 230f).EvO(2, "AnimSound", v).Ev(2, "AnimAttack", roll)
                 .Ev(6, "AnimMoveStop").Ev(6, "AnimStopInvincibility").Ev(6, "AnimAttack", land).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sl, 1.6f, rangeInner: 8f, rangeOuter: 24f));
+            atk.Add(Kit.Attack(a0, sl, 1.6f, rangeInner: 8f, rangeOuter: 40f));
             // 230 px/s through the 0.3 s in the air: about 50 px
             Kit.SetSpecial(p, Kit.Attack(sp, bn, 0f, rangeInner: 20f, rangeOuter: 55f, rangeRetreat: 0f), 7f);
             Kit.Order(p, Attacks.eAttackOrderType.InOrder);
@@ -286,11 +287,18 @@ namespace CrawlFurther.Content.Gods.Sylvene
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int spine = Kit.AddEffect(p, SylveneFx.Spine, offsetX: 11f, offsetY: 22f);   // fingers (11, -22)
+            // Infest: three spore spines fanned at the hero from the stalks on its back (-6, -30)
+            int s0 = Kit.AddEffect(p, SylveneFx.SporeSpine, offsetX: -2f, offsetY: 30f, angle: -16f);
+            int s1 = Kit.AddEffect(p, SylveneFx.SporeSpine, offsetX: -2f, offsetY: 30f);
+            int s2 = Kit.AddEffect(p, SylveneFx.SporeSpine, offsetX: -2f, offsetY: 30f, angle: 16f);
             var fl = Kit.Shot(sh, "Flick", "ModSylCordFlick", 2, v, 0f, spine).Build();
-            var inf = Special(sh, "Infect", "ModSylCordInfect").Ev(4, "ModSylInfect").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
+            var inf = new ClipBuilder(sh, "Infect", "ModSylCordInfect").Once().Ev(0, "AnimMoveStop").EvF(0, "AnimInputMultiplyFreeFace", 0f)
+                .Ev(3, "AnimInputMultiplyStop").Ev(3, "AnimInputOff")
+                .Ev(4, "AnimAttack", s0).Ev(4, "AnimAttack", s1).Ev(4, "AnimAttack", s2)
+                .Ev(4, "ModSylInfect").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, fl, 1.5f, rangeInner: 45f, rangeOuter: 120f, rangeRetreat: 40f));
-            Kit.SetSpecial(p, Kit.Attack(sp, inf, 0f, rangeInner: 0f, rangeOuter: 150f, rangeRetreat: 30f), 7f);
+            Kit.SetSpecial(p, Kit.Attack(sp, inf, 0f, rangeInner: 30f, rangeOuter: 110f, rangeRetreat: 20f), 7f);
             Kit.Order(p, Attacks.eAttackOrderType.InOrder);
             Strike.Feet(p, n0, 22f);
         }

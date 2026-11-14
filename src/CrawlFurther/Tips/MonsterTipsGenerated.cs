@@ -177,11 +177,11 @@ namespace CrawlFurther.Content.Tips
             T("ModSylBriarWyrm", "Briar Wyrm", "Mace tail: hits in front, then behind you", "Thorn Spiral: spin out thorns in two arms", "Your mace hits in front, then behind you\nDeath drops a seed that ripens into a poison pod"); Group["ModSylBriarWyrm"] = "sylvene";
             T("ModSylCarrionLily", "Carrion Lily", "Stalk lunge: a poison bite", "Corpse Bloom: a wide cone of rot", "Planted, you heal and reach far. Uproot to move\nDeath drops a seed that ripens into a poison pod"); Group["ModSylCarrionLily"] = "sylvene";
             T("ModSylCarrionQueen", "Carrion Queen", "Proboscis stab, may poison", "Proboscis Dive: a long dive you steer", "Your drone keeps dazing him: stay close\nDeath drops a seed that ripens into a poison pod"); Group["ModSylCarrionQueen"] = "sylvene";
-            T("ModSylCordyceps", "Cordyceps Saint", "Spine flick, long range, may poison", "Infect your kin or yourself", "Infect your kin: they fight on after death\nDeath drops a seed that ripens into a poison pod"); Group["ModSylCordyceps"] = "sylvene";
+            T("ModSylCordyceps", "Cordyceps Saint", "Spine flick, long range, may poison", "Spines seed stalks that drag him in, then burst", "Infect your kin: they fight on after death\nDeath drops a seed that ripens into a poison pod"); Group["ModSylCordyceps"] = "sylvene";
             T("ModSylGallWasp", "Gall Wasp", "Needle that plants a seed where it lands", "Dart through the hero, dropping two seeds", "Your seeds ripen faster\nDeath drops a seed that ripens into a poison pod"); Group["ModSylGallWasp"] = "sylvene";
             T("ModSylNightshade", "Nightshade", "Berry toss: splits into three, may poison", "Shade Garden: hide your pods, plant two by him", "Your pods go unseen a while. He has to guess\nDeath drops a seed that ripens into a poison pod"); Group["ModSylNightshade"] = "sylvene";
             T("ModSylPollenMonarch", "Pollen Monarch", "Wing clap: three pollen darts in a fan", "Pollen Storm: a wide cloud ahead, and four seeds", "Dusted, he sets off pods from further away\nDeath drops a seed that ripens into a poison pod"); Group["ModSylPollenMonarch"] = "sylvene";
-            T("ModSylPuffball", "Puffball Brute", "Fist slam in a ring of spores", "Bounce at the hero, steered; land in a spore ring", "Knocked into a wall, you bounce back at him\nDeath drops a seed that ripens into a poison pod"); Group["ModSylPuffball"] = "sylvene";
+            T("ModSylPuffball", "Puffball Brute", "Fist slam in a wide ring of spores", "Bounce through the hero and land in a spore ring", "Knocked into a wall, you bounce back at him\nDeath drops a seed that ripens into a poison pod"); Group["ModSylPuffball"] = "sylvene";
             T("ModSylShambler", "Shambler", "Puff a poison spore cloud", "none", "You stagger on a moment, then burst into seeds"); Group["ModSylShambler"] = "sylvene";
             T("ModSylSower", "The Sower", "Seed shot: plants a seed where it lands", "Strafe across his front, sowing a row of seeds", "Seeds from one pass burst together\nDeath drops a seed that ripens into a poison pod"); Group["ModSylSower"] = "sylvene";
             T("ModSylSporeHusk", "Spore Husk", "Club smash that bursts a poison cloud", "Spore Belch: a wide cone of poison spores", "Your smash bursts every ripe pod nearby\nDeath drops a seed that ripens into a poison pod"); Group["ModSylSporeHusk"] = "sylvene";
@@ -346,7 +346,7 @@ namespace CrawlFurther.Content.Tips
             V("ModSylBloatfly", "Bloatfly", "Retches bile from on high. Poison lingers on whoever stands in it");
             V("ModSylBriarChampion", "Briar Champion", "Its thorn lance grows with each wound it deals and shrinks when it is hit");
             V("ModSylPuffball", "Puffball Brute", "Light as a puffball. Struck into a wall, it bounces straight back");
-            V("ModSylCordyceps", "Cordyceps Saint", "Drives spores into its kin. The infected rise again for a few seconds");
+            V("ModSylCordyceps", "Cordyceps Saint", "Its spines seed stalks that drag the host in, then fruit");
             V("ModSylNightshade", "Nightshade", "Hides the orchard's pods from sight, and tosses berries that split in three");
             V("ModSylSower", "The Sower", "A hornet with a drill for a belly. It plants a row in one pass");
             V("ModSylBriarWyrm", "Briar Wyrm", "A bramble serpent whose mace-tail strikes before it and then behind it");

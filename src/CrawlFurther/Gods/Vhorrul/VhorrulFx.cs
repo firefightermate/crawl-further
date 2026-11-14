@@ -346,10 +346,10 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             for (int i = 0; i < 4; i++)
                 ToppleHit[i] = Hit("ModVhTopple" + i, 1.6f, 2.4f, 28f + 10f * i, 16f, 0.12f);
             // Pyre Warden: the censer's ember ring (lights wax), Stoke's three spreading rings
-            CenserSmash = FxKit.TimedHit("ModVhCenserSmash", "TrollGroundPoundBigShockwave", "FxVhStokeRing", "R1", 0, 2, 1.2f, 1.0f, OnFire, 0.3f,
+            CenserSmash = FxKit.TimedHit("ModVhCenserSmash", "TrollGroundPoundBigShockwave", "FxVhStokeRing", "R2", 0, 2, 1.2f, 1.0f, OnFire, 0.3f,
                                          canFlip: false);
-            Strike.Ground(CenserSmash, "FxVhStokeRing", 40, 20, 26f, 10f);
-            Flame(CenserSmash, 14f);
+            Strike.Ground(CenserSmash, "FxVhStokeRing", 40, 20, 50f, 22f);
+            Flame(CenserSmash, 22f);
             StokeRing = new GameObject[3];
             for (int i = 0; i < 3; i++)
             {

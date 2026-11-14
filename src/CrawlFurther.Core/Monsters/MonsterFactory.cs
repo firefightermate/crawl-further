@@ -153,6 +153,11 @@ namespace CrawlFurther.Monsters
                 if (ArtScale.BySheet.TryGetValue(sheet.id, out k) && Math.Abs(k - 1f) > 0.001f) ScaleOffsets(p, k);
                 FitHurtbox(p, sheet);
             }
+            if (def.kit != null)
+            {
+                try { HitFloor.Apply(p, TierRules.Of(def.evolveCost)); }
+                catch (Exception e) { FurtherCore.Log.LogError(def.id + " hit floor failed: " + e); }
+            }
             ApplyTuning(def, p);
             if (def.customize != null)
             {

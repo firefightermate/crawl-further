@@ -158,7 +158,7 @@ namespace CrawlFurther.Content.Gods.BelMora
             }
             BellToll = FxKit.TimedHit("ModBellToll", "TrollGroundPoundBigShockwave", "FxBellRing", "Play", 0, 3, 1.4f, 1.5f, stun, 0.6f,
                                       colliderScale: 0.7f, canFlip: false);
-            Strike.Ground(BellToll, "FxBellRing", 29, 19, 50f, 20f);
+            Strike.Ground(BellToll, "FxBellRing", 29, 19, 54f, 22f);
             Peal = FxKit.TimedHit("ModHermitPeal", "TrollGroundPoundBigShockwave", "FxPeal", "Play", 0, 3, 0.4f, 1.6f, canFlip: false);
             Strike.Ground(Peal, "FxPeal", 17, 14, 30f, 12f);
             Lane = Loop("ModBelLane", "FxBelLane", "Flow");

@@ -37,7 +37,8 @@ namespace CrawlFurther.Content.Gods.Umbrael
                                  ArgusCatch, SwarmBite, SurgeBite, SwarmGlint, SwarmGhost, GhostBite, PendulumSpin, BladeHit,
                                  Tick, TimeRing, SandBall, SandGlass, SandShadow, SandColumn;
         public static exSpriteAnimClip ShadeRise, ShadeIdle, ShadeSwing, ShadeFade, PaleIdle, PaleRush, PaleDrift, PaleCutClip, InkLoop, InkFade, FeatherSplit;
-        public static exSpriteAnimClip[] SandFill;
+        public const int SandFrames = 12;
+        public static exSpriteAnimClip[] SandDrain, SandDrainHeld;
         public static StatusOverlayDef GlazeInd;
         public static StatusOverlayDef[] StuckInd;
 
@@ -355,9 +356,15 @@ namespace CrawlFurther.Content.Gods.Umbrael
 
             // ---- Sand Wraith: the fist of sand; the hourglass over the hero; the column
             SandBall = Missile("ModSandBall", "FxUmbSandBall", 170f, 0.75f, 1.2f, 0.6f, 9f, 8f);
-            SandGlass = Vis("ModUmbSandGlass", "FxUmbSandGlass", "Fill0", 8, 17, loop: true);
-            SandFill = new exSpriteAnimClip[5];
-            for (int i = 0; i < 5; i++) SandFill[i] = Clip("FxUmbSandGlass", "Fill" + i, "ModUmbSandFill" + i, true);
+            SandGlass = Vis("ModUmbSandGlass", "FxUmbSandGlass", "D0", 8, 17, loop: true);
+            // the countdown: twelve frames of the top bulb draining (D), and the same with the eye lit once a hit is held (H)
+            SandDrain = new exSpriteAnimClip[SandFrames];
+            SandDrainHeld = new exSpriteAnimClip[SandFrames];
+            for (int i = 0; i < SandFrames; i++)
+            {
+                SandDrain[i] = Clip("FxUmbSandGlass", "D" + i, "ModUmbSandD" + i, true);
+                SandDrainHeld[i] = Clip("FxUmbSandGlass", "H" + i, "ModUmbSandH" + i, true);
+            }
             SandShadow = Vis("ModUmbSandShadow", "FxUmbSandColumn", "Shadow", 14, 83);
             SandColumn = FxKit.TimedHit("ModUmbSandColumn", "TrollGroundPoundBigShockwave", "FxUmbSandColumn", "Fall", 2, 4, 0.2f, 1.0f,
                                         canFlip: false);

@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.4.1
+
+- Tier 2 and 3 monsters hit a much bigger area. Many of their swings, bites and slams were smaller than the game's own
+  monsters of the same rank. None of them is smaller now, and the biggest monsters hit the widest.
+- Ground slams now reach as far up and down the floor as they look. Their rounded hit shapes used to come up short of
+  the ring.
+- More ground rings now hit everywhere their art shows: Bell Toll, the Leyden Golem's ring, the Forge Colossus's quake,
+  the Ossuary's slam, the Carrion Vulture's dive and the Pyre Warden's censer, which now throws a bigger ember ring.
+- Puffball Brute: its slam throws a new, much wider spore ring. Bounce now bumps the hero on the way through and lands in
+  a bigger ring that hits harder.
+- Cordyceps Saint: Infest replaces Infect. Three spore spines fan out at the hero. Each one that lands seeds stalks in
+  him that drag him toward the Saint, then burst in poison while a shambler walks off him. Kin nearby are still
+  infected and fight on after death.
+- Sand Wraith: the hourglass over the hero now counts down. Its sand drains with the real timer and the column falls the
+  moment the top bulb is empty. Its eye lights up once it holds a hit, and the column falls even when it holds nothing.
+- The mod's pages in Pause > Tips, including the page for the monster you are playing, now use the font of the live
+  monster tips, which is easier to read.
+
 ## 1.4.0
 
 - Every mod monster now has its own vault challenge goal, like the game's own monsters. Stronger monsters ask for a
