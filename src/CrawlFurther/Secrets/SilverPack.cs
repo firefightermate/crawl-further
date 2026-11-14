@@ -173,11 +173,16 @@ namespace CrawlFurther.Content.Secrets
             int arc = Kit.AddEffect(p, SilverFx.GlaiveFx, attach: true, offsetX: 14f, offsetY: 14f);   // arc centred on the hand (10, 14)
             var sw = Kit.Melee(sh, "Sweep", "ModSilWardenSweep", v, 2, hit, 40f);
             sw.Ev(2, "AnimAttack", arc).Ev(2, "SilSweepWave");
+            // Combo: two glaive sweeps, then a lunge that sweeps twice
+            var sw2 = Kit.Melee(sh, "Sweep", "ModSilWardenSweep2", null, 2, hit, 50f).Speed(1.1f).Ev(2, "AnimAttack", arc).Ev(2, "SilSweepWave").Build();
+            var sw3 = Kit.Melee(sh, "Sweep", "ModSilWardenCrescent", v, 2, hit, 100f, 3, hit, 30f).Speed(0.85f).Ev(2, "AnimAttack", arc).Ev(3, "AnimAttack", arc).Ev(3, "SilSweepWave").Build();
             var mf = Cast(sh, "Moonfall", "ModSilWardenMoonfall", 5).Ev(5, "SilMoonfall").EvO(5, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sw.Build(), 1.5f, rangeInner: 12f, rangeOuter: 34f));   // box to x 28 + hero half-width + lunge
+            atk.Add(Kit.Attack(a0, sw.Build(), 0.45f, rangeInner: 12f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, sw2, 0.45f, rangeInner: 12f, rangeOuter: 38f));
+            atk.Add(Kit.Attack(a0, sw3, 2.0f, rangeInner: 12f, rangeOuter: 54f));
             Kit.SetSpecial(p, Kit.Attack(sp, mf, 0f, rangeInner: 20f, rangeOuter: 140f, rangeRetreat: 0f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 12f);
         }
 
@@ -192,15 +197,20 @@ namespace CrawlFurther.Content.Secrets
             int body = Kit.AddEffect(p, SilverFx.CometHit, attach: true, destroyOnAnimEnd: true, offsetX: 4f, offsetY: 12f);
             var gr = Kit.Melee(sh, "Gore", "ModSilStagGore", v, 3, gore, 60f);
             gr.Ev(3, "AnimAttack", slash);
+            // Combo: two antler gores, then a charge that gores twice
+            var gr2 = Kit.Melee(sh, "Gore", "ModSilStagGore2", null, 3, gore, 70f).Speed(1.1f).Ev(3, "AnimAttack", slash).Build();
+            var gr3 = Kit.Melee(sh, "Gore", "ModSilStagCharge", v, 2, gore, 140f, 3, gore, 40f).Speed(0.9f).Ev(2, "AnimAttack", slash).Ev(3, "AnimAttack", slash).Build();
             // CometRise 3 + CometLoop x6 (18) + CometEnd 2: the streak flies frames 3..20, lands on 21
             var cm = new ClipBuilder(sh, "CometRise", "ModSilStagComet").Once().Then("CometLoop", 6).Then("CometEnd")
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop").Ev(2, "AnimInputOff").Ev(2, "AnimMoveStop")
                 .Ev(2, "AnimStartInvincibility").Ev(3, "AnimCollideOff").Ev(3, "SilCometStart").Ev(3, "AnimAttack", body).EvO(3, "AnimSound", v)
                 .Ev(21, "SilCometEnd").Ev(21, "AnimCollideOn").Ev(21, "AnimStopInvincibility").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, gr.Build(), 1.3f, rangeInner: 10f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, gr.Build(), 0.4f, rangeInner: 10f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, gr2, 0.4f, rangeInner: 10f, rangeOuter: 38f));
+            atk.Add(Kit.Attack(a0, gr3, 1.9f, rangeInner: 10f, rangeOuter: 56f));
             Kit.SetSpecial(p, Kit.Attack(sp, cm, 0f, rangeInner: 30f, rangeOuter: 150f, rangeRetreat: 0f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 12f);
         }
 
@@ -212,11 +222,18 @@ namespace CrawlFurther.Content.Secrets
             int n0 = Strike.Mark(p);
             int shot = Kit.AddEffect(p, SilverFx.Starshot, offsetX: 9f, offsetY: 1f);    // floor line under the palm (9, 24); art 14 px up
             var ss = Kit.Shot(sh, "Starshot", "ModSilAstrarchStarshot", 3, v, 0f, shot).Build();
+            int sL = Kit.AddEffect(p, SilverFx.Starshot, offsetX: 9f, offsetY: 1f, angle: -20f);
+            int sR = Kit.AddEffect(p, SilverFx.Starshot, offsetX: 9f, offsetY: 1f, angle: 20f);
+            // Combo: two stars, then three flung in a fan, enough for a Constellation on their own
+            var ss2 = Kit.Shot(sh, "Starshot", "ModSilAstrarchStarshot2", 3, null, 0f, shot).Speed(1.15f).Build();
+            var ss3 = Kit.Shot(sh, "Starshot", "ModSilAstrarchScatter", 3, v, 0.05f, sL, shot, sR).Speed(0.85f).Build();
             var cn = Cast(sh, "Constellation", "ModSilAstrarchConstellation", 5).Ev(5, "SilConstellation").EvO(5, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, ss, 1.4f, rangeInner: 40f, rangeOuter: 100f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, ss, 0.45f, rangeInner: 40f, rangeOuter: 100f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, ss2, 0.45f, rangeInner: 40f, rangeOuter: 100f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, ss3, 2.0f, rangeInner: 35f, rangeOuter: 95f, rangeRetreat: 40f));
             Kit.SetSpecial(p, Kit.Attack(sp, cn, 0f, rangeInner: 0f, rangeOuter: 160f, rangeRetreat: 30f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 8f);
         }
 

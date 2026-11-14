@@ -196,11 +196,16 @@ namespace CrawlFurther.Content.Secrets
             int swing = Kit.AddEffect(p, GoldFx.KeySwing, attach: true, offsetX: 5f, offsetY: 5f);
             int key = Kit.AddEffect(p, GoldFx.KeyShot, offsetX: 12f, offsetY: 14f);
             var sw = Kit.Melee(sh, "Swing", "ModGoldWardenSwing", v, 3, swing, 40f).Build();
+            // Combo: two key swings, then a lunging swing that lets the key fly on at him
+            var sw2 = Kit.Melee(sh, "Swing", "ModGoldWardenSwing2", null, 3, swing, 50f).Speed(1.1f).Build();
+            var sw3 = Kit.Melee(sh, "Swing", "ModGoldWardenFling", v, 3, swing, 80f).Speed(0.9f).Ev(4, "AnimAttack", key).Build();
             var sk = Kit.Shot(sh, "Shackle", "ModGoldWardenShackle", 3, v, 0f, key).Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sw, 1.4f, rangeInner: 12f, rangeOuter: 30f));     // box to x 27 + hero half-width
+            atk.Add(Kit.Attack(a0, sw, 0.4f, rangeInner: 12f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, sw2, 0.4f, rangeInner: 12f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, sw3, 1.9f, rangeInner: 12f, rangeOuter: 60f));
             Kit.SetSpecial(p, Kit.Attack(sp, sk, 0f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 0f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 14f);   // the key leaves the fist at (12, 14): fly level with the aim
         }
 
@@ -213,12 +218,19 @@ namespace CrawlFurther.Content.Secrets
             int bolt = Kit.AddEffect(p, GoldFx.Bolt, offsetX: 15f, offsetY: 14.5f);
             int seal = Kit.AddEffect(p, GoldFx.Seal, spawnPoint: DamageEffectData.eSpawnPoint.ClosestEnemy);
             var bl = Kit.Shot(sh, "Bolt", "ModGoldRegentBolt", 3, v, 0f, bolt).Build();
+            int bL = Kit.AddEffect(p, GoldFx.Bolt, offsetX: 15f, offsetY: 14.5f, angle: -16f);
+            int bR = Kit.AddEffect(p, GoldFx.Bolt, offsetX: 15f, offsetY: 14.5f, angle: 16f);
+            // Combo: two scepter bolts, then three fanned out
+            var bl2 = Kit.Shot(sh, "Bolt", "ModGoldRegentBolt2", 3, null, 0f, bolt).Speed(1.15f).Build();
+            var bl3 = Kit.Shot(sh, "Bolt", "ModGoldRegentBolts", 3, v, 0.04f, bL, bolt, bR).Speed(0.85f).Build();
             var dc = new ClipBuilder(sh, "Decree", "ModGoldRegentDecree").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop")
                 .Ev(4, "AnimAttack", seal).EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, bl, 1.3f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, bl, 0.45f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, bl2, 0.45f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, bl3, 1.9f, rangeInner: 40f, rangeOuter: 105f, rangeRetreat: 40f));
             Kit.SetSpecial(p, Kit.Attack(sp, dc, 0f, rangeInner: 30f, rangeOuter: 140f, rangeRetreat: 30f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 14.5f);
         }
 
@@ -232,13 +244,18 @@ namespace CrawlFurther.Content.Secrets
             var globs = new List<int>();
             foreach (var a in new[] { -18f, 0.01f, 18f }) globs.Add(Kit.AddEffect(p, GoldFx.MoltenGlob, offsetX: 25f, offsetY: 1f, angle: a));
             var ml = Kit.Melee(sh, "Maul", "ModGoldWyrmMaul", v, 3, maul, 50f).Build();
+            // Combo: two mauls, then a lunging maul that spits a glob of molten gold
+            var ml2 = Kit.Melee(sh, "Maul", "ModGoldWyrmMaul2", null, 3, maul, 60f).Speed(1.1f).Build();
+            var ml3 = Kit.Melee(sh, "Maul", "ModGoldWyrmSpit", v, 3, maul, 90f).Speed(0.9f).Ev(4, "AnimAttack", globs[1]).Build();
             var br = Cast(sh, "Breath", "ModGoldWyrmBreath", 4);
             for (int i = 0; i < globs.Count; i++) br.Ev(4, "AnimAttack", globs[i], i * 0.05f);
             br.EvO(4, "AnimSound", v).Ev(-1, "AnimRun");
             atk.Clear();
-            atk.Add(Kit.Attack(a0, ml, 1.5f, rangeInner: 14f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, ml, 0.45f, rangeInner: 14f, rangeOuter: 38f));
+            atk.Add(Kit.Attack(a0, ml2, 0.45f, rangeInner: 14f, rangeOuter: 40f));
+            atk.Add(Kit.Attack(a0, ml3, 2.1f, rangeInner: 14f, rangeOuter: 54f));
             Kit.SetSpecial(p, Kit.Attack(sp, br.Build(), 0f, rangeInner: 30f, rangeOuter: 110f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 8f);
         }
 
@@ -253,12 +270,18 @@ namespace CrawlFurther.Content.Secrets
             int quake = Kit.AddEffect(p, GoldFx.Quake, offsetX: 17f, offsetY: 0.01f);
             var sl = Kit.Melee(sh, "Slam", "ModGoldVaultSlam", v, 4, slam, 20f);
             sl.Ev(4, "AnimAttack", quake);
+            int quake2 = Kit.AddEffect(p, GoldFx.Quake, offsetX: 44f, offsetY: 0.01f);
+            // Combo: two ingot slams, then one whose quake rolls on a second ring further out
+            var sl2 = Kit.Melee(sh, "Slam", "ModGoldVaultSlam2", null, 4, slam, 25f).Speed(1.1f).Ev(4, "AnimAttack", quake).Build();
+            var sl3 = Kit.Melee(sh, "Slam", "ModGoldVaultRumble", v, 4, slam, 30f).Speed(0.85f).Ev(4, "AnimAttack", quake).Ev(5, "AnimAttack", quake2, 0.1f).Build();
             var po = new ClipBuilder(sh, "Payout", "ModGoldVaultPayout").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop")
                 .Ev(4, "GoldPayout").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sl.Build(), 1.8f, rangeInner: 14f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, sl.Build(), 0.5f, rangeInner: 14f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, sl2, 0.5f, rangeInner: 14f, rangeOuter: 38f));
+            atk.Add(Kit.Attack(a0, sl3, 2.4f, rangeInner: 14f, rangeOuter: 60f));
             Kit.SetSpecial(p, Kit.Attack(sp, po, 0f, rangeInner: 0f, rangeOuter: 60f, rangeRetreat: 0f), 7.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.65f);
             Strike.Feet(p, n0, 12f);
         }
 
@@ -274,12 +297,18 @@ namespace CrawlFurther.Content.Secrets
             int kneel = Kit.AddEffect(p, GoldFx.Kneel, spawnPoint: DamageEffectData.eSpawnPoint.ClosestEnemy);
             var sm = Kit.Melee(sh, "Smite", "ModGoldSovereignSmite", v, 3, smite, 40f);
             sm.Ev(3, "AnimAttack", flash);
+            int flash2 = Kit.AddEffect(p, GoldFx.SmiteFx, offsetX: 46f, offsetY: 0.01f);
+            // Combo: two smites, then one whose light strikes again further ahead
+            var sm2 = Kit.Melee(sh, "Smite", "ModGoldSovereignSmite2", null, 3, smite, 50f).Speed(1.1f).Ev(3, "AnimAttack", flash).Build();
+            var sm3 = Kit.Melee(sh, "Smite", "ModGoldSovereignJudgement", v, 3, smite, 60f).Speed(0.9f).Ev(3, "AnimAttack", flash).Ev(4, "AnimAttack", flash2, 0.12f).Build();
             var kn = new ClipBuilder(sh, "Kneel", "ModGoldSovereignKneel").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop")
                 .Ev(4, "AnimAttack", kneel).EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sm.Build(), 1.5f, rangeInner: 14f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, sm.Build(), 0.45f, rangeInner: 14f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, sm2, 0.45f, rangeInner: 14f, rangeOuter: 38f));
+            atk.Add(Kit.Attack(a0, sm3, 2.1f, rangeInner: 14f, rangeOuter: 60f));
             Kit.SetSpecial(p, Kit.Attack(sp, kn, 0f, rangeInner: 20f, rangeOuter: 130f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 10f);
         }
 
@@ -294,12 +323,19 @@ namespace CrawlFurther.Content.Secrets
             foreach (var a in new[] { -12f, 0.01f, 12f }) quills.Add(Kit.AddEffect(p, GoldFx.Quill, offsetX: 12f, offsetY: 21f, angle: a));
             int mark = Kit.AddEffect(p, GoldFx.Mark, spawnPoint: DamageEffectData.eSpawnPoint.ClosestEnemy);
             var qu = Kit.Shot(sh, "Quills", "ModGoldTreasurerQuills", 3, v, 0.03f, quills.ToArray()).Build();
+            var fan = new List<int>();
+            foreach (var a in new[] { -28f, -14f, 0.01f, 14f, 28f }) fan.Add(Kit.AddEffect(p, GoldFx.Quill, offsetX: 12f, offsetY: 21f, angle: a));
+            // Combo: two throws of three quills, then five in a wide fan
+            var qu2 = Kit.Shot(sh, "Quills", "ModGoldTreasurerQuills2", 3, null, 0.03f, quills.ToArray()).Speed(1.15f).Build();
+            var qu3 = Kit.Shot(sh, "Quills", "ModGoldTreasurerLedger", 3, v, 0.04f, fan.ToArray()).Speed(0.85f).Build();
             var au = new ClipBuilder(sh, "Audit", "ModGoldTreasurerAudit").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop")
                 .Ev(5, "AnimAttack", mark).EvO(6, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, qu, 1.5f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, qu, 0.45f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, qu2, 0.45f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 40f));
+            atk.Add(Kit.Attack(a0, qu3, 2.0f, rangeInner: 35f, rangeOuter: 100f, rangeRetreat: 40f));
             Kit.SetSpecial(p, Kit.Attack(sp, au, 0f, rangeInner: 20f, rangeOuter: 140f, rangeRetreat: 30f), 7.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 21f);
         }
 
