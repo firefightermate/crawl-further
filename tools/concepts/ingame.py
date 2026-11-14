@@ -213,18 +213,20 @@ def footprints(gid, x=0.0, y=0.0, sx=1.0, sy=1.0, root=True, out=None):
     return out
 
 
-# How deep each kind of prop really is on the floor. The game's own colliders are thin strips along an object's front
-# edge (it only needs them to stop movement), which is right for tall things but lets the hero stand on a coffin lid or
-# in a mine cart. In this 3/4 view a flat top face is drawn exactly as many pixels tall as the object is deep, so the
-# depths below were measured off each sprite's top face (8x, with a ruler). Round things (barrels, vases, pots, basins)
-# are as deep as half their width. (name part, depth in px from the sprite's bottom edge, side inset in px)
+# How deep each kind of prop is on the floor. The game's own colliders are thin strips along an object's front edge
+# (it only needs them to stop movement), right for tall things but they let the hero stand on a coffin lid or in a
+# mine cart. Flat-topped things ("top") block back to where their top is drawn, less the hero's half-depth and 2 px:
+# from behind, at most 2 px of his feet go behind the object. Geometrically his legs would sink further behind a
+# knee-high bench, but with no back edge drawn that reads as walking through it. ("top", y) gives the top's height in
+# the sprite when something stands above it (the altar's flame). Round things (barrels, vases, pots, basins) are as
+# deep as half their width. (name part, depth, side inset in px)
+OVERLAP = 2.0
 DEPTH = [
-    ("Carcophegus", 13, 1), ("TableCryptVert", 17, 1), ("TableCryptHoriz", 10, 0),
-    ("ShortBenchHoriz", 6, 0), ("ShortBenchVert", 11, 0), ("ShortBenchAngle", 9, 1),
-    ("SmallChestHorizontal", 5, 0), ("SmallChestVertical", 8, 0), ("SmallChestAngle", 7, 1),
-    ("LargeCrate", 7, 0), ("MinesCrate", 6, 1), ("CrateMediumAngle", 7, 1), ("CrateMedium", 6, 0),
-    ("MineCart1", 9, 2), ("MineCart", 7, 2), ("MinacartSmall", 7, 1), ("Minacart", 8, 2),
-    ("Altar_Skull", 7, 1), ("BookPodium", 4, 3), ("Chair", 4, 1), ("Stool", 4, 1),
+    ("Carcophegus", "top", 1), ("TableCryptVert", "top", 1), ("TableCryptHoriz", "top", 0),
+    ("ShortBench", "top", 0), ("SmallChest", "top", 0),
+    ("LargeCrate", "top", 0), ("MinesCrate", "top", 1), ("CrateMedium", "top", 0),
+    ("MineCart", "top", 2), ("Minacart", "top", 1), ("Altar_Skull", ("top", 16), 1),
+    ("BookPodium", 4, 3), ("Chair", 4, 1), ("Stool", 4, 1),
     ("CookingPot", 6, 6), ("MinesRock", 5, 1), ("Fountain", 9, 1), ("Well", 9, 2),
     ("BarrelLarge", 6, 0), ("BarrelSmall", 5, 0), ("Barrel", 6, 0), ("Vase", "round", 1),
 ]
@@ -248,13 +250,18 @@ def solid_footprints(gid, x=0.0, y=0.0):
     dp = depth_of(name)
     if not dp:
         return fs
-    ds = [d for d in collect(gid, x, y) if d.kind == "object" and d.im.width > 1]
+    ds = [d_ for d_ in collect(gid, x, y) if d_.kind == "object" and d_.im.width > 1]
     if not ds:
         return fs
-    x0 = min(d.left for d in ds); x1 = max(d.left + d.im.width for d in ds); b = min(d.bottom for d in ds)
+    x0 = min(d_.left for d_ in ds); x1 = max(d_.left + d_.im.width for d_ in ds); b = min(d_.bottom for d_ in ds)
     d, inset = dp
+    y1 = max(d_.bottom + d_.im.height for d_ in ds)
     if d == "round":
         d = round((x1 - x0) * 0.5)
+    elif d == "top":
+        d = (y1 - b) - 1.5 - OVERLAP
+    elif isinstance(d, tuple):
+        d = d[1] - 1.5 - OVERLAP
     rect = (x0 + inset, b - 0.5, x1 - inset, b + d)
     if fs:
         rect = (min(rect[0], min(f[0] for f in fs)), min(rect[1], min(f[1] for f in fs)),

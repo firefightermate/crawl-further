@@ -154,7 +154,7 @@ def rotten_log(length, colour=(96, 70, 58), cap=(170, 90, 150), glow=None, seed=
         fr = rnd.uniform(2.4, 4.2)
         sc.disc(fx, fy - 0.6, fr * 0.9, fr * 0.3, 2 + r + 0.9, um, nrm=(0, -1, 0.5))
         sc.ellipsoid(fx, fy, 2 + r, fr, fr * 0.5, fr * 0.7, fm, clip=lambda x, y, fy=fy: y > fy - 0.4)
-    return _done(sc, (length / 2, 6), length + 4, 7)        # a lying trunk: as deep as it is thick
+    return _done(sc, (length / 2, 2 * r + 1 - 3.5), length + 4, 7)   # a lying trunk: up to its drawn top, less the hero's feet
 
 
 def wall_roots(w, h, colour=(98, 74, 70), seed=0, tips=None, moss=None):
