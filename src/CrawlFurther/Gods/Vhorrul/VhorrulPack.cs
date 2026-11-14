@@ -135,14 +135,21 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             var seg = new List<int>();
             for (int i = 0; i < 5; i++) seg.Add(Kit.AddEffect(p, VhorrulFx.WaxLine, offsetX: 15.7f + i * 10f, offsetY: 0.01f));
             var toss = Kit.Shot(sh, "Toss", "ModChandlerToss", 3, v, 0f, glob).Build();
+            int gL = Kit.AddEffect(p, VhorrulFx.MoltenGlob, offsetX: 15.7f, offsetY: 1.1f, angle: -20f);
+            int gR = Kit.AddEffect(p, VhorrulFx.MoltenGlob, offsetX: 15.7f, offsetY: 1.1f, angle: 20f);
+            // Combo: two molten globs, then three at once that pool in a burning row
+            var toss2 = Kit.Shot(sh, "Toss", "ModChandlerToss2", 3, null, 0f, glob).Speed(1.15f).Build();
+            var toss3 = Kit.Shot(sh, "Toss", "ModChandlerSpill", 3, v, 0.05f, gL, glob, gR).Speed(0.85f).Build();
             var pour = new ClipBuilder(sh, "Pour", "ModChandlerPour").Once().EvF(0, "AnimInputMultiplyFreeFace", 0f)
                 .Ev(2, "AnimInputMultiplyStop").Ev(2, "AnimInputOff").Ev(2, "VhNewLine").EvO(2, "AnimSound", v);
             for (int i = 0; i < seg.Count; i++) pour.Ev(2, "AnimAttack", seg[i], i * 0.06f);
             pour.Ev(-1, "AnimRun");
             atk.Clear();
-            atk.Add(Kit.Attack(a0, toss, 1.4f, rangeInner: 40f, rangeOuter: 66f, rangeRetreat: 32f));
+            atk.Add(Kit.Attack(a0, toss, 0.4f, rangeInner: 40f, rangeOuter: 66f, rangeRetreat: 32f));
+            atk.Add(Kit.Attack(a0, toss2, 0.4f, rangeInner: 40f, rangeOuter: 66f, rangeRetreat: 32f));
+            atk.Add(Kit.Attack(a0, toss3, 1.9f, rangeInner: 35f, rangeOuter: 66f, rangeRetreat: 30f));
             Kit.SetSpecial(p, Kit.Attack(sp, pour.Build(), 0f, rangeInner: 25f, rangeOuter: 66f, rangeRetreat: 0f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 10.1f);
         }
 
@@ -154,13 +161,18 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             int bite = Kit.AddEffect(p, VhorrulFx.WormBite, attach: true, destroyOnAnimEnd: true, offsetX: 13f, offsetY: 4f);
             int road = Kit.AddEffect(p, VhorrulFx.WaxRoad, attach: true);
             var b = Kit.Melee(sh, "Bite", "ModVhWormBite", v, 3, bite, 80f).Build();
+            // Combo: two rearing bites, then the Strike: a long lunge that bites twice
+            var b2 = Kit.Melee(sh, "Bite", "ModVhWormBite2", null, 3, bite, 90f).Speed(1.1f).Build();
+            var b3 = Kit.Melee(sh, "Bite", "ModVhWormStrike", v, 2, bite, 150f, 4, bite, 40f).Speed(0.9f).Build();
             var r = new ClipBuilder(sh, "Road", "ModVhWormRoad").Once().EvF(0, "ModSprint", 2f).Ev(0, "AnimAttack", road).EvO(0, "AnimSound", v)
                 .Ev(-1, "AnimRun").Build();
             WaxSwimmer.SwimIdle = new ClipBuilder(sh, "Swim", "ModVhWormSwim").Loop().Build(); WaxSwimmer.SwimRun = new ClipBuilder(sh, "SwimRun", "ModVhWormSwimRun").Loop().Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, b, 1.1f, rangeInner: 10f, rangeOuter: 28f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, b, 0.35f, rangeInner: 10f, rangeOuter: 30f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, b2, 0.35f, rangeInner: 10f, rangeOuter: 32f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, b3, 1.6f, rangeInner: 10f, rangeOuter: 52f, rangeRetreat: 0f));
             Kit.EnableSpecial(p, Kit.Attack(sp, r, 0f, rangeInner: 20f, rangeOuter: 140f, rangeRetreat: 0f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 6f);
         }
 
@@ -175,14 +187,21 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             foreach (var o in new[] { new Vector2(-10f, 0.01f), new Vector2(-13f, 6f), new Vector2(-13f, -6f) })
                 eggs.Add(Kit.AddEffect(p, VhorrulFx.WaxEgg, offsetX: o.x, offsetY: o.y));
             var spray = Kit.Shot(sh, "Spray", "ModVhSowSpray", 3, v, 0.02f, drops.ToArray()).Build();
+            var wide = new List<int>();
+            foreach (var a in new[] { -32f, -16f, 0.01f, 16f, 32f }) wide.Add(Kit.AddEffect(p, VhorrulFx.SowDrop, offsetX: 13f, offsetY: 7f, angle: a));
+            // Combo: two sprays of three drops, then a spray of five
+            var spray2 = Kit.Shot(sh, "Spray", "ModVhSowSpray2", 3, null, 0.02f, drops.ToArray()).Speed(1.15f).Build();
+            var spray3 = Kit.Shot(sh, "Spray", "ModVhSowGush", 3, v, 0.03f, wide.ToArray()).Speed(0.85f).Build();
             var lay = new ClipBuilder(sh, "Lay", "ModVhSowLay").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop");
             for (int i = 0; i < eggs.Count; i++) lay.Ev(4, "AnimAttack", eggs[i], i * 0.08f);
             lay.EvO(4, "AnimSound", v).Ev(-1, "AnimRun");
             SowGreased.IdleCoat = new ClipBuilder(sh, "IdleCoat", "ModVhSowIdleCoat").Loop().Build(); SowGreased.RunCoat = new ClipBuilder(sh, "RunCoat", "ModVhSowRunCoat").Loop().Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, spray, 1.5f, rangeInner: 30f, rangeOuter: 72f, rangeRetreat: 26f));
+            atk.Add(Kit.Attack(a0, spray, 0.45f, rangeInner: 30f, rangeOuter: 72f, rangeRetreat: 26f));
+            atk.Add(Kit.Attack(a0, spray2, 0.45f, rangeInner: 30f, rangeOuter: 72f, rangeRetreat: 26f));
+            atk.Add(Kit.Attack(a0, spray3, 2.0f, rangeInner: 25f, rangeOuter: 66f, rangeRetreat: 26f));
             Kit.EnableSpecial(p, Kit.Attack(sp, lay.Build(), 0f, rangeInner: 25f, rangeOuter: 120f, rangeRetreat: 20f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 6f);
         }
 
@@ -215,14 +234,19 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             foreach (var a in new[] { -30f, -15f, 0.01f, 15f, 30f }) fan.Add(Kit.AddEffect(p, VhorrulFx.CandelabraFlame, offsetX: 7f, offsetY: 17f, angle: a));
             int single = Kit.AddEffect(p, VhorrulFx.CandelabraFlame, offsetX: 7f, offsetY: 17f, angle: -5f, angleMax: 5f);
             var f = Kit.Shot(sh, "Fan", "ModCandelabraFan", 3, v, 0f, fan.ToArray()).Build();
+            // Combo: two fans of five flames, then the Procession: five flames one after another down the middle
+            var f2 = Kit.Shot(sh, "Fan", "ModCandelabraFan2", 3, null, 0f, fan.ToArray()).Speed(1.15f).Build();
+            var f3 = Kit.Shot(sh, "Fan", "ModCandelabraProcession", 3, v, 0.08f, single, single, single, single, single).Speed(0.85f).Build();
             var vigil = new ClipBuilder(sh, "Vigil", "ModCandelabraVigil").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop")
                 .EvF(1, "VhLightWax", 40f).EvO(1, "AnimSound", v);
             foreach (int k in new[] { 3, 5, 7 }) vigil.Ev(k - 1, "VhFaceHero").Ev(k, "AnimAttack", single);
             vigil.Ev(-1, "AnimRun");
             atk.Clear();
-            atk.Add(Kit.Attack(a0, f, 1.8f, rangeInner: 45f, rangeOuter: 105f, rangeRetreat: 38f));
+            atk.Add(Kit.Attack(a0, f, 0.5f, rangeInner: 45f, rangeOuter: 105f, rangeRetreat: 38f));
+            atk.Add(Kit.Attack(a0, f2, 0.5f, rangeInner: 45f, rangeOuter: 105f, rangeRetreat: 38f));
+            atk.Add(Kit.Attack(a0, f3, 2.2f, rangeInner: 45f, rangeOuter: 110f, rangeRetreat: 38f));
             Kit.SetSpecial(p, Kit.Attack(sp, vigil.Build(), 0f, rangeInner: 30f, rangeOuter: 120f, rangeRetreat: 30f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 15f);
         }
 
@@ -242,14 +266,20 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             ColossusAccrete.Runs = new[] { null, new ClipBuilder(sh, "Run1", "ModColossusRun1").Loop().Build(),
                 new ClipBuilder(sh, "Run2", "ModColossusRun2").Loop().Build(), new ClipBuilder(sh, "Run3", "ModColossusRun3").Loop().Build() };
             var fists = Kit.Melee(sh, "Fists", "ModColossusFists", v, 2, fist, 45f, 4, fist, 45f).Build();
+            // Combo: the one-two twice, then the Pound: four blows running, stepping in
+            var fists2 = Kit.Melee(sh, "Fists", "ModColossusFists2", null, 2, fist, 55f, 4, fist, 45f).Speed(1.1f).Build();
+            var fists3 = Kit.Melee(sh, "Fists", "ModColossusPound", v, 2, fist, 50f, 4, fist, 40f, 9, fist, 50f, 11, fist, 50f)
+                .Repeat(2).Speed(1.25f).Build();
             // Rear 4 (0.8 s) + Fall 3 + Prone 2 x2 (1 s) + GetUp 4
             var topple = new ClipBuilder(sh, "Rear", "ModColossusTopple").Once().Then("Fall").Then("Prone", 2).Then("GetUp")
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(0, "VhToppleShadow").EvO(0, "AnimSound", v)
                 .Ev(3, "AnimInputMultiplyStop").Ev(3, "AnimInputOff").Ev(5, "VhToppleLand").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, fists, 1.0f, rangeInner: 14f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, fists, 0.4f, rangeInner: 14f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, fists2, 0.4f, rangeInner: 14f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, fists3, 1.6f, rangeInner: 14f, rangeOuter: 42f));
             Kit.SetSpecial(p, Kit.Attack(sp, topple, 0f, rangeInner: 12f, rangeOuter: 34f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 11f);
         }
 
@@ -262,12 +292,20 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             Kit.AimReach(p, smash, 5f, 5f);
             var s = new ClipBuilder(sh, "Smash", "ModVhWardenSmash").Once().EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop")
                 .Ev(2, "AnimInputOff").Ev(4, "AnimAttack", smash).EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
+            int smash2 = Kit.AddEffect(p, VhorrulFx.CenserSmash, offsetX: 48f, offsetY: 0.01f);
+            // Combo: two censer smashes, then the Embers: the ring rolls on and bursts up again further ahead
+            var s2 = new ClipBuilder(sh, "Smash", "ModVhWardenSmash2").Once().Speed(1.1f).EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop")
+                .Ev(2, "AnimInputOff").Ev(4, "AnimAttack", smash).Ev(-1, "AnimRun").Build();
+            var s3 = new ClipBuilder(sh, "Smash", "ModVhWardenEmbers").Once().Speed(0.85f).EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop")
+                .Ev(2, "AnimInputOff").Ev(4, "AnimAttack", smash).Ev(4, "AnimAttack", smash2, 0.18f).EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             var stoke = new ClipBuilder(sh, "Stoke", "ModVhWardenStoke").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop")
                 .Ev(4, "VhStoke").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, s, 1.6f, rangeInner: 10f, rangeOuter: 30f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, s, 0.45f, rangeInner: 10f, rangeOuter: 34f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, s2, 0.45f, rangeInner: 10f, rangeOuter: 36f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, s3, 2.1f, rangeInner: 10f, rangeOuter: 70f, rangeRetreat: 0f));
             Kit.EnableSpecial(p, Kit.Attack(sp, stoke, 0f, rangeInner: 0f, rangeOuter: 80f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 17.6f);
         }
 
@@ -280,15 +318,20 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             int wave = Kit.AddEffect(p, VhorrulFx.BoilWave, offsetX: 17.4f, offsetY: 11.6f);
             int swing = Kit.AddEffect(p, VhorrulFx.LadleSwing, attach: true, destroyOnAnimEnd: true, offsetX: 20.3f, offsetY: 14.5f);
             var l = Kit.Melee(sh, "Ladle", "ModVhRendererLadle", v, 3, fan, 0f).Build();
+            // Combo: two ladle flings, then the Ladle and Swing: the fling and the ladle swung back through him
+            var l2 = Kit.Melee(sh, "Ladle", "ModVhRendererLadle2", null, 3, fan, 20f).Speed(1.1f).Build();
+            var l3 = Kit.Melee(sh, "Ladle", "ModVhRendererLadleSwing", v, 3, fan, 30f, 5, swing, 40f).Speed(0.9f).Build();
             // Tip 4 (wave out on f3) + Ride 4 x2 (0.64 s at the wave's 115 px/s: about 70 px) + Swing 5 (hit on f2)
             var boil = new ClipBuilder(sh, "Tip", "ModVhRendererBoil").Once().Then("Ride", 2).Then("Swing")
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop").Ev(2, "AnimInputOff")
                 .Ev(3, "AnimAttack", wave).EvO(3, "AnimSound", v).Ev(3, "VhRide").EvF(3, "AnimMove", 112f)
                 .Ev(12, "AnimMoveStop").Ev(12, "VhRideEnd").Ev(14, "AnimAttack", swing).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, l, 1.4f, rangeInner: 14f, rangeOuter: 34f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, l, 0.45f, rangeInner: 14f, rangeOuter: 36f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, l2, 0.45f, rangeInner: 14f, rangeOuter: 38f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, l3, 1.9f, rangeInner: 14f, rangeOuter: 44f, rangeRetreat: 0f));
             Kit.EnableSpecial(p, Kit.Attack(sp, boil, 0f, rangeInner: 20f, rangeOuter: 80f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 14.5f);
         }
 
@@ -299,12 +342,19 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             int n0 = Strike.Mark(p);
             int hex = Kit.AddEffect(p, VhorrulFx.HexFlame, offsetX: 13.9f, offsetY: 11.6f);
             var h = Kit.Shot(sh, "Hex", "ModVhHagHex", 3, v, 0f, hex).Build();
+            int hL = Kit.AddEffect(p, VhorrulFx.HexFlame, offsetX: 13.9f, offsetY: 11.6f, angle: -16f);
+            int hR = Kit.AddEffect(p, VhorrulFx.HexFlame, offsetX: 13.9f, offsetY: 11.6f, angle: 16f);
+            // Combo: two hex flames, then a hand of three
+            var h2 = Kit.Shot(sh, "Hex", "ModVhHagHex2", 3, null, 0f, hex).Speed(1.15f).Build();
+            var h3 = Kit.Shot(sh, "Hex", "ModVhHagHand", 3, v, 0.05f, hL, hex, hR).Speed(0.85f).Build();
             var pop = new ClipBuilder(sh, "Poppet", "ModVhHagPoppet").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop").Ev(4, "VhPoppet")
                 .EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, h, 1.3f, rangeInner: 40f, rangeOuter: 100f, rangeRetreat: 30f));
+            atk.Add(Kit.Attack(a0, h, 0.4f, rangeInner: 40f, rangeOuter: 100f, rangeRetreat: 30f));
+            atk.Add(Kit.Attack(a0, h2, 0.4f, rangeInner: 40f, rangeOuter: 100f, rangeRetreat: 30f));
+            atk.Add(Kit.Attack(a0, h3, 1.8f, rangeInner: 40f, rangeOuter: 95f, rangeRetreat: 30f));
             Kit.EnableSpecial(p, Kit.Attack(sp, pop, 0f, rangeInner: 30f, rangeOuter: 120f, rangeRetreat: 25f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 11.6f);
         }
 
@@ -316,13 +366,18 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             int strike = Kit.AddEffect(p, VhorrulFx.WyrmStrike, attach: true, destroyOnAnimEnd: true, offsetX: 25.1f, offsetY: 6.8f);
             var s = new ClipBuilder(sh, "Strike", "ModVhWyrmStrike").Once().EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop")
                 .Ev(2, "AnimInputOff").Ev(3, "AnimAttack", strike).EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
+            // Combo: two strikes, then the Wick: a lunging strike and a second one on its heels
+            var s2 = Kit.Melee(sh, "Strike", "ModVhWyrmStrike2", null, 3, strike, 40f).Speed(1.1f).Build();
+            var s3 = Kit.Melee(sh, "Strike", "ModVhWyrmWick", v, 3, strike, 110f, 5, strike, 40f).Speed(0.9f).Build();
             var c = new ClipBuilder(sh, "Coil", "ModVhWyrmCoil").Once().Ev(0, "AnimInputOff").Ev(0, "VhCoil").EvO(0, "AnimSound", v).Ev(-1, "AnimRun").Build();
             WyrmCoil.CoilLoop = new ClipBuilder(sh, "Coil", "ModVhWyrmCoilLoop").Loop().Build();
             WyrmCoil.WyrmSwim = new ClipBuilder(sh, "Swim", "ModVhWyrmSwim").Loop().Build(); WyrmCoil.WyrmSwimRun = new ClipBuilder(sh, "SwimRun", "ModVhWyrmSwimRun").Loop().Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, s, 1.2f, rangeInner: 16f, rangeOuter: 34f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, s, 0.4f, rangeInner: 16f, rangeOuter: 36f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, s2, 0.4f, rangeInner: 16f, rangeOuter: 38f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, s3, 1.7f, rangeInner: 16f, rangeOuter: 54f, rangeRetreat: 0f));
             Kit.EnableSpecial(p, Kit.Attack(sp, c, 0f, rangeInner: 10f, rangeOuter: 70f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 11.4f);
         }
 
@@ -333,13 +388,18 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             int n0 = Strike.Mark(p);
             int snap = Kit.AddEffect(p, VhorrulFx.ScorpSnap, attach: true, destroyOnAnimEnd: true, offsetX: 21.6f, offsetY: 6.8f);
             var s = Kit.Melee(sh, "Snap", "ModVhScorpSnap", v, 3, snap, 70f).Build();
+            // Combo: two claw snaps, then the Pincer: a lunge and both claws snap in turn
+            var s2 = Kit.Melee(sh, "Snap", "ModVhScorpSnap2", null, 3, snap, 80f).Speed(1.1f).Build();
+            var s3 = Kit.Melee(sh, "Snap", "ModVhScorpPincer", v, 2, snap, 120f, 4, snap, 30f).Speed(0.9f).Build();
             var f = new ClipBuilder(sh, "Sting", "ModVhScorpSting").Once().EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop")
                 .Ev(2, "AnimInputOff").Ev(3, "VhLightFuse").EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, s, 1.0f, rangeInner: 12f, rangeOuter: 30f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, s, 0.35f, rangeInner: 12f, rangeOuter: 32f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, s2, 0.35f, rangeInner: 12f, rangeOuter: 34f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, s3, 1.5f, rangeInner: 12f, rangeOuter: 50f, rangeRetreat: 0f));
             // the spark wants room to chase: sting from mid range
             Kit.EnableSpecial(p, Kit.Attack(sp, f, 0f, rangeInner: 30f, rangeOuter: 110f, rangeRetreat: 20f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 8.1f);
         }
 
@@ -354,13 +414,19 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             foreach (var o in new[] { new Vector2(14f, 8f), new Vector2(-14f, 8f), new Vector2(0.01f, -14f) })
                 grubs.Add(Kit.AddEffect(p, VhorrulFx.Grubling, offsetX: o.x, offsetY: o.y, spawnPoint: DamageEffectData.eSpawnPoint.ClosestEnemy));
             var s = Kit.Melee(sh, "Slam", "ModVhBroodSlam", v, 3, slam, 0f).Ev(3, "AnimAttack", pool).Build();
+            int pool2 = Kit.AddEffect(p, VhorrulFx.WaxPuddle, offsetX: 38f, offsetY: 0.01f);
+            // Combo: two head slams, then the Spill: a slam that splashes wax pools ahead
+            var s2 = Kit.Melee(sh, "Slam", "ModVhBroodSlam2", null, 3, slam, 30f).Speed(1.1f).Ev(3, "AnimAttack", pool).Build();
+            var s3 = Kit.Melee(sh, "Slam", "ModVhBroodSpill", v, 3, slam, 40f).Speed(0.85f).Ev(3, "AnimAttack", pool).Ev(3, "AnimAttack", pool2, 0.12f).Build();
             var spit = new ClipBuilder(sh, "Spit", "ModVhBroodSpit").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop");
             for (int i = 0; i < grubs.Count; i++) spit.Ev(4, "AnimAttack", grubs[i], i * 0.08f);
             spit.EvO(4, "AnimSound", v).Ev(-1, "AnimRun");
             atk.Clear();
-            atk.Add(Kit.Attack(a0, s, 1.4f, rangeInner: 12f, rangeOuter: 30f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, s, 0.4f, rangeInner: 12f, rangeOuter: 32f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, s2, 0.4f, rangeInner: 12f, rangeOuter: 34f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, s3, 1.9f, rangeInner: 12f, rangeOuter: 46f, rangeRetreat: 0f));
             Kit.EnableSpecial(p, Kit.Attack(sp, spit.Build(), 0f, rangeInner: 20f, rangeOuter: 130f, rangeRetreat: 25f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 8f);
         }
 
@@ -373,11 +439,16 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             var drops = new List<int>();
             foreach (var a in new[] { -30f, -15f, 0.01f, 15f, 30f }) drops.Add(Kit.AddEffect(p, VhorrulFx.TickDrop, offsetX: 19.6f, offsetY: 1.4f, angle: a));
             var b = Kit.Melee(sh, "Bite", "ModVhTickBite", v, 3, bite, 75f).Build();
+            // Combo: two barbed bites, then the Burst: a bite that bursts three drops of burning blood ahead
+            var b2 = Kit.Melee(sh, "Bite", "ModVhTickBite2", null, 3, bite, 85f).Speed(1.1f).Build();
+            var b3 = Kit.Melee(sh, "Bite", "ModVhTickBurst", v, 3, bite, 90f).Speed(0.9f).Ev(4, "AnimAttack", drops[1]).Ev(4, "AnimAttack", drops[2]).Ev(4, "AnimAttack", drops[3]).Build();
             var s = Kit.Shot(sh, "Spray", "ModVhTickSpray", 4, v, 0.03f, drops.ToArray()).Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, b, 1.1f, rangeInner: 12f, rangeOuter: 28f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, b, 0.35f, rangeInner: 12f, rangeOuter: 30f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, b2, 0.35f, rangeInner: 12f, rangeOuter: 32f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, b3, 1.6f, rangeInner: 12f, rangeOuter: 40f, rangeRetreat: 0f));
             Kit.EnableSpecial(p, Kit.Attack(sp, s, 0f, rangeInner: 15f, rangeOuter: 60f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.55f);
             Strike.Feet(p, n0, 11.2f);
         }
 
@@ -388,12 +459,17 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             int n0 = Strike.Mark(p);
             int lance = Kit.AddEffect(p, VhorrulFx.SeraphLance, attach: true, destroyOnAnimEnd: true, offsetX: 20.2f, offsetY: 16.7f);
             var l = Kit.Melee(sh, "Lance", "ModSeraphLance", v, 3, lance, 120f).Build();
+            // Combo: two lance thrusts, then the Pyre Charge: a long charge that thrusts twice
+            var l2 = Kit.Melee(sh, "Lance", "ModSeraphLance2", null, 3, lance, 130f).Speed(1.1f).Build();
+            var l3 = Kit.Melee(sh, "Lance", "ModSeraphCharge", v, 2, lance, 180f, 4, lance, 60f).Speed(0.9f).Build();
             var beat = new ClipBuilder(sh, "Beat", "ModSeraphBeat").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop").Ev(2, "VhSmother")
                 .EvO(2, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, l, 1.3f, rangeInner: 18f, rangeOuter: 40f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, l, 0.4f, rangeInner: 18f, rangeOuter: 42f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, l2, 0.4f, rangeInner: 18f, rangeOuter: 44f, rangeRetreat: 0f));
+            atk.Add(Kit.Attack(a0, l3, 1.8f, rangeInner: 18f, rangeOuter: 64f, rangeRetreat: 0f));
             Kit.SetSpecial(p, Kit.Attack(sp, beat, 0f, rangeInner: 0f, rangeOuter: 70f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 16.7f);
         }
 
@@ -404,13 +480,20 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             int n0 = Strike.Mark(p);
             int orb = Kit.AddEffect(p, VhorrulFx.LanternOrb, offsetX: 23.2f, offsetY: 26.1f);
             var s = Kit.Shot(sh, "Swing", "ModWraithSwing", 3, v, 0f, orb).Build();
+            int oL = Kit.AddEffect(p, VhorrulFx.LanternOrb, offsetX: 23.2f, offsetY: 26.1f, angle: -18f);
+            int oR = Kit.AddEffect(p, VhorrulFx.LanternOrb, offsetX: 23.2f, offsetY: 26.1f, angle: 18f);
+            // Combo: two soul orbs, then a swing of three
+            var s2 = Kit.Shot(sh, "Swing", "ModWraithSwing2", 3, null, 0f, orb).Speed(1.15f).Build();
+            var s3 = Kit.Shot(sh, "Swing", "ModWraithSwing3", 3, v, 0.06f, oL, orb, oR).Speed(0.85f).Build();
             var take = new ClipBuilder(sh, "Take", "ModWraithTake").Once().EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop")
                 .Ev(2, "AnimInputOff").Ev(3, "VhTakeLight").EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             WraithLantern.IdleFull = new ClipBuilder(sh, "IdleFull", "ModWraithIdleFull").Loop().Build(); WraithLantern.RunFull = new ClipBuilder(sh, "RunFull", "ModWraithRunFull").Loop().Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, s, 1.6f, rangeInner: 45f, rangeOuter: 82f, rangeRetreat: 38f));
+            atk.Add(Kit.Attack(a0, s, 0.45f, rangeInner: 45f, rangeOuter: 82f, rangeRetreat: 38f));
+            atk.Add(Kit.Attack(a0, s2, 0.45f, rangeInner: 45f, rangeOuter: 82f, rangeRetreat: 38f));
+            atk.Add(Kit.Attack(a0, s3, 2.1f, rangeInner: 40f, rangeOuter: 82f, rangeRetreat: 38f));
             Kit.SetSpecial(p, Kit.Attack(sp, take, 0f, rangeInner: 10f, rangeOuter: 46f, rangeRetreat: 0f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 23.2f);
         }
 
