@@ -106,7 +106,7 @@ def giant_cap(h, cap, glow, stem=(190, 176, 160), seed=0, kind="parasol", gills=
         sc.lathe(lambda y, bx=bx: bx, 0, bh, lambda y: 0.8, 3 + k, sm)
         sc.ellipsoid(bx, bh, 4 + k, bh * 0.42 + 0.8, bh * 0.3, 1.5, Mat(cap, n=5, dark=0.3, light=1.2,
                      emit=(lambda x, y, t: 0.35) if glow else None), clip=lambda x, y, bh=bh: y >= bh - 0.6)
-    foot = (max(3, stem_r(1) + 1.5), 2.6)
+    foot = (max(3, stem_r(1) + 1.0), max(3.0, stem_r(1) * 1.1))   # round foot: as deep as half its width
     return _done(sc, foot, int(stem_r(1) * 4 + 8))
 
 
@@ -120,7 +120,7 @@ def puffball(r, colour=(214, 200, 172), seed=0):
         return -0.9 if crack else (n.fbm(x, y, 3) - 0.5) * 0.6
     m = Mat(colour, tex=tex, tex_amp=0.4, n=6, dark=0.3, light=1.15, spec=0.15)
     sc.ellipsoid(cx, cy, 0, r, r * 0.82, r, m)
-    return _done(sc, (r * 0.7, 2.4), int(r * 2.2))
+    return _done(sc, (r * 0.85, r), int(r * 2.2))
 
 
 def pod_cluster(colour=(150, 70, 130), glow=(120, 255, 210), seed=0, count=5):
@@ -132,7 +132,7 @@ def pod_cluster(colour=(150, 70, 130), glow=(120, 255, 210), seed=0, count=5):
     for i in range(count):
         r = rnd.uniform(2.4, 4.4)
         sc.ellipsoid(13 + rnd.uniform(-8, 8), r * 0.9 + rnd.uniform(0, 2), rnd.uniform(0, 4), r, r * 0.92, r, m)
-    return _done(sc, (6, 2.2), 20)
+    return _done(sc, (7, 6), 20)
 
 
 def rotten_log(length, colour=(96, 70, 58), cap=(170, 90, 150), glow=None, seed=0):
@@ -154,7 +154,7 @@ def rotten_log(length, colour=(96, 70, 58), cap=(170, 90, 150), glow=None, seed=
         fr = rnd.uniform(2.4, 4.2)
         sc.disc(fx, fy - 0.6, fr * 0.9, fr * 0.3, 2 + r + 0.9, um, nrm=(0, -1, 0.5))
         sc.ellipsoid(fx, fy, 2 + r, fr, fr * 0.5, fr * 0.7, fm, clip=lambda x, y, fy=fy: y > fy - 0.4)
-    return _done(sc, (length / 2 - 1, 3), length + 4, 7)
+    return _done(sc, (length / 2, 6), length + 4, 7)        # a lying trunk: as deep as it is thick
 
 
 def wall_roots(w, h, colour=(98, 74, 70), seed=0, tips=None, moss=None):
@@ -268,7 +268,7 @@ def ink_cap(h, colour=(190, 184, 204), glow=(150, 200, 255), seed=0):
             if rnd.random() < 0.5:
                 for k in range(rnd.randint(1, 3)):
                     sc.pixel(x, capy0 - 2 - k, z + 5, inkm)
-    return _done(sc, (3, 2.2), 12)
+    return _done(sc, (3.5, 3.5), 12)
 
 
 def lantern(colour=(255, 190, 110), seed=0, chain=6):
@@ -301,7 +301,7 @@ def kelp(h, colour=(56, 100, 70), seed=0):
         for k in range(1, 6, 2):
             px_, py_ = pts[k]
             sc.ellipsoid(px_ + 1.3, py_, 3, 1.4, 0.7, 0.6, m)
-    return _done(sc, (2.5, 1.6), 9)
+    return _done(sc, (2.5, 3), 9)
 
 
 def barnacles(w=12, seed=0, colour=(170, 166, 150)):
@@ -360,7 +360,7 @@ def grave(w=14, soil=(84, 66, 56), seed=0):
     sc = Sculpt(w + 2, 8, seed)
     m = Mat(soil, n=6, dark=0.32, light=1.2, tex=lambda x, y: (n.v(x * 2, y * 2, 1.4) - 0.5) * 2, tex_amp=0.35)
     sc.ellipsoid(w / 2 + 1, 2.2, 0, w / 2, 3.2, 3, m, clip=lambda x, y: y > 0)
-    return _done(sc, (w / 2 - 1, 2), w + 2, 5)
+    return _done(sc, (w / 2, 5), w + 2, 5)
 
 
 def anvil(seed=0):
@@ -371,7 +371,7 @@ def anvil(seed=0):
     sc.box(7, 6, 13, 8, 0, 1, iron)
     sc.box(3, 8, 17, 11, 2, 1.5, iron)
     sc.ellipsoid(17, 9.5, 2, 2.6, 1.5, 1.2, iron)
-    return _done(sc, (5, 2.2), 18, 5)
+    return _done(sc, (6, 4), 18, 5)
 
 
 def crucible(glow=(255, 170, 60), seed=0):
@@ -384,7 +384,7 @@ def crucible(glow=(255, 170, 60), seed=0):
         sc.box(x - 1, 0, x + 1, 3, 0, 0.5, iron)
     sc.lathe(lambda y: 9, 2, 11, lambda y: 7.2 - (11 - y) * 0.25 - max(0, 4 - y) * 0.6, 0, iron)
     sc.disc(9, 11, 6.2, 2.0, 9, melt)
-    return _done(sc, (6.5, 2.4), 16, 5)
+    return _done(sc, (7, 6), 16, 5)
 
 
 def slag(r=5, glow=(255, 120, 40), seed=0):
@@ -408,7 +408,7 @@ def slag(r=5, glow=(255, 120, 40), seed=0):
                     ep[x, y] = glow + (230,)
     bb = im.getbbox()
     im, em = im.crop(bb), (em.crop(bb) if em else None)
-    return im, em, (r * 0.75, 2), P.shadow(r * 2 + 2)
+    return im, em, (r * 0.85, r * 0.9), P.shadow(r * 2 + 2)
 
 
 def chain(h, seed=0):
@@ -440,7 +440,7 @@ def book_stack(seed=0, count=None):
         sc.box(x0, y, x0 + w, y + th, 1, i * 0.1, m, mat_top=m)
         sc.box(x0 + w - 1.2, y + 0.5, x0 + w - 0.2, y + th - 0.5, 0, i * 0.1 + 1.2, page)
         y += th
-    return _done(sc, (5, 2), 14, 4)
+    return _done(sc, (5, 4), 14, 4)
 
 
 def papers(seed=0, count=5, colour=(214, 204, 176)):
@@ -499,7 +499,7 @@ def bone_pile(w=16, seed=0, colour=(214, 202, 176)):
         sc.ellipsoid(sx, sy + 1.2, 30 + k, 2.3, 2.1, 2.0, m)
         sc.pixel(sx - 0.8, sy + 1, 33 + k, dk)
         sc.pixel(sx + 0.9, sy + 1, 33 + k, dk)
-    return _done(sc, (w * 0.38, 2.4), w + 2, 5)
+    return _done(sc, (w * 0.42, w * 0.38), w + 2, 5)
 
 
 def furnace(seed=0, glow=(255, 150, 60)):
@@ -517,4 +517,4 @@ def furnace(seed=0, glow=(255, 150, 60)):
         half = 6 if y < 7 else 6 * math.sqrt(max(0, 1 - ((y - 7) / 4.2) ** 2))
         for x in range(int(15 - half), int(15 + half) + 1):
             sc._put(x, y, 3, (0, 0, 1), fire, (x + 0.5, y + 0.5))
-    return _done(sc, (13, 3), 30, 7)
+    return _done(sc, (13, 7), 30, 7)

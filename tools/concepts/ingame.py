@@ -213,6 +213,55 @@ def footprints(gid, x=0.0, y=0.0, sx=1.0, sy=1.0, root=True, out=None):
     return out
 
 
+# How deep each kind of prop really is on the floor. The game's own colliders are thin strips along an object's front
+# edge (it only needs them to stop movement), which is right for tall things but lets the hero stand on a coffin lid or
+# in a mine cart. In this 3/4 view a flat top face is drawn exactly as many pixels tall as the object is deep, so the
+# depths below were measured off each sprite's top face (8x, with a ruler). Round things (barrels, vases, pots, basins)
+# are as deep as half their width. (name part, depth in px from the sprite's bottom edge, side inset in px)
+DEPTH = [
+    ("Carcophegus", 13, 1), ("TableCryptVert", 17, 1), ("TableCryptHoriz", 10, 0),
+    ("ShortBenchHoriz", 6, 0), ("ShortBenchVert", 11, 0), ("ShortBenchAngle", 9, 1),
+    ("SmallChestHorizontal", 5, 0), ("SmallChestVertical", 8, 0), ("SmallChestAngle", 7, 1),
+    ("LargeCrate", 7, 0), ("MinesCrate", 6, 1), ("CrateMediumAngle", 7, 1), ("CrateMedium", 6, 0),
+    ("MineCart1", 9, 2), ("MineCart", 7, 2), ("MinacartSmall", 7, 1), ("Minacart", 8, 2),
+    ("Altar_Skull", 7, 1), ("BookPodium", 4, 3), ("Chair", 4, 1), ("Stool", 4, 1),
+    ("CookingPot", 6, 6), ("MinesRock", 5, 1), ("Fountain", 9, 1), ("Well", 9, 2),
+    ("BarrelLarge", 6, 0), ("BarrelSmall", 5, 0), ("Barrel", 6, 0), ("Vase", "round", 1),
+]
+NOT_SOLID = ("Floor", "Carpet", "Tracks", "Body", "PropCandles")
+
+
+def depth_of(name):
+    for k, d, inset in DEPTH:
+        if k in name:
+            return d, inset
+    return None
+
+
+def solid_footprints(gid, x=0.0, y=0.0):
+    """Where a prop blocks movement: its floor area, from the front edge of its sprite back as deep as the object is
+    (see DEPTH), or the game's own collider when that is already right (tall things: shelves, columns, trees)."""
+    name = H[gid]["n"]
+    if any(name.startswith(k) or k in name for k in NOT_SOLID):
+        return []
+    fs = footprints(gid, x, y)
+    dp = depth_of(name)
+    if not dp:
+        return fs
+    ds = [d for d in collect(gid, x, y) if d.kind == "object" and d.im.width > 1]
+    if not ds:
+        return fs
+    x0 = min(d.left for d in ds); x1 = max(d.left + d.im.width for d in ds); b = min(d.bottom for d in ds)
+    d, inset = dp
+    if d == "round":
+        d = round((x1 - x0) * 0.5)
+    rect = (x0 + inset, b - 0.5, x1 - inset, b + d)
+    if fs:
+        rect = (min(rect[0], min(f[0] for f in fs)), min(rect[1], min(f[1] for f in fs)),
+                max(rect[2], max(f[2] for f in fs)), max(rect[3], max(f[3] for f in fs)))
+    return [rect]
+
+
 def prefab_size(gid):
     """Bounding box of a prefab's standing sprites relative to its root: (x0, y0, x1, y1)."""
     ds = [d for d in collect(gid) if d.kind in ("object", "decal")]
@@ -326,7 +375,10 @@ class Room:
                                  max(d.left + d.im.width for d in ds), max(d.bottom + d.im.height for d in ds)), depth))
 
     def _foot_of(self, gid, x, y):
-        fs = footprints(gid, x, y)
+        name = H[gid]["n"]
+        if any(name.startswith(k) or k in name for k in NOT_SOLID):
+            return []
+        fs = solid_footprints(gid, x, y)
         if fs:
             return fs
         ds = [d for d in collect(gid, x, y) if d.kind == "object"]
@@ -419,10 +471,10 @@ class Room:
         return d
 
     def stand(self, im, x, y, foot, name="mod", emit=None, shadow=None, force=False):
-        """A standing sprite of ours with a solid footprint (half-width, half-height) at its feet. Returns the draw, or
-        None if it does not fit (unless force)."""
-        fw, fh = foot
-        rect = (x - fw, y - fh, x + fw, y + fh)
+        """A standing sprite of ours with a solid footprint (half-width, depth) on the floor from its front edge (its
+        feet, the sprite's bottom row) back. Returns the draw, or None if it does not fit (unless force)."""
+        fw, fd = foot
+        rect = (x - fw, y - 0.5, x + fw, y + fd)
         srect = (x - im.width / 2, y, x + im.width / 2, y + im.height)
         if force == "wet":          # stands in water: only kept clear of other footprints
             if not self.free(rect, self.rects, 1) or not self.on_floor(x, y):
@@ -438,8 +490,9 @@ class Room:
 
     def actor(self, im, x, y, name, foot=None, force=True):
         """The hero or a monster, on open floor; its footprint is kept clear of props."""
-        fw = foot[0] if foot else max(3, im.width * 0.28)
-        fh = foot[1] if foot else 2.5
+        # the hero's own collider is an 8 x 3 capsule at its feet; monsters scale with their size
+        fw = foot[0] if foot else (4.0 if name == "hero" else max(4.0, im.width * 0.3))
+        fh = foot[1] if foot else (1.5 if name == "hero" else max(1.5, im.width * 0.09))
         rect = (x - fw, y - fh, x + fw, y + fh)
         if not force and not self.fits(rect):
             return None
@@ -733,6 +786,7 @@ class Room:
             ds = self.add_prefab(gid, x, y, kind)
             return ds
         if not force and not all(self.fits(f) for f in foots):
+            self.misses = getattr(self, "misses", []) + [name]
             return None
         ds = self.add_prefab(gid, x, y, kind)
         self._claim(foots, name, y, ds)
