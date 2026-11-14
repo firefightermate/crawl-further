@@ -11,6 +11,8 @@ namespace CrawlFurther.Content.Gods.Ysveld
     /// </summary>
     public class LoomSpool : YsveldBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         public const int Full = 3;
         public static GameObject PinLash;
         static readonly Vector2 Spool = new Vector2(14f, 21f);

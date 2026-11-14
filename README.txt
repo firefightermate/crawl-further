@@ -1,4 +1,4 @@
-CRAWL: FURTHER 1.4.0
+CRAWL: FURTHER 1.4.3
 ====================
 
 Crawl: Further (formerly "Crawl Mod") is a big content mod for Crawl. Nine new gods with 189 monsters between
@@ -9,49 +9,30 @@ violet gem on its picture (portraits, shop pictures, vault cells and the evoluti
 Every mod monster, item, weapon, object, god, origin and ghost form has a vault entry, and everything has its
 own drawn art.
 
-Launch Crawl normally. The top-left banner shows "Crawl: Further 1.4.0" and "self-test OK" when everything
+Launch Crawl normally. The top-left banner shows "Crawl: Further 1.4.3" and "self-test OK" when everything
 loaded. If anything failed, BepInEx\plugins\CrawlFurther\CrawlMod_selftest.txt lists what and why.
 The mod is two DLLs in BepInEx\plugins\CrawlFurther: CrawlFurther.Core.dll (the library) and CrawlFurther.dll.
 Delete an old BepInEx\plugins\CrawlMod folder when you update. The config files keep their old names, so
 updating from any earlier version keeps your settings and saves. New settings files start with CrawlFurther.
 The mod's two bosses are switched off in this version (see BOSSES).
 
-NEW IN 1.4.2
+NEW IN 1.4.3
 ------------
-  - Tier 2 and 3 basic attacks of Sylvene, Umbrael, Bel'Mora and Zhekra monsters are combos: press attack
-    again within a beat to chain the next step, and the third step is a finisher with something of its own.
-
-NEW IN 1.4.1
-------------
-  - Tier 2 and 3 monsters hit a much bigger area: none of their swings, bites or slams is smaller than the
-    game's own monsters of the same rank, and the biggest monsters hit the widest.
-  - Ground slams reach as far up and down the floor as they look, and more rings hit everywhere their art
-    shows.
-  - Puffball Brute: a much wider slam ring. Bounce bumps the hero on the way and lands harder.
-  - Cordyceps Saint: Infest. Spore spines seed stalks in the hero that drag him in, then burst while a
-    shambler walks off him.
-  - Sand Wraith: the hourglass counts down for real, and the column falls when the top bulb is empty.
-  - The mod's Pause > Tips pages use the font of the live monster tips.
-
-NEW IN 1.4.0
-------------
-  - Every mod monster has its own challenge goal, like the game's own: stronger monsters ask for a higher hero
-    level, weaker ones a lower one, inside the range the game uses for that tier.
-  - Mod monsters are exactly the same in vault challenges as in normal games, so a challenge shows how a
-    monster really plays.
-  - Mod monsters checked one by one against their challenge goals. The ones that were far off now play
-    closer to the rest: Bramble Knight, Pollen Monarch, Spark Beetle, Brood Drone, Bell Urchin and Forge
-    Colossus are stronger; Waxen Knight, Hive Soldier, Nasute, Bone Lancer, Barghest, Leyden Golem, Glassmoth,
-    Gravetusk, Marrow Hound, Anvil Smith and Tallow Colossus are weaker. A few others got a slight nudge.
-  - Carrion Saint: Murder looses the whole flock, five crows that burst from its shoulders in a fan and bend
-    toward the hero.
-  - Jelly Siren: her lash reaches much further, and Jet Pulse stretches her stinging trail into a long arc
-    round the hero that lingers before it shrinks back.
-  - Slime Hag: a bite that lands now really ties the hero in her knot, holding him until it snaps and bites
-    again.
-  - The Poltergeist's hex bolt can't hit the hero from on top of him, and does nothing in the shop.
-  - Test mode opens everything from the start (gods, heroes, slots, blobs, secrets, every vault entry and
-    challenge), and the test panel's switch is remembered.
+  Everything since 1.3.0.
+  - Chaos floors are built mostly from big rooms: wider, deeper copies of the game's own rooms, grown out of
+    their own floor and walls, with more enemies and props to fill them. Every room still fits on one screen.
+  - A chaos game starts every monster player on tier 2 monsters. The hero levels faster, monster players earn
+    wrath faster, and gold comes in a little quicker.
+  - Tier 2 and 3 monsters attack in combos. Press attack again within a beat to chain the next swing, bite or
+    shot, and the third step is a finisher with a trick of its own. Sylvene, Umbrael, Bel'Mora, Zhekra, Jinx,
+    Kaurn, Ossivar, Vhorrul, Ysveld and the secret monsters all got them.
+  - Tier 2 and 3 monsters hit a bigger area, never smaller than the game's own monsters of the same rank, and
+    ground slams reach as far as their art shows.
+  - Puffball Brute, Cordyceps Saint, Sand Wraith, Carrion Saint, Jelly Siren and Slime Hag got reworked moves.
+  - Every mod monster has its own vault challenge goal and plays the same in a challenge as in a normal game.
+    Monsters that were far from their goal were retuned.
+  - The Poltergeist's hex bolt can't hit the hero from on top of him or in the shop.
+  - The mod's pages in Pause > Tips use the font of the live monster tips.
 
 NEW IN 1.3.0
 ------------
@@ -458,6 +439,11 @@ CHAOS
   its own. The second spell's charge shows in a blue bar under the special bar, and the hero stats panel
   names both. Buying a spell with one held makes it the second. Buying one with two held asks which to drop
   (the shop's text says so before you buy). Bots use whichever spell is ready and drop the cheaper one.
+  Big rooms: most rooms on a chaos floor are wider, deeper copies of the game's own rooms, grown out of
+  their own floor and walls, with more enemies and props. Each still fits on one screen; a room that can't
+  grow cleanly keeps its own size. ChaosBigRooms under [Game] turns them off.
+  Pace: monster players start on tier 2 monsters, the hero levels faster, wrath comes faster and gold a
+  little quicker. A continued game picks up the faster pace from the continue on.
   Turn chaos off with Chaos under [Game] in com.firefightermate.crawlfurther.cfg.
 
 TEST MODE

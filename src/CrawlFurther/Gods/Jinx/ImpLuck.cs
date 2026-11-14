@@ -10,6 +10,8 @@ namespace CrawlFurther.Content.Gods.Jinx
     /// </summary>
     public class ImpLuck : JinxBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         /// <summary>The idle and run while a six is banked (set by the kit).</summary>
         public static exSpriteAnimClip LuckyIdle, LuckyRun;
 

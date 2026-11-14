@@ -13,6 +13,8 @@ namespace CrawlFurther.Content.Gods.Ysveld
     /// </summary>
     public class GlasswingCocoon : YsveldBehaviour
     {
+        protected override bool PicksBasics { get { return true; } }
+
         public const float Time_ = 2f, Stun = 1.2f, Heal = 2f, CrackGap = 0.12f, Keen = 8f;
         public const int Cracks = 3;
         public static exSpriteAnimClip CurledClip, StunnedClip, KeenIdle, KeenRun;

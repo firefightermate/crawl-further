@@ -1,7 +1,7 @@
 {
   "ModStmGrotesque": {
     "name": "Grotesque",
-    "attack": "Rake with your stone talons",
+    "attack": "Two talon rakes, then spring in and rake twice",
     "special": "Turn to stone: no harm; hits return as shards",
     "passive": [
       "First killing blow: crumble to rubble, then reform",
@@ -21,7 +21,7 @@
   },
   "ModStmGambit": {
     "name": "Gambit",
-    "attack": "Rear up and slam your head down",
+    "attack": "Two head slams, then a leap whose stamp lands twice",
     "special": "Knight's Tour: three L-shaped leaps",
     "passive": [
       "A landing on the hero puts him in check.",
@@ -31,7 +31,7 @@
   },
   "ModStmCaryatid": {
     "name": "Caryatid",
-    "attack": "Smash your stone capital down in front",
+    "attack": "Two capital smashes, then a crack bursts further on",
     "special": "Raise a column under the hero; it stands a while",
     "passive": [
       "Beside one of your columns you take less damage.",
@@ -41,7 +41,7 @@
   },
   "ModStmLachrymosa": {
     "name": "Lachrymosa",
-    "attack": "Lament: rake with both hands",
+    "attack": "Two laments, then glide in and rake twice",
     "special": "Lights Out: the room goes dark; none see you",
     "passive": [
       "Watched, you turn to slow stone",

@@ -456,14 +456,19 @@ namespace CrawlFurther.Content.Secrets
             int fx = Kit.AddEffect(p, StmFx.RakeFx, attach: true, offsetX: 12f, offsetY: 9f);
             var rk = Kit.Melee(sh, "Rake", "ModStmGrotesqueRake", v, 3, hit, 55f);
             rk.Ev(3, "AnimAttack", fx);
+            // Combo: two rakes, then it springs in and rakes twice
+            var rk2 = Kit.Melee(sh, "Rake", "ModStmGrotesqueRake2", null, 3, hit, 65f).Speed(1.1f).Ev(3, "AnimAttack", fx).Build();
+            var rk3 = Kit.Melee(sh, "Rake", "ModStmGrotesquePounce", v, 2, hit, 130f, 4, hit, 30f).Speed(0.9f).Ev(2, "AnimAttack", fx).Ev(4, "AnimAttack", fx).Build();
             // StoneOn 4 + StoneHold x5 (10 frames, 2.0 s) + StoneBurst 4: stone from frame 3, bursts on frame 15
             var st = new ClipBuilder(sh, "StoneOn", "ModStmGrotesqueStone").Once().Then("StoneHold", 5).Then("StoneBurst")
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(0, "AnimInputMultiplyStop").Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop")
                 .Ev(3, "StmStoneOn").EvO(3, "AnimSound", v).Ev(15, "StmStoneBurst").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, rk.Build(), 1.3f, rangeInner: 10f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, rk.Build(), 0.4f, rangeInner: 10f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, rk2, 0.4f, rangeInner: 10f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, rk3, 1.8f, rangeInner: 10f, rangeOuter: 54f));
             Kit.SetSpecial(p, Kit.Attack(sp, st, 0f, rangeInner: 0f, rangeOuter: 60f, rangeRetreat: 0f), 6.5f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 10f);
         }
 
@@ -505,6 +510,10 @@ namespace CrawlFurther.Content.Secrets
             int fx = Kit.AddEffect(p, StmFx.StampFx, offsetX: 14f, offsetY: 1f);
             var sl = Kit.Melee(sh, "Slam", "ModStmGambitSlam", v, 3, hit, 45f);
             sl.Ev(3, "AnimAttack", fx).Ev(3, "StmGambitSlam");
+            int fx2 = Kit.AddEffect(p, StmFx.StampFx, offsetX: 40f, offsetY: 1f);
+            // Combo: two head slams, then a leaping slam whose stamp lands twice
+            var sl2 = Kit.Melee(sh, "Slam", "ModStmGambitSlam2", null, 3, hit, 55f).Speed(1.1f).Ev(3, "AnimAttack", fx).Ev(3, "StmGambitSlam").Build();
+            var sl3 = Kit.Melee(sh, "Slam", "ModStmGambitCheck", v, 3, hit, 90f).Speed(0.85f).Ev(3, "AnimAttack", fx).Ev(3, "StmGambitSlam").Ev(4, "AnimAttack", fx2, 0.1f).Build();
             // (TourCrouch 3 + TourAir 3 + TourLand 3) x 3 = 27 frames; leap k: mark 9k, jump 9k+3, land 9k+6
             var tb = new ClipBuilder(sh, "TourCrouch", "ModStmGambitTour").Once().Then("TourAir").Then("TourLand")
                 .Then("TourCrouch").Then("TourAir").Then("TourLand").Then("TourCrouch").Then("TourAir").Then("TourLand")
@@ -518,9 +527,11 @@ namespace CrawlFurther.Content.Secrets
             }
             var tour = tb.Ev(-1, "StmTourEnd").Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sl.Build(), 1.3f, rangeInner: 8f, rangeOuter: 30f));
+            atk.Add(Kit.Attack(a0, sl.Build(), 0.4f, rangeInner: 8f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, sl2, 0.4f, rangeInner: 8f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, sl3, 1.9f, rangeInner: 8f, rangeOuter: 56f));
             Kit.SetSpecial(p, Kit.Attack(sp, tour, 0f, rangeInner: 30f, rangeOuter: 140f, rangeRetreat: 0f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 9f);
         }
 
@@ -533,11 +544,17 @@ namespace CrawlFurther.Content.Secrets
             int fx = Kit.AddEffect(p, StmFx.CapitalFx, offsetX: 15f, offsetY: 1f);
             var sm = Kit.Melee(sh, "Smash", "ModStmCaryatidSmash", v, 4, hit, 40f);
             sm.Ev(4, "AnimAttack", fx);
+            int fx2 = Kit.AddEffect(p, StmFx.CapitalFx, offsetX: 42f, offsetY: 1f);
+            // Combo: two capital smashes, then one whose crack runs on a second burst ahead
+            var sm2 = Kit.Melee(sh, "Smash", "ModStmCaryatidSmash2", null, 4, hit, 45f).Speed(1.1f).Ev(4, "AnimAttack", fx).Build();
+            var sm3 = Kit.Melee(sh, "Smash", "ModStmCaryatidFault", v, 4, hit, 50f).Speed(0.85f).Ev(4, "AnimAttack", fx).Ev(5, "AnimAttack", fx2, 0.1f).Build();
             var rs = Cast(sh, "Raise", "ModStmCaryatidRaise", 4).Ev(4, "StmRaiseColumn").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, sm.Build(), 1.5f, rangeInner: 10f, rangeOuter: 32f));
+            atk.Add(Kit.Attack(a0, sm.Build(), 0.45f, rangeInner: 10f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, sm2, 0.45f, rangeInner: 10f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, sm3, 2.2f, rangeInner: 10f, rangeOuter: 58f));
             Kit.SetSpecial(p, Kit.Attack(sp, rs, 0f, rangeInner: 20f, rangeOuter: 140f, rangeRetreat: 30f), 7f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.65f);
             Strike.Feet(p, n0, 14f);
         }
 
@@ -551,15 +568,20 @@ namespace CrawlFurther.Content.Secrets
             int fx = Kit.AddEffect(p, StmFx.LamentFx, attach: true, offsetX: 12f, offsetY: 14f);
             var la = Kit.Melee(sh, "Lament", "ModStmLachrymosaLament", v, 4, hit, 50f);
             la.Ev(4, "AnimAttack", fx);
+            // Combo: two laments, then she glides in and rakes with both hands twice
+            var la2 = Kit.Melee(sh, "Lament", "ModStmLachrymosaLament2", null, 4, hit, 60f).Speed(1.1f).Ev(4, "AnimAttack", fx).Build();
+            var la3 = Kit.Melee(sh, "Lament", "ModStmLachrymosaWeep", v, 3, hit, 120f, 5, hit, 30f).Speed(0.9f).Ev(3, "AnimAttack", fx).Ev(5, "AnimAttack", fx).Build();
             var cue = LightsOut.Cue;
             var lo = Cast(sh, "Snuff", "ModStmLachrymosaLightsOut", 4).Ev(4, "StmLightsOut");
             if (cue != null) lo.EvO(4, "AnimSound", cue);
             if (v != null) lo.EvO(1, "AnimSound", v);
             var lights = lo.Ev(-1, "AnimRun").Build();
             atk.Clear();
-            atk.Add(Kit.Attack(a0, la.Build(), 1.4f, rangeInner: 10f, rangeOuter: 34f));
+            atk.Add(Kit.Attack(a0, la.Build(), 0.4f, rangeInner: 10f, rangeOuter: 36f));
+            atk.Add(Kit.Attack(a0, la2, 0.4f, rangeInner: 10f, rangeOuter: 38f));
+            atk.Add(Kit.Attack(a0, la3, 1.9f, rangeInner: 10f, rangeOuter: 56f));
             Kit.SetSpecial(p, Kit.Attack(sp, lights, 0f, rangeInner: 30f, rangeOuter: 180f, rangeRetreat: 0f), 6f);
-            Kit.Order(p, Attacks.eAttackOrderType.InOrder);
+            Kit.Order(p, Attacks.eAttackOrderType.Combo, 0.6f);
             Strike.Feet(p, n0, 14f);
         }
 

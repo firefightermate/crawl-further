@@ -37,7 +37,7 @@
   },
   "ModChandler": {
     "name": "Chandler",
-    "attack": "Molten Glob: lands as a burning pool",
+    "attack": "Two molten globs, then three that pool in a row",
     "special": "Pour: a line of unlit wax ahead",
     "passive": [
       "Pour a line, wait, then shoot it: it all goes up",
@@ -46,7 +46,7 @@
   },
   "ModVhWickworm": {
     "name": "Wickworm",
-    "attack": "Rearing Bite: short reach",
+    "attack": "Two rearing bites, then a long lunge biting twice",
     "special": "Drip Road: slither fast, laying wax",
     "passive": [
       "Swim in wax unseen. Only your candles show",
@@ -56,7 +56,7 @@
   },
   "ModVhTallowSow": {
     "name": "Tallow Sow",
-    "attack": "Fat Spray: three drops of hot fat that may slow",
+    "attack": "Two sprays of hot fat, then a gush of five",
     "special": "Lay three wax eggs: soon each spits at the hero",
     "passive": [
       "Wallow in wax: his shots glance off your coat",
@@ -75,7 +75,7 @@
   },
   "ModCandelabra": {
     "name": "Candelabra",
-    "attack": "Five Flames: a fan of five candle flames",
+    "attack": "Two fans of five flames, then five down the middle",
     "special": "Vigil: plant and light the wax near you",
     "passive": [
       "Your flames fork in two when they cross wax",
@@ -84,7 +84,7 @@
   },
   "ModTallowColossus": {
     "name": "Tallow Colossus",
-    "attack": "Fist One-Two: two huge blows",
+    "attack": "The one-two twice, then four blows running",
     "special": "Topple: rear up and fall flat on him",
     "passive": [
       "Soak up wax to grow. Fire melts your layers off",
@@ -93,7 +93,7 @@
   },
   "ModVhPyreWarden": {
     "name": "Pyre Warden",
-    "attack": "Censer Smash: an ember ring that lights wax",
+    "attack": "Two ember rings, then one that bursts up again ahead",
     "special": "Stoke: the fire near him spreads in three rings",
     "passive": [
       "Pyres near you never cool",
@@ -103,7 +103,7 @@
   },
   "ModVhRenderer": {
     "name": "Tallow Renderer",
-    "attack": "Ladle Fling: boiling tallow that may slow",
+    "attack": "Two ladle flings, then a fling and a swing back",
     "special": "Boil Over: a wave of tallow rolls ahead",
     "passive": [
       "Tip the pot and ride the wave in",
@@ -113,7 +113,7 @@
   },
   "ModVhWickHag": {
     "name": "Wick Hag",
-    "attack": "Hex Flame: a flicked flame that lights wax",
+    "attack": "Two hex flames, then a hand of three",
     "special": "Poppet: set down a wax poppet of the hero",
     "passive": [
       "Burn his poppet and he feels it",
@@ -123,7 +123,7 @@
   },
   "ModVhCandleWyrm": {
     "name": "Candle Wyrm",
-    "attack": "Rear Strike: strike down just ahead",
+    "attack": "Two strikes, then a lunge that strikes twice",
     "special": "Wick Coil: race a ring of fire round the hero",
     "passive": [
       "Coil round him. The closed ring tightens",
@@ -133,7 +133,7 @@
   },
   "ModVhFuseScorpion": {
     "name": "Fuse Scorpion",
-    "attack": "Twin Snap: both claws",
+    "attack": "Two claw snaps, then a lunge and both claws in turn",
     "special": "Light the Fuse: a spark runs his footsteps",
     "passive": [
       "Your fuse follows his footsteps. Wax speeds it up",
@@ -143,7 +143,7 @@
   },
   "ModVhBroodMother": {
     "name": "Grub Mother",
-    "attack": "Head Slam: leaves a wax pool",
+    "attack": "Two head slams, then a slam that splashes wax ahead",
     "special": "Brood Spit: three grublings land by the hero",
     "passive": [
       "Grubs that crawl through fire burst into flame",
@@ -153,7 +153,7 @@
   },
   "ModVhPyreTick": {
     "name": "Pyre Tick",
-    "attack": "Barbed Bite: gives the hero a fever",
+    "attack": "Two barbed bites, then one that sprays burning blood",
     "special": "Ember Spray: five drops of burning blood",
     "passive": [
       "Your bite gives him fever: wax he steps on lights",
@@ -163,7 +163,7 @@
   },
   "ModVhAshSeraph": {
     "name": "Ashen Seraph",
-    "attack": "Lance Thrust: a long cinder lance",
+    "attack": "Two lance thrusts, then a charge that thrusts twice",
     "special": "Ash to Ash: fires near you go out as ash clouds",
     "passive": [
       "Beat fires out: each becomes a dazing ash cloud",
@@ -172,7 +172,7 @@
   },
   "ModLanternWraith": {
     "name": "Lantern Wraith",
-    "attack": "Soul Orb: an orb that bursts where it stops",
+    "attack": "Two soul orbs, then a swing of three",
     "special": "Take the Light: a cone that steals his soul flame",
     "passive": [
       "Steal his soul flame: he hits softer",

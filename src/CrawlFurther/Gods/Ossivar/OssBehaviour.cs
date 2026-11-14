@@ -42,7 +42,8 @@ namespace CrawlFurther.Content.Gods.Ossivar
             SetStance(null, null);
             if (Body != null && m_dead != null) R.Set(Body, "m_animationDead", m_dead);
             if (m_specialData != null && m_special != null) m_specialData.m_animationFront = m_special;
-            NextBasic(0);
+            // the game never clears a next-attack override: only a quirk that picks its basics itself keeps one
+            NextBasic(PicksBasics ? 0 : -1);
             SpeedScale(1f);
         }
 
@@ -156,6 +157,9 @@ namespace CrawlFurther.Content.Gods.Ossivar
         }
 
         /// <summary>Which basic attack (index in the kit's list) the body throws next, until set again.</summary>
+        /// <summary>True for a quirk that chooses which basic comes next itself (<see cref="NextBasic"/>).</summary>
+        protected virtual bool PicksBasics { get { return false; } }
+
         protected void NextBasic(int index) { if (m_attacks != null) m_attacks.SetNextAttackOverride(index); }
 
         /// <summary>Swap the clip the special plays (null puts the kit's own back).</summary>
