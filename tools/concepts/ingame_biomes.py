@@ -222,6 +222,19 @@ def hero(R, x, y, flip=False, clip="1HSwordIdle", lamp=True):
     return d
 
 
+def hero_behind(R, x, flip=False):
+    """Put the hero at the closest spot straight behind whatever stands at x: step back from its footprint until his
+    own collider (8 x 3 at the feet) is clear."""
+    near = [r for (r, lab, _) in R.solids if r[0] <= x <= r[2]]
+    y = min(r[1] for r in near) if near else R.fy0
+    while y < R.fy1:
+        rect = (x - 4, y - 1.5, x + 4, y + 1.5)
+        if R.free(rect, R.rects) and R.walkable(x, y):
+            return hero(R, x, y, flip)
+        y += 0.5
+    return None
+
+
 def monster(R, sheet, x, y, flip=False, frame=0):
     return R.actor(G.mod_sprite(sheet, frame, flip, prefer=()), x, y, "monster")
 
@@ -346,6 +359,7 @@ def drowned_nave():
     hero(R, 70, -30, flip=True)
     R.actor(G.mod_sprite("BelKraken", 0, False, prefer=()), -12, -16, "monster")
     R.put("PropActionable_Fountain", 0, -8, force=True)
+    R.wet_ok = ("PropActionable_Fountain",)     # the font's fountain stands in its pool on purpose
     for i in range(6):
         a = i / 6 * math.tau + 0.3
         x, y = 74 * math.cos(a), -6 + 38 * math.sin(a)
@@ -745,7 +759,7 @@ def rot_gardens():
     caps(R, [(-64, 14, 42, "parasol", MAG, TEALG), (58, 22, 38, "parasol", MAG, TEALG), (8, 34, 28, "bell", OCH, AMBG),
              (80, -26, 24, "bell", OCH, AMBG), (-24, -40, 18, "parasol", MAG, TEALG), (-90, -12, 24, "ink", PALE, BLUEG),
              (34, -12, 20, "ink", PALE, BLUEG), (92, 6, 16, "ink", PALE, BLUEG)])
-    hero(R, 53, 28.5)      # behind the right-hand cap's stem
+    hero_behind(R, 56)     # as close behind the right-hand cap's stem as his collider allows
     for i, (x, y) in enumerate(((30, -36), (-2, 4), (72, 2))):
         stand(R, Q.pod_cluster(seed=i + 3), x, y, tries=6, lamp=((120, 255, 210), 14, 0.4))
     stand(R, Q.rotten_log(44, colour=(86, 66, 62), cap=MAG, glow=1, seed=9), -22, 28, tries=6)
@@ -872,8 +886,8 @@ def ledger_vaults():
         for y in (12, -18):
             if R.put("TableCryptHoriz%d" % R.rnd.randint(1, 3), x, y):
                 R.add_named("PropCandles%d" % R.rnd.randint(1, 3), x + R.rnd.randint(-4, 4), y + 5)
-                R.put("PropGhostTrap_Chair2", x - 15, y + 1)
-                R.put("PropGhostTrap_Chair2Flipped", x + 15, y + 1)
+                R.put("PropGhostTrap_Chair2", x - 18, y + 1)
+                R.put("PropGhostTrap_Chair2Flipped", x + 19, y + 1)
     R.put("PropActionable_BookPodium_Flame", 0, 34, force=True)
     shelf_row(R, 34, R.fx0 + 6, -20, SHELVES)
     shelf_row(R, 34, 20, R.fx1 - 6, SHELVES)
