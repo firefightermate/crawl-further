@@ -401,10 +401,13 @@ namespace CrawlFurther.Content.Gods.Sylvene
             int berry = Kit.AddEffect(p, SylveneFx.Berry, offsetX: 11f, offsetY: 25f);   // fingers (11, -25)
             int bl = Kit.AddEffect(p, SylveneFx.Berry, offsetX: 11f, offsetY: 25f, angle: -16f);
             int br = Kit.AddEffect(p, SylveneFx.Berry, offsetX: 11f, offsetY: 25f, angle: 16f);
-            // Combo: two berries, then a Handful: three in a fan, nine seeds of poison when they split
+            // Combo: two berries, then Nightfall: a big berry that bursts into a drifting cloud of rot
             var ts = Kit.Shot(sh, "Toss", "ModSylShadeToss", 3, v, 0f, berry).Build();
             var ts2 = Kit.Shot(sh, "Toss", "ModSylShadeToss2", 3, null, 0f, berry).Speed(1.15f).Build();
-            var hf = Kit.Shot(sh, "Toss", "ModSylShadeHandful", 3, v, 0.05f, bl, berry, br).Speed(0.85f).Build();
+            // Nightfall: one big berry that bursts into a drifting cloud of rot where it stops
+            int night = Kit.AddEffect(p, FxKit.Finisher(SylveneFx.Berry, "ModSylBerryNightfall", scale: 1.6f, damageMult: 1.2f, speedMult: 0.8f,
+                                                        leaves: SylveneFx.RotCloud), offsetX: 11f, offsetY: 25f);
+            var hf = Kit.Shot(sh, "Toss", "ModSylShadeNightfall", 3, v, 0f, night).Speed(0.85f).Build();
             var gd = Special(sh, "Garden", "ModSylShadeGarden").Ev(4, "ModSylShade").EvO(4, "AnimSound", v).Ev(5, "ModSylPlantTwo").Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, ts, 0.45f, rangeInner: 45f, rangeOuter: 110f, rangeRetreat: 40f));

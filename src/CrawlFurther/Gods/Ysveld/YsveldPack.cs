@@ -115,9 +115,11 @@ namespace CrawlFurther.Content.Gods.Ysveld
             int ring = Kit.AddEffect(p, YsveldFx.SnareRing, spawnPoint: DamageEffectData.eSpawnPoint.ClosestEnemy);
             Strike.Feet(p, from, 5f);
             var bt = Kit.Melee(sh, "Bite", "ModYsvLurkerBite", v, 3, bite, 70f).Build();
-            // Combo: two trapdoor bites, then the Ambush: a long lunge that bites twice
+            // Combo: two trapdoor bites, then the Ambush: a long lunge that bites twice, the second holding him in place
             var bt2 = Kit.Melee(sh, "Bite", "ModYsvLurkerBite2", null, 3, bite, 80f).Speed(1.1f).Build();
-            var bt3 = Kit.Melee(sh, "Bite", "ModYsvLurkerAmbush", v, 2, bite, 140f, 4, bite, 40f).Speed(0.9f).Build();
+            int hold = Kit.AddEffect(p, FxKit.Finisher(YsveldFx.LurkBite, "ModYsvLurkBiteHold", damageMult: 1.1f, status: ModStatus.Root),
+                                     attach: true, destroyOnAnimEnd: true, offsetX: 11f, offsetY: 4f);
+            var bt3 = Kit.Melee(sh, "Bite", "ModYsvLurkerAmbush", v, 2, bite, 140f, 4, hold, 40f).Speed(0.9f).Build();
             var sn = Special(sh, "Snare", "ModYsvLurkerSnare").Ev(4, "AnimAttack", ring).EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, bt, 0.4f, rangeInner: 14f, rangeOuter: 32f));
@@ -166,9 +168,12 @@ namespace CrawlFurther.Content.Gods.Ysveld
             var sd = Kit.Shot(sh, "Shard", "ModYsvWitchShard", 3, v, 0f, shard).Build();
             int sL = Kit.AddEffect(p, YsveldFx.Shard, offsetX: 13f, offsetY: 12f, angle: -12f);
             int sR = Kit.AddEffect(p, YsveldFx.Shard, offsetX: 13f, offsetY: 12f, angle: 12f);
-            // Combo: two ice shards, then three in a tight fan
+            // Combo: two ice shards, then the Shatter: a long shard that breaks into a ring of crystal where it stops
             var sd2 = Kit.Shot(sh, "Shard", "ModYsvWitchShard2", 3, null, 0f, shard).Speed(1.15f).Build();
-            var sd3 = Kit.Shot(sh, "Shard", "ModYsvWitchSpread", 3, v, 0.04f, sL, shard, sR).Speed(0.85f).Build();
+            // the Shatter: one long shard that breaks into a ring of crystal where it stops
+            int big = Kit.AddEffect(p, FxKit.Finisher(YsveldFx.Shard, "ModYsvShardShatter", scale: 1.5f, damageMult: 1.1f, speedMult: 0.8f,
+                                                      leaves: YsveldFx.CrystalRing), offsetX: 13f, offsetY: 12f);
+            var sd3 = Kit.Shot(sh, "Shard", "ModYsvWitchShatter", 3, v, 0f, big).Speed(0.85f).Build();
             var cr = Special(sh, "Crystals", "ModYsvWitchCrystals").Ev(4, "AnimAttack", ring).EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, sd, 0.4f, rangeInner: 50f, rangeOuter: 120f, rangeRetreat: 40f));
@@ -210,9 +215,11 @@ namespace CrawlFurther.Content.Gods.Ysveld
             int jab = Kit.AddEffect(p, YsveldFx.Jab, attach: true, destroyOnAnimEnd: true, offsetX: 16f, offsetY: 10f);    // staff tip (22, -10)
             Strike.Feet(p, from, 10f);
             var jb = Kit.Melee(sh, "Jab", "ModYsvHermitJab", v, 3, jab, 60f).Build();
-            // Combo: two staff jabs, then the Flurry: a step in and three quick jabs
+            // Combo: two staff jabs, then the Flurry: a step in and three quick jabs, the last one frosting him (slows)
             var jb2 = Kit.Melee(sh, "Jab", "ModYsvHermitJab2", null, 3, jab, 70f).Speed(1.15f).Build();
-            var jb3 = Kit.Melee(sh, "Jab", "ModYsvHermitFlurry", v, 2, jab, 90f, 3, jab, 20f, 5, jab, 30f).Speed(0.9f).Build();
+            int frost = Kit.AddEffect(p, FxKit.Finisher(YsveldFx.Jab, "ModYsvJabFrost", damageMult: 1.1f, status: FxFactory.GetStatus("StatusLavaSteveGoo")),
+                                      attach: true, destroyOnAnimEnd: true, offsetX: 16f, offsetY: 10f);
+            var jb3 = Kit.Melee(sh, "Jab", "ModYsvHermitFlurry", v, 2, jab, 90f, 3, jab, 20f, 5, frost, 30f).Speed(0.9f).Build();
             var pl = Special(sh, "Plant", "ModYsvHermitPlant").Ev(4, "YsvPlantCrystal").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, jb, 0.35f, rangeInner: 12f, rangeOuter: 30f));
@@ -305,9 +312,11 @@ namespace CrawlFurther.Content.Gods.Ysveld
             int grab = Kit.AddEffect(p, YsveldFx.ClawGrab, attach: true, destroyOnAnimEnd: true, offsetX: 21f, offsetY: 8f);
             Strike.Feet(p, from, 8f);
             var sn = Kit.Melee(sh, "Snap", "ModYsvHoarclawSnap", v, 3, snap, 40f).Build();
-            // Combo: two pincer snaps, then the Crush: a lunge and both pincers close on him
+            // Combo: two pincer snaps, then the Crush: a lunge and both pincers close on him, the frozen grip slowing him
             var sn2 = Kit.Melee(sh, "Snap", "ModYsvHoarclawSnap2", null, 3, snap, 50f).Speed(1.1f).Build();
-            var sn3 = Kit.Melee(sh, "Snap", "ModYsvHoarclawCrush", v, 2, snap, 100f, 4, grab, 30f).Speed(0.9f).Build();
+            int crush = Kit.AddEffect(p, FxKit.Finisher(YsveldFx.ClawGrab, "ModYsvClawGrabCrush", damageMult: 1.6f, status: FxFactory.GetStatus("StatusLavaSteveGoo")),
+                                      attach: true, destroyOnAnimEnd: true, offsetX: 21f, offsetY: 8f);
+            var sn3 = Kit.Melee(sh, "Snap", "ModYsvHoarclawCrush", v, 2, snap, 100f, 4, crush, 30f).Speed(0.9f).Build();
             var sz = new ClipBuilder(sh, "Seize", "ModYsvHoarclawSeize").Once().EvF(0, "AnimInputMultiplyFreeFace", 0f)
                 .Ev(1, "AnimInputMultiplyStop").Ev(1, "AnimInputOff").EvF(2, "AnimMoveStick", 140f).Ev(2, "AnimAttack", grab)
                 .EvO(2, "AnimSound", v).Ev(3, "AnimMoveStop").Ev(-1, "AnimRun").Build();
@@ -404,9 +413,10 @@ namespace CrawlFurther.Content.Gods.Ysveld
             int vortex = Kit.AddEffect(p, YsveldFx.Vortex, spawnPoint: DamageEffectData.eSpawnPoint.ClosestEnemy);
             Strike.Feet(p, from, 12f);
             var cl = Kit.Melee(sh, "Claw", "ModYsvWraithClaw", v, 3, claw, 60f).Build();
-            // Combo: two claw rakes, then the Gale: it rushes through and rakes twice
+            // Combo: two claw rakes, then the Gale: it rushes through and rakes twice, and a vortex opens in its wake
             var cl2 = Kit.Melee(sh, "Claw", "ModYsvWraithClaw2", null, 3, claw, 70f).Speed(1.1f).Build();
-            var cl3 = Kit.Melee(sh, "Claw", "ModYsvWraithGale", v, 2, claw, 140f, 4, claw, 50f).Speed(0.9f).Build();
+            int wake = Kit.AddEffect(p, YsveldFx.Vortex, offsetX: 6f, offsetY: 0.01f);
+            var cl3 = Kit.Melee(sh, "Claw", "ModYsvWraithGale", v, 2, claw, 140f, 4, claw, 50f).Speed(0.9f).Ev(4, "AnimAttack", wake, 0.1f).Build();
             var ml = Special(sh, "Maelstrom", "ModYsvWraithMaelstrom").Ev(4, "AnimAttack", vortex).EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, cl, 0.4f, rangeInner: 14f, rangeOuter: 34f));
@@ -508,9 +518,12 @@ namespace CrawlFurther.Content.Gods.Ysveld
             var bo = Kit.Shot(sh, "Bolt", "ModYsvOracleBolt", 3, v, 0f, bolt).Build();
             int bL = Kit.AddEffect(p, YsveldFx.PrismBolt, offsetX: 9f, offsetY: 14f, angle: -18f);
             int bR = Kit.AddEffect(p, YsveldFx.PrismBolt, offsetX: 9f, offsetY: 14f, angle: 18f);
-            // Combo: two prism bolts, then the Spectrum: three bolts split out of the prism
+            // Combo: two prism bolts, then the Spectrum: a big prism that splits into five bolts all round where it stops
             var bo2 = Kit.Shot(sh, "Bolt", "ModYsvOracleBolt2", 3, null, 0f, bolt).Speed(1.15f).Build();
-            var bo3 = Kit.Shot(sh, "Bolt", "ModYsvOracleSpectrum", 3, v, 0.04f, bL, bolt, bR).Speed(0.85f).Build();
+            // the Spectrum: one big prism that splits into five bolts all round where it stops
+            int prism = Kit.AddEffect(p, FxKit.Finisher(YsveldFx.PrismBolt, "ModYsvPrismBoltSpectrum", scale: 1.5f, damageMult: 1.1f, speedMult: 0.75f,
+                                                        leaves: FxKit.Emitter("ModYsvPrismSplit", YsveldFx.PrismBolt, 5)), offsetX: 9f, offsetY: 14f);
+            var bo3 = Kit.Shot(sh, "Bolt", "ModYsvOracleSpectrum", 3, v, 0f, prism).Speed(0.85f).Build();
             var sb = Special(sh, "Sunburst", "ModYsvOracleSunburst").Ev(3, "YsvSunburst").EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, bo, 0.45f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 35f));

@@ -161,9 +161,10 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             int bite = Kit.AddEffect(p, VhorrulFx.WormBite, attach: true, destroyOnAnimEnd: true, offsetX: 13f, offsetY: 4f);
             int road = Kit.AddEffect(p, VhorrulFx.WaxRoad, attach: true);
             var b = Kit.Melee(sh, "Bite", "ModVhWormBite", v, 3, bite, 80f).Build();
-            // Combo: two rearing bites, then the Strike: a long lunge that bites twice
+            // Combo: two rearing bites, then the Strike: a long lunge that bites twice and leaves a pool of burning wax under the second
             var b2 = Kit.Melee(sh, "Bite", "ModVhWormBite2", null, 3, bite, 90f).Speed(1.1f).Build();
-            var b3 = Kit.Melee(sh, "Bite", "ModVhWormStrike", v, 2, bite, 150f, 4, bite, 40f).Speed(0.9f).Build();
+            int lit = Kit.AddEffect(p, VhorrulFx.BurningPool, offsetX: 16f, offsetY: 0.01f);
+            var b3 = Kit.Melee(sh, "Bite", "ModVhWormStrike", v, 2, bite, 150f, 4, bite, 40f).Speed(0.9f).Ev(4, "AnimAttack", lit, 0.05f).Build();
             var r = new ClipBuilder(sh, "Road", "ModVhWormRoad").Once().EvF(0, "ModSprint", 2f).Ev(0, "AnimAttack", road).EvO(0, "AnimSound", v)
                 .Ev(-1, "AnimRun").Build();
             WaxSwimmer.SwimIdle = new ClipBuilder(sh, "Swim", "ModVhWormSwim").Loop().Build(); WaxSwimmer.SwimRun = new ClipBuilder(sh, "SwimRun", "ModVhWormSwimRun").Loop().Build();
@@ -189,9 +190,12 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             var spray = Kit.Shot(sh, "Spray", "ModVhSowSpray", 3, v, 0.02f, drops.ToArray()).Build();
             var wide = new List<int>();
             foreach (var a in new[] { -32f, -16f, 0.01f, 16f, 32f }) wide.Add(Kit.AddEffect(p, VhorrulFx.SowDrop, offsetX: 13f, offsetY: 7f, angle: a));
-            // Combo: two sprays of three drops, then a spray of five
+            // Combo: two sprays of three drops, then the Gush: a fat gob of tallow that splashes into a wax puddle
             var spray2 = Kit.Shot(sh, "Spray", "ModVhSowSpray2", 3, null, 0.02f, drops.ToArray()).Speed(1.15f).Build();
-            var spray3 = Kit.Shot(sh, "Spray", "ModVhSowGush", 3, v, 0.03f, wide.ToArray()).Speed(0.85f).Build();
+            // the Gush: one fat gob of tallow, slow, that splashes into a wax puddle where it stops
+            int gob = Kit.AddEffect(p, FxKit.Finisher(VhorrulFx.SowDrop, "ModVhSowGob", scale: 1.7f, damageMult: 1.2f, speedMult: 0.75f,
+                                                      leaves: VhorrulFx.WaxPuddle), offsetX: 13f, offsetY: 7f);
+            var spray3 = Kit.Shot(sh, "Spray", "ModVhSowGush", 3, v, 0f, gob).Speed(0.85f).Build();
             var lay = new ClipBuilder(sh, "Lay", "ModVhSowLay").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop");
             for (int i = 0; i < eggs.Count; i++) lay.Ev(4, "AnimAttack", eggs[i], i * 0.08f);
             lay.EvO(4, "AnimSound", v).Ev(-1, "AnimRun");
@@ -266,9 +270,11 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             ColossusAccrete.Runs = new[] { null, new ClipBuilder(sh, "Run1", "ModColossusRun1").Loop().Build(),
                 new ClipBuilder(sh, "Run2", "ModColossusRun2").Loop().Build(), new ClipBuilder(sh, "Run3", "ModColossusRun3").Loop().Build() };
             var fists = Kit.Melee(sh, "Fists", "ModColossusFists", v, 2, fist, 45f, 4, fist, 45f).Build();
-            // Combo: the one-two twice, then the Pound: four blows running, stepping in
+            // Combo: the one-two twice, then the Pound: four blows running, stepping in, the last one leaving him dizzy
             var fists2 = Kit.Melee(sh, "Fists", "ModColossusFists2", null, 2, fist, 55f, 4, fist, 45f).Speed(1.1f).Build();
-            var fists3 = Kit.Melee(sh, "Fists", "ModColossusPound", v, 2, fist, 50f, 4, fist, 40f, 9, fist, 50f, 11, fist, 50f)
+            int floor = Kit.AddEffect(p, FxKit.Finisher(VhorrulFx.ColossusFist, "ModVhColossusFistFloor", damageMult: 1.1f, status: FxFactory.GetStatus("StatusDizzy")),
+                                      attach: true, destroyOnAnimEnd: true, offsetX: 13.2f, offsetY: 13.2f);
+            var fists3 = Kit.Melee(sh, "Fists", "ModColossusPound", v, 2, fist, 50f, 4, fist, 40f, 9, fist, 50f, 11, floor, 50f)
                 .Repeat(2).Speed(1.25f).Build();
             // Rear 4 (0.8 s) + Fall 3 + Prone 2 x2 (1 s) + GetUp 4
             var topple = new ClipBuilder(sh, "Rear", "ModColossusTopple").Once().Then("Fall").Then("Prone", 2).Then("GetUp")
@@ -344,9 +350,12 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             var h = Kit.Shot(sh, "Hex", "ModVhHagHex", 3, v, 0f, hex).Build();
             int hL = Kit.AddEffect(p, VhorrulFx.HexFlame, offsetX: 13.9f, offsetY: 11.6f, angle: -16f);
             int hR = Kit.AddEffect(p, VhorrulFx.HexFlame, offsetX: 13.9f, offsetY: 11.6f, angle: 16f);
-            // Combo: two hex flames, then a hand of three
+            // Combo: two hex flames, then the Great Hex: a big hex flame that drops burning wax along its path
             var h2 = Kit.Shot(sh, "Hex", "ModVhHagHex2", 3, null, 0f, hex).Speed(1.15f).Build();
-            var h3 = Kit.Shot(sh, "Hex", "ModVhHagHand", 3, v, 0.05f, hL, hex, hR).Speed(0.85f).Build();
+            // the Great Hex: one big hex flame that drops burning wax along its path
+            int great = Kit.AddEffect(p, FxKit.Finisher(VhorrulFx.HexFlame, "ModVhHexFlameGreat", scale: 1.5f, damageMult: 1.2f, speedMult: 0.8f,
+                                                        trail: VhorrulFx.BurningPool, trailDist: 24f), offsetX: 13.9f, offsetY: 11.6f);
+            var h3 = Kit.Shot(sh, "Hex", "ModVhHagGreatHex", 3, v, 0f, great).Speed(0.85f).Build();
             var pop = new ClipBuilder(sh, "Poppet", "ModVhHagPoppet").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop").Ev(4, "VhPoppet")
                 .EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
@@ -366,9 +375,11 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             int strike = Kit.AddEffect(p, VhorrulFx.WyrmStrike, attach: true, destroyOnAnimEnd: true, offsetX: 25.1f, offsetY: 6.8f);
             var s = new ClipBuilder(sh, "Strike", "ModVhWyrmStrike").Once().EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop")
                 .Ev(2, "AnimInputOff").Ev(3, "AnimAttack", strike).EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
-            // Combo: two strikes, then the Wick: a lunging strike and a second one on its heels
+            // Combo: two strikes, then the Wick: a lunging strike and a second one on its heels that always sets him alight
             var s2 = Kit.Melee(sh, "Strike", "ModVhWyrmStrike2", null, 3, strike, 40f).Speed(1.1f).Build();
-            var s3 = Kit.Melee(sh, "Strike", "ModVhWyrmWick", v, 2, strike, 110f, 4, strike, 40f).Speed(0.9f).Build();
+            int wick = Kit.AddEffect(p, FxKit.Finisher(VhorrulFx.WyrmStrike, "ModVhWyrmStrikeWick", damageMult: 1.1f, status: FxFactory.GetStatus("StatusOnFire")),
+                                     attach: true, destroyOnAnimEnd: true, offsetX: 25.1f, offsetY: 6.8f);
+            var s3 = Kit.Melee(sh, "Strike", "ModVhWyrmWick", v, 2, strike, 110f, 4, wick, 40f).Speed(0.9f).Build();
             var c = new ClipBuilder(sh, "Coil", "ModVhWyrmCoil").Once().Ev(0, "AnimInputOff").Ev(0, "VhCoil").EvO(0, "AnimSound", v).Ev(-1, "AnimRun").Build();
             WyrmCoil.CoilLoop = new ClipBuilder(sh, "Coil", "ModVhWyrmCoilLoop").Loop().Build();
             WyrmCoil.WyrmSwim = new ClipBuilder(sh, "Swim", "ModVhWyrmSwim").Loop().Build(); WyrmCoil.WyrmSwimRun = new ClipBuilder(sh, "SwimRun", "ModVhWyrmSwimRun").Loop().Build();
@@ -388,9 +399,11 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             int n0 = Strike.Mark(p);
             int snap = Kit.AddEffect(p, VhorrulFx.ScorpSnap, attach: true, destroyOnAnimEnd: true, offsetX: 21.6f, offsetY: 6.8f);
             var s = Kit.Melee(sh, "Snap", "ModVhScorpSnap", v, 3, snap, 70f).Build();
-            // Combo: two claw snaps, then the Pincer: a lunge and both claws snap in turn
+            // Combo: two claw snaps, then the Pincer: a lunge and both claws snap in turn, the second poisoning
             var s2 = Kit.Melee(sh, "Snap", "ModVhScorpSnap2", null, 3, snap, 80f).Speed(1.1f).Build();
-            var s3 = Kit.Melee(sh, "Snap", "ModVhScorpPincer", v, 2, snap, 120f, 4, snap, 30f).Speed(0.9f).Build();
+            int venom = Kit.AddEffect(p, FxKit.Finisher(VhorrulFx.ScorpSnap, "ModVhScorpSnapVenom", damageMult: 1.1f, status: FxFactory.GetStatus("StatusPoisoned")),
+                                      attach: true, destroyOnAnimEnd: true, offsetX: 21.6f, offsetY: 6.8f);
+            var s3 = Kit.Melee(sh, "Snap", "ModVhScorpPincer", v, 2, snap, 120f, 4, venom, 30f).Speed(0.9f).Build();
             var f = new ClipBuilder(sh, "Sting", "ModVhScorpSting").Once().EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop")
                 .Ev(2, "AnimInputOff").Ev(3, "VhLightFuse").EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
@@ -459,9 +472,12 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             int n0 = Strike.Mark(p);
             int lance = Kit.AddEffect(p, VhorrulFx.SeraphLance, attach: true, destroyOnAnimEnd: true, offsetX: 20.2f, offsetY: 16.7f);
             var l = Kit.Melee(sh, "Lance", "ModSeraphLance", v, 3, lance, 120f).Build();
-            // Combo: two lance thrusts, then the Pyre Charge: a long charge that thrusts twice
+            // Combo: two lance thrusts, then the Pyre Charge: a long charge that thrusts twice, the second setting him alight over a burning pool
             var l2 = Kit.Melee(sh, "Lance", "ModSeraphLance2", null, 3, lance, 130f).Speed(1.1f).Build();
-            var l3 = Kit.Melee(sh, "Lance", "ModSeraphCharge", v, 2, lance, 180f, 4, lance, 60f).Speed(0.9f).Build();
+            int pyre = Kit.AddEffect(p, FxKit.Finisher(VhorrulFx.SeraphLance, "ModSeraphLancePyre", damageMult: 1.1f, status: FxFactory.GetStatus("StatusOnFire")),
+                                     attach: true, destroyOnAnimEnd: true, offsetX: 20.2f, offsetY: 16.7f);
+            int ash = Kit.AddEffect(p, VhorrulFx.BurningPool, offsetX: 34f, offsetY: 0.01f);
+            var l3 = Kit.Melee(sh, "Lance", "ModSeraphCharge", v, 2, lance, 180f, 4, pyre, 60f).Speed(0.9f).Ev(4, "AnimAttack", ash, 0.05f).Build();
             var beat = new ClipBuilder(sh, "Beat", "ModSeraphBeat").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop").Ev(2, "VhSmother")
                 .EvO(2, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
@@ -482,9 +498,12 @@ namespace CrawlFurther.Content.Gods.Vhorrul
             var s = Kit.Shot(sh, "Swing", "ModWraithSwing", 3, v, 0f, orb).Build();
             int oL = Kit.AddEffect(p, VhorrulFx.LanternOrb, offsetX: 23.2f, offsetY: 26.1f, angle: -18f);
             int oR = Kit.AddEffect(p, VhorrulFx.LanternOrb, offsetX: 23.2f, offsetY: 26.1f, angle: 18f);
-            // Combo: two soul orbs, then a swing of three
+            // Combo: two soul orbs, then the Soul Snare: a big, slow orb that holds him where it catches him
             var s2 = Kit.Shot(sh, "Swing", "ModWraithSwing2", 3, null, 0f, orb).Speed(1.15f).Build();
-            var s3 = Kit.Shot(sh, "Swing", "ModWraithSwing3", 3, v, 0.06f, oL, orb, oR).Speed(0.85f).Build();
+            // the Soul Snare: one big, slow orb that holds him where it catches him
+            int soul = Kit.AddEffect(p, FxKit.Finisher(VhorrulFx.LanternOrb, "ModLanternOrbSoul", scale: 1.6f, damageMult: 1.1f, speedMult: 0.7f,
+                                                       status: ModStatus.Root), offsetX: 23.2f, offsetY: 26.1f);
+            var s3 = Kit.Shot(sh, "Swing", "ModWraithSoulSnare", 3, v, 0f, soul).Speed(0.85f).Build();
             var take = new ClipBuilder(sh, "Take", "ModWraithTake").Once().EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop")
                 .Ev(2, "AnimInputOff").Ev(3, "VhTakeLight").EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             WraithLantern.IdleFull = new ClipBuilder(sh, "IdleFull", "ModWraithIdleFull").Loop().Build(); WraithLantern.RunFull = new ClipBuilder(sh, "RunFull", "ModWraithRunFull").Loop().Build();

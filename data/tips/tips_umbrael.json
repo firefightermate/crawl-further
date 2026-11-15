@@ -118,7 +118,7 @@
  },
  "ModHourglass": {
   "name": "Hourglass",
-  "attack": "Two sand shards, then three down one line",
+  "attack": "Two sand shards, then a heavy one that slows him",
   "special": "Rewind: soon after, snap back to your mark",
   "passive": [
    "Snap back to your mark, health and all",
@@ -188,7 +188,7 @@
  },
  "ModGlassWidow": {
   "name": "Glass Widow",
-  "attack": "Two leg stabs, then a lunge with a second stab",
+  "attack": "Two leg stabs, then a lunge with a poison stab",
   "special": "Glaze Web lands on his spot a beat on, roots",
   "passive": [
    "Glazed, his next hit taken cracks for more",

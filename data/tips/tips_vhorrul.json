@@ -46,7 +46,7 @@
   },
   "ModVhWickworm": {
     "name": "Wickworm",
-    "attack": "Two rearing bites, then a long lunge biting twice",
+    "attack": "Two rearing bites, then a lunge leaving burning wax",
     "special": "Drip Road: slither fast, laying wax",
     "passive": [
       "Swim in wax unseen. Only your candles show",
@@ -56,7 +56,7 @@
   },
   "ModVhTallowSow": {
     "name": "Tallow Sow",
-    "attack": "Two sprays of hot fat, then a gush of five",
+    "attack": "Two sprays of hot fat, then a gob that pools",
     "special": "Lay three wax eggs: soon each spits at the hero",
     "passive": [
       "Wallow in wax: his shots glance off your coat",
@@ -84,7 +84,7 @@
   },
   "ModTallowColossus": {
     "name": "Tallow Colossus",
-    "attack": "The one-two twice, then four blows running",
+    "attack": "The one-two twice, then four blows, the last dazing",
     "special": "Topple: rear up and fall flat on him",
     "passive": [
       "Soak up wax to grow. Fire melts your layers off",
@@ -113,7 +113,7 @@
   },
   "ModVhWickHag": {
     "name": "Wick Hag",
-    "attack": "Two hex flames, then a hand of three",
+    "attack": "Two hex flames, then a great one dropping fire",
     "special": "Poppet: set down a wax poppet of the hero",
     "passive": [
       "Burn his poppet and he feels it",
@@ -123,7 +123,7 @@
   },
   "ModVhCandleWyrm": {
     "name": "Candle Wyrm",
-    "attack": "Two strikes, then a lunge that strikes twice",
+    "attack": "Two strikes, then a lunge that sets him alight",
     "special": "Wick Coil: race a ring of fire round the hero",
     "passive": [
       "Coil round him. The closed ring tightens",
@@ -133,7 +133,7 @@
   },
   "ModVhFuseScorpion": {
     "name": "Fuse Scorpion",
-    "attack": "Two claw snaps, then a lunge and both claws in turn",
+    "attack": "Two claw snaps, then a lunge with a poison snap",
     "special": "Light the Fuse: a spark runs his footsteps",
     "passive": [
       "Your fuse follows his footsteps. Wax speeds it up",
@@ -163,7 +163,7 @@
   },
   "ModVhAshSeraph": {
     "name": "Ashen Seraph",
-    "attack": "Two lance thrusts, then a charge that thrusts twice",
+    "attack": "Two lance thrusts, then a charge that sets him afire",
     "special": "Ash to Ash: fires near you go out as ash clouds",
     "passive": [
       "Beat fires out: each becomes a dazing ash cloud",
@@ -172,7 +172,7 @@
   },
   "ModLanternWraith": {
     "name": "Lantern Wraith",
-    "attack": "Two soul orbs, then a swing of three",
+    "attack": "Two soul orbs, then a big one that holds him",
     "special": "Take the Light: a cone that steals his soul flame",
     "passive": [
       "Steal his soul flame: he hits softer",

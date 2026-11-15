@@ -135,6 +135,51 @@ namespace CrawlFurther.Monsters
             return go;
         }
 
+        /// <summary>
+        /// A combo finisher's own copy of an attack effect: <paramref name="scale"/> times the size, damage times
+        /// <paramref name="damageMult"/>, knockback times <paramref name="knockMult"/>, a status that always lands (null keeps
+        /// the template's), what it leaves where it ends (<paramref name="leaves"/>), flight speed times
+        /// <paramref name="speedMult"/>, and what it drops along its flight (<paramref name="trail"/>, every
+        /// <paramref name="trailDist"/> pixels). Keeps the template's spawn hook.
+        /// </summary>
+        public static GameObject Finisher(GameObject template, string name, float scale = 1f, float damageMult = 1f, Status status = null,
+                                          float knockMult = 1f, GameObject leaves = null, float speedMult = 1f,
+                                          GameObject trail = null, float trailDist = 18f)
+        {
+            if (template == null) return null;
+            if (FxFactory.Templates.ContainsKey(name)) return FxFactory.Templates[name];
+            var go = MonsterFactory.ClonePrefab(template, name);
+            if (scale != 1f) go.transform.localScale = new Vector3(go.transform.localScale.x * scale, go.transform.localScale.y * scale, 1f);
+            foreach (var d in go.GetComponentsInChildren<DamageEffect>(true))
+            {
+                R.Set(d, "m_damage", R.Get<float>(d, "m_damage") * damageMult);
+                R.Set(d, "m_knockbackMultiplier", R.Get<float>(d, "m_knockbackMultiplier") * knockMult);
+                if (status != null) { R.Set(d, "m_status", status); R.Set(d, "m_statusChance", 1f); }
+            }
+            var e = go.GetComponent<Effect>();
+            if (e != null && leaves != null) R.Set(e, "m_spawnOnDestroy", leaves);
+            foreach (var m in go.GetComponents<ParticleMotion>())
+            {
+                if (speedMult != 1f)
+                {
+                    var sp = R.Get<MinMaxRange>(m, "m_speed");
+                    if (sp != null) R.Set(m, "m_speed", new MinMaxRange(sp.m_min * speedMult, (sp.m_hasMax ? sp.m_max : sp.m_min) * speedMult));
+                }
+                if (trail != null)
+                {
+                    R.Set(m, "m_trailObject", trail);
+                    R.Set(m, "m_trailDropDistance", new MinMaxRange(trailDist));
+                    R.Set(m, "m_trailDropTime", new MinMaxRange(0f));
+                }
+            }
+            FxFactory.Templates[name] = go;
+            Action<GameObject> hook;
+            if (FxFactory.OnSpawn.TryGetValue(template, out hook)) FxFactory.OnSpawn[go] = hook;
+            // an Umbrael echo of the template means the finisher echoes too
+            if (FindEcho(template) != null) EchoOf(go);
+            return go;
+        }
+
         /// <summary>A hero-side copy of a monster effect with scaled damage (spells reuse monster moves, softer).</summary>
         public static GameObject Weakened(GameObject template, string name, float damageMult)
         {

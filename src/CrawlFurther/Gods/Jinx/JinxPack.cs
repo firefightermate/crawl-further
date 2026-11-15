@@ -158,10 +158,13 @@ namespace CrawlFurther.Content.Gods.Jinx
             int bolt = Kit.AddEffect(p, JinxFx.CrystalBolt, offsetX: 11f, offsetY: 13f);
             int bl = Kit.AddEffect(p, JinxFx.CrystalBolt, offsetX: 11f, offsetY: 13f, angle: -15f);
             int br = Kit.AddEffect(p, JinxFx.CrystalBolt, offsetX: 11f, offsetY: 13f, angle: 15f);
-            // Combo: two crystal bolts, then a three-card spread of them
+            // Combo: two crystal bolts, then the Reading: one big, slow crystal ball that always leaves him dizzy
             var gz = Kit.Shot(sh, "Gaze", "ModTellerGaze", 3, v, 0f, bolt).Build();
             var gz2 = Kit.Shot(sh, "Gaze", "ModTellerGaze2", 3, null, 0f, bolt).Speed(1.15f).Build();
-            var spread = Kit.Shot(sh, "Gaze", "ModTellerSpread", 3, v, 0.05f, bl, bolt, br).Speed(0.85f).Build();
+            // the Reading: one big crystal ball, slow, that always leaves him dizzy
+            int ball = Kit.AddEffect(p, FxKit.Finisher(JinxFx.CrystalBolt, "ModCrystalBoltReading", scale: 1.6f, damageMult: 1.2f, status: FxFactory.GetStatus("StatusDizzy"), speedMult: 0.7f),
+                                     offsetX: 11f, offsetY: 13f);
+            var spread = Kit.Shot(sh, "Gaze", "ModTellerReading", 3, v, 0f, ball).Speed(0.85f).Build();
             Func<string, exSpriteAnimClip> foretell = anim =>
                 Special(sh, anim, "ModTeller" + anim).Ev(4, "ModJinxForetell").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
@@ -187,10 +190,12 @@ namespace CrawlFurther.Content.Gods.Jinx
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int bite = Kit.AddEffect(p, JinxFx.SnakeBite, attach: true, destroyOnAnimEnd: true, offsetX: 17f, offsetY: 7f);   // jaws (17, -7)
-            // Combo: two strikes, then Snake Eyes: a long lunge that bites twice
+            // Combo: two strikes, then Snake Eyes: a long lunge that bites twice, the second always poisoning
             var st = Kit.Melee(sh, "Strike", "ModSnakeStrike", v, 3, bite, 60f).Build();
             var st2 = Kit.Melee(sh, "Strike", "ModSnakeStrike2", null, 3, bite, 70f).Speed(1.15f).Build();
-            var eyes = Kit.Melee(sh, "Strike", "ModSnakeEyes", v, 2, bite, 120f, 4, bite, 40f).Speed(0.9f).Build();
+            int venom = Kit.AddEffect(p, FxKit.Finisher(JinxFx.SnakeBite, "ModSnakeBiteVenom", damageMult: 1.1f, status: FxFactory.GetStatus("StatusPoisoned")),
+                                      attach: true, destroyOnAnimEnd: true, offsetX: 17f, offsetY: 7f);
+            var eyes = Kit.Melee(sh, "Strike", "ModSnakeEyes", v, 2, bite, 120f, 4, venom, 40f).Speed(0.9f).Build();
             var cr = Special(sh, "Craps", "ModSnakeCraps").Ev(3, "ModJinxCraps").EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, st, 0.35f, rangeInner: 14f, rangeOuter: 32f));
@@ -209,10 +214,12 @@ namespace CrawlFurther.Content.Gods.Jinx
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int pike = Kit.AddEffect(p, JinxFx.PikeThrust, attach: true, destroyOnAnimEnd: true, offsetX: 22f, offsetY: 9f);   // blade x 27..33
-            // Combo: two pike thrusts, then the Charge: it runs in behind the pike and thrusts twice
+            // Combo: two pike thrusts, then the Charge: it runs in behind the pike and thrusts twice, the second heaving him away
             var th = Kit.Melee(sh, "Thrust", "ModJinxSoldierThrust", v, 3, pike, 40f).Build();
             var th2 = Kit.Melee(sh, "Thrust", "ModJinxSoldierThrust2", null, 3, pike, 50f).Speed(1.15f).Build();
-            var chg = Kit.Melee(sh, "Thrust", "ModJinxSoldierCharge", v, 2, pike, 130f, 4, pike, 40f).Speed(0.9f).Build();
+            int heave = Kit.AddEffect(p, FxKit.Finisher(JinxFx.PikeThrust, "ModJinxPikeHeave", damageMult: 1.1f, knockMult: 2.4f),
+                                      attach: true, destroyOnAnimEnd: true, offsetX: 22f, offsetY: 9f);
+            var chg = Kit.Melee(sh, "Thrust", "ModJinxSoldierCharge", v, 2, pike, 130f, 4, heave, 40f).Speed(0.9f).Build();
             var dl = Special(sh, "Deal", "ModJinxSoldierDeal").Ev(3, "ModJinxDealTraps").EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, th, 0.35f, rangeInner: 18f, rangeOuter: 36f));
@@ -258,10 +265,12 @@ namespace CrawlFurther.Content.Gods.Jinx
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int bite = Kit.AddEffect(p, JinxFx.RouletteBite, attach: true, destroyOnAnimEnd: true, offsetX: 22f, offsetY: 19f);   // jaws x 24..30
-            // Combo: two bites, then the Coil: it lets its whole length go and bites twice as it whips round
+            // Combo: two bites, then the Coil: it lets its whole length go and bites twice as it whips round, the second leaving him dizzy
             var bt = Kit.Melee(sh, "Bite", "ModJinxRouletteBite", v, 3, bite, 30f).Build();
             var bt2 = Kit.Melee(sh, "Bite", "ModJinxRouletteBite2", null, 3, bite, 40f).Speed(1.1f).Build();
-            var coil = Kit.Melee(sh, "Bite", "ModJinxRouletteCoil", v, 2, bite, 110f, 4, bite, 40f).Speed(0.9f).Build();
+            int spinBite = Kit.AddEffect(p, FxKit.Finisher(JinxFx.RouletteBite, "ModJinxRouletteBiteSpin", damageMult: 1.1f, status: FxFactory.GetStatus("StatusDizzy")),
+                                         attach: true, destroyOnAnimEnd: true, offsetX: 22f, offsetY: 19f);
+            var coil = Kit.Melee(sh, "Bite", "ModJinxRouletteCoil", v, 2, bite, 110f, 4, spinBite, 40f).Speed(0.9f).Build();
             var spin = Special(sh, "Spin", "ModJinxRouletteSpin").Ev(1, "ModJinxBets").EvO(1, "AnimSound", v).Ev(8, "ModJinxBallDrop")
                 .Ev(-1, "AnimRun").Build();
             atk.Clear();
@@ -359,10 +368,13 @@ namespace CrawlFurther.Content.Gods.Jinx
             int chip = Kit.AddEffect(p, JinxFx.Chip, offsetX: 17f, offsetY: 20f);   // off the thumb at (17, -20)
             int cl = Kit.AddEffect(p, JinxFx.Chip, offsetX: 17f, offsetY: 20f, angle: -14f);
             int cr = Kit.AddEffect(p, JinxFx.Chip, offsetX: 17f, offsetY: 20f, angle: 14f);
-            // Combo: two chips, then Double Down: three chips at once (each hit raises the stake)
+            // Combo: two chips, then the Jackpot: a big chip that bursts into a ring of chips (each hit raises the stake)
             var fl = Kit.Shot(sh, "Flick", "ModJinxRollerFlick", 2, v, 0f, chip).Build();
             var fl2 = Kit.Shot(sh, "Flick", "ModJinxRollerFlick2", 2, null, 0f, chip).Speed(1.15f).Build();
-            var dd = Kit.Shot(sh, "Flick", "ModJinxRollerDouble", 2, v, 0.04f, cl, chip, cr).Speed(0.85f).Build();
+            // Jackpot: one big chip that bursts into a ring of chips where it stops
+            int jack = Kit.AddEffect(p, FxKit.Finisher(JinxFx.Chip, "ModJinxChipJackpot", scale: 1.6f, damageMult: 1.2f, speedMult: 0.8f,
+                                                       leaves: FxKit.Emitter("ModJinxChipRing", JinxFx.ChipSpray, 6)), offsetX: 17f, offsetY: 20f);
+            var dd = Kit.Shot(sh, "Flick", "ModJinxRollerJackpot", 2, v, 0f, jack).Speed(0.85f).Build();
             var ai = Special(sh, "AllIn", "ModJinxRollerAllIn").Ev(5, "ModJinxAllIn").EvO(5, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, fl, 0.35f, rangeInner: 40f, rangeOuter: 110f, rangeRetreat: 30f));
@@ -380,10 +392,11 @@ namespace CrawlFurther.Content.Gods.Jinx
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int ram = Kit.AddEffect(p, JinxFx.Ram, attach: true, destroyOnAnimEnd: true, offsetX: 13f, offsetY: 12f);   // facets to x 19
-            // Combo: two rams, then the Roll: it tumbles on through him, its facets hitting twice
+            // Combo: two rams, then the Roll: it tumbles on through him, its facets hitting twice, and it lands on a crit that bursts
             var rm = Kit.Melee(sh, "Ram", "ModJinxTwentyRam", v, 3, ram, 45f).Build();
             var rm2 = Kit.Melee(sh, "Ram", "ModJinxTwentyRam2", null, 3, ram, 55f).Speed(1.1f).Build();
-            var tum = Kit.Melee(sh, "Ram", "ModJinxTwentyTumble", v, 2, ram, 120f, 4, ram, 60f).Speed(0.9f).Build();
+            int nat = Kit.AddEffect(p, FxKit.Finisher(JinxFx.CritBurst, "ModJinxCritBurstRoll", damageMult: 0.6f), offsetX: 18f, offsetY: 0.01f);
+            var tum = Kit.Melee(sh, "Ram", "ModJinxTwentyTumble", v, 2, ram, 120f, 4, ram, 60f).Speed(0.9f).Ev(4, "AnimAttack", nat).Build();
             var cr = new ClipBuilder(sh, "Crit", "ModJinxTwentyCrit").Once()
                 .Ev(0, "ModWildCard").EvF(0, "AnimInputMultiplyFreeFace", 0f)
                 .Ev(1, "AnimInputMultiplyStop").Ev(1, "AnimInputOff").EvF(1, "AnimMove", 170f).EvO(1, "AnimSound", v)
@@ -405,10 +418,11 @@ namespace CrawlFurther.Content.Gods.Jinx
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int cut = Kit.AddEffect(p, JinxFx.Sabre, attach: true, offsetX: 4f, offsetY: 14f);   // the blade sweeps x 1..23, y -25..-3
-            // Combo: two sabre cuts, then the March: it steps in and cuts twice
+            // Combo: two sabre cuts, then the March: it steps in and cuts twice, and its jaw crunches down where the second cut lands
             var sb = Kit.Melee(sh, "Sabre", "ModJinxNutSabre", v, 3, cut, 25f).Build();
             var sb2 = Kit.Melee(sh, "Sabre", "ModJinxNutSabre2", null, 3, cut, 35f).Speed(1.15f).Build();
-            var march = Kit.Melee(sh, "Sabre", "ModJinxNutMarch", v, 3, cut, 70f, 10, cut, 60f).Repeat(2).Speed(1.2f).Build();
+            int crunch = Kit.AddEffect(p, JinxFx.Crunch, offsetX: 20f, offsetY: 0.01f);
+            var march = Kit.Melee(sh, "Sabre", "ModJinxNutMarch", v, 3, cut, 70f, 10, cut, 60f).Repeat(2).Speed(1.2f).Ev(11, "AnimAttack", crunch).Build();
             var ck = new ClipBuilder(sh, "Crack", "ModJinxNutCrack").Once()
                 .Ev(0, "ModWildCard").EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop").Ev(2, "AnimInputOff")
                 .EvF(3, "AnimMoveStick", 60f).EvO(3, "AnimSound", v).Ev(4, "AnimMoveStop")
@@ -469,10 +483,13 @@ namespace CrawlFurther.Content.Gods.Jinx
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int slam = Kit.AddEffect(p, JinxFx.BanditSlam, attach: true, destroyOnAnimEnd: true, offsetX: 19f, offsetY: 4f);   // knob at (20, -3)
-            // Combo: two lever slams, then Pull Again: it yanks the lever twice running
+            // Combo: two lever slams, then Pull Again: it yanks the lever twice running, and the second pull pays out three coins at him
             var sl = Kit.Melee(sh, "Slam", "ModBanditSlam", v, 3, slam, 25f).Build();
             var sl2 = Kit.Melee(sh, "Slam", "ModBanditSlam2", null, 3, slam, 35f).Speed(1.15f).Build();
-            var again = Kit.Melee(sh, "Slam", "ModBanditAgain", v, 3, slam, 50f, 10, slam, 40f).Repeat(2).Speed(1.2f).Build();
+            var payout = new System.Collections.Generic.List<int>();
+            foreach (var a in new[] { -24f, 0.01f, 24f }) payout.Add(Kit.AddEffect(p, JinxFx.Coin, offsetX: 16f, offsetY: 14f, angle: a));
+            var again = Kit.Melee(sh, "Slam", "ModBanditAgain", v, 3, slam, 50f, 10, slam, 40f).Repeat(2).Speed(1.2f)
+                .Ev(10, "AnimAttack", payout[0]).Ev(10, "AnimAttack", payout[1], 0.04f).Ev(10, "AnimAttack", payout[2], 0.08f).Build();
             var jp = Special(sh, "Jackpot", "ModBanditJackpot").Ev(1, "ModJinxReelsSpin").EvO(2, "AnimSound", v).Ev(8, "ModJinxJackpot")
                 .Ev(-1, "AnimRun").Build();
             atk.Clear();

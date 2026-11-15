@@ -220,9 +220,12 @@ namespace CrawlFurther.Content.Secrets
             var bl = Kit.Shot(sh, "Bolt", "ModGoldRegentBolt", 3, v, 0f, bolt).Build();
             int bL = Kit.AddEffect(p, GoldFx.Bolt, offsetX: 15f, offsetY: 14.5f, angle: -16f);
             int bR = Kit.AddEffect(p, GoldFx.Bolt, offsetX: 15f, offsetY: 14.5f, angle: 16f);
-            // Combo: two scepter bolts, then three fanned out
+            // Combo: two scepter bolts, then a heavy bolt that stamps a seal where it stops
             var bl2 = Kit.Shot(sh, "Bolt", "ModGoldRegentBolt2", 3, null, 0f, bolt).Speed(1.15f).Build();
-            var bl3 = Kit.Shot(sh, "Bolt", "ModGoldRegentBolts", 3, v, 0.04f, bL, bolt, bR).Speed(0.85f).Build();
+            // the Decree Bolt: one heavy bolt that stamps a seal where it stops
+            int decree = Kit.AddEffect(p, FxKit.Finisher(GoldFx.Bolt, "ModGoldBoltDecree", scale: 1.5f, damageMult: 1.1f, speedMult: 0.8f, leaves: GoldFx.Seal),
+                                       offsetX: 15f, offsetY: 14.5f);
+            var bl3 = Kit.Shot(sh, "Bolt", "ModGoldRegentDecreeBolt", 3, v, 0f, decree).Speed(0.85f).Build();
             var dc = new ClipBuilder(sh, "Decree", "ModGoldRegentDecree").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop")
                 .Ev(4, "AnimAttack", seal).EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
@@ -325,9 +328,12 @@ namespace CrawlFurther.Content.Secrets
             var qu = Kit.Shot(sh, "Quills", "ModGoldTreasurerQuills", 3, v, 0.03f, quills.ToArray()).Build();
             var fan = new List<int>();
             foreach (var a in new[] { -28f, -14f, 0.01f, 14f, 28f }) fan.Add(Kit.AddEffect(p, GoldFx.Quill, offsetX: 12f, offsetY: 21f, angle: a));
-            // Combo: two throws of three quills, then five in a wide fan
+            // Combo: two throws of three quills, then the Entry: two quills and a heavy gold one that leaves the ledger's mark
             var qu2 = Kit.Shot(sh, "Quills", "ModGoldTreasurerQuills2", 3, null, 0.03f, quills.ToArray()).Speed(1.15f).Build();
-            var qu3 = Kit.Shot(sh, "Quills", "ModGoldTreasurerLedger", 3, v, 0.04f, fan.ToArray()).Speed(0.85f).Build();
+            // the Entry: three quills and, down the middle, a heavy gold quill that leaves the ledger's mark where it stops
+            int entry = Kit.AddEffect(p, FxKit.Finisher(GoldFx.Quill, "ModGoldQuillEntry", scale: 1.6f, damageMult: 1.3f, speedMult: 0.8f, leaves: GoldFx.Mark),
+                                      offsetX: 12f, offsetY: 21f);
+            var qu3 = Kit.Shot(sh, "Quills", "ModGoldTreasurerEntry", 3, v, 0.04f, quills[0], entry, quills[2]).Speed(0.85f).Build();
             var au = new ClipBuilder(sh, "Audit", "ModGoldTreasurerAudit").Once().Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop")
                 .Ev(5, "AnimAttack", mark).EvO(6, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();

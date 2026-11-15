@@ -232,6 +232,7 @@
   },
   {
    "id": "chaos",
+   "define": "CHAOS_NEXT",
    "header": "CHAOS",
    "subtitle": "faster, bigger, stranger",
    "text": [

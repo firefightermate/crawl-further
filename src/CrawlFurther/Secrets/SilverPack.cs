@@ -197,9 +197,11 @@ namespace CrawlFurther.Content.Secrets
             int body = Kit.AddEffect(p, SilverFx.CometHit, attach: true, destroyOnAnimEnd: true, offsetX: 4f, offsetY: 12f);
             var gr = Kit.Melee(sh, "Gore", "ModSilStagGore", v, 3, gore, 60f);
             gr.Ev(3, "AnimAttack", slash);
-            // Combo: two antler gores, then a charge that gores twice
+            // Combo: two antler gores, then a charge that gores twice, the second tossing him away
             var gr2 = Kit.Melee(sh, "Gore", "ModSilStagGore2", null, 3, gore, 70f).Speed(1.1f).Ev(3, "AnimAttack", slash).Build();
-            var gr3 = Kit.Melee(sh, "Gore", "ModSilStagCharge", v, 2, gore, 140f, 3, gore, 40f).Speed(0.9f).Ev(2, "AnimAttack", slash).Ev(3, "AnimAttack", slash).Build();
+            int toss = Kit.AddEffect(p, FxKit.Finisher(SilverFx.GoreHit, "ModSilGoreHitToss", damageMult: 1.1f, knockMult: 2.4f),
+                                     attach: true, destroyOnAnimEnd: true, offsetX: 19f, offsetY: 12f);
+            var gr3 = Kit.Melee(sh, "Gore", "ModSilStagCharge", v, 2, gore, 140f, 3, toss, 40f).Speed(0.9f).Ev(2, "AnimAttack", slash).Ev(3, "AnimAttack", slash).Build();
             // CometRise 3 + CometLoop x6 (18) + CometEnd 2: the streak flies frames 3..20, lands on 21
             var cm = new ClipBuilder(sh, "CometRise", "ModSilStagComet").Once().Then("CometLoop", 6).Then("CometEnd")
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(2, "AnimInputMultiplyStop").Ev(2, "AnimInputOff").Ev(2, "AnimMoveStop")
@@ -224,9 +226,12 @@ namespace CrawlFurther.Content.Secrets
             var ss = Kit.Shot(sh, "Starshot", "ModSilAstrarchStarshot", 3, v, 0f, shot).Build();
             int sL = Kit.AddEffect(p, SilverFx.Starshot, offsetX: 9f, offsetY: 1f, angle: -20f);
             int sR = Kit.AddEffect(p, SilverFx.Starshot, offsetX: 9f, offsetY: 1f, angle: 20f);
-            // Combo: two stars, then three flung in a fan, enough for a Constellation on their own
+            // Combo: two stars, then the Nova: a big star that bursts into a ring of six
             var ss2 = Kit.Shot(sh, "Starshot", "ModSilAstrarchStarshot2", 3, null, 0f, shot).Speed(1.15f).Build();
-            var ss3 = Kit.Shot(sh, "Starshot", "ModSilAstrarchScatter", 3, v, 0.05f, sL, shot, sR).Speed(0.85f).Build();
+            // the Nova: one big star that bursts into a ring of six where it stops (enough for a Constellation on its own)
+            int nova = Kit.AddEffect(p, FxKit.Finisher(SilverFx.Starshot, "ModSilStarshotNova", scale: 1.6f, damageMult: 1.1f, speedMult: 0.75f,
+                                                       leaves: FxKit.Emitter("ModSilStarRing", SilverFx.Starshot, 6)), offsetX: 9f, offsetY: 1f);
+            var ss3 = Kit.Shot(sh, "Starshot", "ModSilAstrarchNova", 3, v, 0f, nova).Speed(0.85f).Build();
             var cn = Cast(sh, "Constellation", "ModSilAstrarchConstellation", 5).Ev(5, "SilConstellation").EvO(5, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, ss, 0.45f, rangeInner: 40f, rangeOuter: 100f, rangeRetreat: 40f));

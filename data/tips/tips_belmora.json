@@ -56,7 +56,7 @@
  },
  "ModBrineLamprey": {
   "name": "Brine Lamprey",
-  "attack": "Two rasps, then a darting rasp that bites twice",
+  "attack": "Two rasps, then a dart whose second bite bleeds",
   "special": "Lunge along the floor",
   "passive": [
    "A lunge that lands latches on, then rasps again",
@@ -112,7 +112,7 @@
  },
  "ModBroodUrchin": {
   "name": "Brood Urchin",
-  "attack": "Two sprays of three spines, then one of five",
+  "attack": "Two sprays of spines, then one bursting all round",
   "special": "Lob eggs that burst when the tide comes",
   "passive": [
    "When the tide comes in, every egg bursts in spines",
@@ -141,7 +141,7 @@
  },
  "ModGulperEel": {
   "name": "Gulper Eel",
-  "attack": "Two jaw scoops, then a lunge that scoops twice",
+  "attack": "Two scoops, then a lunge that spills brine",
   "special": "Unhinge, then swallow the hero whole and spit him",
   "passive": [
    "Full pouch: slow and vulnerable",
@@ -190,7 +190,7 @@
  },
  "ModReefChampion": {
   "name": "Reef Champion",
-  "attack": "Two uppercuts, then a rush of two more",
+  "attack": "Two uppercuts, then a rush ending in a dizzy one",
   "special": "Haymaker: wind up, one punch that knocks far back",
   "passive": [
    "Now and then the bell rings: rest, heal, speed up",

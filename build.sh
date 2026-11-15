@@ -15,7 +15,9 @@ if [ -z "$CSC" ]; then
   [ -n "$CSC_DLL" ] || { echo "no .NET SDK found: install one, or set CSC to a C# compiler"; exit 1; }
   CSC="dotnet $CSC_DLL"
 fi
-FLAGS="-nologo -noconfig -nostdlib+ -target:library -langversion:7.3 -optimize+ -debug- -nowarn:CS1701,CS1702"
+# CHAOS_NEXT: the next chaos update (big rooms, chaos pace, Rot Gardens). NO_CHAOS_NEXT=1 builds without it.
+DEFS=""; [ "$NO_CHAOS_NEXT" = "1" ] || DEFS="-define:CHAOS_NEXT"
+FLAGS="$DEFS -nologo -noconfig -nostdlib+ -target:library -langversion:7.3 -optimize+ -debug- -nowarn:CS1701,CS1702"
 REFS="-r:$L/mscorlib.dll -r:$L/System.dll -r:$L/System.Core.dll -r:$L/UnityEngine.dll -r:$L/UnityEngine.UI.dll
       -r:$L/Assembly-CSharp.dll -r:$L/Assembly-CSharp-firstpass.dll -r:$L/ex2D.Runtime.dll
       -r:$L/BepInEx.dll -r:$L/0Harmony.dll"

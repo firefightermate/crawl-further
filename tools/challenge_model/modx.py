@@ -82,6 +82,20 @@ def effects_of(text):
                 t = re.sub(r"^\w+Fx\.", "", args[0])
                 if t in eff: e = dict(eff[t]); e["dmg"] = (e.get("dmg") or 0) * (fnum(args[2]) or 1); eff[name] = e
                 continue
+            if fn == "FxKit.Finisher" and args:
+                # a combo finisher's copy of an effect: damage times damageMult (named), size times scale
+                t = re.sub(r"^\w+Fx\.", "", args[0])
+                if t in eff:
+                    e = dict(eff[t])
+                    for a in args[2:]:
+                        km = re.match(r"^\s*(\w+)\s*:\s*(.+)$", a)
+                        if km and km.group(1) == "damageMult": e["dmg"] = (e.get("dmg") or 0) * (fnum(km.group(2)) or 1)
+                        if km and km.group(1) == "scale":
+                            k = fnum(km.group(2)) or 1
+                            if e.get("w"): e["w"] *= k
+                            if e.get("h"): e["h"] *= k
+                    eff[name] = e
+                continue
             if fn == "FxKit.EchoOf" and args:
                 t = re.sub(r"^\w+Fx\.", "", args[0])
                 if t in eff: e = dict(eff[t]); e["dmg"] = (e.get("dmg") or 0) * (fnum(args[1]) if len(args) > 1 else 0.5); eff[name] = e
