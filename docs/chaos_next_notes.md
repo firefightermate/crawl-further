@@ -1,5 +1,8 @@
 # Next chaos update: player text kept for its release
 
+Used for 1.5.0 (the chaos update): the lines below went back into the README, the Thunderstore page and the
+changelog.
+
 These lines were in the 1.4.5 test build's notes. 1.4.6 shipped without the chaos work (compiled out with
 CHAOS_NEXT, see build.sh), so they go back into the notes when the chaos update ships.
 

@@ -3,6 +3,30 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## 1.5.0
+
+The chaos update: built without `NO_CHAOS_NEXT`, so big rooms, chaos pace, Rot Gardens and test mode's Chaos page
+are back, and chaos is on again.
+
+### Core
+- `ChaosBalance` head start. When a new chaos game loads its first floor (`SystemMain.LoadLevel("SceneGame")`
+  prefix, `SystemGame` not started and on level 0), every active player is levelled to `HeadStartLevel` (3) with
+  `OnCollectXP` and given `HeadStartGoldPerLevel` x level (40 x 3) gold. Their level-ups pay no wrath to the others
+  (`OnOtherPlayerLeveledUp` skipped) and skip the chaos XP and gold scaling. `OnLevelStart` then clears the
+  floor's stats, so the evolve screen shows the levels as already had.
+- The players then go to `SceneMenuEvolve` instead of the floor, with `MenuEvolve.m_debugSkipResults` set (the
+  game's own skip straight to the evolve menus). There, evolving a starting monster costs nothing
+  (`Player.GetEvolveCost` postfix) and its evolutions count as unlocked (`SystemUnlocks.GetUnlocked` postfix).
+  Everything else costs as usual and nobody has wrath, so each line goes up one step. Bots pick through the
+  game's own bot logic. When the screen loads the floor, any line still on tier 1 evolves at random.
+- `SystemGame.OnStartGame` fallback: a chaos game that reaches its first floor without the head start (another
+  route in, or a continue) gets it then, with random evolutions.
+- The old `SetStartingMonsters` postfix (random tier 2 at deity pick) is gone.
+- Self-test section 1475 checks the members the head start reaches by name.
+
+### Content
+- Pause > Tips: the CHAOS topic names the head start and the pick.
+
 ## 1.4.6
 
 Released without the chaos work: `build.sh` defines `CHAOS_NEXT` unless `NO_CHAOS_NEXT=1`, and the release is built
