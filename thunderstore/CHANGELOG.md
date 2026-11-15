@@ -4,7 +4,7 @@
 
 The chaos update. Everything since 1.4.6.
 
-- Chaos is back, with more to it: start it from Chaos on the main menu, or continue a won game.
+- Chaos grows: start it from Chaos on the main menu, or continue a won game.
 - A chaos game gives every hero a head start: level 3 and 120 gold, where a normal game stands once its monsters
   reach tier 2.
 - Before the first floor, every player picks each starting monster's tier 2 form on the evolve screen.
