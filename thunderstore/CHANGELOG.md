@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.5.0
+
+The chaos update. Everything since 1.4.6.
+
+- Chaos is back, with more to it: start it from Chaos on the main menu, or continue a won game.
+- A chaos game gives every hero a head start: level 3 and 120 gold, where a normal game stands once its monsters
+  reach tier 2.
+- Before the first floor, every player picks each starting monster's tier 2 form on the evolve screen.
+- Chaos floors are built mostly from big rooms: wider, deeper copies of the game's own rooms, grown out of their own
+  floor and walls, with more enemies and props to fill them. Every room still fits on one screen.
+- Rot Gardens, the first chaos floor of its own: caves overgrown with fungus, plum stone and glowing caps. Puffballs
+  and bell caps burst at a hit into spores that daze the hero, and spore drifts cross the room during fights.
+- The hero levels faster in chaos, monster players earn wrath faster, and gold comes in a little quicker.
+- Test mode (F2) has a Chaos page: turn chaos on, pick how many big rooms a floor gets, reload the floor built
+  around any big room to look at it, and go straight to Rot Gardens.
+
 ## 1.4.6
 
 Everything since 1.3.0.

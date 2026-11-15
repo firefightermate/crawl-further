@@ -74,6 +74,7 @@ namespace CrawlFurther.Diagnostics
             AddSection(1460, "chaos (two spells)", () => Game.ChaosSpells.SelfCheck(Bad, Note));
 #if CHAOS_NEXT
             AddSection(1470, "chaos (big rooms)", () => Game.ChaosRooms.SelfCheck(Bad));
+            AddSection(1475, "chaos (head start)", () => Game.ChaosBalance.SelfCheck(Bad));
             AddSection(1480, "chaos (floor kinds)", () => Game.Biomes.SelfCheck(Bad, Note));
 #endif
             AddSection(2000, "online (Crawl Online compatibility)", () => CompatOnline.SelfCheck(Bad, Note));

@@ -1,4 +1,4 @@
-CRAWL: FURTHER 1.4.6
+CRAWL: FURTHER 1.5.0
 ====================
 
 Crawl: Further (formerly "Crawl Mod") is a big content mod for Crawl. Nine new gods with 189 monsters between
@@ -9,12 +9,28 @@ violet gem on its picture (portraits, shop pictures, vault cells and the evoluti
 Every mod monster, item, weapon, object, god, origin and ghost form has a vault entry, and everything has its
 own drawn art.
 
-Launch Crawl normally. The top-left banner shows "Crawl: Further 1.4.6" and "self-test OK" when everything
+Launch Crawl normally. The top-left banner shows "Crawl: Further 1.5.0" and "self-test OK" when everything
 loaded. If anything failed, BepInEx\plugins\CrawlFurther\CrawlMod_selftest.txt lists what and why.
 The mod is two DLLs in BepInEx\plugins\CrawlFurther: CrawlFurther.Core.dll (the library) and CrawlFurther.dll.
 Delete an old BepInEx\plugins\CrawlMod folder when you update. The config files keep their old names, so
 updating from any earlier version keeps your settings and saves. New settings files start with CrawlFurther.
 The mod's two bosses are switched off in this version (see BOSSES).
+
+NEW IN 1.5.0
+------------
+  The chaos update. Everything since 1.4.6.
+  - Chaos is back, with more to it: start it from Chaos on the main menu, or continue a won game.
+  - A chaos game gives every hero a head start: level 3 and 120 gold, where a normal game stands once its
+    monsters reach tier 2.
+  - Before the first floor, every player picks each starting monster's tier 2 form on the evolve screen.
+  - Chaos floors are built mostly from big rooms: wider, deeper copies of the game's own rooms, grown out of
+    their own floor and walls, with more enemies and props to fill them. Every room still fits on one screen.
+  - Rot Gardens, the first chaos floor of its own: caves overgrown with fungus, plum stone and glowing caps.
+    Puffballs and bell caps burst at a hit into spores that daze the hero, and spore drifts cross the room
+    during fights.
+  - The hero levels faster in chaos, monster players earn wrath faster, and gold comes in a little quicker.
+  - Test mode (F2) has a Chaos page: turn chaos on, pick how many big rooms a floor gets, reload the floor
+    built around any big room to look at it, and go straight to Rot Gardens.
 
 NEW IN 1.4.6
 ------------
@@ -240,7 +256,7 @@ Violet pips are mod choices:
   GHOST BUTTON   defaults: keyboard 1 C, keyboard 2 B, keyboard 3 M, keyboard 4 full stop, mouse middle
                click, controller X. Change it in the game's controls settings (GHOST BUTTON row). The join
                screen's controls picture shows it in blue (a changed one is named under the picture
-               instead). In a Brute,
+               instead). As the hero in a chaos game it casts your second spell (see CHAOS). In a Brute,
                Titan or King Blob it uses the blob's special; Back only leaves the blob.
 3. Blob (a third page, after you confirm a ghost form that has a choice). The blob your ghost spawns with
   Back, shown in boxes where the god page shows its starters. Left and right (or the mouse) to pick, confirm
@@ -430,8 +446,26 @@ OBJECTS (new in 0.10.0)
   Duck all hide something. The vault's SECRETS page has a riddle for each.
 
 CHAOS
-  Switched off in this version: no Chaos entry on the main menu, and a continued game stays a normal
-  game. It comes back in its own update.
+  A game mode that grows with each update. Start it from Chaos on the main menu (under Play), or continue a
+  won game: a continued game is a chaos game until it ends. Not in the tutorial or vault challenges.
+  Two spells: the hero holds two. Special casts the first, the ghost button the second, and each charges on
+  its own. The second spell's charge shows in a blue bar under the special bar, and the hero stats panel
+  names both. Buying a spell with one held makes it the second. Buying one with two held asks which to drop
+  (the shop's text says so before you buy). Bots use whichever spell is ready and drop the cheaper one.
+  Big rooms: most rooms on a chaos floor are wider, deeper copies of the game's own rooms, grown out of
+  their own floor and walls, with more enemies and props. Each still fits on one screen; a room that can't
+  grow cleanly keeps its own size. ChaosBigRooms under [Game] turns them off.
+  Rot Gardens: now and then a stretch of chaos floors is overgrown caves instead of one of the game's
+  floors. Puffballs and bell caps burst at a hit from anyone (hero or monster) into a spore cloud that dazes
+  the hero, and while a fight is on, spore drifts float across the room. ChaosBiomes under [Game] turns
+  them off.
+  Head start: a chaos game started from the menu begins where a normal game stands once its monsters reach
+  tier 2. Every hero starts at level 3 (with the Vitality that level brings) and 120 gold, and before the
+  first floor every player picks each starting monster's tier 2 form on the evolve screen, for free. A
+  line left alone evolves at random.
+  Pace: the hero levels faster, wrath comes faster and gold a little quicker. A continued game picks up
+  the faster pace from the continue on.
+  Turn chaos off with Chaos under [Game] in com.firefightermate.crawlfurther.cfg.
 
 TEST MODE
   For checking things without playing a whole run. Off by default: set TestMode = true under [Testing]

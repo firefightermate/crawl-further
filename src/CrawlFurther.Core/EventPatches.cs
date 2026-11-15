@@ -15,6 +15,7 @@ namespace CrawlFurther
             Game.ContinueGame.Reset(); Game.ChaosMode.OnGameStart(); Game.ChaosSpells.Reset();
 #if CHAOS_NEXT
             Game.Biomes.Reset();
+            Game.ChaosBalance.OnGameStart();
 #endif
             GameEvents.RaiseRunStart();
         }

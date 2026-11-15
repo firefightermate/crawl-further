@@ -550,7 +550,8 @@ namespace CrawlFurther.Content.Tips
 #if CHAOS_NEXT
             new PauseTopic("chaos", "", "CHAOS", "faster, bigger, stranger", new[]
             {
-                "<color=#d4be9c>Chaos games</color> start with monsters already at their second form. The hero levels faster and holds <color=#d4be9c>two spells</color>, and wrath and gold come quicker.",
+                "<color=#d4be9c>Chaos games</color> give every hero a <color=#d4be9c>head start</color>: a few levels and gold to spend. Before the first floor each player picks their monsters' <color=#d4be9c>second forms</color>.",
+                "The hero holds <color=#d4be9c>two spells</color>, levels faster, and wrath and gold come quicker.",
                 "<color=#d4be9c>Big rooms:</color> most chaos floors are built from bigger copies of the game's rooms.",
                 "<color=#d4be9c>Rot Gardens:</color> now and then a stretch of chaos floors is overgrown caves, all plum stone and glowing caps.",
                 "- <color=#d4be9c>Puffballs</color> and <color=#d4be9c>bell caps</color> burst at a hit from anyone into a spore cloud. Spores <color=#d4be9c>daze</color> the hero.",
