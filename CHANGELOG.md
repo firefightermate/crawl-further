@@ -3,6 +3,27 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## 1.4.5
+
+### Core
+- `Game.Biomes`: chaos floor kinds. A `BiomeDef` names a game environment to build on, colour functions for floors and
+  everything else, floor detail, prop lists, the share of the game's own props, floor names and a room spawn hook. The
+  environment is a clone of the game's (`MonsterFactory.ClonePrefab`) with its room groups, shop, portal and doors
+  swapped for recoloured copies, built the first time it is picked. `SystemGame.CalcEnvironment` postfix: in a chaos
+  game each new stretch of floors rolls each biome's chance; a stretch keeps its pick. `GoNow` for test mode.
+- `Art.Recolour`: a sprite frame cut from its atlas (read on the GPU), run through a colour function and put back as a
+  one-frame atlas; clips copied with recoloured frames; `Tree` over a whole object. `Hsv` keeps shading and moves hue.
+- `Objects.PropKit`: props in mod art from the game's floor splotch (`Decal`), large stalagmite (`Still`), large barrel
+  (`Breakable`, spawns a given effect when it breaks) and torch (`Wall`).
+- `ChaosRooms`: `MarkBig`/`AreaOf` tag a big room through a spawn hook (a plugin component on a template is not
+  copied by Instantiate in Unity 5.4); `Pair` links a recoloured room to its recoloured big copy.
+- Self-test section 1480 checks the members biomes reach by name and that each biome built its props.
+
+### Content
+- Rot Gardens (`Content.Chaos.RotGardens`), built on the Caves. 24 sheets in `art/out_biomes`, drawn by
+  `tools/sprites/biome_rot.py`.
+- Pause > Tips: a CHAOS topic.
+
 ## 1.4.4
 
 ### Core

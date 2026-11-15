@@ -73,6 +73,7 @@ namespace CrawlFurther.Diagnostics
             AddSection(1450, "continue after a win", () => Game.ContinueGame.SelfCheck(Bad, Note));
             AddSection(1460, "chaos (two spells)", () => Game.ChaosSpells.SelfCheck(Bad, Note));
             AddSection(1470, "chaos (big rooms)", () => Game.ChaosRooms.SelfCheck(Bad));
+            AddSection(1480, "chaos (floor kinds)", () => Game.Biomes.SelfCheck(Bad, Note));
             AddSection(2000, "online (Crawl Online compatibility)", () => CompatOnline.SelfCheck(Bad, Note));
             AddSection(2050, "CrawlAPI compatibility", () => CompatCrawlApi.SelfCheck(Bad, Note));
             AddSection(2060, "boss mods (CrawlCustomBosses and others)", () => CompatBosses.SelfCheck(Bad, Note));

@@ -229,6 +229,18 @@
     "- *Caryatid:* raises marble columns.",
     "- *Lachrymosa (legendary):* stone while watched, swift unseen. She puts out the lights."
    ]
+  },
+  {
+   "id": "chaos",
+   "header": "CHAOS",
+   "subtitle": "faster, bigger, stranger",
+   "text": [
+    "*Chaos games* start with monsters already at their second form. The hero levels faster and holds *two spells*, and wrath and gold come quicker.",
+    "*Big rooms:* most chaos floors are built from bigger copies of the game's rooms.",
+    "*Rot Gardens:* now and then a stretch of chaos floors is overgrown caves, all plum stone and glowing caps.",
+    "- *Puffballs* and *bell caps* burst at a hit from anyone into a spore cloud. Spores *daze* the hero.",
+    "- While a fight is on, *spore drifts* float across the room. Monsters can steer the hero into them."
+   ]
   }
  ]
 }
