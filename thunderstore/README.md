@@ -48,7 +48,7 @@ Every mod monster's melee turns toward where it aims, so it hits up and down as 
 
 **Menus and music.** A "Further" wordmark under the CRAWL logo, flame markers and embers on the main menu, picture grids in the vault, and four instrumental tracks that rotate in with the game's own music.
 
-**Keep playing.** After a win, Continue gives the game two more tries at the boss. Chaos is switched off for now and comes back in its own update.
+**Keep playing.** After a win, Continue gives the game two more tries at the boss.
 
 **Bosses.** The mod's two bosses are switched off in this version. They never spawn.
 

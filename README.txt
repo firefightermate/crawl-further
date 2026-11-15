@@ -29,7 +29,6 @@ NEW IN 1.4.6
     that were far from their goal were retuned.
   - The Poltergeist's hex bolt can't hit the hero from on top of him or in the shop.
   - The mod's pages in Pause > Tips use the font of the live monster tips.
-  - Chaos is switched off for now. It comes back in its own update.
 
 NEW IN 1.3.0
 ------------
@@ -428,10 +427,6 @@ OBJECTS (new in 0.10.0)
   Secrets: the Lever Trio, the Cracked Wall, the Mysterious Keyhole, the Sculptor's Altar (a ghost pays 3
   ectoplasm for a secret statue, 1 in 20 is the legendary), the Watching Portrait and the very rare Golden
   Duck all hide something. The vault's SECRETS page has a riddle for each.
-
-CHAOS
-  Switched off in this version: no Chaos entry on the main menu, and a continued game stays a normal
-  game. It comes back in its own update.
 
 TEST MODE
   For checking things without playing a whole run. Off by default: set TestMode = true under [Testing]
