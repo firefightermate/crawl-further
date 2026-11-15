@@ -129,6 +129,8 @@ there is nothing to drop at his feet.
 | See a big room | Pick a room: chaos turns on and the floor reloads built around that room's big copy (most rooms on it are that room, and it is the start room if it is an entry room). Walk through with Run > Open the doors and Next room |
 | Stop building floors around one room | Back to the usual mix |
 | Reload this floor (new layout) | The game's Reload Level |
+| Chaos floor kinds | Mixed in (each new stretch of chaos floors rolls each kind's chance), Every stretch (always the first kind, Rot Gardens) or Never |
+| Go to a chaos floor now | Builds the picked kind (a moment, the first time) and reloads into it, chaos on or off. The rest of its stretch stays that kind in a chaos game |
 
 ### Progress
 

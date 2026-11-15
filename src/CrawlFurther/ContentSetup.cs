@@ -65,6 +65,8 @@ namespace CrawlFurther.Content
                 "Chaos: a Chaos entry on the main menu, and continued games play as chaos games (the hero holds two spells, monsters start at tier 2, levels, wrath and gold come faster).").Value;
             Game.ChaosRooms.Enabled = Plugin.I.Config.Bind("Game", "ChaosBigRooms", true,
                 "Chaos floors are built mostly from bigger copies of the game's rooms. Off: chaos uses the rooms at their own size.").Value;
+            Game.Biomes.Enabled = Plugin.I.Config.Bind("Game", "ChaosBiomes", true,
+                "Chaos games have their own kinds of floor (Rot Gardens) mixed in with the game's. Off: chaos keeps the game's floors.").Value;
             ShopPedestal.AddSheet(PedestalSheet);
             // the vanilla choices in the mod's picker lists are drawn as mod sheets: no gem on them
             foreach (var id in new[] { "HeroWanderer", "HeroWanderer_P1", "HeroWanderer_P2", "HeroWanderer_P3", "HeroWanderer_P4", "GhostWisp" })
@@ -119,6 +121,7 @@ namespace CrawlFurther.Content
             Further.AddPack("Weapons", WeaponPack.Register);
             Further.AddPack("Objects", ObjectPack.Register);
             Further.AddPack("Objects B", ObjectPack2.Register);
+            Further.AddPack("Rot Gardens", CrawlFurther.Content.Chaos.RotGardens.Register);
             Further.AddPack("Monster secrets", MonsterSecrets.Register);   // last: needs the silver and gold monsters built
 
             ContentChecks.AddSections();

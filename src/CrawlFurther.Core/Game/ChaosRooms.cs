@@ -169,6 +169,41 @@ namespace CrawlFurther.Game
             }
         }
 
+        static readonly Dictionary<GameObject, float> s_area = new Dictionary<GameObject, float>();
+
+        /// <summary>Mark a room prefab as big: each room spawned from it gets a <see cref="ChaosRoomTag"/> with its
+        /// area ratio (a component of ours can't ride on the prefab itself: Unity 5.4 doesn't copy it).</summary>
+        public static void MarkBig(GameObject template, float area)
+        {
+            if (template == null || s_area.ContainsKey(template)) { if (template != null) s_area[template] = area; return; }
+            s_area[template] = area;
+            Action<GameObject> prev;
+            FxFactory.OnSpawn.TryGetValue(template, out prev);
+            FxFactory.OnSpawn[template] = prev + (go =>
+            {
+                float a;
+                if (!s_area.TryGetValue(template, out a)) return;
+                var tag = go.GetComponent<ChaosRoomTag>() ?? go.AddComponent<ChaosRoomTag>();
+                tag.area = a;
+            });
+        }
+
+        /// <summary>A big room prefab's area over its original's (1 for any other room).</summary>
+        public static float AreaOf(GameObject template)
+        {
+            float a;
+            return template != null && s_area.TryGetValue(template, out a) ? a : 1f;
+        }
+
+        /// <summary>Give a room prefab a big copy made elsewhere (a biome's recoloured pair), so chaos floors and test
+        /// mode treat the two as one room.</summary>
+        public static void Pair(Room prefab, Room big, string why = null)
+        {
+            if (prefab == null) return;
+            s_big[prefab.gameObject] = big;
+            s_why[prefab.gameObject] = big != null ? "" : why ?? "no clean place to grow it (painted floor, tracks or set pieces in the way)";
+        }
+
         /// <summary>Why a room has no big copy ("" when it has one or hasn't been tried).</summary>
         public static string WhyNot(Room prefab)
         {
@@ -208,7 +243,7 @@ namespace CrawlFurther.Game
         // ------------------------------------------------------------------ pictures
 
         /// <summary>A sprite's picture, cut from its atlas (bottom-up rows), and where its quad sits in room space.</summary>
-        class Pic
+        internal class Pic
         {
             public exSprite spr;
             public int w, h;
@@ -220,7 +255,7 @@ namespace CrawlFurther.Game
             public Color32 At(int x, int y) { return px[y * w + x]; }
         }
 
-        static Texture2D Readable(Texture t)
+        internal static Texture2D Readable(Texture t)
         {
             Texture2D r;
             if (!s_readable.TryGetValue(t, out r) || r == null)
@@ -251,7 +286,7 @@ namespace CrawlFurther.Game
             return new Vector2(x, y);
         }
 
-        static Pic Picture(exSprite s, Transform room)
+        internal static Pic Picture(exSprite s, Transform room)
         {
             var el = s.GetCurrentElement();
             if (el == null || el.rotated || s.atlas == null || s.atlas.texture == null) return null;
@@ -275,7 +310,7 @@ namespace CrawlFurther.Game
         }
 
         /// <summary>Put a grown picture on its sprite, its lower left corner kept where it was.</summary>
-        static void Apply(Pic p, Transform room, string name)
+        internal static void Apply(Pic p, Transform room, string name)
         {
             var tex = new Texture2D(p.w, p.h, TextureFormat.ARGB32, false) { name = name, filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Clamp };
             tex.SetPixels32(p.px);
@@ -709,8 +744,7 @@ namespace CrawlFurther.Game
             cbn.width += dx; cbn.height += dy;
             room.m_cameraBounds = cbn;
             MoreContent(room, ratio);
-            var tag = room.gameObject.AddComponent<ChaosRoomTag>();
-            tag.area = ratio;
+            MarkBig(room.gameObject, ratio);
             FurtherCore.Log.LogInfo("Chaos: " + name + " grows to " + cbn.width + " x " + cbn.height + (dx > 0 ? " (seam x " + sx + ")" : "") + (dy > 0 ? " (seam y " + sy + ")" : ""));
             return true;
         }
@@ -880,7 +914,7 @@ namespace CrawlFurther.Game
         }
     }
 
-    /// <summary>Marks a big chaos room (on its prefab copy and so on every room spawned from it).</summary>
+    /// <summary>Marks a spawned big chaos room (added on spawn, see <see cref="ChaosRooms.MarkBig"/>).</summary>
     public class ChaosRoomTag : MonoBehaviour
     {
         /// <summary>Its camera frame's area over the original room's.</summary>

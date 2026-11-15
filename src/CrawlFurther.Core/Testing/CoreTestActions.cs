@@ -213,6 +213,29 @@ namespace CrawlFurther.Testing
                 TestMode.Say("Chaos floors mix their rooms as usual again (from the next floor or a reload)");
             });
             TestMode.AddAction(Chaos, "Reload this floor (new layout)", () => TestGame.ReloadLevel());
+            TestMode.AddChoice(Chaos, "Chaos floor kinds", new[] { "Mixed in", "Every stretch", "Never" },
+                () => Game.Biomes.Never ? 2 : Game.Biomes.Forced != null ? 1 : 0, i =>
+                {
+                    var first = Game.Biomes.All.Count > 0 ? Game.Biomes.All[0] : null;
+                    Game.Biomes.Never = i == 2;
+                    Game.Biomes.Forced = i == 1 ? first : null;
+                    TestMode.Say(i == 0 ? "Chaos games mix their own floors in with the game's (from the next stretch of floors)"
+                        : i == 1 ? "Every new stretch of chaos floors is " + (first != null ? first.name : "a chaos floor")
+                        : "Chaos games keep the game's floors (from the next stretch)");
+                });
+            TestMode.AddList(Chaos, "Go to a chaos floor now (reloads into it)", BiomeList, item =>
+            {
+                var d = (Game.BiomeDef)item.Value;
+                if (!TestGame.InLevel) throw new TestModeException("Start a game first");
+                if (!Game.Biomes.GoNow(d)) throw new TestModeException(d.name + " could not be built (LogOutput.log says why)");
+                TestMode.Say("Into " + d.name);
+                TestGame.ReloadLevel();
+            });
+        }
+
+        static IEnumerable<TestItem> BiomeList()
+        {
+            foreach (var d in Game.Biomes.All) yield return new TestItem(d.name + " (from " + d.baseEnvironment + ")", d, "Chaos floors");
         }
 
         static Environment SafeEnvironment()
