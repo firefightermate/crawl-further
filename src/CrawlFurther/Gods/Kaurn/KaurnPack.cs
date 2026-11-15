@@ -110,12 +110,14 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int flash = Kit.AddEffect(p, KaurnFx.HitFx, offsetX: 18f, offsetY: 2f);
             int rod = Kit.AddEffect(p, KaurnFx.RodHot, offsetX: 11f, offsetY: 0f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
             int spark = Kit.AddEffect(p, KaurnFx.HitFx, offsetX: 11f, offsetY: 12f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
-            // Combo: two hammer smashes, each sending a surge along the floor, then the Double: two smashes in a row
+            // Combo: two hammer smashes, each sending a surge along the floor, then the Double: two smashes in a row, the second red-hot (sets him alight)
             var hm = Kit.Melee(sh, "Hammer", "ModKrnSmithHammer", v, 3, smash, 25f)
                 .Ev(3, "AnimAttack", surge).Ev(3, "AnimAttack", flash).Ev(3, "KrnCharge").Build();
             var hm2 = Kit.Melee(sh, "Hammer", "ModKrnSmithHammer2", null, 3, smash, 35f).Speed(1.15f)
                 .Ev(3, "AnimAttack", surge).Ev(3, "AnimAttack", flash).Ev(3, "KrnCharge").Build();
-            var hm3 = Kit.Melee(sh, "Hammer", "ModKrnSmithDouble", v, 3, smash, 40f, 10, smash, 50f).Repeat(2).Speed(1.2f)
+            int hot = Kit.AddEffect(p, FxKit.Finisher(KaurnFx.SmithSmash, "ModKrnSmashHot", damageMult: 1.1f, status: FxFactory.GetStatus("StatusOnFire")),
+                                    attach: true, destroyOnAnimEnd: true, offsetX: 18f, offsetY: 4f);
+            var hm3 = Kit.Melee(sh, "Hammer", "ModKrnSmithDouble", v, 3, smash, 40f, 10, hot, 50f).Repeat(2).Speed(1.2f)
                 .Ev(3, "AnimAttack", surge).Ev(3, "AnimAttack", flash).Ev(10, "AnimAttack", surge).Ev(10, "AnimAttack", flash).Ev(10, "KrnCharge").Build();
             var pt = Special(sh, "Plant", "ModKrnSmithPlant").Ev(3, "AnimAttack", rod).Ev(3, "AnimAttack", spark).EvO(3, "AnimSound", v)
                 .Ev(4, "ModGainPlates", 1).Ev(4, "KrnDischarge").Ev(-1, "AnimRun").Build();
@@ -138,10 +140,13 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int hk = Kit.AddEffect(p, KaurnFx.WireHook, offsetX: 10f, offsetY: 15f);
             int stL = Kit.AddEffect(p, KaurnFx.Staple, offsetX: 12f, offsetY: 14f, angle: -14f);
             int stR = Kit.AddEffect(p, KaurnFx.Staple, offsetX: 12f, offsetY: 14f, angle: 14f);
-            // Combo: two staples, then a spread of three
+            // Combo: two staples, then the Live Wire: a staple whose wire lays a line of slowing static
             var s = Kit.Shot(sh, "Staple", "ModKrnGremlinStaple", 3, v, 0f, st).Ev(3, "KrnCharge").Build();
             var s2 = Kit.Shot(sh, "Staple", "ModKrnGremlinStaple2", 3, null, 0f, st).Speed(1.15f).Ev(3, "KrnCharge").Build();
-            var s3 = Kit.Shot(sh, "Staple", "ModKrnGremlinSpread", 3, v, 0.04f, stL, st, stR).Speed(0.85f).Ev(3, "KrnCharge").Build();
+            // Live Wire: one staple trailing its wire, the wire laying a line of slowing static behind it
+            int live = Kit.AddEffect(p, FxKit.Finisher(KaurnFx.Staple, "ModKrnLiveWire", scale: 1.25f, trail: KaurnFx.Field, trailDist: 26f),
+                                     offsetX: 12f, offsetY: 14f);
+            var s3 = Kit.Shot(sh, "Staple", "ModKrnGremlinLiveWire", 3, v, 0f, live).Speed(0.85f).Ev(3, "KrnCharge").Build();
             var h = Kit.Shot(sh, "WireUp", "ModKrnGremlinWireUp", 3, v, 0f, hk).Ev(3, "KrnDischarge").Build();
             atk.Clear();
             // staple 200 px/s x 0.45 s (~90 px); hook 190 px/s x 0.5 s (~95 px)
@@ -192,10 +197,13 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int ball = Kit.AddEffect(p, KaurnFx.Ball, offsetX: 11f, offsetY: 14f);
             int bL = Kit.AddEffect(p, KaurnFx.Ball, offsetX: 11f, offsetY: 14f, angle: -14f);
             int bR = Kit.AddEffect(p, KaurnFx.Ball, offsetX: 11f, offsetY: 14f, angle: 14f);
-            // Combo: two balls of lightning, then a pair that splits round the hero
+            // Combo: two balls of lightning, then the Thunderhead: a swollen ball that ends in a lightning strike
             var ob = Kit.Shot(sh, "Orb", "ModKrnCallerOrb", 3, v, 0f, ball).Ev(3, "KrnCharge").Build();
             var ob2 = Kit.Shot(sh, "Orb", "ModKrnCallerOrb2", 3, null, 0f, ball).Speed(1.15f).Ev(3, "KrnCharge").Build();
-            var ob3 = Kit.Shot(sh, "Orb", "ModKrnCallerPair", 3, v, 0.05f, bL, bR).Speed(0.85f).Ev(3, "KrnCharge").Build();
+            // Thunderhead: one swollen ball, slower, that ends in a lightning strike where it stops
+            int head = Kit.AddEffect(p, FxKit.Finisher(KaurnFx.Ball, "ModKrnThunderhead", scale: 1.5f, damageMult: 1.2f, speedMult: 0.8f,
+                                                       leaves: KaurnFx.StaticBolt), offsetX: 11f, offsetY: 14f);
+            var ob3 = Kit.Shot(sh, "Orb", "ModKrnCallerThunderhead", 3, v, 0f, head).Speed(0.85f).Ev(3, "KrnCharge").Build();
             var bd = Special(sh, "Build", "ModKrnCallerBuild").Ev(2, "KrnStaticBuild").Ev(2, "KrnDischarge").EvO(2, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // the ball accelerates 60 -> 150 px/s over its 1.7 s (~175 px); the bolt finds the hero wherever he is
@@ -309,11 +317,12 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int first = Strike.Mark(p);
             int smash = Kit.AddEffect(p, KaurnFx.MasterSmash, attach: true, destroyOnAnimEnd: true, offsetX: 22f, offsetY: 4f);
             int flash = Kit.AddEffect(p, KaurnFx.HitFx, offsetX: 23f, offsetY: 2f);
-            // Combo: two sledge swings, then the Overhand: two swings running, the second stepping in
+            // Combo: two sledge swings, then the Overhand: two swings running, the second stepping in and cracking the floor into a quake
             var sw = Kit.Melee(sh, "Swing", "ModKrnMasterSwing", v, 3, smash, 30f).Ev(3, "AnimAttack", flash).Ev(3, "KrnCharge").Build();
             var sw2 = Kit.Melee(sh, "Swing", "ModKrnMasterSwing2", null, 3, smash, 40f).Speed(1.1f).Ev(3, "AnimAttack", flash).Ev(3, "KrnCharge").Build();
+            int crack = Kit.AddEffect(p, KaurnFx.Quake, offsetX: 30f, offsetY: 0.01f);
             var sw3 = Kit.Melee(sh, "Swing", "ModKrnMasterOverhand", v, 3, smash, 40f, 10, smash, 70f).Repeat(2).Speed(1.15f)
-                .Ev(3, "AnimAttack", flash).Ev(10, "AnimAttack", flash).Ev(10, "KrnCharge").Build();
+                .Ev(3, "AnimAttack", flash).Ev(10, "AnimAttack", flash).Ev(10, "AnimAttack", crack).Ev(10, "KrnCharge").Build();
             var vo = Special(sh, "Volley", "ModKrnMasterVolley").Ev(4, "KrnVolley").Ev(4, "KrnDischarge").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // sledge box x 14..30 plus a 30 px/s step; the rods land round the hero wherever he is (max 130 px)
@@ -366,10 +375,14 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int can = Kit.AddEffect(p, KaurnFx.Canister, offsetX: 12f, offsetY: 22f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
             int cL = Kit.AddEffect(p, KaurnFx.Canister, offsetX: 12f, offsetY: 22f, angle: -16f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
             int cR = Kit.AddEffect(p, KaurnFx.Canister, offsetX: 12f, offsetY: 22f, angle: 16f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
-            // Combo: two canisters, then a cluster of three
+            // Combo: two canisters, then the Pressure Bomb: a fat canister that bursts and vents scalding steam
             var l = Kit.Shot(sh, "Lob", "ModKrnSapperLob", 3, v, 0f, can).Ev(3, "KrnCharge").Build();
             var l2 = Kit.Shot(sh, "Lob", "ModKrnSapperLob2", 3, null, 0f, can).Speed(1.1f).Ev(3, "KrnCharge").Build();
-            var l3 = Kit.Shot(sh, "Lob", "ModKrnSapperCluster", 3, v, 0.06f, cL, can, cR).Speed(0.85f).Ev(3, "KrnCharge").Build();
+            // Pressure Bomb: one fat canister that bursts and then vents scalding steam
+            var bomb = FxKit.Finisher(KaurnFx.Canister, "ModKrnPressureBomb", scale: 1.35f);
+            FxFactory.OnSpawn[bomb] = i => { var lb = i.GetComponent<KrnLobFx>() ?? i.AddComponent<KrnLobFx>(); lb.Reset(); lb.land = KaurnFx.CanBurst; lb.land2 = KaurnFx.Steam; lb.time = 0.7f; };
+            int pb = Kit.AddEffect(p, bomb, offsetX: 12f, offsetY: 22f, spawnPoint: DamageEffectData.eSpawnPoint.Position);
+            var l3 = Kit.Shot(sh, "Lob", "ModKrnSapperPressure", 3, v, 0f, pb).Speed(0.85f).Ev(3, "KrnCharge").Build();
             var m = Special(sh, "Lay", "ModKrnSapperLay").Ev(4, "KrnLayCharges").Ev(4, "KrnDischarge").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // the canister lands where the hero stood (max 130 px) after 0.6 s
@@ -419,10 +432,14 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int b1 = Kit.AddEffect(p, KaurnFx.WargBite, attach: true, destroyOnAnimEnd: true, offsetX: 22f, offsetY: 14f);
             int b2 = Kit.AddEffect(p, KaurnFx.WargBite, attach: true, destroyOnAnimEnd: true, offsetX: 26f, offsetY: 14f);
             int ring = Kit.AddEffect(p, KaurnFx.PolarRing, spawnPoint: DamageEffectData.eSpawnPoint.Position);
-            // Combo: two pairs of bites, then the Hunt: a long lunge with three snaps
+            // Combo: two pairs of bites, then the Hunt: a long lunge with three snaps, the last one charged (dazes)
             var s = Kit.Melee(sh, "Bites", "ModKrnWargBites", v, 2, b1, 40f, 5, b2, 70f).Ev(5, "KrnCharge").Build();
             var s2 = Kit.Melee(sh, "Bites", "ModKrnWargBites2", null, 2, b1, 50f, 5, b2, 80f).Speed(1.1f).Ev(5, "KrnCharge").Build();
-            var s3 = Kit.Melee(sh, "Bites", "ModKrnWargHunt", v, 2, b1, 110f, 4, b2, 60f, 6, b2, 60f).Speed(0.9f).Ev(5, "KrnCharge").Build();
+            int shock = Kit.AddEffect(p, FxKit.Finisher(KaurnFx.WargBite, "ModKrnWargShock", damageMult: 1.1f, status: FxFactory.GetStatus("StatusDizzy")),
+                                      attach: true, destroyOnAnimEnd: true, offsetX: 26f, offsetY: 14f);
+            int shockFx = Kit.AddEffect(p, KaurnFx.CrackleWhite, offsetX: 26f, offsetY: 14f);
+            var s3 = Kit.Melee(sh, "Bites", "ModKrnWargHunt", v, 2, b1, 110f, 4, b2, 60f, 6, shock, 60f).Speed(0.9f)
+                .Ev(6, "AnimAttack", shockFx).Ev(5, "KrnCharge").Build();
             var mz = Special(sh, "Magnetize", "ModKrnWargMagnetize").Ev(3, "AnimAttack", ring).Ev(3, "KrnMagnetize").Ev(3, "KrnDischarge")
                 .EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
@@ -443,10 +460,13 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int lance = Kit.AddEffect(p, KaurnFx.Lance, offsetX: 26f, offsetY: 18f);
             int lL = Kit.AddEffect(p, KaurnFx.Lance, offsetX: 26f, offsetY: 18f, angle: -9f);
             int lR = Kit.AddEffect(p, KaurnFx.Lance, offsetX: 26f, offsetY: 18f, angle: 9f);
-            // Combo: two lances, then the Trident: three lances at once
+            // Combo: two lances, then the Thunderlance: a heavier lance that bursts into a quake where it stops
             var ln = Kit.Shot(sh, "Lance", "ModKrnHeraldLance", 3, v, 0f, lance).Ev(3, "KrnCharge").Build();
             var ln2 = Kit.Shot(sh, "Lance", "ModKrnHeraldLance2", 3, null, 0f, lance).Speed(1.15f).Ev(3, "KrnCharge").Build();
-            var ln3 = Kit.Shot(sh, "Lance", "ModKrnHeraldTrident", 3, v, 0.03f, lL, lance, lR).Speed(0.85f).Ev(3, "KrnCharge").Build();
+            // Thunderlance: a heavier lance that bursts into a quake where it stops
+            int tl = Kit.AddEffect(p, FxKit.Finisher(KaurnFx.Lance, "ModKrnThunderlance", scale: 1.3f, damageMult: 1.2f, leaves: KaurnFx.Quake),
+                                   offsetX: 26f, offsetY: 18f);
+            var ln3 = Kit.Shot(sh, "Lance", "ModKrnHeraldThunderlance", 3, v, 0f, tl).Speed(0.85f).Ev(3, "KrnCharge").Build();
             var hn = Special(sh, "Horn", "ModKrnHeraldHorn").Ev(4, "KrnStorm").Ev(4, "KrnDischarge").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // the lance is born 26 px ahead and flies 260 px/s x 0.65 s (~195 px)
@@ -467,10 +487,14 @@ namespace CrawlFurther.Content.Gods.Kaurn
             int orb = Kit.AddEffect(p, KaurnFx.SplitOrb, offsetX: 14f, offsetY: 17f);
             int oL = Kit.AddEffect(p, KaurnFx.SplitOrb, offsetX: 14f, offsetY: 17f, angle: -18f);
             int oR = Kit.AddEffect(p, KaurnFx.SplitOrb, offsetX: 14f, offsetY: 17f, angle: 18f);
-            // Combo: two splitting orbs, then a pair of them
+            // Combo: two splitting orbs, then the Sunburst: a bigger orb that splits into a full ring
             var o = Kit.Shot(sh, "Orb", "ModKrnMagusOrb", 3, v, 0f, orb).Ev(3, "KrnCharge").Build();
             var o2 = Kit.Shot(sh, "Orb", "ModKrnMagusOrb2", 3, null, 0f, orb).Speed(1.15f).Ev(3, "KrnCharge").Build();
-            var o3 = Kit.Shot(sh, "Orb", "ModKrnMagusPair", 3, v, 0.05f, oL, oR).Speed(0.85f).Ev(3, "KrnCharge").Build();
+            // Sunburst: a bigger orb that splits into a full ring of shards
+            var sun = FxKit.Finisher(KaurnFx.SplitOrb, "ModKrnSunburst", scale: 1.4f, speedMult: 0.85f);
+            FxFactory.OnSpawn[sun] = i => { var sf = i.GetComponent<KrnSplitFx>() ?? i.AddComponent<KrnSplitFx>(); sf.Reset(); sf.count = 8; sf.fan = 45f; };
+            int sb = Kit.AddEffect(p, sun, offsetX: 14f, offsetY: 17f);
+            var o3 = Kit.Shot(sh, "Orb", "ModKrnMagusSunburst", 3, v, 0f, sb).Speed(0.85f).Ev(3, "KrnCharge").Build();
             var kd = Special(sh, "Kindle", "ModKrnMagusKindle").Ev(5, "KrnKindle").Ev(5, "KrnDischarge").EvO(5, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             // the orb flies 0.38 s (~57 px) then splits; shards go 220 px/s x 0.5 s

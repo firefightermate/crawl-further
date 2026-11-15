@@ -61,12 +61,17 @@ namespace CrawlFurther.Content
             TierRules.StrengthOf = id => { float k; return Monsters.MonsterBalanceGenerated.Strength.TryGetValue(id, out k) ? k : 1f; };
             Game.ContinueGame.Enabled = Plugin.I.Config.Bind("Game", "ContinueAfterWin", true,
                 "When the hero beats the boss, offer to keep playing with two more tries at the boss.").Value;
+#if CHAOS_NEXT
             Game.ChaosMode.Enabled = Plugin.I.Config.Bind("Game", "Chaos", true,
                 "Chaos: a Chaos entry on the main menu, and continued games play as chaos games (the hero holds two spells, monsters start at tier 2, levels, wrath and gold come faster).").Value;
             Game.ChaosRooms.Enabled = Plugin.I.Config.Bind("Game", "ChaosBigRooms", true,
                 "Chaos floors are built mostly from bigger copies of the game's rooms. Off: chaos uses the rooms at their own size.").Value;
             Game.Biomes.Enabled = Plugin.I.Config.Bind("Game", "ChaosBiomes", true,
                 "Chaos games have their own kinds of floor (Rot Gardens) mixed in with the game's. Off: chaos keeps the game's floors.").Value;
+#else
+            Game.ChaosMode.Enabled = Plugin.I.Config.Bind("Game", "Chaos", true,
+                "Chaos: a Chaos entry on the main menu, and continued games play as chaos games (the hero holds two spells).").Value;
+#endif
             ShopPedestal.AddSheet(PedestalSheet);
             // the vanilla choices in the mod's picker lists are drawn as mod sheets: no gem on them
             foreach (var id in new[] { "HeroWanderer", "HeroWanderer_P1", "HeroWanderer_P2", "HeroWanderer_P3", "HeroWanderer_P4", "GhostWisp" })
@@ -121,7 +126,9 @@ namespace CrawlFurther.Content
             Further.AddPack("Weapons", WeaponPack.Register);
             Further.AddPack("Objects", ObjectPack.Register);
             Further.AddPack("Objects B", ObjectPack2.Register);
+#if CHAOS_NEXT
             Further.AddPack("Rot Gardens", CrawlFurther.Content.Chaos.RotGardens.Register);
+#endif
             Further.AddPack("Monster secrets", MonsterSecrets.Register);   // last: needs the silver and gold monsters built
 
             ContentChecks.AddSections();

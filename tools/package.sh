@@ -19,6 +19,8 @@ STAGE=$(mktemp -d)/CrawlFurther
 mkdir -p "$STAGE/art"
 # Core's own sheets (art/core) and the content mod's (art/out*) all go into the one flat art folder SpriteSheets reads
 for d in "$ROOT"/art/core "$ROOT"/art/out*; do
+  # art/out_biomes belongs to the next chaos update (CHAOS_NEXT): left out of a NO_CHAOS_NEXT=1 package
+  [ "$NO_CHAOS_NEXT" = "1" ] && [ "$(basename "$d")" = "out_biomes" ] && continue
   for f in "$d"/*.json; do
     [ -e "$f" ] || continue
     b=$(basename "$f" .json)

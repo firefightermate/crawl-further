@@ -1,7 +1,7 @@
 {
   "ModStmGrotesque": {
     "name": "Grotesque",
-    "attack": "Two talon rakes, then spring in and rake twice",
+    "attack": "Two talon rakes, then a pounce that bleeds him",
     "special": "Turn to stone: no harm; hits return as shards",
     "passive": [
       "First killing blow: crumble to rubble, then reform",
@@ -41,7 +41,7 @@
   },
   "ModStmLachrymosa": {
     "name": "Lachrymosa",
-    "attack": "Two laments, then glide in and rake twice",
+    "attack": "Two laments, then two rakes, the second slowing",
     "special": "Lights Out: the room goes dark; none see you",
     "passive": [
       "Watched, you turn to slow stone",

@@ -132,7 +132,7 @@
   },
   "ModSylNightshade": {
     "name": "Nightshade",
-    "attack": "Two berries that split, then a handful of three",
+    "attack": "Two berries that split, then one bursting into rot",
     "special": "Shade Garden: hide your pods, plant two by him",
     "passive": [
       "Your pods go unseen a while. He has to guess",

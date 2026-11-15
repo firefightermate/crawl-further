@@ -178,7 +178,7 @@ def load_pages(problems, notes):
         notes.append("page topic %-8s %2d lines -> %d page(s)" % (tid, n, pages))
         if width(sub) > 110:
             problems.append("%s: %s subtitle is too wide (keep it short): %r" % (PAGES, tid, sub))
-        topics.append((tid, t.get("god") or "", header, sub, rich))
+        topics.append((tid, t.get("god") or "", header, sub, rich, t.get("define") or ""))
     return topics
 
 
@@ -299,12 +299,17 @@ def main():
         "        public static readonly PauseTopic[] Topics =",
         "        {",
     ]
-    for tid, god, header, sub, rich in topics:
+    for tid, god, header, sub, rich, define in topics:
+        # "define": the topic is compiled only with that symbol (CHAOS_NEXT: the next chaos update)
+        if define:
+            out.append("#if " + define)
         out.append("            new PauseTopic(%s, %s, %s, %s, new[]" % (cs(tid), cs(god), cs(header), cs(sub)))
         out.append("            {")
         for p in rich:
             out.append("                %s," % cs(p))
         out.append("            }),")
+        if define:
+            out.append("#endif")
     out += ["        };", "    }", "}", ""]
     open(OUT, "w", encoding="utf-8").write("\n".join(out))
     print("merge_tips: %d tips from %d files, %d vault lines, %d pause topics -> %s"

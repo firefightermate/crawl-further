@@ -456,9 +456,11 @@ namespace CrawlFurther.Content.Secrets
             int fx = Kit.AddEffect(p, StmFx.RakeFx, attach: true, offsetX: 12f, offsetY: 9f);
             var rk = Kit.Melee(sh, "Rake", "ModStmGrotesqueRake", v, 3, hit, 55f);
             rk.Ev(3, "AnimAttack", fx);
-            // Combo: two rakes, then it springs in and rakes twice
+            // Combo: two rakes, then it springs in and rakes twice, the second opening a bleed
             var rk2 = Kit.Melee(sh, "Rake", "ModStmGrotesqueRake2", null, 3, hit, 65f).Speed(1.1f).Ev(3, "AnimAttack", fx).Build();
-            var rk3 = Kit.Melee(sh, "Rake", "ModStmGrotesquePounce", v, 2, hit, 130f, 4, hit, 30f).Speed(0.9f).Ev(2, "AnimAttack", fx).Ev(4, "AnimAttack", fx).Build();
+            int gash = Kit.AddEffect(p, FxKit.Finisher(StmFx.RakeHit, "ModStmRakeHitGash", damageMult: 1.1f, status: FxFactory.GetStatus("StatusBleeding")),
+                                     attach: true, destroyOnAnimEnd: true, offsetX: 14f, offsetY: 8f);
+            var rk3 = Kit.Melee(sh, "Rake", "ModStmGrotesquePounce", v, 2, hit, 130f, 4, gash, 30f).Speed(0.9f).Ev(2, "AnimAttack", fx).Ev(4, "AnimAttack", fx).Build();
             // StoneOn 4 + StoneHold x5 (10 frames, 2.0 s) + StoneBurst 4: stone from frame 3, bursts on frame 15
             var st = new ClipBuilder(sh, "StoneOn", "ModStmGrotesqueStone").Once().Then("StoneHold", 5).Then("StoneBurst")
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(0, "AnimInputMultiplyStop").Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop")
@@ -568,9 +570,11 @@ namespace CrawlFurther.Content.Secrets
             int fx = Kit.AddEffect(p, StmFx.LamentFx, attach: true, offsetX: 12f, offsetY: 14f);
             var la = Kit.Melee(sh, "Lament", "ModStmLachrymosaLament", v, 4, hit, 50f);
             la.Ev(4, "AnimAttack", fx);
-            // Combo: two laments, then she glides in and rakes with both hands twice
+            // Combo: two laments, then she glides in and rakes with both hands twice, the second leaving him heavy with grief (slows)
             var la2 = Kit.Melee(sh, "Lament", "ModStmLachrymosaLament2", null, 4, hit, 60f).Speed(1.1f).Ev(4, "AnimAttack", fx).Build();
-            var la3 = Kit.Melee(sh, "Lament", "ModStmLachrymosaWeep", v, 3, hit, 120f, 5, hit, 30f).Speed(0.9f).Ev(3, "AnimAttack", fx).Ev(5, "AnimAttack", fx).Build();
+            int grief = Kit.AddEffect(p, FxKit.Finisher(StmFx.LamentHit, "ModStmLamentHitGrief", damageMult: 1.1f, status: FxFactory.GetStatus("StatusLavaSteveGoo")),
+                                      attach: true, destroyOnAnimEnd: true, offsetX: 13f, offsetY: 13f);
+            var la3 = Kit.Melee(sh, "Lament", "ModStmLachrymosaWeep", v, 3, hit, 120f, 5, grief, 30f).Speed(0.9f).Ev(3, "AnimAttack", fx).Ev(5, "AnimAttack", fx).Build();
             var cue = LightsOut.Cue;
             var lo = Cast(sh, "Snuff", "ModStmLachrymosaLightsOut", 4).Ev(4, "StmLightsOut");
             if (cue != null) lo.EvO(4, "AnimSound", cue);

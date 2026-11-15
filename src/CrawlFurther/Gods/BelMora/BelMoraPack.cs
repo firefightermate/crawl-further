@@ -176,10 +176,12 @@ namespace CrawlFurther.Content.Gods.BelMora
             int n0 = Strike.Mark(p);
             int bite = Kit.AddEffect(p, BelMoraFx.LampreyBite, attach: true, destroyOnAnimEnd: true, offsetX: 12f, offsetY: 7f);
             int lunge = Kit.AddEffect(p, BelMoraFx.LampreyLunge, attach: true, destroyOnAnimEnd: true, offsetX: 12f, offsetY: 6f);
-            // Combo: two rasps, then a long darting rasp that bites twice as it goes
+            // Combo: two rasps, then a long darting rasp that bites twice as it goes, the second always opening a bleed
             var rs = Kit.Melee(sh, "Rasp", "ModLampreyRasp", v, 3, bite, 60f).Build();
             var rs2 = Kit.Melee(sh, "Rasp", "ModLampreyRasp2", null, 3, bite, 70f).Speed(1.15f).Build();
-            var dart = Kit.Melee(sh, "Rasp", "ModLampreyDart", v, 2, lunge, 140f, 4, bite, 40f).Speed(0.9f).Build();
+            int drain = Kit.AddEffect(p, FxKit.Finisher(BelMoraFx.LampreyBite, "ModLampreyBiteDrain", damageMult: 1.2f, status: FxFactory.GetStatus("StatusBleeding")),
+                                      attach: true, destroyOnAnimEnd: true, offsetX: 12f, offsetY: 7f);
+            var dart = Kit.Melee(sh, "Rasp", "ModLampreyDart", v, 2, lunge, 140f, 4, drain, 40f).Speed(0.9f).Build();
             // 0.16 s at 440 px/s: the 70 px lunge
             var ln = new ClipBuilder(sh, "Lunge", "ModLampreyLunge").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(1, "AnimInputMultiplyStop").Ev(1, "AnimInputOff")
@@ -348,10 +350,13 @@ namespace CrawlFurther.Content.Gods.BelMora
             foreach (var a in new[] { -16f, 0.01f, 16f }) spines.Add(Kit.AddEffect(p, BelMoraFx.BroodSpine, offsetX: 13f, offsetY: 12f, angle: a));
             var wide = new List<int>();
             foreach (var a in new[] { -34f, -17f, 0.01f, 17f, 34f }) wide.Add(Kit.AddEffect(p, BelMoraFx.BroodSpine, offsetX: 13f, offsetY: 12f, angle: a));
-            // Combo: two sprays of three spines, then a bristling spray of five, one after another across the fan
+            // Combo: two sprays of three spines, then the Brood Bomb: a fat spine that bursts into a full ring of spines
             var sy = Kit.Shot(sh, "Spray", "ModBroodSpray", 3, v, 0.02f, spines.ToArray()).Build();
             var sy2 = Kit.Shot(sh, "Spray", "ModBroodSpray2", 3, null, 0.02f, spines.ToArray()).Speed(1.15f).Build();
-            var sy3 = Kit.Shot(sh, "Spray", "ModBroodBristle", 3, v, 0.05f, wide.ToArray()).Speed(0.85f).Build();
+            // the Brood Bomb: one fat spine, slow, that bursts into a full ring of spines where it stops
+            int bomb = Kit.AddEffect(p, FxKit.Finisher(BelMoraFx.BroodSpine, "ModBroodSpineBomb", scale: 1.6f, damageMult: 1.2f, speedMult: 0.7f,
+                                                       leaves: FxKit.Emitter("ModBroodSpineRing", BelMoraFx.BroodSpine, 8)), offsetX: 13f, offsetY: 12f);
+            var sy3 = Kit.Shot(sh, "Spray", "ModBroodBomb", 3, v, 0f, bomb).Speed(0.85f).Build();
             var cl = Still(sh, "Clutch", "ModBroodClutch").Ev(4, "BelClutch").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, sy, 0.45f, rangeInner: 40f, rangeOuter: 100f, rangeRetreat: 30f));
@@ -371,6 +376,7 @@ namespace CrawlFurther.Content.Gods.BelMora
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int thrust = Kit.AddEffect(p, BelMoraFx.TridentThrust, attach: true, destroyOnAnimEnd: true, offsetX: 15f, offsetY: 10f);
+            Kit.Scale(p, thrust, 1.3f);   // a tier 3 trident: the thrust's art and hit at the size of the game's own tier 4 swipes
             int shard = Kit.AddEffect(p, BelMoraFx.CoralShard, offsetX: 22f, offsetY: 12f);
             int wave = Kit.AddEffect(p, BelMoraFx.Wave, offsetX: 18f, offsetY: 4f);
             // Combo: two thrusts that fling a coral shard, then the trident calls a wave that rolls on at the hero
@@ -416,10 +422,11 @@ namespace CrawlFurther.Content.Gods.BelMora
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int scoop = Kit.AddEffect(p, BelMoraFx.GulperScoop, attach: true, destroyOnAnimEnd: true, offsetX: 14f, offsetY: 5f);
-            // Combo: two scoops, then the Lunge: it hurls its whole length forward, jaws wide, and scoops twice
+            // Combo: two scoops, then the Lunge: it hurls its whole length forward, jaws wide, scoops twice and spills a pool of brine
             var sc = Kit.Melee(sh, "Scoop", "ModGulperScoop", v, 3, scoop, 40f).Build();
             var sc2 = Kit.Melee(sh, "Scoop", "ModGulperScoop2", null, 3, scoop, 50f).Speed(1.1f).Build();
-            var lg = Kit.Melee(sh, "Scoop", "ModGulperLunge", v, 2, scoop, 130f, 4, scoop, 40f).Speed(0.9f).Build();
+            int spill = Kit.AddEffect(p, BelMoraFx.Brine, offsetX: 22f, offsetY: 0.01f);
+            var lg = Kit.Melee(sh, "Scoop", "ModGulperLunge", v, 2, scoop, 130f, 4, scoop, 40f).Speed(0.9f).Ev(4, "AnimAttack", spill, 0.05f).Build();
             var un = new ClipBuilder(sh, "Unhinge", "ModGulperUnhinge").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(3, "AnimInputMultiplyStop").Ev(3, "AnimInputOff")
                 .Ev(4, "BelGulp").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
@@ -548,10 +555,12 @@ namespace CrawlFurther.Content.Gods.BelMora
             int n0 = Strike.Mark(p);
             int up = Kit.AddEffect(p, BelMoraFx.ChampionUpper, attach: true, destroyOnAnimEnd: true, offsetX: 12f, offsetY: 10f);
             int hay = Kit.AddEffect(p, BelMoraFx.Haymaker, attach: true, destroyOnAnimEnd: true, offsetX: 16f, offsetY: 8f);
-            // Combo: two uppercuts, then the Rush: it steps in with two quick uppercuts and a lunging third
+            // Combo: two uppercuts, then the Rush: it steps in with two quick uppercuts and a lunging third that leaves him dizzy
             var uc = Kit.Melee(sh, "Uppercut", "ModChampionUppercut", v, 3, up, 40f).Build();
             var uc2 = Kit.Melee(sh, "Uppercut", "ModChampionUppercut2", null, 3, up, 50f).Speed(1.15f).Build();
-            var rush = Kit.Melee(sh, "Uppercut", "ModChampionRush", v, 3, up, 50f, 10, up, 90f).Repeat(2).Speed(1.2f).Build();
+            int ko = Kit.AddEffect(p, FxKit.Finisher(BelMoraFx.ChampionUpper, "ModChampionUpperKO", damageMult: 1.1f, status: FxFactory.GetStatus("StatusDizzy")),
+                                   attach: true, destroyOnAnimEnd: true, offsetX: 12f, offsetY: 10f);
+            var rush = Kit.Melee(sh, "Uppercut", "ModChampionRush", v, 3, up, 50f, 10, ko, 90f).Repeat(2).Speed(1.2f).Build();
             var hm = Still(sh, "Haymaker", "ModChampionHaymaker").EvF(5, "AnimMove", 120f).Ev(5, "AnimAttack", hay).EvO(5, "AnimSound", v)
                 .Ev(6, "AnimMoveStop").Ev(-1, "AnimRun").Build();
             atk.Clear();

@@ -222,10 +222,13 @@ namespace CrawlFurther.Content.Gods.Zhekra
             int speck = Kit.AddEffect(p, ZhekraFx.GlueSpeck, offsetX: 16f, offsetY: 13f);
             var spray = new List<int>();
             foreach (var a in new[] { -30f, -15f, 0.01f, 15f, 30f }) spray.Add(Kit.AddEffect(p, ZhekraFx.GlueSpeck, offsetX: 16f, offsetY: 13f, angle: a));
-            // Combo: two squirts of three specks, then the Spray: five specks fanned out wide
+            // Combo: two squirts of three specks, then the Glue Bomb: a fat gob that spreads into a sticky field where it stops
             var sq = Kit.Shot(sh, "Specks", "ModZhkNasuteSpecks", 2, v, 0.06f, speck, speck, speck).Build();
             var sq2 = Kit.Shot(sh, "Specks", "ModZhkNasuteSpecks2", 2, null, 0.06f, speck, speck, speck).Speed(1.15f).Build();
-            var sp5 = Kit.Shot(sh, "Specks", "ModZhkNasuteSpray", 2, v, 0.03f, spray.ToArray()).Speed(0.85f).Build();
+            // the Glue Bomb: one fat gob of glue that spreads into a sticky field where it stops
+            int gob = Kit.AddEffect(p, FxKit.Finisher(ZhekraFx.GlueSpeck, "ModZhkGlueSpeckBomb", scale: 2f, damageMult: 1.3f, speedMult: 0.6f,
+                                                      leaves: ZhekraFx.GlueField), offsetX: 16f, offsetY: 13f);
+            var sp5 = Kit.Shot(sh, "Specks", "ModZhkNasuteGlueBomb", 2, v, 0f, gob).Speed(0.85f).Build();
             var su = Still(sh, "ShoreUp", "ModZhkNasuteShoreUp").Ev(4, "ModZhkShoreUp").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, sq, 0.4f, rangeInner: 20f, rangeOuter: 65f, rangeRetreat: 15f));
@@ -354,10 +357,13 @@ namespace CrawlFurther.Content.Gods.Zhekra
             int n0 = Strike.Mark(p);
             int bite = Kit.AddEffect(p, ZhekraFx.Clamp, attach: true, destroyOnAnimEnd: true, offsetX: 20f, offsetY: 6f);
             int dirt = Kit.AddEffect(p, ZhekraFx.Dirt, spawnPoint: DamageEffectData.eSpawnPoint.Position);
-            // Combo: two clamps, then the Ambush: it bursts forward and its jaws close twice
+            // Combo: two clamps, then the Ambush: it bursts forward and its jaws close twice, the second dragging him into the sand (slows)
             var cl = Kit.Melee(sh, "Clamp", "ModZhkAntlionClamp", v, 2, bite, 40f).Build();
             var cl2 = Kit.Melee(sh, "Clamp", "ModZhkAntlionClamp2", null, 2, bite, 50f).Speed(1.1f).Build();
-            var amb = Kit.Melee(sh, "Clamp", "ModZhkAntlionAmbush", v, 2, bite, 120f, 4, bite, 30f).Speed(0.9f).Build();
+            int sink = Kit.AddEffect(p, FxKit.Finisher(ZhekraFx.Clamp, "ModZhkClampSink", damageMult: 1.1f, status: FxFactory.GetStatus("StatusLavaSteveGoo")),
+                                     attach: true, destroyOnAnimEnd: true, offsetX: 20f, offsetY: 6f);
+            int spray = Kit.AddEffect(p, ZhekraFx.Dirt, offsetX: 20f, offsetY: 0.01f);
+            var amb = Kit.Melee(sh, "Clamp", "ModZhkAntlionAmbush", v, 2, bite, 120f, 4, sink, 30f).Speed(0.9f).Ev(4, "AnimAttack", spray).Build();
             var dg = Still(sh, "Dig", "ModZhkAntlionDig").Ev(0, "AnimAttack", dirt).EvO(0, "AnimSound", v).Ev(3, "AnimAttack", dirt)
                 .Ev(-1, "ModZhkPit").HandOff().Build();
             atk.Clear();
@@ -405,10 +411,12 @@ namespace CrawlFurther.Content.Gods.Zhekra
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int lance = Kit.AddEffect(p, ZhekraFx.Lance, attach: true, destroyOnAnimEnd: true, offsetX: 20f, offsetY: 16f);
-            // Combo: two lance stings, then the Skewer: a long lunge that stings twice on the way through
+            // Combo: two lance stings, then the Skewer: a long lunge that stings twice on the way through, the second poisoning
             var ln = Kit.Melee(sh, "Lance", "ModZhkHunterLance", v, 3, lance, 50f).Build();
             var ln2 = Kit.Melee(sh, "Lance", "ModZhkHunterLance2", null, 3, lance, 60f).Speed(1.1f).Build();
-            var sk = Kit.Melee(sh, "Lance", "ModZhkHunterSkewer", v, 2, lance, 140f, 4, lance, 40f).Speed(0.9f).Build();
+            int venom = Kit.AddEffect(p, FxKit.Finisher(ZhekraFx.Lance, "ModZhkLanceVenom", damageMult: 1.1f, status: FxFactory.GetStatus("StatusPoisoned")),
+                                      attach: true, destroyOnAnimEnd: true, offsetX: 20f, offsetY: 16f);
+            var sk = Kit.Melee(sh, "Lance", "ModZhkHunterSkewer", v, 2, lance, 140f, 4, venom, 40f).Speed(0.9f).Build();
             var rs = Still(sh, "Rise", "ModZhkHunterRise").EvO(1, "AnimSound", v).Ev(6, "ModZhkHunterMark").Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, ln, 0.4f, rangeInner: 14f, rangeOuter: 34f));
@@ -426,10 +434,12 @@ namespace CrawlFurther.Content.Gods.Zhekra
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int drill = Kit.AddEffect(p, ZhekraFx.Drill, attach: true, destroyOnAnimEnd: true, offsetX: 16f, offsetY: 12f);
-            // Combo: two drills, then the Bore: it presses in and drills three times
+            // Combo: two drills, then the Bore: it presses in and drills three times, the last one deep enough to bleed him
             var dr = Kit.Melee(sh, "Drill", "ModZhkGorgerDrill", v, 2, drill, 35f).Build();
             var dr2 = Kit.Melee(sh, "Drill", "ModZhkGorgerDrill2", null, 2, drill, 45f).Speed(1.1f).Build();
-            var bore = Kit.Melee(sh, "Drill", "ModZhkGorgerBore", v, 2, drill, 80f, 3, drill, 20f, 4, drill, 20f).Speed(0.85f).Build();
+            int deep = Kit.AddEffect(p, FxKit.Finisher(ZhekraFx.Drill, "ModZhkDrillDeep", damageMult: 1.2f, status: FxFactory.GetStatus("StatusBleeding")),
+                                     attach: true, destroyOnAnimEnd: true, offsetX: 16f, offsetY: 12f);
+            var bore = Kit.Melee(sh, "Drill", "ModZhkGorgerBore", v, 2, drill, 80f, 3, drill, 20f, 4, deep, 20f).Speed(0.85f).Build();
             var pm = Still(sh, "Pump", "ModZhkGorgerPump").Ev(2, "ModZhkTransfuse").EvO(2, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, dr, 0.4f, rangeInner: 14f, rangeOuter: 32f));
@@ -450,10 +460,12 @@ namespace CrawlFurther.Content.Gods.Zhekra
             int n0 = Strike.Mark(p);
             int ram = Kit.AddEffect(p, ZhekraFx.Ram, attach: true, destroyOnAnimEnd: true, offsetX: 13f, offsetY: 16f);
             int dart = Kit.AddEffect(p, ZhekraFx.EggDart, offsetX: 10f, offsetY: 18f);
-            // Combo: two rams, then the Buzz: a long ram that hits him twice as it barrels through
+            // Combo: two rams, then the Buzz: a long ram that hits him twice as it barrels through, laying an egg in him on the second
             var rm = Kit.Melee(sh, "Ram", "ModZhkBotflyRam", v, 2, ram, 70f).Build();
             var rm2 = Kit.Melee(sh, "Ram", "ModZhkBotflyRam2", null, 2, ram, 80f).Speed(1.1f).Build();
-            var bz = Kit.Melee(sh, "Ram", "ModZhkBotflyBuzz", v, 2, ram, 160f, 4, ram, 60f).Speed(0.9f).Build();
+            int lay = Kit.AddEffect(p, FxKit.Finisher(ZhekraFx.Ram, "ModZhkRamLay", status: ZhekraFx.Implant),
+                                    attach: true, destroyOnAnimEnd: true, offsetX: 13f, offsetY: 16f);
+            var bz = Kit.Melee(sh, "Ram", "ModZhkBotflyBuzz", v, 2, ram, 160f, 4, lay, 60f).Speed(0.9f).Build();
             var ed = Kit.Shot(sh, "EggDart", "ModZhkBotflyEggDart", 4, v, 0f, dart).Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, rm, 0.4f, rangeInner: 14f, rangeOuter: 33f));
@@ -537,10 +549,12 @@ namespace CrawlFurther.Content.Gods.Zhekra
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int shove = Kit.AddEffect(p, ZhekraFx.Shove, attach: true, destroyOnAnimEnd: true, offsetX: 22f, offsetY: 8f);
-            // Combo: two shoves, then the Steamroll: the ball rolls on through him, hitting twice
+            // Combo: two shoves, then the Steamroll: the ball rolls on through him, hitting twice, and leaves him dizzy
             var sv = Kit.Melee(sh, "Shove", "ModZhkSunScarabShove", v, 2, shove, 45f).Build();
             var sv2 = Kit.Melee(sh, "Shove", "ModZhkSunScarabShove2", null, 2, shove, 55f).Speed(1.1f).Build();
-            var roll = Kit.Melee(sh, "Shove", "ModZhkSunScarabRoll", v, 2, shove, 130f, 4, shove, 60f).Speed(0.9f).Build();
+            int flat = Kit.AddEffect(p, FxKit.Finisher(ZhekraFx.Shove, "ModZhkShoveFlat", damageMult: 1.1f, status: FxFactory.GetStatus("StatusDizzy")),
+                                     attach: true, destroyOnAnimEnd: true, offsetX: 22f, offsetY: 8f);
+            var roll = Kit.Melee(sh, "Shove", "ModZhkSunScarabRoll", v, 2, shove, 130f, 4, flat, 60f).Speed(0.9f).Build();
             var rl = new ClipBuilder(sh, "Release", "ModZhkSunScarabRelease").Once()
                 .EvF(0, "AnimInputMultiplyFreeFace", 0f).Ev(1, "AnimInputMultiplyStop").Ev(1, "AnimInputOff")
                 .Ev(2, "ModZhkRelease").EvO(2, "AnimSound", v).Ev(-1, "AnimRun").Build();

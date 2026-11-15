@@ -27,7 +27,9 @@ namespace CrawlFurther.Testing
             AddRun();
             AddPlayers();
             AddView();
+#if CHAOS_NEXT
             AddChaos();
+#endif
             AddUnlocks();
         }
 
@@ -183,6 +185,7 @@ namespace CrawlFurther.Testing
             TestMode.AddToggle(View, "Hide the HUD", () => TestCheats.HideHud, v => TestCheats.HideHud = v);
         }
 
+#if CHAOS_NEXT
         static void AddChaos()
         {
             TestMode.AddChoice(Chaos, "Chaos in this game", new[] { "Off", "On" },
@@ -277,6 +280,7 @@ namespace CrawlFurther.Testing
             }
         }
 
+#endif
         static void AddUnlocks()
         {
             TestMode.AddToggle(Unlocks, "Open everything (on at every start; nothing goes in your save)", () => TestCheats.UnlockAll, v =>

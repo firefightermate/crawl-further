@@ -1,3 +1,5 @@
+#if CHAOS_NEXT
+// Next chaos update: compiled only with CHAOS_NEXT (build.sh sets it unless NO_CHAOS_NEXT=1).
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -131,3 +133,4 @@ namespace CrawlFurther.Art
         }
     }
 }
+#endif

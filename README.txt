@@ -1,4 +1,4 @@
-CRAWL: FURTHER 1.4.5
+CRAWL: FURTHER 1.4.6
 ====================
 
 Crawl: Further (formerly "Crawl Mod") is a big content mod for Crawl. Nine new gods with 189 monsters between
@@ -9,35 +9,26 @@ violet gem on its picture (portraits, shop pictures, vault cells and the evoluti
 Every mod monster, item, weapon, object, god, origin and ghost form has a vault entry, and everything has its
 own drawn art.
 
-Launch Crawl normally. The top-left banner shows "Crawl: Further 1.4.5" and "self-test OK" when everything
+Launch Crawl normally. The top-left banner shows "Crawl: Further 1.4.6" and "self-test OK" when everything
 loaded. If anything failed, BepInEx\plugins\CrawlFurther\CrawlMod_selftest.txt lists what and why.
 The mod is two DLLs in BepInEx\plugins\CrawlFurther: CrawlFurther.Core.dll (the library) and CrawlFurther.dll.
 Delete an old BepInEx\plugins\CrawlMod folder when you update. The config files keep their old names, so
 updating from any earlier version keeps your settings and saves. New settings files start with CrawlFurther.
 The mod's two bosses are switched off in this version (see BOSSES).
 
-NEW IN 1.4.5
+NEW IN 1.4.6
 ------------
   Everything since 1.3.0.
-  - Chaos floors are built mostly from big rooms: wider, deeper copies of the game's own rooms, grown out of
-    their own floor and walls, with more enemies and props to fill them. Every room still fits on one screen.
-  - Rot Gardens, the first chaos floor of its own: caves overgrown with fungus, plum stone and glowing caps.
-    Puffballs and bell caps burst at a hit into spores that daze the hero, and spore drifts cross the room
-    during fights.
-  - A chaos game starts every monster player on tier 2 monsters. The hero levels faster, monster players earn
-    wrath faster, and gold comes in a little quicker.
-  - Tier 2 and 3 monsters attack in combos. Press attack again within a beat to chain the next swing, bite or
-    shot, and the third step is a finisher with a trick of its own. Sylvene, Umbrael, Bel'Mora, Zhekra, Jinx,
-    Kaurn, Ossivar, Vhorrul, Ysveld and the secret monsters all got them.
-  - Tier 2 and 3 monsters hit a bigger area, never smaller than the game's own monsters of the same rank, and
-    ground slams reach as far as their art shows.
+  - Tier 2 and 3 monsters attack in combos. Press attack again within a beat to chain the next swing, bite or shot.
+    The third step is a finisher with a trick of its own, such as a burst, a pool, a quake, a status or a throw.
+    Sylvene, Umbrael, Bel'Mora, Zhekra, Jinx, Kaurn, Ossivar, Vhorrul, Ysveld and the secret monsters all got them.
+  - Tier 2 and 3 monsters hit a bigger area, never smaller than the game's own monsters of the same rank, and ground
+    slams reach as far as their art shows.
   - Puffball Brute, Cordyceps Saint, Sand Wraith, Carrion Saint, Jelly Siren and Slime Hag got reworked moves.
-  - Every mod monster has its own vault challenge goal and plays the same in a challenge as in a normal game.
-    Monsters that were far from their goal were retuned.
+  - Every mod monster has its own vault challenge goal and plays the same in a challenge as in a normal game. Monsters
+    that were far from their goal were retuned.
   - The Poltergeist's hex bolt can't hit the hero from on top of him or in the shop.
   - The mod's pages in Pause > Tips use the font of the live monster tips.
-  - Test mode (F2) has a Chaos page: turn chaos on, pick how many big rooms a floor gets, reload the floor
-    built around any big room to look at it, and go straight to Rot Gardens.
 
 NEW IN 1.3.0
 ------------
@@ -444,15 +435,6 @@ CHAOS
   its own. The second spell's charge shows in a blue bar under the special bar, and the hero stats panel
   names both. Buying a spell with one held makes it the second. Buying one with two held asks which to drop
   (the shop's text says so before you buy). Bots use whichever spell is ready and drop the cheaper one.
-  Big rooms: most rooms on a chaos floor are wider, deeper copies of the game's own rooms, grown out of
-  their own floor and walls, with more enemies and props. Each still fits on one screen; a room that can't
-  grow cleanly keeps its own size. ChaosBigRooms under [Game] turns them off.
-  Rot Gardens: now and then a stretch of chaos floors is overgrown caves instead of one of the game's
-  floors. Puffballs and bell caps burst at a hit from anyone (hero or monster) into a spore cloud that dazes
-  the hero, and while a fight is on, spore drifts float across the room. ChaosBiomes under [Game] turns
-  them off.
-  Pace: monster players start on tier 2 monsters, the hero levels faster, wrath comes faster and gold a
-  little quicker. A continued game picks up the faster pace from the continue on.
   Turn chaos off with Chaos under [Game] in com.firefightermate.crawlfurther.cfg.
 
 TEST MODE

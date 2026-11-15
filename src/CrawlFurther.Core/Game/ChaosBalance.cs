@@ -1,3 +1,5 @@
+#if CHAOS_NEXT
+// Next chaos update: compiled only with CHAOS_NEXT (build.sh sets it unless NO_CHAOS_NEXT=1).
 using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
@@ -75,3 +77,4 @@ namespace CrawlFurther.Game
         static void Postfix(ref int __result) { if (__result > 0 && ChaosMode.Active) __result = Mathf.RoundToInt(__result * ChaosBalance.GoldScale); }
     }
 }
+#endif

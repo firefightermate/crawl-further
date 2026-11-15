@@ -96,9 +96,10 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int s2 = Kit.AddEffect(p, OssivarFx.BoneSpear, offsetX: 14f, offsetY: 12f, angle: 0.01f);
             int s3 = Kit.AddEffect(p, OssivarFx.BoneSpear, offsetX: 14f, offsetY: 12f, angle: 14f);
             var th = Kit.Melee(sh, "Thrust", "ModOssLancerThrust", v, 2, thrust, 90f).Build();
-            // Combo: two thrusts, then the Charge: a long run behind the spear that skewers twice
+            // Combo: two thrusts, then the Charge: a long run behind the spear that skewers twice and flings him off it
             var th2 = Kit.Melee(sh, "Thrust", "ModOssLancerThrust2", null, 2, thrust, 100f).Speed(1.15f).Build();
-            var th3 = Kit.Melee(sh, "Thrust", "ModOssLancerCharge", v, 2, thrust, 170f, 4, thrust, 60f).Speed(0.9f).Build();
+            int fling = Kit.AddEffect(p, FxKit.Finisher(OssivarFx.LancerThrust, "ModLancerThrustFling", damageMult: 1.1f, knockMult: 2.4f), attach: true, destroyOnAnimEnd: true, offsetX: 24f, offsetY: 12f);
+            var th3 = Kit.Melee(sh, "Thrust", "ModOssLancerCharge", v, 2, thrust, 170f, 4, fling, 60f).Speed(0.9f).Build();
             var vo = Kit.Shot(sh, "Volley", "ModOssLancerVolley", 3, v, 0f, s1, s2, s3).Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, th, 0.35f, rangeInner: 18f, rangeOuter: 38f));
@@ -116,9 +117,10 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int n0 = Strike.Mark(p);
             int spade = Kit.AddEffect(p, OssivarFx.DigSpade, attach: true, destroyOnAnimEnd: true, offsetX: 12f, offsetY: 5f);
             var sd = Kit.Melee(sh, "Spade", "ModOssDigSpade", v, 2, spade, 50f).Build();
-            // Combo: two spade swings, then the Backfill: it digs in and flings the spade twice, stepping in
+            // Combo: two spade swings, then the Backfill: it digs in and flings the spade twice, stepping in, the second load of grave dirt slowing him
             var sd2 = Kit.Melee(sh, "Spade", "ModOssDigSpade2", null, 2, spade, 60f).Speed(1.15f).Build();
-            var sd3 = Kit.Melee(sh, "Spade", "ModOssDigBackfill", v, 2, spade, 90f, 4, spade, 40f).Speed(0.9f).Build();
+            int dirt = Kit.AddEffect(p, FxKit.Finisher(OssivarFx.DigSpade, "ModOssDigSpadeDirt", damageMult: 1.1f, status: FxFactory.GetStatus("StatusLavaSteveGoo")), attach: true, destroyOnAnimEnd: true, offsetX: 12f, offsetY: 5f);
+            var sd3 = Kit.Melee(sh, "Spade", "ModOssDigBackfill", v, 2, spade, 90f, 4, dirt, 40f).Speed(0.9f).Build();
             var un = new ClipBuilder(sh, "Unearth", "ModOssUnearth").Once().Channel(v, 5, "OssUnearth").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, sd, 0.35f, rangeInner: 10f, rangeOuter: 24f));
@@ -139,7 +141,8 @@ namespace CrawlFurther.Content.Gods.Ossivar
             var gr = Kit.Melee(sh, "Gore", "ModOssTuskGore", v, 2, gore, 60f).Build();
             // Combo: two gores, then the Toss: a lunging gore that tosses him with a second
             var gr2 = Kit.Melee(sh, "Gore", "ModOssTuskGore2", null, 2, gore, 70f).Speed(1.1f).Build();
-            var gr3 = Kit.Melee(sh, "Gore", "ModOssTuskToss", v, 2, rush, 130f, 4, gore, 40f).Speed(0.9f).Build();
+            int toss = Kit.AddEffect(p, FxKit.Finisher(OssivarFx.TuskGore, "ModOssTuskGoreToss", damageMult: 1.1f, knockMult: 2.4f), attach: true, destroyOnAnimEnd: true, offsetX: 12f, offsetY: 11f);
+            var gr3 = Kit.Melee(sh, "Gore", "ModOssTuskToss", v, 2, rush, 130f, 4, toss, 40f).Speed(0.9f).Build();
             var ch = new ClipBuilder(sh, "Charge", "ModOssTuskCharge").Once().AimLock(1).Ev(1, "OssChargeOn")
                 .EvF(2, "AnimMove", 230f).Ev(2, "AnimAttack", rush).EvO(2, "AnimSound", v)
                 .Ev(7, "AnimMoveStop").Ev(7, "OssChargeOff").Ev(-1, "AnimRun").Build();
@@ -162,9 +165,10 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int land = Kit.AddEffect(p, OssivarFx.PounceBite, attach: true, destroyOnAnimEnd: true, offsetX: 12f, offsetY: 9f);
             int dust = Kit.AddEffect(p, OssivarFx.PounceDust, spawnPoint: DamageEffectData.eSpawnPoint.Position);
             var bt = Kit.Melee(sh, "Bite", "ModOssBarghestBite", v, 2, bite, 60f, 4, bite, 30f).Build();
-            // Combo: two pairs of rending bites, then the Maul: a lunge and three bites
+            // Combo: two pairs of rending bites, then the Maul: a lunge and three bites, the last one leaving him dizzy with dread
             var bt2 = Kit.Melee(sh, "Bite", "ModOssBarghestBite2", null, 2, bite, 70f, 4, bite, 30f).Speed(1.1f).Build();
-            var bt3 = Kit.Melee(sh, "Bite", "ModOssBarghestMaul", v, 2, land, 120f, 3, bite, 30f, 4, bite, 20f).Speed(0.9f).Build();
+            int dread = Kit.AddEffect(p, FxKit.Finisher(OssivarFx.BarghestBite, "ModOssBarghestBiteDread", damageMult: 1.1f, status: FxFactory.GetStatus("StatusDizzy")), attach: true, destroyOnAnimEnd: true, offsetX: 13f, offsetY: 12f, like: like);
+            var bt3 = Kit.Melee(sh, "Bite", "ModOssBarghestMaul", v, 2, land, 120f, 3, bite, 30f, 4, dread, 20f).Speed(0.9f).Build();
             var pc = new ClipBuilder(sh, "Pounce", "ModOssBarghestPounce").Once().AimLock(1)
                 .Ev(2, "AnimStartInvincibility").Ev(2, "OssPounce").EvO(2, "AnimSound", v)
                 .Ev(6, "AnimStopInvincibility").Ev(6, "AnimAttack", land).Ev(6, "AnimAttack", dust).Ev(-1, "AnimRun").Build();
@@ -287,9 +291,11 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int n0 = Strike.Mark(p);
             int mal = Kit.AddEffect(p, OssivarFx.MalletSmash, attach: true, destroyOnAnimEnd: true, offsetX: 19f, offsetY: 5f);
             var ml = Kit.Melee(sh, "Mallet", "ModOssTombMallet", v, 3, mal, 30f).Ev(3, "OssMalletKnock").Build();
-            // Combo: two mallet smashes, then the Chisel: two smashes in a row, stepping in
+            // Combo: two mallet smashes, then the Chisel: two smashes in a row, stepping in, and bone spikes burst up where the second lands
             var ml2 = Kit.Melee(sh, "Mallet", "ModOssTombMallet2", null, 3, mal, 40f).Speed(1.1f).Ev(3, "OssMalletKnock").Build();
-            var ml3 = Kit.Melee(sh, "Mallet", "ModOssTombChisel", v, 3, mal, 40f, 10, mal, 70f).Repeat(2).Speed(1.2f).Ev(3, "OssMalletKnock").Ev(10, "OssMalletKnock").Build();
+            int spikes = Kit.AddEffect(p, FxKit.Finisher(OssivarFx.SpikeBurst, "ModOssuarySpikeBurstChisel", damageMult: 0.7f), offsetX: 26f, offsetY: 0.01f);
+            var ml3 = Kit.Melee(sh, "Mallet", "ModOssTombChisel", v, 3, mal, 40f, 10, mal, 70f).Repeat(2).Speed(1.2f).Ev(3, "OssMalletKnock").Ev(10, "OssMalletKnock")
+                .Ev(10, "AnimAttack", spikes).Build();
             var rs = new ClipBuilder(sh, "Raise", "ModOssTombRaise").Once().AimLock(3).Ev(4, "OssRaiseStones").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, ml, 0.45f, rangeInner: 10f, rangeOuter: 26f));
@@ -308,9 +314,10 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int n0 = Strike.Mark(p);
             int slam = Kit.AddEffect(p, OssivarFx.CoffinSlam, attach: true, destroyOnAnimEnd: true, offsetX: 30f, offsetY: 5f);
             var sl = Kit.Melee(sh, "Slam", "ModOssCoffinSlam", v, 3, slam, 30f).Build();
-            // Combo: two coffin slams, then the Pallbearer: two slams running, the second carried forward
+            // Combo: two coffin slams, then the Pallbearer: two slams running, the second carried forward and knocking him flying
             var sl2 = Kit.Melee(sh, "Slam", "ModOssCoffinSlam2", null, 3, slam, 40f).Speed(1.1f).Build();
-            var sl3 = Kit.Melee(sh, "Slam", "ModOssCoffinPall", v, 3, slam, 40f, 10, slam, 80f).Repeat(2).Speed(1.2f).Build();
+            int heave = Kit.AddEffect(p, FxKit.Finisher(OssivarFx.CoffinSlam, "ModOssCoffinSlamHeave", damageMult: 1.1f, knockMult: 2.2f), attach: true, destroyOnAnimEnd: true, offsetX: 30f, offsetY: 5f);
+            var sl3 = Kit.Melee(sh, "Slam", "ModOssCoffinPall", v, 3, slam, 40f, 10, heave, 80f).Repeat(2).Speed(1.2f).Build();
             var wh = new ClipBuilder(sh, "Whirl", "ModOssCoffinWhirl").Once().Repeat(5)
                 .Ev(0, "AnimInputOff").Ev(0, "AnimMoveStop").Ev(0, "OssWhirlOn").EvO(0, "AnimSound", v)
                 .Ev(-1, "AnimRun").Ev(-1, "OssWhirlEnd").Build();
@@ -355,9 +362,12 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int n0 = Strike.Mark(p);
             int slash = Kit.AddEffect(p, OssivarFx.RazorSlash, attach: true, destroyOnAnimEnd: true, offsetX: 15f, offsetY: 16f);
             var sl = Kit.Melee(sh, "Slash", "ModOssRazorSlash", v, 2, slash, 50f).Build();
-            // Combo: two tusk slashes, then the Gash: a long lunge that slashes twice
+            // Combo: two tusk slashes, then the Gash: a long lunge that slashes twice, the second shearing off three bone shards at him
             var sl2 = Kit.Melee(sh, "Slash", "ModOssRazorSlash2", null, 2, slash, 60f).Speed(1.1f).Build();
-            var sl3 = Kit.Melee(sh, "Slash", "ModOssRazorGash", v, 2, slash, 120f, 4, slash, 40f).Speed(0.9f).Build();
+            var shards = new System.Collections.Generic.List<int>();
+            foreach (var a in new[] { -20f, 0.01f, 20f }) shards.Add(Kit.AddEffect(p, OssivarFx.TuskShard, offsetX: 16f, offsetY: 12f, angle: a));
+            var sl3 = Kit.Melee(sh, "Slash", "ModOssRazorGash", v, 2, slash, 120f, 4, slash, 40f).Speed(0.9f)
+                .Ev(4, "AnimAttack", shards[0]).Ev(4, "AnimAttack", shards[1]).Ev(4, "AnimAttack", shards[2]).Build();
             var sk = new ClipBuilder(sh, "Skid", "ModOssRazorSkid").Once().AimLock(0).EvF(0, "AnimMove", 220f).Ev(3, "AnimMoveStop")
                 .Ev(4, "OssQuillFire").EvO(4, "AnimSound", v).Ev(-1, "AnimRun").Build();
             var idles = new exSpriteAnimClip[RazorQuills.Max + 1];
@@ -384,9 +394,10 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int n0 = Strike.Mark(p);
             int bite = Kit.AddEffect(p, OssivarFx.CerberusBite, attach: true, destroyOnAnimEnd: true, offsetX: 21f, offsetY: 17f);
             var bt = Kit.Melee(sh, "Bite", "ModOssCerberusBite", v, 3, bite, 30f).Build();
-            // Combo: two three-headed bites, then the Frenzy: a lunge and each head bites in turn
+            // Combo: two three-headed bites, then the Frenzy: a lunge and each head bites in turn, the last with a burning mouth (sets him alight)
             var bt2 = Kit.Melee(sh, "Bite", "ModOssCerberusBite2", null, 3, bite, 40f).Speed(1.1f).Build();
-            var bt3 = Kit.Melee(sh, "Bite", "ModOssCerberusFrenzy", v, 2, bite, 90f, 3, bite, 20f, 4, bite, 20f).Speed(0.85f).Build();
+            int fire = Kit.AddEffect(p, FxKit.Finisher(OssivarFx.CerberusBite, "ModOssCerberusBiteFire", damageMult: 1.1f, status: FxFactory.GetStatus("StatusOnFire")), attach: true, destroyOnAnimEnd: true, offsetX: 21f, offsetY: 17f);
+            var bt3 = Kit.Melee(sh, "Bite", "ModOssCerberusFrenzy", v, 2, bite, 90f, 3, bite, 20f, 4, fire, 20f).Speed(0.85f).Build();
             var br = new ClipBuilder(sh, "Breath", "ModOssCerberusBreath").Once().AimLock(1).Ev(2, "OssBreathOuter").EvO(2, "AnimSound", v)
                 .Ev(3, "OssBreathMiddle").Ev(9, "OssBreathEnd").Ev(-1, "AnimRun").Build();
             atk.Clear();
@@ -406,9 +417,10 @@ namespace CrawlFurther.Content.Gods.Ossivar
             int bite = Kit.AddEffect(p, OssivarFx.GrimBite, attach: true, destroyOnAnimEnd: true, offsetX: 24f, offsetY: 17f);
             int lunge = Kit.AddEffect(p, OssivarFx.GrimLunge, attach: true, destroyOnAnimEnd: true, offsetX: 19f, offsetY: 12f);
             var bt = Kit.Melee(sh, "Bite", "ModOssGrimBite", v, 2, bite, 80f).Build();
-            // Combo: two lunging bites, then the Hunt: it runs through him, the lunge and the bite both landing
+            // Combo: two lunging bites, then the Hunt: it runs through him, the lunge and the bite both landing, the bite's chill slowing him
             var bt2 = Kit.Melee(sh, "Bite", "ModOssGrimBite2", null, 2, bite, 90f).Speed(1.1f).Build();
-            var bt3 = Kit.Melee(sh, "Bite", "ModOssGrimHunt", v, 2, lunge, 150f, 4, bite, 40f).Speed(0.9f).Build();
+            int chill = Kit.AddEffect(p, FxKit.Finisher(OssivarFx.GrimBite, "ModOssGrimBiteChill", damageMult: 1.1f, status: FxFactory.GetStatus("StatusLavaSteveGoo")), attach: true, destroyOnAnimEnd: true, offsetX: 24f, offsetY: 17f);
+            var bt3 = Kit.Melee(sh, "Bite", "ModOssGrimHunt", v, 2, lunge, 150f, 4, chill, 40f).Speed(0.9f).Build();
             var ln = new ClipBuilder(sh, "Lunge", "ModOssGrimLunge").Once().AimLock(1).EvF(2, "AnimMove", 250f).Ev(2, "AnimAttack", lunge).EvO(2, "AnimSound", v)
                 .Ev(6, "AnimMoveStop").Ev(-1, "AnimRun").Build();
             GrimUndying.FallClip = Once(sh, "Fall", "ModOssGrimFall");

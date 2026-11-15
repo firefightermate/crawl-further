@@ -11,7 +11,7 @@
   },
   "ModSilverCometStag": {
     "name": "Comet Stag",
-    "attack": "Two antler gores, then a charge that gores twice",
+    "attack": "Two antler gores, then a charge that tosses him",
     "special": "Comet: fly ahead, rebounding off three walls",
     "passive": [
       "Run straight for a bursting gore",
@@ -21,7 +21,7 @@
   },
   "ModSilverAstrarch": {
     "name": "The Astrarch",
-    "attack": "Two stars, then three flung in a fan",
+    "attack": "Two stars, then a big one that bursts into six",
     "special": "Join your stars: starfall hits inside them",
     "passive": [
       "Three or more stars out: you take less damage.",

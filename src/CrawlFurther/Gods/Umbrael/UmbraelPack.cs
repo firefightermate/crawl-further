@@ -243,10 +243,13 @@ namespace CrawlFurther.Content.Gods.Umbrael
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int shard = Kit.AddEffect(p, UmbraelFx.SandShard, offsetX: 5f, offsetY: 16f);   // the eye in the waist
-            // Combo: two shards, then the Stream: three shards down one line, a beat apart
+            // Combo: two shards, then the Last Grain: a heavy shard of sand that slows him
             var sd = Kit.Shot(sh, "Shard", "ModHourglassShard", 2, v, 0f, shard).Build();
             var sd2 = Kit.Shot(sh, "Shard", "ModHourglassShard2", 2, null, 0f, shard).Speed(1.15f).Build();
-            var stream = Kit.Shot(sh, "Shard", "ModHourglassStream", 2, v, 0.09f, shard, shard, shard).Speed(0.85f).Build();
+            // the Last Grain: one heavy shard of sand, slow, that slows him in turn
+            int grain = Kit.AddEffect(p, FxKit.Finisher(UmbraelFx.SandShard, "ModSandShardGrain", scale: 1.6f, damageMult: 1.2f, speedMult: 0.75f,
+                                                        status: FxFactory.GetStatus("StatusLavaSteveGoo")), offsetX: 5f, offsetY: 16f);
+            var stream = Kit.Shot(sh, "Shard", "ModHourglassLastGrain", 2, v, 0f, grain).Speed(0.85f).Build();
             var rw = Special(sh, "Rewind", "ModHourglassRewind").Ev(1, "ModUmbRewindMark").EvO(1, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, sd, 0.4f, rangeInner: 45f, rangeOuter: 100f, rangeRetreat: 35f));
@@ -387,10 +390,12 @@ namespace CrawlFurther.Content.Gods.Umbrael
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int fang = Kit.AddEffect(p, UmbraelFx.WidowFang, attach: true, offsetX: 12f, offsetY: 7f);   // the legs stab to (18, -2)
-            // Combo: two stabs, then the Frenzy: a lunge and a second stab on its heels
+            // Combo: two stabs, then the Frenzy: a lunge and a second stab on its heels that poisons
             var fg = Kit.Melee(sh, "Fang", "ModWidowFang", v, 3, fang, 50f).Build();
             var fg2 = Kit.Melee(sh, "Fang", "ModWidowFang2", null, 3, fang, 60f).Speed(1.1f).Build();
-            var fz = Kit.Melee(sh, "Fang", "ModWidowFrenzy", v, 3, fang, 110f, 5, fang, 40f).Speed(0.9f).Build();
+            int venom = Kit.AddEffect(p, FxKit.Finisher(UmbraelFx.WidowFang, "ModWidowFangVenom", damageMult: 1.1f, status: FxFactory.GetStatus("StatusPoisoned")),
+                                      attach: true, offsetX: 12f, offsetY: 7f);
+            var fz = Kit.Melee(sh, "Fang", "ModWidowFrenzy", v, 3, fang, 110f, 5, venom, 40f).Speed(0.9f).Build();
             var wb = Special(sh, "Web", "ModWidowWeb").Ev(3, "ModUmbGlazeWeb").EvO(3, "AnimSound", v).Ev(-1, "AnimRun").Build();
             atk.Clear();
             atk.Add(Kit.Attack(a0, fg, 0.35f, rangeInner: 12f, rangeOuter: 30f));
@@ -428,6 +433,7 @@ namespace CrawlFurther.Content.Gods.Umbrael
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int bite = Kit.AddEffect(p, UmbraelFx.VenomBite, attach: true, offsetX: 13f, offsetY: 13f);   // the jaws close at (19, -13)
+            Kit.Scale(p, bite, 1.35f);   // tier 3 jaws: art and hit at the size of the game's own tier 4 bites
             // Combo: two venom bites, then the Riptide: the current drags the hero in before a long lunging bite
             var vb = Kit.Melee(sh, "Venom", "ModUndertowVenom", v, 3, bite, 60f).Build();
             var vb2 = Kit.Melee(sh, "Venom", "ModUndertowVenom2", null, 3, bite, 70f).Speed(1.1f).Build();
@@ -512,6 +518,7 @@ namespace CrawlFurther.Content.Gods.Umbrael
             var atk = Kit.Attacks(p); var a0 = atk[0]; var sp = Kit.Special(p); var v = Kit.Voice(p);
             int n0 = Strike.Mark(p);
             int spin = Kit.AddEffect(p, UmbraelFx.PendulumSpin, offsetX: 0f, offsetY: 11f);   // round the pivot under the case
+            Kit.Scale(p, spin, 1.3f);   // the blade's sweep at the size of the game's own tier 4 swipes
             // Combo: two heavy swings, then the Strike of the Hour: the blade goes round twice, stepping in between
             var sw = Kit.Melee(sh, "Swing", "ModPendulumSwing", v, 2, spin, 0f).Build();
             var sw2 = Kit.Melee(sh, "Swing", "ModPendulumSwing2", null, 2, spin, 30f).Speed(1.1f).Build();

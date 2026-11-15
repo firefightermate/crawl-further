@@ -28,7 +28,7 @@
   },
   "ModBoneLancer": {
     "name": "Bone Lancer",
-    "attack": "Two spear thrusts, then a charge that skewers twice",
+    "attack": "Two spear thrusts, then a charge that flings him",
     "special": "Throw three spears in a fan",
     "passive": [
       "Your spears stand in the floor and snag him",
@@ -37,7 +37,7 @@
   },
   "ModOssGravedigger": {
     "name": "Gravedigger",
-    "attack": "Two spade swings, then two more stepping in",
+    "attack": "Two spade swings, then grave dirt that slows him",
     "special": "Unearth: dig two bone piles out of the floor",
     "passive": [
       "Two quick spade hits bury him to the knees",
@@ -47,7 +47,7 @@
   },
   "ModOssGravetusk": {
     "name": "Gravetusk",
-    "attack": "Two gores, then a lunge that tosses him",
+    "attack": "Two gores, then a lunge that tosses him far",
     "special": "Charge: trampled piles burst into shards",
     "passive": [
       "Your charge bends to a bleeding hero",
@@ -56,7 +56,7 @@
   },
   "ModOssBarghest": {
     "name": "Barghest",
-    "attack": "Pairs of rending bites, then a lunge with three",
+    "attack": "Pairs of rending bites, then a maul that dazes",
     "special": "Pounce (can't be hit): land past him, facing him",
     "passive": [
       "Bite him from behind to hit harder",
@@ -103,7 +103,7 @@
   },
   "ModOssTombwright": {
     "name": "Tombwright",
-    "attack": "Two mallet smashes, then two more in a row",
+    "attack": "Two mallet smashes, then two raising bone spikes",
     "special": "Raise three headstones in a line at the hero",
     "passive": [
       "Raise headstones, then mallet them over onto him",
@@ -113,7 +113,7 @@
   },
   "ModOssCoffinBearer": {
     "name": "Coffin Bearer",
-    "attack": "Two coffin slams, then two more carried forward",
+    "attack": "Two coffin slams, then one that knocks him flying",
     "special": "Whirl: up to three hits, then you are dizzy",
     "passive": [
       "Press again mid-whirl to let the coffin fly",
@@ -133,7 +133,7 @@
   },
   "ModOssRazorback": {
     "name": "Razorback",
-    "attack": "Two tusk slashes, then a lunge that slashes twice",
+    "attack": "Two tusk slashes, then a lunge shearing off shards",
     "special": "Skid: fire every raised quill ahead in a fan",
     "passive": [
       "Run to raise your quills",
@@ -143,7 +143,7 @@
   },
   "ModOssCerberus": {
     "name": "Cerberus",
-    "attack": "Two bites of three heads, then each head in turn",
+    "attack": "Bites of three heads, then a frenzy ending in fire",
     "special": "Three gas cones sweep in and poison",
     "passive": [
       "Your three breaths sweep in and meet on him",
@@ -153,7 +153,7 @@
   },
   "ModOssChurchGrim": {
     "name": "Church Grim",
-    "attack": "Two lunging bites, then a run through him",
+    "attack": "Two lunging bites, then a run through that chills",
     "special": "Graveward Lunge: run through him; may bleed",
     "passive": [
       "Once, when slain, you rise from your bones",

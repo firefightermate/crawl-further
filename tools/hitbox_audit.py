@@ -423,6 +423,8 @@ def mod_moves(vnode):
                 continue
             body = MX.body_of(text, km.start())
             slots = slot_info(body)
+            # Kit.Scale(p, slot, k) scales the slot's template (art and hit together)
+            scaled = {m.group(1): float(m.group(2)) for m in re.finditer(r"Kit\.Scale\(\s*p\s*,\s*(\w+)\s*,\s*([\d.]+)f?\s*\)", body)}
             feet = re.search(r"Strike\.Feet\(", body) is not None
             node = vnode.get(f["basePrefab"], {"x": 1, "y": 0})
             mon = next((x for x in MX.V.MONSTERS if x["id"] == f["id"]), None)
@@ -461,6 +463,11 @@ def mod_moves(vnode):
                     r = rects.get(en)
                     if not r:
                         unk.append(en); continue
+                    k = scaled.get(sv.split("#")[0])
+                    if k:
+                        r = [[(x0 + x1) / 2 - (x1 - x0) * k / 2, (x0 + x1) / 2 + (x1 - x0) * k / 2,
+                              (y0 + y1) / 2 - (y1 - y0) * k / 2, (y0 + y1) / 2 + (y1 - y0) * k / 2] + list(rest)
+                             for (x0, x1, y0, y1, *rest) in r]
                     if "--floor" in argv:
                         tier = 3 if (f["evolveCost"] or 0) >= 4 else 2 if (f["evolveCost"] or 0) >= 2 else 1
                         r = floored(r, tier, (eff.get(en) or {}).get("rate", 0) > 0)

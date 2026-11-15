@@ -1,18 +1,12 @@
 # Changelog
 
-## 1.4.5
+## 1.4.6
 
 Everything since 1.3.0.
 
-- Chaos floors are built mostly from big rooms: wider, deeper copies of the game's own rooms, grown out of their own
-  floor and walls, with more enemies and props to fill them. Every room still fits on one screen.
-- Rot Gardens, the first chaos floor of its own: caves overgrown with fungus, plum stone and glowing caps. Puffballs
-  and bell caps burst at a hit into spores that daze the hero, and spore drifts cross the room during fights.
-- A chaos game starts every monster player on tier 2 monsters. The hero levels faster, monster players earn wrath
-  faster, and gold comes in a little quicker.
-- Tier 2 and 3 monsters attack in combos. Press attack again within a beat to chain the next swing, bite or shot, and
-  the third step is a finisher with a trick of its own. Sylvene, Umbrael, Bel'Mora, Zhekra, Jinx, Kaurn, Ossivar,
-  Vhorrul, Ysveld and the secret monsters all got them.
+- Tier 2 and 3 monsters attack in combos. Press attack again within a beat to chain the next swing, bite or shot.
+  The third step is a finisher with a trick of its own, such as a burst, a pool, a quake, a status or a throw.
+  Sylvene, Umbrael, Bel'Mora, Zhekra, Jinx, Kaurn, Ossivar, Vhorrul, Ysveld and the secret monsters all got them.
 - Tier 2 and 3 monsters hit a bigger area, never smaller than the game's own monsters of the same rank, and ground
   slams reach as far as their art shows.
 - Puffball Brute, Cordyceps Saint, Sand Wraith, Carrion Saint, Jelly Siren and Slime Hag got reworked moves.
@@ -20,8 +14,6 @@ Everything since 1.3.0.
   that were far from their goal were retuned.
 - The Poltergeist's hex bolt can't hit the hero from on top of him or in the shop.
 - The mod's pages in Pause > Tips use the font of the live monster tips.
-- Test mode (F2) has a Chaos page: turn chaos on, pick how many big rooms a floor gets, reload the floor built
-  around any big room to look at it, and go straight to Rot Gardens.
 
 ## 1.3.0
 

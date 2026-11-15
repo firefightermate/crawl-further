@@ -3,6 +3,33 @@
 Changes to Crawl Further Core and to the repository. What changed in the game for players is in
 [thunderstore/CHANGELOG.md](thunderstore/CHANGELOG.md).
 
+## 1.4.6
+
+Released without the chaos work: `build.sh` defines `CHAOS_NEXT` unless `NO_CHAOS_NEXT=1`, and the release is built
+and packaged with `NO_CHAOS_NEXT=1`. Compiled out: `ChaosBalance`, `ChaosRooms`, `Biomes`, `Art.Recolour`,
+`Objects.PropKit`, `Content.Chaos.RotGardens`, test mode's Chaos page and self-test sections 1470 and 1480. The
+package leaves out `art/out_biomes`, and the CHAOS pause topic carries `"define": "CHAOS_NEXT"` (merge_tips wraps it
+in `#if`). The player text for the chaos update waits in `docs/chaos_next_notes.md`.
+
+### Core
+- `FxKit.Finisher(template, name, scale, damageMult, status, knockMult, leaves, speedMult, trail, trailDist)`: a
+  combo finisher's own copy of an effect, keeping the template's spawn hook.
+- `KrnSplitFx` takes a shard count and spread (the Scarab Magus's Sunburst).
+- `tools/hitbox_audit.py` reads `Kit.Scale`; `tools/challenge_model/modx.py` reads `FxKit.Finisher`.
+
+### Content
+- Finishers rebuilt where the third step was the same hit again or more of the same shot. Ranged: Stormcaller,
+  Wire Gremlin, Storm Herald, Fuse Sapper, Scarab Magus, Fortune Teller, High Roller, Brood Urchin, Tallow Sow,
+  Wick Hag, Lantern Wraith, Veil Witch, Prism Oracle, Nasute, Nightshade, Hourglass, Gilt Regent, Grand
+  Treasurer and the Astrarch. Melee: Anvil Smith, Forgemaster, Polarity Warg, Snake-Eyes, Card Soldier, Natural
+  Twenty, Ouroboros, Nutcracker, One-Armed Bandit, Bone Lancer, Gravedigger, Gravetusk, Barghest, Tombwright,
+  Coffin Bearer, Razorback, Cerberus, Church Grim, Brine Lamprey, Gulper Eel, Reef Champion, Wickworm, Tallow
+  Colossus, Candle Wyrm, Fuse Scorpion, Ashen Seraph, Rime Lurker, Shard Hermit, Hoarclaw, Snow Wraith, Pit
+  Antlion, Hunting Wasp, Blood Gorger, Botfly Matron, Sun Scarab, Glass Widow, Comet Stag, Grotesque and
+  Lachrymosa. Tips' attack lines follow.
+- Tide Matriarch's thrust, the Undertow's bite and the Pendulum's spin scaled up 1.3 to 1.35 (art and hit) to reach
+  the game's own tier 4 sizes.
+
 ## 1.4.5
 
 ### Core
