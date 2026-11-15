@@ -7,7 +7,9 @@ Changes to Crawl Further Core and to the repository. What changed in the game fo
 
 Released without the chaos work: `build.sh` defines `CHAOS_NEXT` unless `NO_CHAOS_NEXT=1`, and the release is built
 and packaged with `NO_CHAOS_NEXT=1`. Compiled out: `ChaosBalance`, `ChaosRooms`, `Biomes`, `Art.Recolour`,
-`Objects.PropKit`, `Content.Chaos.RotGardens`, test mode's Chaos page and self-test sections 1470 and 1480. The
+`Objects.PropKit`, `Content.Chaos.RotGardens`, test mode's Chaos page, the Run page's chaos switch and self-test
+sections 1470 and 1480. Chaos itself is off too (`ChaosMode.Enabled = false`, the [Game] Chaos setting not read): no
+menu entry, and a continued game stays normal. The
 package leaves out `art/out_biomes`, and the CHAOS pause topic carries `"define": "CHAOS_NEXT"` (merge_tips wraps it
 in `#if`). The player text for the chaos update waits in `docs/chaos_next_notes.md`.
 

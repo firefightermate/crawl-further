@@ -124,8 +124,10 @@ namespace CrawlFurther.Testing
                 TestGame.BeatBoss();
                 TestMode.Say("The boss falls: " + SystemPlayers.GetTotalBossAttempts() + " of " + SystemMenu.GetBossAttemptsAllowed() + " boss tries used");
             });
+#if CHAOS_NEXT
             TestMode.AddChoice(Run, "Chaos in this game (two spells: give one under Items)", new[] { "Off", "On" },
                 () => Game.ChaosMode.Active ? 1 : 0, i => { Game.ChaosMode.SetForThisGame(i == 1); TestMode.Say("Chaos " + (i == 1 ? "on" : "off") + " for this game"); });
+#endif
             TestMode.AddAction(Run, "Open the doors", () => TestGame.OpenDoors());
             TestMode.AddAction(Run, "Next room", () => TestGame.NextRoom());
             TestMode.AddAction(Run, "Go to the shop", () => TestGame.GoToStore());

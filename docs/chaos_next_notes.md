@@ -30,3 +30,11 @@ CHAOS_NEXT, see build.sh), so they go back into the notes when the chaos update 
 
 ...is a chaos game: the hero holds two spells, floors are mostly big rooms, and some stretches are Rot Gardens,
 overgrown caves full of bursting spores.
+
+## Chaos itself
+
+1.4.6 also switched chaos off (`ChaosMode.Enabled = false` in the `#else` of `ContentSetup`, the Run page's chaos
+switch compiled out). When chaos ships again, put back in README.txt the CHAOS section from 1.3.0 (main menu
+entry, two spells, the [Game] Chaos setting), the "As the hero in a chaos game it casts your second spell" line
+under the ghost button, thunderstore/README.md's "Keep playing and Chaos" paragraph and the ghost button's "the
+hero's second spell in chaos", and drop the "Chaos is switched off for now" changelog line.

@@ -29,6 +29,7 @@ NEW IN 1.4.6
     that were far from their goal were retuned.
   - The Poltergeist's hex bolt can't hit the hero from on top of him or in the shop.
   - The mod's pages in Pause > Tips use the font of the live monster tips.
+  - Chaos is switched off for now. It comes back in its own update.
 
 NEW IN 1.3.0
 ------------
@@ -239,7 +240,7 @@ Violet pips are mod choices:
   GHOST BUTTON   defaults: keyboard 1 C, keyboard 2 B, keyboard 3 M, keyboard 4 full stop, mouse middle
                click, controller X. Change it in the game's controls settings (GHOST BUTTON row). The join
                screen's controls picture shows it in blue (a changed one is named under the picture
-               instead). As the hero in a chaos game it casts your second spell (see CHAOS). In a Brute,
+               instead). In a Brute,
                Titan or King Blob it uses the blob's special; Back only leaves the blob.
 3. Blob (a third page, after you confirm a ghost form that has a choice). The blob your ghost spawns with
   Back, shown in boxes where the god page shows its starters. Left and right (or the mouse) to pick, confirm
@@ -429,13 +430,8 @@ OBJECTS (new in 0.10.0)
   Duck all hide something. The vault's SECRETS page has a riddle for each.
 
 CHAOS
-  A game mode that grows with each update. Start it from Chaos on the main menu (under Play), or continue a
-  won game: a continued game is a chaos game until it ends. Not in the tutorial or vault challenges.
-  Two spells: the hero holds two. Special casts the first, the ghost button the second, and each charges on
-  its own. The second spell's charge shows in a blue bar under the special bar, and the hero stats panel
-  names both. Buying a spell with one held makes it the second. Buying one with two held asks which to drop
-  (the shop's text says so before you buy). Bots use whichever spell is ready and drop the cheaper one.
-  Turn chaos off with Chaos under [Game] in com.firefightermate.crawlfurther.cfg.
+  Switched off in this version: no Chaos entry on the main menu, and a continued game stays a normal
+  game. It comes back in its own update.
 
 TEST MODE
   For checking things without playing a whole run. Off by default: set TestMode = true under [Testing]
