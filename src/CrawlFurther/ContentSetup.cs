@@ -69,8 +69,9 @@ namespace CrawlFurther.Content
             Game.Biomes.Enabled = Plugin.I.Config.Bind("Game", "ChaosBiomes", true,
                 "Chaos games have their own kinds of floor (Rot Gardens) mixed in with the game's. Off: chaos keeps the game's floors.").Value;
 #else
-            Game.ChaosMode.Enabled = Plugin.I.Config.Bind("Game", "Chaos", true,
-                "Chaos: a Chaos entry on the main menu, and continued games play as chaos games (the hero holds two spells).").Value;
+            // Chaos is held back for its own update: no Chaos entry on the main menu, and a continued game stays a
+            // normal game. The [Game] Chaos setting is left as it is, for when chaos comes back.
+            Game.ChaosMode.Enabled = false;
 #endif
             ShopPedestal.AddSheet(PedestalSheet);
             // the vanilla choices in the mod's picker lists are drawn as mod sheets: no gem on them

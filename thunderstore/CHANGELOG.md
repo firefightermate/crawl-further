@@ -14,6 +14,7 @@ Everything since 1.3.0.
   that were far from their goal were retuned.
 - The Poltergeist's hex bolt can't hit the hero from on top of him or in the shop.
 - The mod's pages in Pause > Tips use the font of the live monster tips.
+- Chaos is switched off for now. It comes back in its own update.
 
 ## 1.3.0
 
