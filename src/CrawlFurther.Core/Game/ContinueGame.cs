@@ -11,13 +11,14 @@ namespace CrawlFurther.Game
     using CrawlFurther.Util;
 
     /// <summary>
-    /// Keep playing after the game is won. When the hero kills the boss, the game's own prompt (the one Pause > Quit uses)
-    /// asks to continue or end. Continue gives the game <see cref="ExtraBossAttempts"/> more tries at the boss and takes
-    /// the winner back through the portal to the dungeon, the way a failed try does, and the run goes on. End finishes
-    /// the game as before.
-    ///
-    /// Once a game has been continued, running out of tries asks again: continue with more tries, or end. Ending then
-    /// closes the game as a win for the last player who beat the boss, not as the boss's escape.
+    /// Keep playing at the end of a game, won or lost. When the hero kills the boss, or the last try at the boss fails,
+    /// the game's own prompt (the one Pause > Quit uses) offers three choices:
+    ///  - Continue: <see cref="ExtraBossAttempts"/> more tries at the boss, and the run goes on as it was. After a win the
+    ///    winner goes back through the portal to the dungeon, the way a failed try does.
+    ///  - Continue in chaos: the same, and the rest of the game is a chaos game (<see cref="ChaosMode"/>). Only offered when
+    ///    chaos is on and the game is not a chaos game already.
+    ///  - End run: the game ends the game's own way. A game that someone won and then continued ends as a win for the
+    ///    last player who beat the boss, not as the boss's escape.
     ///
     /// How the game ends a run (decompiled): BossEncounter.OnBossKilled plays the win (other players' bodies hidden, the
     /// hero in a cutscene, the win music) and then calls BossEncounter.SaveAndQuit(true), which records the game and loads
@@ -40,10 +41,13 @@ namespace CrawlFurther.Game
         public static PlayerData LastWinner { get; private set; }
 
         internal const string Title = "_Keep playing?_";
-        internal const string WonText = "{0} beat the boss. Continue to play on with two more tries at the boss, or end the game here.";
-        internal const string OutText = "No one has beaten the boss again. Continue with two more tries at the boss, or end the game here. {0} keeps the win.";
+        internal const string WonText = "{0} beat the boss. Play on with two more tries at the boss, or end the run here.";
+        internal const string OutText = "No one has beaten the boss again. Play on with two more tries at the boss, or end the run here. {0} keeps the win.";
+        internal const string LostText = "The boss got away. Play on with two more tries at the boss, or end the run here.";
+        internal const string ChaosText = " Chaos turns the rest of the game into a chaos game.";
         internal const string ContinueLabel = "Continue";
-        internal const string EndLabel = "End game";
+        internal const string ChaosLabel = "Continue in chaos";
+        internal const string EndLabel = "End run";
 
         static readonly HashSet<int> s_winsCounted = new HashSet<int>();
         internal static bool PassThrough;
@@ -93,12 +97,15 @@ namespace CrawlFurther.Game
                 var winner = SystemLevel.GetHeroPlayerData();
                 if (winner == null) return false;
                 LastWinner = winner;
-                Ask(string.Format(WonText, Name(winner)), () => ContinueAfterWin(enc, winner), () => End(enc, true));
+                Ask(string.Format(WonText, Name(winner)), c => ContinueAfterWin(enc, winner, c), () => End(enc, true));
                 return true;
             }
-            // out of tries: only a game that was already won and continued asks again
-            if (Continues == 0 || LastWinner == null || !LastWinner.IsActive || s_lastDeadHero == null) return false;
-            Ask(string.Format(OutText, Name(LastWinner)), () => ContinueAfterLoss(enc), () => EndAsLastWin(enc));
+            // out of tries, won before or not: the hero who died on the last try comes back if the game goes on
+            if (s_lastDeadHero == null) return false;
+            if (LastWinner != null && LastWinner.IsActive)
+                Ask(string.Format(OutText, Name(LastWinner)), c => ContinueAfterLoss(enc, c), () => EndAsLastWin(enc));
+            else
+                Ask(LostText, c => ContinueAfterLoss(enc, c), () => End(enc, false));
             return true;
         }
 
@@ -111,9 +118,30 @@ namespace CrawlFurther.Game
             try { return string.IsNullOrEmpty(pd.Name) ? "The hero" : pd.Name; } catch { return "The hero"; }
         }
 
-        static void Ask(string text, Action onContinue, Action onEnd)
+        /// <summary>The prompt: Continue, Continue in chaos (when chaos is on and this is not a chaos game yet), End run.
+        /// The game's prompt holds two choices; the third is added to its menu (<see cref="PromptExtraChoice"/>). If that
+        /// fails, the prompt is shown with the two plain choices instead.</summary>
+        static void Ask(string text, Action<bool> onContinue, Action onEnd)
         {
-            Singleton<SystemMenu>.Get.ShowPrompt(Title, text, ContinueLabel, () => Safe(onContinue), EndLabel, () => Safe(onEnd), -1, null);
+            var menu = Singleton<SystemMenu>.Get;
+            if (ChaosOffered())
+            {
+                GameObject go = null;
+                try
+                {
+                    go = menu.ShowPrompt(Title, text + ChaosText, ContinueLabel, () => Safe(() => onContinue(false)),
+                                         ChaosLabel, () => Safe(() => onContinue(true)), -1, null);
+                    if (PromptExtraChoice.Add(go, EndLabel, () => Safe(onEnd))) return;
+                }
+                catch (Exception e) { FurtherCore.Log.LogWarning("ContinueGame: no chaos choice: " + e.Message); }
+                if (go != null) menu.HideModalPopup(go);
+            }
+            menu.ShowPrompt(Title, text, ContinueLabel, () => Safe(() => onContinue(false)), EndLabel, () => Safe(onEnd), -1, null);
+        }
+
+        static bool ChaosOffered()
+        {
+            try { return ChaosMode.Enabled && !ChaosMode.Active; } catch { return false; }
         }
 
         static void Safe(Action a)
@@ -122,10 +150,10 @@ namespace CrawlFurther.Game
             catch (Exception e) { FurtherCore.Log.LogError("ContinueGame: " + e); }
         }
 
-        static void AddTries()
+        static void AddTries(bool chaos)
         {
             Continues++;
-            ChaosMode.OnContinue();
+            if (chaos) ChaosMode.OnContinue();
             SystemMenu.SetBossAttemptsAllowed(SystemMenu.GetBossAttemptsAllowed() + ExtraBossAttempts);
             FurtherCore.Log.LogInfo("Game continued (" + Continues + "): " + SystemPlayers.GetTotalBossAttempts() + " of "
                                     + SystemMenu.GetBossAttemptsAllowed() + " boss tries used");
@@ -149,15 +177,20 @@ namespace CrawlFurther.Game
                 if (AccessTools.Method(typeof(BossEncounter), m) == null) bad("BossEncounter." + m + " not found");
             if (AccessTools.Field(typeof(SystemLevel), "m_heroPlayerData") == null) bad("SystemLevel.m_heroPlayerData not found");
             if (AccessTools.Field(typeof(PlayerData), "m_isHero") == null) bad("PlayerData.m_isHero not found");
-            note(Enabled ? "on: a won game offers to continue with " + ExtraBossAttempts + " more boss tries" : "off");
+            if (AccessTools.Field(typeof(MenuPrompt), "m_menu") == null) bad("MenuPrompt.m_menu not found");
+            if (AccessTools.Field(typeof(MenuPrompt), "m_background") == null) bad("MenuPrompt.m_background not found");
+            if (AccessTools.Field(typeof(MenuTextMenu), "m_itemSpacing") == null) bad("MenuTextMenu.m_itemSpacing not found");
+            if (AccessTools.Field(typeof(MenuTextMenu), "m_owner") == null) bad("MenuTextMenu.m_owner not found");
+            note(Enabled ? "on: a won or lost game offers to continue with " + ExtraBossAttempts + " more boss tries"
+                           + (ChaosMode.Enabled ? ", as it was or in chaos" : "") : "off");
         }
 
         // ---- continue after a win ----
 
-        static void ContinueAfterWin(BossEncounter enc, PlayerData winner)
+        static void ContinueAfterWin(BossEncounter enc, PlayerData winner, bool chaos)
         {
             if (winner.IsHuman && !UnlockHooks.Excluded() && !WinCounted(winner)) { Unlocks.Count(Unlocks.StatWins); Unlocks.Save(); }
-            AddTries();
+            AddTries(chaos);
             R.Set(enc, "m_heroKilled", true);      // this floor's try is spent, as after a failed one
             Singleton<SystemLevel>.Get.StartCoroutine(BackThroughPortal(enc, winner));
         }
@@ -242,9 +275,9 @@ namespace CrawlFurther.Game
 
         /// <summary>The game's failed-try sequence brings the hero back; its death pose already played in the last try's
         /// own sequence, so it is skipped this time.</summary>
-        static void ContinueAfterLoss(BossEncounter enc)
+        static void ContinueAfterLoss(BossEncounter enc, bool chaos)
         {
-            AddTries();
+            AddTries(chaos);
             Singleton<SystemLevel>.Get.StartCoroutine(FailedTryWayHome(enc, s_lastDeadHero, s_lastDeadHeroHit));
             s_lastDeadHero = null;
             s_lastDeadHeroHit = null;
@@ -285,6 +318,49 @@ namespace CrawlFurther.Game
                 return;
             }
             End(enc, true);
+        }
+    }
+
+    /// <summary>
+    /// A third choice on one of the game's prompts (MenuPrompt holds two). Its menu sends each item's message to the
+    /// menu's owner, so this sits on that object and answers the extra item's message, then closes the prompt the way
+    /// the prompt's own choices do.
+    /// </summary>
+    public class PromptExtraChoice : MonoBehaviour
+    {
+        const string Message = "MsgCrawlModPromptExtra";
+        Action m_action;
+        GameObject m_popup;
+
+        /// <summary>Add a choice at the bottom of the prompt <paramref name="popup"/>. False if it could not be added.</summary>
+        public static bool Add(GameObject popup, string label, Action action)
+        {
+            if (popup == null) return false;
+            var prompt = popup.GetComponent<MenuPrompt>();
+            var menu = prompt != null ? R.Get<MenuTextMenu>(prompt, "m_menu") : null;
+            var owner = menu != null ? R.Get<GameObject>(menu, "m_owner") : null;
+            if (owner == null) return false;
+            var c = owner.AddComponent<PromptExtraChoice>();
+            c.m_action = action;
+            c.m_popup = popup;
+            var item = menu.AddItem(new MenuTextMenuItemData { m_text = label, m_message = Message, m_enabled = true });
+            if (item == null) { Destroy(c); return false; }
+            // the prompt sized its backing to its text and two choices: grow it by half a row, as it does per row
+            var bg = R.Get<GameObject>(prompt, "m_background");
+            if (bg != null)
+            {
+                var sc = bg.transform.localScale;
+                bg.transform.localScale = new Vector3(sc.x, sc.y + 0.5f * R.Get<float>(menu, "m_itemSpacing"), sc.z);
+            }
+            return true;
+        }
+
+        void MsgCrawlModPromptExtra()
+        {
+            var a = m_action;
+            m_action = null;
+            try { if (a != null) a(); }
+            finally { Singleton<SystemMenu>.Get.HideModalPopup(m_popup != null ? m_popup : gameObject); }
         }
     }
 

@@ -5,10 +5,19 @@ Changes to Crawl Further Core and to the repository. What changed in the game fo
 
 ## 1.5.0
 
-The chaos update: built without `NO_CHAOS_NEXT`, so big rooms, chaos pace, Rot Gardens and test mode's Chaos page
-are back, and chaos is on again.
+The chaos update: built without `NO_CHAOS_NEXT`, so big rooms, chaos pace and test mode's Chaos page are back, and
+chaos is on again. Rot Gardens stays out (`ROT_GARDENS`).
 
 ### Core
+- `ContinueGame` asks at the end of every run, won or lost (running out of boss tries no longer needs an earlier
+  win). The prompt offers Continue, Continue in chaos and End run; chaos is only turned on by Continue in chaos
+  (`AddTries(bool chaos)`). The game's `MenuPrompt` holds two choices, so `PromptExtraChoice` adds the third to its
+  menu (`MenuTextMenu.AddItem`, message to the menu's `m_owner`) and grows the backing by half a row. If that
+  fails the prompt falls back to Continue and End run. In a game that is already chaos, the chaos choice is left
+  out. Self-test 1450 checks the prompt members it reaches by name.
+- Rot Gardens is held back while it is redesigned: its pack, its `ChaosBiomes` setting, its pause page and
+  `art/out_biomes` are only built with `ROT_GARDENS=1` (build.sh and package.sh). Without it `Biomes.Enabled` is
+  false.
 - `ChaosBalance` head start. When a new chaos game loads its first floor (`SystemMain.LoadLevel("SceneGame")`
   prefix, `SystemGame` not started and on level 0), every active player is levelled to `HeadStartLevel` (3) with
   `OnCollectXP` and given `HeadStartGoldPerLevel` x level (40 x 3) gold. Their level-ups pay no wrath to the others

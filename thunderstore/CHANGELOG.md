@@ -4,17 +4,18 @@
 
 The chaos update. Everything since 1.4.6.
 
-- Chaos grows: start it from Chaos on the main menu, or continue a won game.
+- The end of a run offers three choices, won or lost: Continue, Continue in chaos, or End run. Continue plays on
+  as before with two more tries at the boss, Continue in chaos turns the rest of the game into a chaos game, and
+  End run ends it. Running out of boss tries now asks too, even if no one has won yet.
+- Chaos grows: start it from Chaos on the main menu, or pick Continue in chaos when a run ends.
 - A chaos game gives every hero a head start: level 3 and 120 gold, where a normal game stands once its monsters
   reach tier 2.
 - Before the first floor, every player picks each starting monster's tier 2 form on the evolve screen.
 - Chaos floors are built mostly from big rooms: wider, deeper copies of the game's own rooms, grown out of their own
   floor and walls, with more enemies and props to fill them. Every room still fits on one screen.
-- Rot Gardens, the first chaos floor of its own: caves overgrown with fungus, plum stone and glowing caps. Puffballs
-  and bell caps burst at a hit into spores that daze the hero, and spore drifts cross the room during fights.
 - The hero levels faster in chaos, monster players earn wrath faster, and gold comes in a little quicker.
-- Test mode (F2) has a Chaos page: turn chaos on, pick how many big rooms a floor gets, reload the floor built
-  around any big room to look at it, and go straight to Rot Gardens.
+- Test mode (F2) has a Chaos page: turn chaos on, pick how many big rooms a floor gets, and reload the floor built
+  around any big room to look at it.
 
 ## 1.4.6
 
@@ -30,7 +31,6 @@ Everything since 1.3.0.
   that were far from their goal were retuned.
 - The Poltergeist's hex bolt can't hit the hero from on top of him or in the shop.
 - The mod's pages in Pause > Tips use the font of the live monster tips.
-- Chaos is switched off for now. It comes back in its own update.
 
 ## 1.3.0
 

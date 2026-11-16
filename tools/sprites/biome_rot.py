@@ -22,14 +22,18 @@ import props as Q  # noqa: E402
 
 OUT = os.path.join(ROOT, "art", "out_biomes")
 
-# the concept's colours (tools/concepts/ingame_biomes.py)
-MAG, TEALG = (150, 62, 128), (110, 255, 220)
-OCH, AMBG = (176, 104, 60), (255, 196, 96)
-PALE, BLUEG = (214, 210, 222), (150, 200, 255)
-STEM = (160, 146, 144)
-SPORE = (150, 214, 160)
-SPORE_LIGHT = (196, 255, 214)
-SPORE_DARK = (70, 120, 96)
+# Crawl's muted range (v2, after the owner's "the props don't fit crawls styles"): dusty plum and damp ochre caps,
+# bone stems, one small dim glow each. The first pass's bright magenta and teal are gone.
+MAG, TEALG = (104, 70, 92), (120, 176, 150)
+OCH, AMBG = (122, 90, 62), (196, 160, 96)
+PALE, BLUEG = (186, 180, 170), (150, 176, 190)
+STEM = (148, 136, 124)
+GLOW_K = 0.35
+# spores: a sickly yellow-green, apart from the floor's greens so the hazard reads
+SPORE = (176, 178, 96)
+SPORE_LIGHT = (220, 216, 140)
+SPORE_DARK = (104, 104, 58)
+PUFF = (164, 156, 104)      # puffballs share the spores' colour: the thing that bursts looks like what it holds
 
 
 def bake(im, em, k=0.85):
@@ -95,7 +99,7 @@ def props():
     made = {}
     def cap(name, h, c, g, kind, seed):
         im, em, foot, shadow = Q.giant_cap(h, c, g, stem=STEM, seed=seed, kind=kind)
-        im = bake(im, em)
+        im = bake(im, em, GLOW_K)
         made[name] = (im, foot)
         still(name, im, [("Hit", [squash(im, 0.08), squash(im, -0.04)], [0.06, 0.06])])
     cap("BiomeRotCapParasol", 34, MAG, TEALG, "parasol", 3)
@@ -108,7 +112,7 @@ def props():
         made["BiomeRotInkCaps%d" % (i + 1)] = (im, foot)
         still("BiomeRotInkCaps%d" % (i + 1), im)
     for i, r in enumerate((6, 4)):
-        im, em, foot, sh = Q.puffball(r, seed=i + 4)
+        im, em, foot, sh = Q.puffball(r, colour=PUFF, seed=i + 4)
         made["BiomeRotPuffball%d" % (i + 1)] = (im, foot)
         still("BiomeRotPuffball%d" % (i + 1), im, [("Hit", [squash(im, 0.12), squash(im, -0.06)], [0.05, 0.06])])
     for i, (L, c, f) in enumerate(((44, (86, 66, 62), MAG), (32, (80, 64, 58), OCH))):
@@ -164,25 +168,34 @@ def moss(w, h, seed=0):
 
 
 # ------------------------------------------------------------------ spores
+BAYER = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]
+
+
 def blob(w, h, parts, rnd, colour, alpha, speck, specks):
-    """A soft cloud: overlapping round puffs in two alpha steps, spore specks in it."""
+    """A cloud of spores, drawn like the game's own smoke: round puffs lit from the top left (three tones), their
+    thin outer parts stippled away with an ordered dither instead of a hard edge, and spore specks drifting in it."""
     im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     px = im.load()
     for y in range(h):
         for x in range(w):
-            best = 0.0
+            best, lit = 0.0, 0.0
             for (cx, cy, r) in parts:
-                d = math.hypot((x + 0.5 - cx) / r, (y + 0.5 - cy) / (r * 0.75))
-                best = max(best, 1 - d)
-            if best > 0:
-                k = 0 if best < 0.3 else 1
-                c = SPORE_DARK if k == 0 else colour
-                a = int(alpha * (0.55 if k == 0 else 1.0))
-                px[x, y] = c + (a,)
+                dx, dy = (x + 0.5 - cx) / r, (y + 0.5 - cy) / (r * 0.75)
+                d = math.hypot(dx, dy)
+                if 1 - d > best:
+                    best, lit = 1 - d, -dx * 0.6 - dy * 0.8      # toward the top left
+            if best <= 0:
+                continue
+            th = BAYER[y % 4][x % 4] / 16.0
+            if best < 0.35 and best / 0.35 < th:                  # the thin rim, stippled
+                continue
+            tone = SPORE_DARK if lit < -0.25 else SPORE_LIGHT if lit > 0.45 and best > 0.35 else colour
+            a = alpha if best > 0.35 else int(alpha * 0.7)
+            px[x, y] = tone + (a,)
     for _ in range(specks):
         x, y = rnd.randrange(w), rnd.randrange(h)
         if px[x, y][3] > 0:
-            px[x, y] = speck + (230,)
+            px[x, y] = speck + (min(255, alpha + 60),)
     return im
 
 
