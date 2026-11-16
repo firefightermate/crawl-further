@@ -227,7 +227,7 @@ def rot(R, seed, hero_at=None, scale=1.0, clouds=()):
 def hazard_gif(path):
     """A puffball bursting into its spore cloud, and a drift crossing, on a patch of Rot Gardens floor."""
     R = G.Room("RoomCavesLarge1", seed=3)
-    floor = moss_over(G.remap(FLOOR)(R.floor.im), random.Random(7))
+    floor = G.remap(DAMP_FLOOR)(R.floor.im).convert("RGBA")
     W, H = 150, 70
     fx = int(floor.width / 2 - W / 2)
     fy = int(floor.height / 2 - H / 2)
@@ -258,6 +258,80 @@ def hazard_gif(path):
     seq[0].save(path, save_all=True, append_images=seq[1:], duration=90, loop=0, disposal=2)
 
 
+DAMP_FLOOR = hsv(0.30, 0.86, 0.86, 0.14)
+DAMP_WALL = hsv(0.32, 0.85, 0.84, 0.16)
+DAMP_PROP = hsv(0.30, 0.9, 0.9, 0.12)
+CAPS = [("BiomeRotCapParasol", 2, (5, 6)), ("BiomeRotCapParasolSmall", 2, (4, 5)), ("BiomeRotCapBell", 2, (7, 7))]
+PUFFS = [("BiomeRotPuffball1", 2, (6, 6)), ("BiomeRotPuffball2", 2, (4, 4))]
+
+
+def rot2(R, seed, hero_at=None, big=False):
+    """v2, after the owner's notes (2026-11-15): the Caves room as the game dresses it, at the game's own prop
+    count; a damp tint over everything; a few moss patches grown into the floor (GroundSkin); one or two muted
+    caps against the walls and a few puffballs as the hazard. No logs, ink caps, pins, mycelium or roots."""
+    import groundskin as GS
+    rnd = random.Random(seed)
+    fl = G.remap(DAMP_FLOOR)(R.floor.im).convert("RGBA")
+    a = fl.split()[3].load()
+    W, H = fl.size
+
+    def on(x, y):
+        return 0 <= x < W and 0 <= y < H and a[x, y] > 0
+    # moss: a few patches, kept toward the walls and corners, never in the middle of the room
+    want = 5 if big else 3
+    tries = 0
+    placed = []
+    while len(placed) < want and tries < 400:
+        tries += 1
+        w, h = rnd.randint(30, 46), rnd.randint(12, 17)
+        x, y = rnd.randrange(W), rnd.randrange(H)
+        if not all(on(x + dx, y + dy) for dx in (-w // 2, 0, w // 2) for dy in (-h // 2, 0, h // 2)):
+            continue
+        edge = min(x, W - x, y * 1.6, (H - y) * 1.6)
+        if edge > (60 if big else 40):
+            continue
+        if any(abs(x - px) < 50 and abs(y - py) < 24 for px, py in placed):
+            continue
+        fl = GS.on_floor(fl, x, y, GS.ellipse(w, h, seed=seed + len(placed)), "moss", seed=seed * 7 + len(placed))
+        placed.append((x, y))
+    R.floor.im = fl
+    R._fpx = fl.load()
+    R.recolours.append((lambda d: d.kind == "wall" and not is_light(d.name), G.remap(DAMP_WALL)))
+    before = set(id(d) for d in R.draws)
+    R.fill("Caves", scale=1.25 if big else 1.0)
+    game = set(id(d) for d in R.draws) - before
+    R.recolours.append((lambda d: id(d) in game and d.kind in ("object", "decal") and not is_light(d.name),
+                        G.remap(DAMP_PROP)))
+
+    def put(items, count, near_wall):
+        n = 0
+        xs = []
+        for _ in range(count * 60):
+            if n >= count:
+                break
+            it = weighted(rnd, items)
+            im = idle(it[0])
+            x = rnd.uniform(R.fx0 + 12, R.fx1 - 12)
+            if near_wall:
+                y = rnd.uniform(R.fy1 - 34, R.fy1 - 12)        # along the back wall
+            else:
+                y = rnd.uniform(R.fy0 + 8, R.fy1 - 16)
+            if not (R.on_floor(x, y) and R.on_floor(x - 8, y) and R.on_floor(x + 8, y)):
+                continue
+            if not near_wall and abs(x - (R.fx0 + R.fx1) / 2) < (R.fx1 - R.fx0) * 0.18:
+                continue                                       # keep the middle of the room open
+            if any(abs(x - q) < (70 if near_wall else 36) for q in xs):
+                continue                                       # spread out, never in a cluster
+            if R.stand(im, x, y, it[2], name=it[0]):
+                n += 1
+                xs.append(x)
+    put(CAPS if big else CAPS[1:], rnd.randint(2, 3) if big else rnd.randint(1, 2), True)
+    put(PUFFS, rnd.randint(3, 4) if big else 2, False)
+    if hero_at:
+        R.actor(G.hero(), hero_at[0], hero_at[1], "hero")
+    return R
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     made = []
@@ -267,7 +341,7 @@ def main():
             continue
         before = G.Room(name, seed=seed)
         before.fill("Caves")
-        R = rot(G.Room(name, seed=seed), seed, hero_at=hero_at)
+        R = rot2(G.Room(name, seed=seed), seed, hero_at=hero_at)
         a, b = before.render(scale=3), R.render(scale=3)
         a.save(os.path.join(OUT, name + "_caves.png"))
         b.save(os.path.join(OUT, name + "_rot.png"))
@@ -279,8 +353,7 @@ def main():
         R = big_room(name, seed)
         if R is None:
             continue
-        rot(R, seed, hero_at=(0, -6), scale=(R.big[0] + 1) and 1.6,
-            clouds=((R.fx0 + 60, R.fy0 + 40, "BiomeRotDrift", 2),))
+        rot2(R, seed, hero_at=(0, -6), big=True)
         R.render(scale=3).save(os.path.join(OUT, name + "_rot_big.png"))
         made.append(name + " big")
     hazard_gif(os.path.join(OUT, "spores.gif"))

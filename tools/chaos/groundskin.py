@@ -47,11 +47,15 @@ MATERIALS = {
     "goo":    dict(kind="wet", tint=(64, 92, 58), deep=0.55, gloss=(150, 196, 120)),
     "ice":    dict(kind="frozen", tint=(178, 214, 226), rim=(226, 242, 246), crack=(96, 132, 156)),
     "wax":    dict(kind="thick", base=(196, 176, 140), dark=(120, 96, 70), lite=(232, 218, 186), through=0.25),
-    "resin":  dict(kind="thick", base=(150, 98, 40), dark=(84, 52, 24), lite=(214, 160, 80), through=0.35),
-    "glue":   dict(kind="thick", base=(176, 168, 140), dark=(104, 98, 80), lite=(220, 214, 190), through=0.4),
-    "tar":    dict(kind="thick", base=(34, 30, 34), dark=(16, 14, 18), lite=(96, 92, 100), through=0.15),
+    # v2 (the owner: tar, resin and glue "look worse"): a sticky film over the floor, not a lump on it
+    "resin":  dict(kind="viscous", blend="multiply", tint=(236, 170, 92), body=(150, 92, 40), edge=0.0, cover=0.12, strength=0.75, texture=0.5,
+                   gloss=(250, 214, 140), spots="speck", every=150),
+    "glue":   dict(kind="viscous", blend="screen", tint=(204, 204, 192), body=(190, 188, 174), edge=0.0, cover=0.1, strength=0.22, texture=0.6,
+                   gloss=(246, 244, 232), spots="bubble", every=170),
+    "tar":    dict(kind="viscous", blend="multiply", tint=(96, 84, 88), body=(30, 25, 28), edge=0.4, cover=0.82, strength=1.0, texture=0.15,
+                   gloss=(150, 146, 158), spots="bubble", every=140),
     "scorch": dict(kind="scorch", burnt=(30, 22, 20), ember=(226, 120, 52)),
-    "moss":   dict(kind="growth", tint=(70, 96, 64), tint2=(96, 124, 80)),
+    "moss":   dict(kind="growth", dark=(58, 64, 46), mid=(78, 86, 58), lite=(102, 110, 72)),
     "crack":  dict(kind="carved", depth=0.45, lip=1.25),
 }
 
@@ -74,7 +78,7 @@ def skin(floor_rgb, mask, material, seed=1, raggedness=1.0):
     inside = mask > 0.5
     sd = distance_transform_edt(inside) - distance_transform_edt(~inside)   # signed distance to the art's edge
     k = m["kind"]
-    if k in ("wet", "thick", "frozen", "growth"):
+    if k in ("wet", "thick", "frozen", "growth", "viscous"):
         # liquids and growths take the floor's shape: in where the floor dips, out where it rises
         sd = sd - hps * 2.2 * raggedness
     shape = sd > 0
@@ -166,6 +170,68 @@ def skin(floor_rgb, mask, material, seed=1, raggedness=1.0):
         rim = (depth > 0) & (depth <= 1)
         c[rim] = c[rim] * 0.75
         out[..., :3] = c
+    elif k == "viscous":
+        # v3. A thick puddle sitting on the floor, shaded as one body: a flat top that rounds off at the edges,
+        # lit from the top left, a thin see-through edge where the floor still shows, a darker near edge and a
+        # one-pixel shadow cast on the floor below it. The floor's texture shows faintly through the whole pool.
+        tint = np.array(m["tint"], float) / 255.0
+        lf = np.clip(L / (L.mean() + 1e-6), 0.7, 1.3)[..., None]
+        t = np.clip(depth / 3.5, 0, 1)
+        t = (t * t * (3 - 2 * t))[..., None]                  # thickness: thin at the edge, full a few pixels in
+        st = m["strength"]
+        if m["blend"] == "multiply":                          # tar and resin darken and colour what is under them
+            seen = f * (1 - st + st * tint * 1.15)
+        else:                                                 # glue is milky: it lightens what is under it
+            seen = f * (1 - st) + tint * 255 * st
+        seen = seen + hp[..., None] * m["texture"]            # the floor's grain, still there under it
+        body = np.array(m["body"], float) * lf
+        a = (m["edge"] + (m["cover"] - m["edge"]) * t)
+        c = seen * (1 - a) + body * a
+        # one smooth height field for the whole pool, so the light falls on it as one shape
+        h = gaussian_filter(np.minimum(depth, 4.0), 1.2)
+        hy, hx = np.gradient(h)
+        facing = (hx * 0.55 + hy * 0.85)                      # slopes that face the top-left light (y runs down)
+        inner = shape & (depth >= 1)
+        lit = inner & (depth <= 1.5) & (facing > 0.4)
+        c[lit] = c[lit] * 0.5 + np.array(m["gloss"]) * 0.5
+        shade = inner & (depth <= 2.5) & (facing < -0.4)
+        c[shade] = c[shade] * 0.72
+        # a couple of soft reflections on the flat top, set toward the light
+        top = np.argwhere(depth >= 3)
+        if len(top):
+            top = top[np.argsort(top[:, 0] * 1.0 + top[:, 1] * 0.6)][: max(1, len(top) // 3)]
+            for _ in range(max(1, int(shape.sum() / 260))):
+                y, x = top[rnd.randint(len(top))]
+                for dx in range(rnd.randint(2, 4)):
+                    if x + dx < W and depth[y, x + dx] >= 2:
+                        c[y, x + dx] = c[y, x + dx] * 0.3 + np.array(m["gloss"]) * 0.7
+                if y + 1 < H and depth[y + 1, x + 1] >= 2:
+                    c[y + 1, x + 1] = c[y + 1, x + 1] * 0.6 + np.array(m["gloss"]) * 0.4
+        # bubbles (tar, glue) or trapped specks (resin)
+        mids = np.argwhere(depth >= 2.5)
+        for _ in range(max(0, int(shape.sum() / m["every"]))):
+            if not len(mids):
+                break
+            y, x = mids[rnd.randint(len(mids))]
+            if m["spots"] == "speck":
+                c[y, x] = c[y, x] * 0.55
+            else:
+                ring = [(0, -1), (-1, 0), (0, 1), (1, 0)]
+                for dy, dx in ring:
+                    yy2, xx2 = y + dy, x + dx
+                    if 0 <= yy2 < H and 0 <= xx2 < W and shape[yy2, xx2]:
+                        c[yy2, xx2] = c[yy2, xx2] * 0.78
+                c[y - 1 if y > 0 else y, x - 1 if x > 0 else x] = np.array(m["gloss"], float)
+        below = np.zeros_like(shape)
+        below[:-1, :] = shape[:-1, :] & ~shape[1:, :]
+        c[below] = c[below] * 0.78                            # the near edge, turning away from the light
+        cast = np.zeros_like(shape)
+        cast[1:, :] = shape[:-1, :] & ~shape[1:, :]           # its shadow on the floor, one pixel down
+        cast[1:, 1:] |= shape[:-1, :-1] & ~shape[1:, 1:]
+        cast &= ~shape
+        c[cast] = f[cast] * 0.72
+        out[..., :3] = c
+        shape = shape | cast
     elif k == "scorch":
         n = gaussian_filter(rnd.rand(H, W), 1.5)
         t = np.clip(sd / 5.0 + (n - 0.5) * 1.2, 0, 1)
@@ -180,17 +246,27 @@ def skin(floor_rgb, mask, material, seed=1, raggedness=1.0):
         out[..., :3] = c
         depth = lvl * 3
     elif k == "growth":
-        raised = hpn > -0.1
-        n = gaussian_filter(rnd.rand(H, W), 1.0)
-        on = shape & (raised | (depth > 2.5)) & (n > 0.42 - np.clip(depth, 0, 3) * 0.06)
-        lf = (L / (L.mean() + 1e-6))[..., None]
+        # v2: moss as small clumps grown into the floor, each lit on its top left, thinning out to single tufts
+        # at the edge (ordered dither, like the game's own shading), with a pixel of shadow under each clump
+        blobs = gaussian_filter(rnd.rand(H, W), 1.1)
+        blobs = (blobs - blobs.mean()) / (blobs.std() + 1e-6)
+        dens = np.clip(depth / 5.0, 0, 1) * 1.1 - 0.15 + hpn * 0.25    # thicker inside and on the raised stone
+        bay = BAYER[yy % 4, xx % 4]
+        on = shape & (blobs > 0.15 - dens * 0.9) & ((dens > bay * 0.9) | (blobs > 1.0))
+        on = binary_opening(on, np.ones((1, 2))) | (on & (blobs > 1.2))
+        by, bx = np.gradient(gaussian_filter(blobs, 0.8))
+        light = -(bx * 0.55 + by * 0.85)                              # clumps catch the light on their top left
+        dark, mid, lite = (np.array(m[k2], float) for k2 in ("dark", "mid", "lite"))
+        lf = np.clip(L / (L.mean() + 1e-6), 0.8, 1.2)[..., None]
+        col = np.where((light > 0.12)[..., None], lite, np.where((light < -0.12)[..., None], dark, mid)) * lf
         c = f.copy()
-        t1, t2 = np.array(m["tint"], float), np.array(m["tint2"], float)
-        pick = (hpn > 0.35)[..., None]
-        col = np.where(pick, t2, t1) * lf
-        c[on] = c[on] * 0.25 + col[on] * 0.75
+        c[on] = c[on] * 0.3 + col[on] * 0.7
+        under = np.zeros_like(on)
+        under[1:, :] = on[:-1, :] & ~on[1:, :]
+        under &= shape | np.roll(shape, 1, axis=0)
+        c[under] = f[under] * 0.78
         out[..., :3] = c
-        shape = on
+        shape = on | under
     elif k == "carved":
         line = mask > 0.5
         c = f.copy()
@@ -267,9 +343,9 @@ def on_floor(floor, cx, cy, shape, material, seed=1):
     return out
 
 
-def room_shot(path):
+def room_shot(path, spots=None):
     """One Caves room with the old art dropped on its floor, and the same spots done with GroundSkin."""
-    spots = [(-70, -14, "FxBelTide", "brine", (40, 16)), (40, -26, "FxCommonIndIce", "ice", (40, 16)),
+    spots = spots or [(-70, -14, "FxBelTide", "brine", (40, 16)), (40, -26, "FxCommonIndIce", "ice", (40, 16)),
              (-10, 6, "FxEmberPatch", "scorch", (30, 13)), (70, 10, "FxZhkAcidPoolWide", "acid", (34, 14)),
              (-60, 22, "FxWaxPuddle", "wax", (24, 10))]
     shots = []
@@ -297,6 +373,10 @@ def room_shot(path):
 
 def main():
     os.makedirs(OUT, exist_ok=True)
+    room_shot(os.path.join(OUT, "sticky.png"),
+              [(-70, -14, "FxObjTar", "tar", (40, 16)), (40, -24, "FxZhkResin", "resin", (34, 14)),
+               (-10, 10, "FxZhkGlueField", "glue", (44, 17)), (66, 14, "FxObjTar", "tar", (26, 11)),
+               (-64, 26, "FxZhkResin", "resin", (22, 9))])
     floors = {}
     for env, room in (("Caves", "RoomCavesLarge1"), ("Crypt", "RoomCryptLarge1"), ("Mines", "RoomMinesLarge1")):
         floors[env] = G.Room(room, seed=1).floor.im.convert("RGBA")
