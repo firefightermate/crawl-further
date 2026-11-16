@@ -400,7 +400,7 @@ namespace CrawlFurther.Content.Tips
 
     public static partial class PauseTipsData
     {
-        /// <summary>Pause > Tips topics from data/tips/tips_pages.json (20 topics). Text is rich text, unwrapped.</summary>
+        /// <summary>Pause > Tips topics from data/tips/tips_pages.json (21 topics). Text is rich text, unwrapped.</summary>
         public static readonly PauseTopic[] Topics =
         {
             new PauseTopic("ysveld", "Ysveld", "YSVELD", "the Frost Widow", new[]
@@ -550,11 +550,17 @@ namespace CrawlFurther.Content.Tips
 #if CHAOS_NEXT
             new PauseTopic("chaos", "", "CHAOS", "faster, bigger, stranger", new[]
             {
+                "Start a chaos game from <color=#d4be9c>Chaos</color> on the main menu, or pick <color=#d4be9c>Continue in chaos</color> when a run ends.",
                 "<color=#d4be9c>Chaos games</color> give every hero a <color=#d4be9c>head start</color>: a few levels and gold to spend. Before the first floor each player picks their monsters' <color=#d4be9c>second forms</color>.",
                 "The hero holds <color=#d4be9c>two spells</color>, levels faster, and wrath and gold come quicker.",
                 "<color=#d4be9c>Big rooms:</color> most chaos floors are built from bigger copies of the game's rooms.",
-                "<color=#d4be9c>Rot Gardens:</color> now and then a stretch of chaos floors is overgrown caves, all plum stone and glowing caps.",
-                "- <color=#d4be9c>Puffballs</color> and <color=#d4be9c>bell caps</color> burst at a hit from anyone into a spore cloud. Spores <color=#d4be9c>daze</color> the hero.",
+            }),
+#endif
+#if ROT_GARDENS
+            new PauseTopic("rotgardens", "", "ROT GARDENS", "a chaos floor kind", new[]
+            {
+                "<color=#d4be9c>Rot Gardens:</color> now and then a stretch of chaos floors is an old underground garden gone to rot.",
+                "- <color=#d4be9c>Puffballs</color> burst at a hit from anyone into a spore cloud. Spores <color=#d4be9c>daze</color> the hero.",
                 "- While a fight is on, <color=#d4be9c>spore drifts</color> float across the room. Monsters can steer the hero into them.",
             }),
 #endif

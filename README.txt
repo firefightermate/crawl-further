@@ -19,18 +19,18 @@ The mod's two bosses are switched off in this version (see BOSSES).
 NEW IN 1.5.0
 ------------
   The chaos update. Everything since 1.4.6.
-  - Chaos grows: start it from Chaos on the main menu, or continue a won game.
+  - The end of a run offers three choices, won or lost: Continue, Continue in chaos, or End run. Continue
+    plays on as before with two more tries at the boss, Continue in chaos turns the rest of the game into a
+    chaos game, and End run ends it. Running out of boss tries now asks too, even if no one has won yet.
+  - Chaos grows: start it from Chaos on the main menu, or pick Continue in chaos when a run ends.
   - A chaos game gives every hero a head start: level 3 and 120 gold, where a normal game stands once its
     monsters reach tier 2.
   - Before the first floor, every player picks each starting monster's tier 2 form on the evolve screen.
   - Chaos floors are built mostly from big rooms: wider, deeper copies of the game's own rooms, grown out of
     their own floor and walls, with more enemies and props to fill them. Every room still fits on one screen.
-  - Rot Gardens, the first chaos floor of its own: caves overgrown with fungus, plum stone and glowing caps.
-    Puffballs and bell caps burst at a hit into spores that daze the hero, and spore drifts cross the room
-    during fights.
   - The hero levels faster in chaos, monster players earn wrath faster, and gold comes in a little quicker.
-  - Test mode (F2) has a Chaos page: turn chaos on, pick how many big rooms a floor gets, reload the floor
-    built around any big room to look at it, and go straight to Rot Gardens.
+  - Test mode (F2) has a Chaos page: turn chaos on, pick how many big rooms a floor gets, and reload the
+    floor built around any big room to look at it.
 
 NEW IN 1.4.6
 ------------
@@ -45,7 +45,6 @@ NEW IN 1.4.6
     that were far from their goal were retuned.
   - The Poltergeist's hex bolt can't hit the hero from on top of him or in the shop.
   - The mod's pages in Pause > Tips use the font of the live monster tips.
-  - Chaos is switched off for now. It comes back in its own update.
 
 NEW IN 1.3.0
 ------------
@@ -446,8 +445,9 @@ OBJECTS (new in 0.10.0)
   Duck all hide something. The vault's SECRETS page has a riddle for each.
 
 CHAOS
-  A game mode that grows with each update. Start it from Chaos on the main menu (under Play), or continue a
-  won game: a continued game is a chaos game until it ends. Not in the tutorial or vault challenges.
+  A game mode that grows with each update. Start it from Chaos on the main menu (under Play), or pick
+  Continue in chaos when a run ends: the game is a chaos game from then until it ends. Not in the tutorial
+  or vault challenges.
   Two spells: the hero holds two. Special casts the first, the ghost button the second, and each charges on
   its own. The second spell's charge shows in a blue bar under the special bar, and the hero stats panel
   names both. Buying a spell with one held makes it the second. Buying one with two held asks which to drop
@@ -455,16 +455,12 @@ CHAOS
   Big rooms: most rooms on a chaos floor are wider, deeper copies of the game's own rooms, grown out of
   their own floor and walls, with more enemies and props. Each still fits on one screen; a room that can't
   grow cleanly keeps its own size. ChaosBigRooms under [Game] turns them off.
-  Rot Gardens: now and then a stretch of chaos floors is overgrown caves instead of one of the game's
-  floors. Puffballs and bell caps burst at a hit from anyone (hero or monster) into a spore cloud that dazes
-  the hero, and while a fight is on, spore drifts float across the room. ChaosBiomes under [Game] turns
-  them off.
   Head start: a chaos game started from the menu begins where a normal game stands once its monsters reach
   tier 2. Every hero starts at level 3 (with the Vitality that level brings) and 120 gold, and before the
   first floor every player picks each starting monster's tier 2 form on the evolve screen, for free. A
   line left alone evolves at random.
-  Pace: the hero levels faster, wrath comes faster and gold a little quicker. A continued game picks up
-  the faster pace from the continue on.
+  Pace: the hero levels faster, wrath comes faster and gold a little quicker. A game continued in chaos
+  picks up the faster pace from then on.
   Turn chaos off with Chaos under [Game] in com.firefightermate.crawlfurther.cfg.
 
 TEST MODE

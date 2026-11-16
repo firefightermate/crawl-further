@@ -17,6 +17,8 @@ if [ -z "$CSC" ]; then
 fi
 # CHAOS_NEXT: the next chaos update (big rooms, chaos pace, Rot Gardens). NO_CHAOS_NEXT=1 builds without it.
 DEFS=""; [ "$NO_CHAOS_NEXT" = "1" ] || DEFS="-define:CHAOS_NEXT"
+# ROT_GARDENS: the Rot Gardens floor kind, held back while it is redesigned. ROT_GARDENS=1 builds it in.
+[ "$ROT_GARDENS" = "1" ] && DEFS="$DEFS -define:ROT_GARDENS"
 FLAGS="$DEFS -nologo -noconfig -nostdlib+ -target:library -langversion:7.3 -optimize+ -debug- -nowarn:CS1701,CS1702"
 REFS="-r:$L/mscorlib.dll -r:$L/System.dll -r:$L/System.Core.dll -r:$L/UnityEngine.dll -r:$L/UnityEngine.UI.dll
       -r:$L/Assembly-CSharp.dll -r:$L/Assembly-CSharp-firstpass.dll -r:$L/ex2D.Runtime.dll

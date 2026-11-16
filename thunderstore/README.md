@@ -48,7 +48,7 @@ Every mod monster's melee turns toward where it aims, so it hits up and down as 
 
 **Menus and music.** A "Further" wordmark under the CRAWL logo, flame markers and embers on the main menu, picture grids in the vault, and four instrumental tracks that rotate in with the game's own music.
 
-**Keep playing and Chaos.** After a win, Continue gives the game two more tries at the boss. A continued game, or one started from Chaos on the main menu, is a chaos game: the hero holds two spells, every hero starts at level 3 with gold to spend, each player picks their monsters' tier 2 forms before the first floor, floors are mostly big rooms, and some stretches are Rot Gardens, overgrown caves full of bursting spores.
+**Keep playing and Chaos.** When a run ends, won or lost, you can Continue with two more tries at the boss, Continue in chaos, or End run. A game continued in chaos, or one started from Chaos on the main menu, is a chaos game: the hero holds two spells, every hero starts at level 3 with gold to spend, each player picks their monsters' tier 2 forms before the first floor, and floors are mostly big rooms.
 
 **Bosses.** The mod's two bosses are switched off in this version. They never spawn.
 

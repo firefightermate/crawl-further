@@ -21,6 +21,8 @@ mkdir -p "$STAGE/art"
 for d in "$ROOT"/art/core "$ROOT"/art/out*; do
   # art/out_biomes belongs to the next chaos update (CHAOS_NEXT): left out of a NO_CHAOS_NEXT=1 package
   [ "$NO_CHAOS_NEXT" = "1" ] && [ "$(basename "$d")" = "out_biomes" ] && continue
+  # and of a package without Rot Gardens (ROT_GARDENS=1 puts it in)
+  [ "$ROT_GARDENS" != "1" ] && [ "$(basename "$d")" = "out_biomes" ] && continue
   for f in "$d"/*.json; do
     [ -e "$f" ] || continue
     b=$(basename "$f" .json)

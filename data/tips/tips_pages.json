@@ -236,11 +236,20 @@
    "header": "CHAOS",
    "subtitle": "faster, bigger, stranger",
    "text": [
+    "Start a chaos game from *Chaos* on the main menu, or pick *Continue in chaos* when a run ends.",
     "*Chaos games* give every hero a *head start*: a few levels and gold to spend. Before the first floor each player picks their monsters' *second forms*.",
     "The hero holds *two spells*, levels faster, and wrath and gold come quicker.",
-    "*Big rooms:* most chaos floors are built from bigger copies of the game's rooms.",
-    "*Rot Gardens:* now and then a stretch of chaos floors is overgrown caves, all plum stone and glowing caps.",
-    "- *Puffballs* and *bell caps* burst at a hit from anyone into a spore cloud. Spores *daze* the hero.",
+    "*Big rooms:* most chaos floors are built from bigger copies of the game's rooms."
+   ]
+  },
+  {
+   "id": "rotgardens",
+   "define": "ROT_GARDENS",
+   "header": "ROT GARDENS",
+   "subtitle": "a chaos floor kind",
+   "text": [
+    "*Rot Gardens:* now and then a stretch of chaos floors is an old underground garden gone to rot.",
+    "- *Puffballs* burst at a hit from anyone into a spore cloud. Spores *daze* the hero.",
     "- While a fight is on, *spore drifts* float across the room. Monsters can steer the hero into them."
    ]
   }

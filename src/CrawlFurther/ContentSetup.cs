@@ -60,14 +60,19 @@ namespace CrawlFurther.Content
             // each monster against its own challenge goal (tools/challenge_goals.py): a solid player reaches 50-75% of it
             TierRules.StrengthOf = id => { float k; return Monsters.MonsterBalanceGenerated.Strength.TryGetValue(id, out k) ? k : 1f; };
             Game.ContinueGame.Enabled = Plugin.I.Config.Bind("Game", "ContinueAfterWin", true,
-                "When the hero beats the boss, offer to keep playing with two more tries at the boss.").Value;
+                "When a run ends, won or lost, offer to keep playing with two more tries at the boss (as it was, or in chaos).").Value;
 #if CHAOS_NEXT
             Game.ChaosMode.Enabled = Plugin.I.Config.Bind("Game", "Chaos", true,
-                "Chaos: a Chaos entry on the main menu, and continued games play as chaos games (the hero holds two spells, monsters start at tier 2, levels, wrath and gold come faster).").Value;
+                "Chaos: a Chaos entry on the main menu, and a Continue in chaos choice when a run ends (the hero holds two spells, monsters start at tier 2, levels, wrath and gold come faster).").Value;
             Game.ChaosRooms.Enabled = Plugin.I.Config.Bind("Game", "ChaosBigRooms", true,
                 "Chaos floors are built mostly from bigger copies of the game's rooms. Off: chaos uses the rooms at their own size.").Value;
+#if ROT_GARDENS
             Game.Biomes.Enabled = Plugin.I.Config.Bind("Game", "ChaosBiomes", true,
                 "Chaos games have their own kinds of floor (Rot Gardens) mixed in with the game's. Off: chaos keeps the game's floors.").Value;
+#else
+            // Rot Gardens is being redesigned and is held back (ROT_GARDENS): chaos keeps the game's floors
+            Game.Biomes.Enabled = false;
+#endif
 #else
             // Chaos is held back for its own update: no Chaos entry on the main menu, and a continued game stays a
             // normal game. The [Game] Chaos setting is left as it is, for when chaos comes back.
@@ -127,7 +132,7 @@ namespace CrawlFurther.Content
             Further.AddPack("Weapons", WeaponPack.Register);
             Further.AddPack("Objects", ObjectPack.Register);
             Further.AddPack("Objects B", ObjectPack2.Register);
-#if CHAOS_NEXT
+#if CHAOS_NEXT && ROT_GARDENS
             Further.AddPack("Rot Gardens", CrawlFurther.Content.Chaos.RotGardens.Register);
 #endif
             Further.AddPack("Monster secrets", MonsterSecrets.Register);   // last: needs the silver and gold monsters built
